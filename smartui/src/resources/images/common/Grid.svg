@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="38" height="40" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_154661" data-name="Rectangle 154661" width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Grid" clip-path="url(#clip-path)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <g id="forcast" clip-path="url(#clip-path)">
+      <rect id="Rectangle_154660" data-name="Rectangle 154660" width="48" height="48" fill="rgba(255,255,255,0)"/>
+    </g>
+    <g id="Group_145244" data-name="Group 145244" transform="translate(-1142 -201.111)">
+      <path id="Union_3" data-name="Union 3" d="M1,21.838a1,1,0,0,1-1-1V13.132a1,1,0,0,1,1-1H7a1,1,0,0,1,1,1v7.706a1,1,0,0,1-1,1Zm9-1.213V18.2H26v2.426Zm0-4.853V13.345H26v2.426ZM1,9.706a1,1,0,0,1-1-1V1A1,1,0,0,1,1,0H7A1,1,0,0,1,8,1V8.706a1,1,0,0,1-1,1Zm9-1.213V6.066H26V8.492ZM10,3.64V1.213H26V3.64Z" transform="translate(1147 214.111)" fill="#666"/>
+      <g id="Group_145210" data-name="Group 145210" transform="translate(1176.177 222.643)">
+        <path id="ic_chevron_right_24px" d="M1.038,0,0,1.154,3.373,4.911,0,8.669,1.038,9.823,5.457,4.911Z" transform="translate(9.823) rotate(90)" fill="#666"/>
+      </g>
+    </g>
+  </g>
+</svg>

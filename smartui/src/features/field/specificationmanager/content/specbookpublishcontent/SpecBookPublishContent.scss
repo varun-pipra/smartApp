@@ -1,0 +1,29 @@
+.confirm-btn-cls {
+    display: flex;
+    gap: 30px;
+    .resume-later-cls {
+        color: #7d7d7c;
+        height: 36px;
+        border-radius: 2px;
+        font-weight: 500;
+        border: 1px solid #7d7d7c;
+        padding: 6px 12px;
+    }
+    .publish-generate-cls {
+        color: #ed7532;
+        height: 36px;
+        border-radius: 2px;
+        font-weight: 500;
+        border: 1px solid #ed7532;
+    }
+    .publish-spec-cls {
+        background-color: #ed7532 !important;
+        color: #fff;
+        height: 36px;
+        border-radius: 2px;
+        font-weight: 500;
+        border: 1px solid #ed7532;
+        padding: 6px 12px;
+        box-shadow: 0px 1px 4px 0px #d9d9d9;
+    }
+}

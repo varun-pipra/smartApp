@@ -1,0 +1,27 @@
+.vendor-contract-files-container {
+    .vendor-contract-header-text,
+    .vendor-contract-sub-header-text {
+        padding: 0.8em 0.4em 0.8em 0.0em;
+        font-size: 17px;
+        font-weight: bold;
+        text-align: left;
+    }
+    .vendor-contract-sub-header-text {
+        font-size: 15px;
+    }
+    .add-contract-files {
+        padding: 1.4em 0.4em 0em 0em;
+    }
+    .no-rows-msg {
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #fff;
+        div {
+            color: #9F9F9F;
+        }
+        .common-icon-standard-contract {
+            font-size: 36px;
+            color: #999;
+        }
+    }
+}

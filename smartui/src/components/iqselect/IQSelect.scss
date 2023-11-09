@@ -1,0 +1,9 @@
+.iq-select {
+	.MuiInputBase-root {
+		.MuiSelect-select {
+			&:focus {
+				background-color: unset;
+			}
+		}
+	}
+}

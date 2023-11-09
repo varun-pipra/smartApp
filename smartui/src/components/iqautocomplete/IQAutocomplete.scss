@@ -1,0 +1,18 @@
+.iq-autocomplete {
+    .MuiFormControl-root {
+        .MuiInputBase-root {
+            .MuiChip-root {
+                border-radius: 0.2em;
+                margin: 2px 3px;
+                height: 26px;
+                max-width: calc(100% - 80px);
+            }
+        }
+    }
+}
+
+.MuiAutocomplete-popper {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.15);
+}

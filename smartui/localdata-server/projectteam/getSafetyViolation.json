@@ -1,0 +1,55 @@
+[
+    {
+        "id": "5524a956-2b05-45a5-a7f4-76162f68f173",
+        "userId": "f1b1352c-017f-4afd-ac3f-8dad9b7adcca",
+        "name": "6",
+        "smartItem": {
+            "id": "5524a956-2b05-45a5-a7f4-76162f68f173",
+            "name": "6",
+            "smartApp": {
+                "id": "01f36028-e2c7-485b-95d3-4950436dd7f0",
+                "name": "Safety Violations",
+                "icon": "https://s3.amazonaws.com/smartapp-appzones/v20/iqthumbnail/01f36028e2c7485b95d34950436dd7f0"
+            }
+        },
+        "category": {
+            "id": 1014,
+            "name": "Fatality"
+        },
+        "type": {
+            "id": 1013,
+            "name": "No PPE"
+        },
+        "violationDate": "2023-05-16T18:30:00Z",
+        "reason": "Miss behaving",
+        "expungedBy": {
+            "id": "fcc6ba5a-efe7-4b92-a902-fbfa66470ecc",
+            "email": "ndeb@smartapp.com",
+            "globalId": "0a3090f1-2570-4c2b-a7bf-e0e607bbfac7",
+            "lastName": "Deb",
+            "firstName": "Nabarupam",
+            "displayName": "Deb, Nabarupam"
+        },
+        "isExpunged": true,
+        "expungedOn": "2023-05-19T15:04:05.853Z",
+        "createdBy": {
+            "id": "fcc6ba5a-efe7-4b92-a902-fbfa66470ecc",
+            "email": "ndeb@smartapp.com",
+            "globalId": "0a3090f1-2570-4c2b-a7bf-e0e607bbfac7",
+            "lastName": "Deb",
+            "firstName": "Nabarupam",
+            "displayName": "Deb, Nabarupam"
+        },
+        "createdOn": "2023-05-19T14:32:59.49Z",
+        "modifiedBy": {
+            "id": "fcc6ba5a-efe7-4b92-a902-fbfa66470ecc",
+            "email": "ndeb@smartapp.com",
+            "globalId": "0a3090f1-2570-4c2b-a7bf-e0e607bbfac7",
+            "lastName": "Deb",
+            "firstName": "Nabarupam",
+            "displayName": "Deb, Nabarupam"
+        },
+        "modifiedOn": "2023-05-19T15:04:05.853Z",
+        "status": "Expunged"
+    }
+]

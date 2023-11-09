@@ -1,0 +1,34 @@
+.WBSComponent{
+	width:100%;
+
+	.wbs-dropdown-header-title-cls {
+		padding: 0px 0px 0px 10px;
+		display: flex; 
+		align-items: center;
+		justify-content: space-between;
+		div {
+			font-size: 14px;
+			font-weight: bold
+		}
+	}
+	.wbs-search-wrapper {
+		display: flex;
+		align-items: center;
+		.icon-wrapper {
+			padding: 0 20px 0 0;
+		}
+		.base-search-text-field {
+			outline: 0px;
+		}
+	}
+	.skill-search {
+		.search-field {
+			.MuiInputBase-root {
+				padding-right: 0px;
+				.MuiSvgIcon-root {
+					margin-right: 0px;
+				}
+			}
+		}
+	}
+}

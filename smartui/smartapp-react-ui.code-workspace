@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"editor.formatOnPaste": true,
+		"editor.formatOnSave": true,
+		"typescript.format.enable": true,
+		"editor.tabSize": 4,
+		"editor.insertSpaces": false,
+		"editor.detectIndentation": false,
+		"typescript.tsdk": "node_modules\\typescript\\lib",
+		"[typescript]": {
+			"editor.codeActionsOnSave": {
+				"source.removeUnusedImports": true
+			},
+			"editor.quickSuggestions": {
+				"other": false,
+				"comments": false,
+				"strings": false
+			},
+		}
+	}
+}

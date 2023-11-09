@@ -1,0 +1,32 @@
+.iq-tabbedwindow {
+	.MuiDialog-container {
+		.MuiPaper-root {
+			.MuiDialogContent-root {
+				.iqobjectpage-main-container {
+					.iqobjectpage-tabbar-outer {
+						flex: unset;
+
+						.MuiTabs-root {
+							.MuiTabs-scroller {
+								.MuiTabs-flexContainer {
+									align-items: center;
+									justify-content: flex-start;
+									gap: 1em;
+									padding: 0.5em;
+								}
+							}
+						}
+					}
+
+					.iqobjectpage-content-outer {
+						overflow: auto;
+						
+						.iqobjectpage-section {
+							padding: unset;
+						}
+					}
+				}
+			}
+		}
+	}
+}

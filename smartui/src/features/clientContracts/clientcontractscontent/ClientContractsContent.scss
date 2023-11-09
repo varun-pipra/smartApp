@@ -1,0 +1,157 @@
+.client-contract-lid {
+    .rightpanel-footer {
+        height: 3.5em;
+        z-index: 0;
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        transition: 0.3s;
+        padding: 0px 18px 0px 18px;
+        background-color: #ffffff;
+        box-shadow: 0 -1px 5px 0 rgb(0 0 0 / 25%);
+        .footer-button-container {
+            display: flex;
+            gap: 1em;
+        }
+        .toastmessage {
+            padding: 0.5em 1em;
+            border: 1px solid lightgrey;
+            border-radius: 2em;
+            font-size: 14px;
+            font-family: "Roboto-Regular";
+        }
+        .footer-lineitem-counter {
+            font-family: 'Roboto-Regular';
+        }
+        .footer-icons {
+            border: 1px solid #059cdf;
+            border-radius: 4px;
+            color: #059cdf;
+            padding: 0px;
+            .MuiSvgIcon-root {
+                width: 1em !important;
+                height: 1em !important;
+            }
+        }
+        .btn-save-contract {
+            display: flex; // justify-content: flex-end;
+            height: 2.7em;
+            border-radius: 2px;
+            border-color: #059cdf !important;
+            color: #059cdf;
+            font-weight: bold;
+            &.Mui-disabled {
+                opacity: 0.5; // background-color: #0a8727;
+            }
+        }
+        .btn-post-contract {
+            display: flex;
+            justify-content: flex-end;
+            height: 2.7em;
+            border-radius: 2px;
+            background-color: #059cdf !important;
+            color: #fff;
+            border-color: #059cdf;
+            box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12); // &.Mui-disabled {
+            //     opacity: 0.6;
+            //     background-color: #059cdf;
+            // }
+        }
+        .lock-post-btn {
+            background-color: #fff !important;
+            border: 1px solid #059cdf;
+            color: #059cdf;
+            box-shadow: none;
+        }
+        .btn-cancel-contract {
+            display: flex;
+            justify-content: flex-end;
+            height: 2.7em;
+            border-radius: 2px;
+            background-color: #666666 !important;
+            color: #fff; // background-color: #059cdf !important;
+            // &.Mui-disabled {
+            //     opacity: 0.6;
+            //     // background-color: #059cdf;
+            // }
+        }
+        .btn-save-changes {
+            display: flex;
+            justify-content: flex-end;
+            height: 2.7em;
+            border-radius: 2px; // background-color: #059cdf !important;
+            // &.Mui-disabled {
+            //     opacity: 0.6;
+            //     // background-color: #059cdf;
+            // }
+        }
+        .btn-decline-bid {
+            display: flex;
+            justify-content: flex-end;
+            background-color: white !important;
+            color: #696969;
+            border: 1px solid gray;
+            height: 2.7em;
+            border-radius: 2px;
+            &.Mui-disabled {
+                opacity: 0.5;
+            }
+        }
+        .btn-acknowledge-bid {
+            height: 2.7em;
+            border-radius: 2px;
+            background-color: #e8793e !important;
+        }
+        .award-bid-cls {
+            border: 1px solid #0a8727;
+            color: #fff !important;
+            margin-top: 4px;
+        }
+        .estimated-bid-cls {
+            background-color: #fdf5cd;
+            padding: 0px 10px;
+            border: 1px solid #ecda57;
+            border-radius: 4px;
+            color: #333;
+            align-items: center;
+            display: flex;
+            height: 46px;
+            .common-icon-info-white:before {
+                background-color: #dbbc3a;
+                border-radius: 50%;
+                color: #fff;
+                font-size: 24px;
+                margin-right: 6px;
+                vertical-align: sub;
+                padding: 2px;
+                float: left;
+            }
+            .text {
+                text-transform: capitalize;
+                font-size: 13px;
+                color: #333;
+                display: flex;
+                p {
+                    margin: 0px;
+                    font-size: 14px;
+                }
+                .red {
+                    color: #d95f5f;
+                    font-weight: bold;
+                }
+            }
+            .btn-award-update {
+                background-color: #fdf5cd;
+                color: #ed7431;
+                border: 1px solid #ed7431;
+                padding: 6px;
+                margin-left: 15px;
+                border-radius: 4px;
+                box-shadow: none;
+                &.Mui-disabled {
+                    opacity: 0.5;
+                }
+            }
+        }
+    }
+}

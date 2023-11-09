@@ -1,0 +1,397 @@
+{
+	"values": [{
+		"id": 7,
+		"createdBy": "User, System",
+		"modifiedBy": "User, System",
+		"createdDate": "2021-03-17T13:06:52.693Z",
+		"modifiedDate": "2021-03-17T13:06:52.693Z",
+		"assignedTo": [],
+		"trades": [{
+			"color": null,
+			"isPrimary": false,
+			"name": "Audio / Video",
+			"id": 67
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Carpentry",
+			"id": 68
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Ceiling",
+			"id": 69
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Ceramic Tile",
+			"id": 70
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Cleaning",
+			"id": 72
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Concrete",
+			"id": 73
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Concrete Restoration",
+			"id": 74
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Concrete Surfacing",
+			"id": 75
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Controls",
+			"id": 77
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Curtain Walls",
+			"id": 78
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Demolition",
+			"id": 79
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Doors, Frames & Hardware",
+			"id": 80
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Drywall",
+			"id": 81
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Enclosures",
+			"id": 85
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Fire Protection",
+			"id": 88
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Flooring",
+			"id": 89
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Framing",
+			"id": 90
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "General Trades",
+			"id": 92
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Glass & Glazing",
+			"id": 93
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "HVAC",
+			"id": 94
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "HVAC Piping",
+			"id": 95
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "HVAC Sheet Metal",
+			"id": 96
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Iron Works",
+			"id": 99
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Landscape",
+			"id": 101
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Lighting",
+			"id": 103
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Low Voltage",
+			"id": 104
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Masonary",
+			"id": 105
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Metal Works",
+			"id": 109
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Millwork",
+			"id": 110
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Painting",
+			"id": 111
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Pipefitter",
+			"id": 113
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Plastering",
+			"id": 114
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Plumbing",
+			"id": 115
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Roofing",
+			"id": 117
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Sheet Metal",
+			"id": 119
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Spray Fireproofing",
+			"id": 122
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Steel Erection",
+			"id": 123
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Steel Fabrication",
+			"id": 124
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Waterproofing",
+			"id": 129
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Welding",
+			"id": 130
+		}],
+		"name": "Laborer",
+		"description": "Laborer",
+		"isImportedFromOrg": false
+	}, {
+		"id": 13,
+		"createdBy": "User, System",
+		"modifiedBy": "User, System",
+		"createdDate": "2021-03-17T13:06:52.74Z",
+		"modifiedDate": "2021-03-17T13:06:52.74Z",
+		"assignedTo": [],
+		"trades": [{
+			"color": null,
+			"isPrimary": false,
+			"name": "Audio / Video",
+			"id": 67
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Carpentry",
+			"id": 68
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Ceiling",
+			"id": 69
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Ceramic Tile",
+			"id": 70
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Cleaning",
+			"id": 72
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Concrete",
+			"id": 73
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Concrete Restoration",
+			"id": 74
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Concrete Surfacing",
+			"id": 75
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Demolition",
+			"id": 79
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Doors, Frames & Hardware",
+			"id": 80
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Drywall",
+			"id": 81
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Excavation",
+			"id": 87
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Fire Protection",
+			"id": 88
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Flooring",
+			"id": 89
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Framing",
+			"id": 90
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "General Trades",
+			"id": 92
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Glass & Glazing",
+			"id": 93
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "HVAC",
+			"id": 94
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "HVAC Piping",
+			"id": 95
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "HVAC Sheet Metal",
+			"id": 96
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Iron Works",
+			"id": 99
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Landscape",
+			"id": 101
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Masonary",
+			"id": 105
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Metal Works",
+			"id": 109
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Millwork",
+			"id": 110
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Painting",
+			"id": 111
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Plastering",
+			"id": 114
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Roofing",
+			"id": 117
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Sheet Metal",
+			"id": 119
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Spray Fireproofing",
+			"id": 122
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Steel Erection",
+			"id": 123
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Steel Fabrication",
+			"id": 124
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Waterproofing",
+			"id": 129
+		}, {
+			"color": null,
+			"isPrimary": false,
+			"name": "Welding",
+			"id": 130
+		}],
+		"name": "Skilled",
+		"description": "Skilled labor in most trades",
+		"isImportedFromOrg": false
+	}],
+	"success": true,
+	"message": ""
+}

@@ -1,0 +1,89 @@
+.toolbar-root-container-bidmanager {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 1rem 1rem 0.5rem;
+    background-color: white;
+    .toolbar-item-wrapper {
+        flex: 1;
+        &.options-wrapper {
+            .MuiButton-root {
+                margin: 0 0.35rem;
+            }
+            .MuiIconButton-root {
+                margin: 0 0.35rem;
+                &:hover {
+                    box-shadow: inset 0 2px 8px 2px rgb(0 0 0 / 5%);
+                }
+                .common-icon-refresh:before {
+                    font-size: 20px;
+                    color: #333;
+                }
+                .common-icon-Pause:before {
+                    font-size: 24px;
+                    color: #333;
+                }
+                .common-icon-Cancelled:before {
+                    font-size: 22px;
+                    color: #333;
+                }
+                .common-icon-delete:before {
+                    font-size: 22px;
+                    color: #333;
+                }
+            }
+        }
+        &.search-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .MuiButton-startIcon,
+            .MuiButton-endIcon {
+                color: gray;
+            }
+            .iqsearch-field {
+                width: 20rem;
+                height: 2.25rem;
+                min-height: 2rem !important;
+                max-height: 2.25rem;
+            }
+        }
+        &.toolbar-group-button-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+    }
+    .toolbar-group-button-wrapper {
+        .lockbuget-button {
+            height: 2.25rem;
+            color: #059cdf !important;
+            border: 1px solid #059cdf !important;
+        }
+        .settings-button {
+            &:hover {
+                box-shadow: inset 0 2px 8px 2px rgb(0 0 0 / 5%);
+            }
+        }
+        .preview-button {
+            .MuiButtonBase-root-MuiButton-root:hover {
+                background-color: unset;
+            }
+        }
+    }
+    .MuiIconButton-root {
+        font-size: 1rem !important;
+    }
+    .MuiIconButton-root.Mui-disabled {
+        opacity: 0.4;
+    }
+    .MuiToggleButtonGroup-root {
+        height: 2.25rem;
+        .MuiToggleButton-root {
+            &.Mui-selected {
+                color: #fff;
+                background-color: #059cdf;
+            }
+        }
+    }
+}

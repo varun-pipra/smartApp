@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <g id="map-markers-bg" transform="translate(-169 -521)">
+    <circle id="Ellipse_16916" data-name="Ellipse 16916" cx="24" cy="24" r="24" transform="translate(169 521)" fill="#a7a7a7"/>
+    <g id="MDI_map-marker" data-name="MDI / map-marker" transform="translate(178.111 531.793)">
+      <g id="Boundary" fill="#fff" stroke="rgba(0,0,0,0)" stroke-width="1" opacity="0">
+        <rect width="28.313" height="28.313" stroke="none"/>
+        <rect x="0.5" y="0.5" width="27.313" height="27.313" fill="none"/>
+      </g>
+      <path id="Path_map-marker" data-name="Path / map-marker" d="M13.258,13.207a2.949,2.949,0,1,1,2.949-2.949,2.949,2.949,0,0,1-2.949,2.949M13.258,2A8.258,8.258,0,0,0,5,10.258c0,6.194,8.258,15.336,8.258,15.336s8.258-9.143,8.258-15.336A8.258,8.258,0,0,0,13.258,2Z" transform="translate(0.899 0.359)" fill="#fff"/>
+    </g>
+  </g>
+</svg>

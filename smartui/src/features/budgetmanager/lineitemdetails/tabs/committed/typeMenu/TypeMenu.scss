@@ -1,0 +1,31 @@
+.transaction-type-menu {
+    .MuiButton-root {
+        width: 12em; //height: 2em;
+        padding: 0;
+        background-color: #059cdf;
+        &:hover {
+            background-color: #059cdf;
+        }
+        .MuiButton-startIcon,
+        .MuiButton-endIcon {
+            margin: 0 0.6em;
+            width: 1em;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: right;
+        }
+        .MuiButton-endIcon {
+            padding-left: 0.5em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+    .header-text {
+        font-size: 16px !important;
+    }
+    .menu-text {
+        font-size: 14px !important;
+    }
+}

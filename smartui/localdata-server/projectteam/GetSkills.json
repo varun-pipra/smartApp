@@ -1,0 +1,32 @@
+{
+    "success": true,
+    "values": [
+        {
+            "objectId": 1,
+            "id": 1,
+            "uniqueId": "d9112903-3cd6-48b4-b0d9-01888e700104",
+            "projectId": null,
+            "name": "Build",
+            "description": "",
+            "tradeId": 1,
+            "tradeName": "Architectural",
+            "tradeUId": "d02338c7-456b-4abf-adee-7ce609460bcd",
+            "status": 1,
+            "isImportedFromOrg": false
+        },
+        {
+            "objectId": 2,
+            "id": 2,
+            "uniqueId": "33f858c0-0e05-403a-adb0-1b03421475ad",
+            "projectId": null,
+            "name": "Safety",
+            "description": "",
+            "tradeId": 1,
+            "tradeName": "Architectural",
+            "tradeUId": "d02338c7-456b-4abf-adee-7ce609460bcd",
+            "status": 1,
+            "isImportedFromOrg": false
+        }
+    ],
+    "message": ""
+}

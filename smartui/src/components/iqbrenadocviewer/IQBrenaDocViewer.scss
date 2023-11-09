@@ -1,0 +1,14 @@
+.iq-brena-doc-viewer {
+    //height: 100%;
+    .iq-brena-canvas,
+    .iq-brena-drawing-canvas,
+    .iq-brena-sketch-canvas {
+        // z-index: 1;
+        // position: absolute;
+    }
+    .canvas-wrapper-cls {
+        // min-height: 500px;
+        height: 90%;
+        border: 1px solid #ccc;
+    }    
+}

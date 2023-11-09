@@ -1,0 +1,338 @@
+.tab-bid-details-readonly {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f5f5f5;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    .header-text {
+        height: 3em;
+        padding: 1em 0.4em;
+        font-size: 17px;
+        font-weight: bold;
+        border-bottom: 1px solid #ccc;
+    }
+    .sub-heading {
+        padding: 0.25em 0;
+        font-weight: bold;
+    }
+    .details-box {
+        display: flex;
+        justify-content: space-between;
+        .bid-image-container {
+            min-width: 10em;
+            min-height: 10em;
+            border: 1px solid #f5f5f5;
+            border-bottom: 0px;
+            border-left: 0px;
+            border-top: 0px;
+            .bid-image {
+                width: 10em;
+                height: 11.5em;
+                padding: 10px;
+                border-radius: 4px;
+                object-fit: cover;
+            }
+        }
+        .package-info-container {
+            display: flex;
+            flex-direction: column; //padding: 10px 20px;
+            width: 100%;
+            .package-info {
+                height: 50%;
+                border-bottom: 1px solid #f5f5f5;
+                padding: 6px 8px;
+                .package-info-cls {
+                    line-height: 2;
+                    span {
+                        line-height: 1.2;
+                    }
+                }
+                .package-title {
+                    color: #8d8d8d;
+                    margin-right: 5px;
+                }
+                .common-icon-bid-manager {
+                    background-color: #8d8d8d;
+                    border-radius: 50%;
+                    font-size: 16px;
+                    vertical-align: middle;
+                    margin-right: 10px;
+                    padding: 1px;
+                    margin-left: 6px;
+                    &:before {
+                        color: #fff;
+                    }
+                }
+                .common-icon-Project-ap {
+                    background-color: transparent;
+                    &:before {
+                        border-radius: 50%;
+                        font-size: 30px;
+                        vertical-align: middle;
+                        color: #8d8d8d;
+                    }
+                }
+            }
+            .bid-description {
+                height: 50%;
+                padding: 10px 14px;
+                color: #666;
+                line-height: 1.4;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 4;
+                -webkit-box-orient: vertical;
+            }
+        }
+        .map-container {
+            margin-left: auto;
+            .bid-map {
+                width: 18em;
+                height: 12em;
+                object-fit: cover;
+            }
+        }
+    }
+    .contact-box {
+        display: block;
+        border: 1px solid #f5f5f5;
+        padding: 10px;
+        border-width: 1px 0px 1px 0px;
+        .requestedby-section {
+            width: 50%;
+            float: left;
+            border-right: 1px solid #d9d9d9;
+            padding-right: 2%;
+            .company-info {
+                display: block;
+                .company-info_left-section {
+                    width: 50%;
+                    float: left;
+                    height: 80px;
+                    vertical-align: middle;
+                    align-items: center;
+                    display: flex;
+                    .company-logo-img {
+                        width: 2.8em;
+                        height: 2.8em;
+                        border-radius: 50%;
+                        float: left;
+                        margin-right: 10px;
+                        border: 1px solid #ccc;
+                        object-fit: contain;
+                    }
+                    .company-name {
+                        font-size: 14px;
+                        font-weight: bold;
+                        line-height: 1.8;
+                    }
+                    .company-type {
+                        font-size: 14px;
+                        color: #999;
+                    }
+                }
+                .company-info_right-section {
+                    width: 50%;
+                    float: left;
+                    display: grid;
+                    .section-wrap {
+                        margin: 4px 0px;
+                        word-break: break-word;
+                        display: flex;
+                        .icon {
+                            font-size: 25px;
+                            float: left;
+                            margin-right: 10px;
+                            line-height: 0.8;
+                            &:before {
+                                color: #999;
+                            }
+                        }
+                        .common-icon-Location-filled {
+                            font-size: 20px;
+                            margin-left: 2px;
+                        }
+                    }
+                }
+                .company-info_email {
+                    word-wrap: break-word;
+                }
+                .company-info_location {
+                    display: flex;
+                }
+            }
+        }
+        .point-of-contact {
+            width: 50%;
+            float: left;
+            padding-left: 2%;
+            .point-of-contact_left-section {
+                width: 50%;
+                float: left;
+                height: 80px;
+                vertical-align: middle;
+                align-items: center;
+                display: flex;
+                .point-of-contact-img {
+                    width: 2.8em;
+                    height: 2.8em;
+                    border-radius: 50%;
+                    float: left;
+                    margin-right: 10px;
+                    border: 1px solid #ccc;
+                    object-fit: contain;
+                    min-width: 2.8em;
+                }
+                .point-of-contact_name {
+                    font-size: 14px;
+                    font-weight: bold;
+                    line-height: 1.8;
+                }
+                .point-of-contact-type {
+                    font-size: 14px;
+                    color: #999;
+                    word-break: break-word;
+                }
+            }
+            .point-of-contact_right-section {
+                width: 50%;
+                float: left;
+                display: grid;
+                .section-wrap {
+                    margin: 2px 0px;
+                    word-break: break-word;
+                    display: flex;
+                    .icon {
+                        font-size: 25px;
+                        float: left;
+                        margin-right: 10px;
+                        &:before {
+                            color: #999;
+                        }
+                    }
+                    .common-icon-company-Icon {
+                        line-height: 0.8;
+                    }
+                    .common-icon-bd-phone {
+                        line-height: 0.8;
+                        margin-left: 1px;
+                    }
+                }
+            }
+            .point-of-email {
+                word-wrap: break-word;
+            }
+        }
+    }
+    .bid-instruction-box {
+        margin-top: 10px;
+        padding-left: 8px;
+        border-bottom: 1px solid #f5f5f5;
+        .sub-heading {
+            margin-bottom: 8px;
+        }
+        .icon {
+            float: left;
+            line-height: 1.0;
+            font-size: 22px;
+            color: #999;
+            margin-right: 4px;
+        }
+        ol {
+            margin: 2px 0px 12px 0px;
+            color: #333;
+            line-height: 1.6;
+        }
+        p {
+            padding-left: 40px;
+        }
+    }
+    .additional-info-box {
+        margin-left: 8px;
+        padding-top: 12px;
+        .sub-heading {
+            margin-bottom: 8px;
+        }
+        .common-icon-adminNote {
+            margin-top: 3px;
+        }
+        .icon {
+            float: left;
+            line-height: 1.0;
+            font-size: 22px;
+            color: #999;
+            margin-right: 4px;
+            &:before {
+                color: #999;
+            }
+        }
+        .bid-last-date-icon,
+        .bid-schedule-location-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #999;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            vertical-align: text-bottom;
+            text-align: center;
+            padding-top: 1px;
+            &:before {
+                vertical-align: middle;
+                color: #fff;
+                font-size: 12px;
+            }
+        }
+        .bid-last-date-icon:before {
+            font-size: 14px;
+            line-height: 0.1;
+        }
+        .bid-query-last-day-box,
+        .site-walkthrough-box {
+            font-size: 14px;
+            margin-left: 4px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 8px;
+            .bid-query-last-day-box_date,
+            .site-walkthrough_dates {
+                padding-left: 6px;
+                color: #000;
+                font-weight: bold;
+                span {
+                    padding-left: 6px;
+                }
+            }
+        }
+        .site-walkthrough-notes {
+            font-size: 14px;
+            margin: 10px 0px 20px 26px;
+            color: #333;
+            line-height: 1.8;
+            span,
+            p {
+                margin: 0px;
+            }
+        }
+    }
+    .bid-details-timer-info-box {
+        margin: 0;
+        display: flex;
+        gap: 8px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        &_label {
+            color: #666;
+        }
+    }
+    .package-timer_wrapper {
+        display: flex;
+        justify-content: space-between;
+        .package-info-cls {
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+    }
+}

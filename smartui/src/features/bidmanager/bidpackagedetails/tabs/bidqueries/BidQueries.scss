@@ -1,0 +1,40 @@
+.tab-bid-queries {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .header-box {
+        height: 4.25em;
+        padding: 1em 0;
+        justify-content: space-between;
+        .header-text {
+            font-size: 17px;
+            font-weight: bold;
+        }
+	}
+	.groupBy{
+		background: #e8e8e8;
+		padding:8px;
+		margin-top: 8px;
+		display: flex;
+		align-items: center;
+		 .post-thumbnail {
+				width: 2.2em;
+				height: 2.2em;
+				border: 1px solid #999;
+				border-radius: 50%;	
+			}
+			 .post-thumbnail-word {
+				width: 2.2em;
+				height: 2.2em;
+				border: 1px solid #999;
+				border-radius: 50%;	
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
+		.name{
+			padding-left: 4px;
+			text-transform: capitalize;
+		}
+	}
+}

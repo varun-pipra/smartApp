@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-Transactions_1">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Transactions_1" data-name="Transactions – 1" clip-path="url(#clip-Transactions_1)">
+    <g id="Group_80767" data-name="Group 80767" transform="translate(-1010 -381)">
+      <g id="Ellipse_16862" data-name="Ellipse 16862" transform="translate(1015 386)" fill="none" stroke="#707070" stroke-width="1">
+        <circle cx="19.5" cy="19.5" r="19.5" stroke="none"/>
+        <circle cx="19.5" cy="19.5" r="19" fill="none"/>
+      </g>
+      <g id="MDI_table-arrow-right" data-name="MDI / table-arrow-right" transform="translate(1020.881 392.134)" opacity="0.6">
+        <path id="Path_table-arrow-right" data-name="Path / table-arrow-right" d="M4.415,3h16.9a2.414,2.414,0,0,1,2.415,2.415v8.548a7.257,7.257,0,0,0-5.216,1.111H14.074V19.9h1.3a7.366,7.366,0,0,0,0,2.415H4.415A2.414,2.414,0,0,1,2,19.9V5.415A2.422,2.422,0,0,1,4.415,3m0,4.829v4.829h7.244V7.829H4.415m9.659,0v4.829h7.244V7.829H14.074M4.415,15.074V19.9h7.244V15.074H4.415m18.642,9.659V22.318H18.227V19.9h4.829V17.488l3.622,3.622-3.622,3.622"/>
+      </g>
+    </g>
+  </g>
+</svg>

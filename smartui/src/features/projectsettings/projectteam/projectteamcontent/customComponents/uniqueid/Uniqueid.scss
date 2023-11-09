@@ -1,0 +1,74 @@
+.pt-iq-uniqueid-field {
+    .label-container {
+        padding-bottom: 0.5em;
+        .MuiSvgIcon-root {
+            color: #ed7532;
+        }
+        .MuiInputLabel-root {
+            margin: 0;
+            padding-left: 0em;
+            color: #666;
+            font-size: 14px;
+        }
+    }
+    .qr-container {
+        border: 1px solid #ccc;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        padding-top: 0.5em;
+        border-radius: 0.2em;
+        height: 100px;
+        position: relative;
+        >div {
+            height: 60px;
+            position: relative;
+        }
+        .override-checkbox {
+            //flex: 4;
+            padding-left: 0.6rem;
+            .MuiCheckbox-root {
+                padding: 5px 6px 6px 6px;
+            }
+        }
+        .qr-code-img {
+            height: 4em;
+            width: 4em;
+            object-fit: contain;
+            margin-right: 8px;
+        }
+        .print-button {
+            background-color: transparent;
+            margin-top: -30px;
+            .common-icon-print {
+                color: #333;
+                font-size: 20px;
+            }
+        }
+    }
+}
+
+.pt-barcode-model {
+    .MuiDialog-container .MuiPaper-root .MuiDialogTitle-root {
+        display: flex;
+        line-height: 2;
+        font-weight: 500;
+        padding: 0.25em 1em !important;
+    }
+    .MuiDialogContent-root {
+        padding: 2.5em 1.5em 1em 1.5em;
+    }
+    .barcode-container {
+        .submit {
+            width: 10em;
+        }
+    }
+}
+
+.barcode-container {
+    button {
+        background-color: #059cdf;
+        &:hover {
+            background-color: #0a9bdb;
+        }
+    }
+}

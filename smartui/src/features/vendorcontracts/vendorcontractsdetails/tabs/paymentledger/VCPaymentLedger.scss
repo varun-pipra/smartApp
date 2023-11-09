@@ -1,0 +1,132 @@
+.vc-payment-ledger {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    .header {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: unset !important;
+        .title-action,
+        .search-action {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .title-action {
+            padding: 1em 0;
+            .title {
+                margin-right: 1em;
+                font-family: 'Roboto-Regular';
+                font-size: 17px;
+                font-weight: bold;
+            }
+            .iq-menu-button {
+                height: 2em;
+            }
+        }
+        .kpi-fields {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .kpi-item-tile {
+                .kpi-label {
+                    font-size: 1rem;
+                    color: #808080;
+                }
+                .kpi-field-container {
+                    color: #808080;
+                    display: flex;
+                    align-items: center;
+                    .kpi-value {
+                        line-height: 2;
+                        margin-left: 4px;
+                        color: #333;
+                    }
+                }
+            }
+        }
+    }
+    .search-action {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1em 0;
+        .create-pay-app-btn {
+            color: rgb(255, 255, 255);
+            background-color: rgb(5, 156, 223);
+        }
+    }
+    .vc-payment-ledger-list {
+        flex: 4;
+        .ag-row-group {
+            .ag-cell {
+                .ag-row-group {
+                    .ag-group-value {
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+        .ag-row {
+            .ag-cell {
+                .ag-row-group-leaf-indent {
+                    .ag-group-value {
+                        color: unset !important;
+                        .payment-status {
+                            overflow: hidden;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                            .payment-status-icon {
+                                font-size: 1.5em;
+                                padding-right: 0.2em;
+                            }
+                            .common-icon-payment-sent:before {
+                                color: #fff;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .bold-font {
+            font-weight: bold;
+        }
+        .vertical-center-align {
+            display: flex;
+            align-items: center;
+        }
+        .mouse-pointer {
+            cursor: pointer;
+        }
+        .blue-color {
+            color: #059cdf;
+        }
+        .right-align {
+            width: 100%;
+            text-align: right;
+        }
+        .center-align {
+            width: 100%;
+            text-align: center;
+        }
+        .ag-cell {
+            button {
+                padding: 6px 6px;
+                background-color: transparent;
+            }
+            .payment-status-icon {
+                font-size: 20px;
+                margin: 0px 6px 0px 3px;
+                &:before {
+                    color: #fff;
+                }
+            }
+            .common-icon-payment-authorized {
+                font-size: 12px;
+                line-height: 1.9;
+            }
+        }
+    }
+}

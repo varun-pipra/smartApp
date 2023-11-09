@@ -1,0 +1,137 @@
+.client-pay-contract-details-box {
+    //padding: 0 1em;
+    .client-pay-contract-details-header {
+        min-height: 3em;
+        display: flex;
+        align-items: end;
+        .title-action {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            .title {
+                font-family: "Roboto-Regular";
+                font-size: 17px;
+                font-weight: bold;
+            }
+        }
+    }
+    .client-pay-contract-details-content {
+        display: grid; // grid-template-columns: repeat(3, 1fr);
+        grid-gap: 1em 2em;
+        grid-template-columns: repeat(3, 30%); // margin-bottom: 2em;
+        .client-pay-contract-info-tile {
+            display: flex;
+            flex-direction: column;
+            &.span-2 {
+                grid-column: span 2;
+            }
+            &.division-cost-code-field {
+                .client-pay-contract-info-data-box>.MuiBox-root {
+                    width: 100%;
+                    .MuiInputBase-root {
+                        position: relative;
+                        top: -5px;
+                        font-size: 16px !important;
+                    }
+                }
+            }
+            &.vendor-field {
+                .client-pay-contract-info-data-box>div {
+                    width: 100%;
+                    .MuiInputBase-root {
+                        width: 100% !important;
+                    }
+                }
+            }
+            &.date-field {
+                .client-pay-contract-info-data-box {
+                    .client-pay-contract-info-data {
+                        // width: 100%;
+                        //padding: unset;
+                        >div {
+                            width: 100%;
+                            &.iq-customdate-cont {
+                                margin: unset;
+                            }
+                        }
+                    }
+                }
+            }
+            .budget-info-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.25em;
+                &:before {
+                    color: #ed7532;
+                }
+            }
+            .client-pay-contract-info-label {
+                display: flex;
+                align-items: center;
+                padding: 1em 0 0.4em 0;
+                color: #808080;
+                font-family: 'Roboto-Regular' !important;
+                >svg {
+                    margin-left: 0.5em;
+                }
+            }
+            .client-pay-contract-info-data-box {
+                display: flex;
+                align-items: center;
+                min-height: 35px;
+                .contract-info-data {
+                    color: #333333;
+                    padding-left: 0.5em;
+                }
+                .client-pay-contract-info-data {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    line-height: 1.2;
+                    font-family: 'Roboto-Regular' !important;
+                    color: #333333;
+                    padding-left: .5em;
+                }
+                .common-icon-Budgetcalculator {
+                    font-size: 1.3rem;
+                }
+            }
+        }
+    }
+    .client-pay-conttract-notes {
+        margin-top: 15px;
+    }
+    .clientpay-contract-attachment {
+        .clientpay-contract-attachment-label {
+            display: flex;
+            align-items: center;
+            padding: 1em 0 0.4em 0;
+            color: #808080;
+            font-family: 'Roboto-Regular' !important;
+            >svg {
+                margin-left: 0.5em;
+            }
+        }
+        .doc-img-item-contt {
+            padding: 0px 0px !important;
+            margin: 0px;
+            overflow-y: unset !important;
+            height: 120px;
+            .doc-img-item {
+                margin-right: 20px !important;
+                .MuiImageListItem-img {
+                    border: 1px solid #ccc;
+                    box-shadow: 0px 0px 4px 0px #d7d7d7;
+                    border-radius: 2px;
+                    object-fit: contain !important;
+                    cursor: pointer;
+                }
+                .MuiImageListItemBar-title {
+                    line-height: 1.4;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}

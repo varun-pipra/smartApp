@@ -1,0 +1,21 @@
+{
+	"StatusCode": 0,
+	"StatusMessage": null,
+	"Items": [{
+		"type": "Location",
+		"text": "Smartapp Safety",
+		"uniqueId": "ca139445-d7e8-4c5a-890c-59ad16445730",
+		"id": 1,
+		"parentId": "ca139445-d7e8-4c5a-890c-59ad16445730",
+		"tagData": null,
+		"isSet": false,
+		"isTagged": false,
+		"projectId": null,
+		"locationId": 1,
+		"childLevelId": 0,
+		"polygonPoints": null,
+		"polygonCentroid": null,
+		"isImportedFromOrg": false
+	}],
+	"TotalCount": 0
+}

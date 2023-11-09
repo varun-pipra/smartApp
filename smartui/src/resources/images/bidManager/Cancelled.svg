@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-Cancelled">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Cancelled" clip-path="url(#clip-Cancelled)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <path id="noun-block-2283445" d="M91,0a21,21,0,1,0,21,21A21,21,0,0,0,91,0Zm0,5.25a15.666,15.666,0,0,1,9.116,2.921L78.174,30.114A15.729,15.729,0,0,1,91,5.25Zm0,31.5a15.665,15.665,0,0,1-9.116-2.921l21.943-21.943A15.729,15.729,0,0,1,91,36.75Z" transform="translate(-67 3)" fill="#fff"/>
+  </g>
+</svg>

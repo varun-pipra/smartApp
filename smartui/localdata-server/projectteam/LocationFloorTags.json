@@ -1,0 +1,36 @@
+{
+	"StatusCode": 0,
+	"StatusMessage": null,
+	"Items": [{
+		"type": "Location",
+		"text": "FloorA - BulA",
+		"uniqueId": "84aa7857-7ef5-416e-bd63-cc93ec8999b4",
+		"id": 1401,
+		"parentId": "84aa7857-7ef5-416e-bd63-cc93ec8999b4",
+		"tagData": null,
+		"isSet": false,
+		"isTagged": true,
+		"projectId": null,
+		"locationId": 1376,
+		"childLevelId": 0,
+		"polygonPoints": null,
+		"polygonCentroid": null,
+		"isImportedFromOrg": false
+	}, {
+		"type": "Location",
+		"text": "FloorB - BulB",
+		"uniqueId": "563a9e08-056f-454a-add4-6ed68bbde669",
+		"id": 1407,
+		"parentId": "563a9e08-056f-454a-add4-6ed68bbde669",
+		"tagData": null,
+		"isSet": false,
+		"isTagged": true,
+		"projectId": null,
+		"locationId": 1382,
+		"childLevelId": 0,
+		"polygonPoints": null,
+		"polygonCentroid": null,
+		"isImportedFromOrg": false
+	}],
+	"TotalCount": 0
+}

@@ -1,0 +1,12 @@
+.ag-pinned-left-cols-container,
+    .ag-pinned-left-header {
+        box-shadow: none;
+        z-index: 0;
+        height: 100% !important;
+        border-right: 1px solid #dbdbdb;
+        .ag-cell {
+            .ag-selection-checkbox {
+                margin-left: 8px;
+            }
+        }
+    }

@@ -1,0 +1,54 @@
+.iqsearch-field {
+    min-width: 16rem;
+    min-height: 2rem;
+    max-height: 3rem;
+    box-sizing: border-box;
+    border-radius: 0.35rem;
+    border: 1px solid rgb(194, 194, 194) !important;
+    .MuiButtonBase-root {
+        color: unset;
+        &.select-icon-trigger {
+            border-radius: 0;
+            border-right: 1px solid rgb(194, 194, 194) !important;
+            color: rgb(108, 108, 108);
+        }
+        &.search-trigger {
+            border-radius: 0;
+            border-right: 1px solid rgb(194, 194, 194) !important;
+            color: rgb(108, 108, 108);
+            &:hover {
+                box-shadow: unset;
+            }
+            &.MuiIconButton-root {
+                padding-left: 0.25em;
+                padding-right: 0.25em;
+            }
+        }
+        .group-menu-icon,
+        .filter-menu-icon {
+            width: 2em;
+            height: 2em;
+            font-size: unset;
+            color: rgb(108, 108, 108);
+        }
+    }
+    .MuiInputBase-root {
+        flex: 1;
+        border-left: 1px solid rgb(194, 194, 194) !important;
+        input {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            padding-top: 6px;
+        }
+    }
+    .iqicon-menu-button {
+        .MuiButton-root {
+            padding-left: 0.25em !important;
+            padding-right: 0.15em !important;
+            padding-top: 0px !important;
+            .MuiSvgIcon-root {
+                font-size: 0.75em !important;
+            }
+        }
+    }
+}
