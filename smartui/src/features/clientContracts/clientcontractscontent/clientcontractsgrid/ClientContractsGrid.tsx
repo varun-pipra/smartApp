@@ -93,19 +93,18 @@ const ClientContractsGrid = (props: any) => {
 		// console.log("activeMainGridGroupKey", activeMainGridGroupKey, columnsCopy);
 		if (((activeMainGridGroupKey ?? false) && activeMainGridGroupKey !== "")) {
 			groupKeyValue.current = activeMainGridGroupKey;
-			// columnsCopy.forEach((col: any) => {
-			// 	col.rowGroup = activeMainGridGroupKey ? activeMainGridGroupKey === col.field : false;
-			// 	setColumns(columnsCopy);
-			// });
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = activeMainGridGroupKey ? activeMainGridGroupKey === col.field : false;
+				setColumns(columnsCopy);
+			});
 		} else if (activeMainGridGroupKey ?? true) {
 			groupKeyValue.current = null;
-			// columnsCopy.forEach((col: any) => {
-			// 	// console.log("status", col?.rowGroup);
-			// 	col.rowGroup = false;
-			// });
-			// console.log("else group key", columnsCopy);
-			//dispatch(setActiveMainGridGroupKey(null));
-			//setColumns(columnsCopy);
+			columnsCopy.forEach((col: any) => {
+				// console.log("status", col?.rowGroup);
+				col.rowGroup = false;
+			});
+			dispatch(setActiveMainGridGroupKey(null));
+			setColumns(columnsCopy);
 		};
 	}, [activeMainGridGroupKey]);
 
@@ -321,7 +320,7 @@ const ClientContractsGrid = (props: any) => {
 			minWidth: 250,
 			valueGetter: (params: any) => params.data?.acceptedOn ? formatDate(params.data?.acceptedOn) : "",
 		},
-	], [defaultCCStatusFilter, groupKeyValue.current]);
+	], [defaultCCStatusFilter]);
 
 	const [columns, setColumns] = React.useState<any>(headers);
 
@@ -408,7 +407,7 @@ const ClientContractsGrid = (props: any) => {
 			<div style={gridStyle} className="ag-theme-alpine">
 				<SUIGrid
 					ref={gridRef}
-					headers={headers}
+					headers={columns}
 					data={rowData}
 					animateRows={true}
 					getRowId={(params: any) => params.data?.id}

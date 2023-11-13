@@ -1,7 +1,7 @@
-.event-details {
+.sbs-details {
     .eventrequest-details-box {
         //padding: 0 1em;
-        //padding: 0em 1.6em;
+        padding:0px;
         .eventrequest-details-header {
             min-height: 3em;
             display: flex;
@@ -12,7 +12,7 @@
                 align-items: center;
                 .title {
                     font-family: "Roboto-Regular";
-                    font-size: 17px !important;
+                    font-size: 17px;
                     font-weight: bold;
                 }
             }
@@ -21,6 +21,12 @@
             display: grid; // grid-template-columns: repeat(3, 1fr);
             grid-gap: 1em 2em;
             grid-template-columns: repeat(3, 30%); // margin-bottom: 2em;
+            padding: 25px 0px;
+            .eventrequest-info-data-box {
+                .iq-customdate-cont {
+                    width: 100%;
+                }
+            }
             .eventrequest-info-tile {
                 display: flex;
                 flex-direction: column;
@@ -96,7 +102,7 @@
                     .common-icon-Budgetcalculator {
                         font-size: 1.3rem;
                     }
-                }
+                }               
             }
         }
         .smdetails-dropdown {

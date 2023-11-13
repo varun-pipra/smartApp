@@ -7,6 +7,7 @@ import { memo, useState } from 'react';
 import { GridOn, TableRows } from '@mui/icons-material';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import { IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { getSBSGridList, setShowSbsPanel } from '../../operations/sbsManagerSlice';
 
 // Component definition
 export const SBSToolbarLeftButtons = memo(() => {
@@ -23,8 +24,8 @@ export const SBSToolbarLeftButtons = memo(() => {
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
 			<IconButton
-				aria-label='Refresh Change Event Request List'
-				onClick={() => {}}
+				aria-label='Refresh'
+				onClick={() => {dispatch(getSBSGridList());}}
 			>
 				<span className='common-icon-refresh'></span>
 			</IconButton>
@@ -54,7 +55,9 @@ export const SBSToolbarRightButtons = memo(() => {
 			// dispatch(setShowTableViewType(value));
 		}
 	};
-
+	const handleSettings = () => {
+		dispatch(setShowSbsPanel(true));
+	};
 	return <>
 		<div key='spacer' className='toolbar-item-wrapper toolbar-group-button-wrapper' >
 			<ToggleButtonGroup
@@ -75,6 +78,7 @@ export const SBSToolbarRightButtons = memo(() => {
 				<IconButton
 					className='settings-button'
 					aria-label='SBS Settings'
+					onClick={() => handleSettings()}
 				>
 					<TableRows />
 				</IconButton>

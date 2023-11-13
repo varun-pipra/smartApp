@@ -30,7 +30,7 @@ export interface ISmartDropDown {
 	required?: boolean;
 	disabled?: boolean;
 	isSearchField?: boolean;
-	showRightIcon?:boolean;
+	showIconInOptionsAtRight?:boolean;
 	hideNoRecordMenuItem?: boolean;
 	handleChange?: (selected: string | Array<string> | undefined) => void;
 	handleChipDelete?: (selected: string | Array<string> | undefined) => void;
@@ -97,7 +97,7 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 		useNestedOptions = false,
 		outSideOfGrid = true,
 		isSearchField = true,
-		showRightIcon=false,
+		showIconInOptionsAtRight = false,
 		showSearchRightIcon = false,
 		handleChange,
 		options,
@@ -164,13 +164,8 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [open, setOpen] = React.useState(false);
 
-	options
-	React.useEffect(() => {
-		console.log(options,"options")
-	},[])
 
 	React.useEffect(() => {
-		console.log(options,"options")
 		if (!useNestedOptions && options && Array.isArray(options) && options?.length > 0 && !ignoreSorting) {
 			const sortedOptions: any = [...options].sort((recOne: any, recTwo: any) => {
 				const strOneConverted = recOne?.label?.toLowerCase();
@@ -195,7 +190,6 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 	}, [options]);
 
 	React.useEffect(() => {
-		console.log(selectedValue,"selectedValue")
 		if (isMultiple && selectedValue?.length === 0) {
 			setSelectedOption(selectedValue);
 		} else if (isMultiple && (selectedValue?.length > 0)) {
@@ -208,11 +202,8 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 	};
 
 	const _handleChange = (e: SelectChangeEvent) => {
-		
 		const { target: { value } } = e;
-		console.log(value,"gvgvyh")
 		const name: any = typeof value === 'string' ? value.split(',') : value;
-		console.log(name,"name")
 		setSelectedOption(name);
 		if (handleChange) handleChange(name);
 	};
@@ -999,7 +990,6 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 							:
 							menuItems.length > 0 ? (
 								menuItems.map((option: TOption, index: number) => {
-									{{option}}
 									if (showToolTipForDisabledOption && disableOptionsList?.includes(option?.value)) {
 										return <div>
 											<CustomTooltip
@@ -1101,9 +1091,6 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 													}}
 												/>
 											) : null}
-											
-												
-											
 											{showDescription ? (
 												<span className="sd-desc-option-cell-wrapper-cls">
 													<span className={'sd-label-cell-cls ' + (dropDownListExtraColumns?.length > 0 ? 'extra-col-label-cls' : '')}>{option.label}</span>
@@ -1119,15 +1106,12 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 														</IQTooltip>
 													)}
 												</span>
-											) : 
-											<>	
-												<span className={'sd-label-cell-cls ' + (dropDownListExtraColumns?.length > 0 ? 'extra-col-label-cls' : '')}>{option.label}</span>
-												{/* {isSearchField && <div className="sd-label-cell-icon" ><span >R</span></div>} */}
-												{showRightIcon && (
-												<div className="sd-label-cell-icon" style={{backgroundColor:option.color}}><span >R</span> </div>
-												)}
-											</>
-											}
+											) : (
+												<>
+													<span className={'sd-label-cell-cls ' + (dropDownListExtraColumns?.length > 0 ? 'extra-col-label-cls' : '')}>{option.label}</span>
+													{showIconInOptionsAtRight && (<div className="sd-icon-at-right" style={{backgroundColor:option.color}}><span className="common-icon-phase"></span></div>)}
+												</>
+											)}
 											{/* <span className={'sd-label-cell-cls ' + (dropDownListExtraColumns?.length > 0 ? 'extra-col-label-cls' : '')}>{option.label}</span> */}
 											{showColumnHeader && (
 												<span className="sd-column-cell-cls">{option.colVal}</span>
@@ -1185,7 +1169,6 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 						<em>Clear</em>
 					</MenuItem>
 					{options.map((option: any, index: number) => {
-						
 						return (
 							option.label &&
 							option.label != "null" && (

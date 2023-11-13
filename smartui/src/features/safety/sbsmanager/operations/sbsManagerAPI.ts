@@ -1,5 +1,6 @@
 import { isLocalhost, localServer } from "app/utils";
 import { getServerInfo } from "app/hooks";
+import {CategoryList, GridData, PhasesData} from "data/sbsManager/sbsData";
 
 const moduleName = "Sbs Manager";
 export const fetchPhaseDropdownData = async () => {
@@ -14,39 +15,73 @@ export const fetchPhaseDropdownData = async () => {
       throw new Error(message);
     }
     const responseData = await response.json();
-    const modifiedRespone = responseData?.data?.map(
-      (row: any, index: number) => {
-        return { ...row, label: row.name, value: row.uniqueId };
+    return responseData?.data || [];
+  }
+  return PhasesData || [];
+};
+export const AddSbsManagerForm = async (payload: any) => {
+  let response;
+  const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}?sessionId=${appInfo?.sessionId}`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
       }
     );
-    return modifiedRespone || [];
-  }
-  return [
-    {
-      id: 1,
-      label: "Pre Construction",
-      value: "e2ae03bd-f828-4da2-9d71-edfe9abd520b1",
-      color: "#81c3dc",
-    },
-    {
-      id: 2,
-      label: "In Construction",
-      value: "e2ae03bd-f828-4da2-9d71-edfe9abd520b2",
-      color: "#d6a827",
-    },
-    {
-      id: 3,
-      label: "Post Construction",
-      value: "e2ae03bd-f828-4da2-9d71-edfe9abd520b3",
-      color: "#b88fc6",
-    },
-    {
-      id: 4,
-      label: "Operations and Manintenance",
-      value: "e2ae03bd-f828-4da2-9d71-edfe9abd520b4",
-      color: "#FFDDC01",
-    },
-  ];
+    const responseData = await response.json();
+    return responseData || {};
+  } else return { success: true };
 };
 
+export const fetchDataList = async () => {
+  let response;
+  const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}?sessionId=${appInfo?.sessionId}`
+    );
+    if (!response.ok) {
+      const message = `API Request Error (${moduleName}): ${response.status}`;
+      throw new Error(message);
+    }
+    const responseData = await response.json();
+    return responseData?.data || [];
+  }
+  return GridData;
+};
+export const fetchCategoryList = async () => {
+  let response;
+  const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetByName?name=System breakdown sctucture&sessionId=${appInfo?.sessionId}`
+    );
+    if (!response.ok) {
+      const message = `API Request Error (${moduleName}): ${response.status}`;
+      throw new Error(message);
+    }
+    const responseData = await response.json();
+    return responseData?.listValues || [];
+  }
+  return CategoryList?.listValues || [];
+};
 
+export const fetchDetailsDataByID = async (uniqueid:any) => {
+  let response;
+  const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/${{uniqueid}}?sessionId=${appInfo?.sessionId}`
+    );
+    if (!response.ok) {
+      const message = `API Request Error (${moduleName}): ${response.status}`;
+      throw new Error(message);
+    }
+    const responseData = await response.json();
+    return responseData?.data || [];
+  }
+  return PhasesData || [];
+};

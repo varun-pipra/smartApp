@@ -120,11 +120,10 @@ const BidManagerWindow = () => {
 								dispatch(setPresenceData(data.data));
 								break;
 							case "useradded":
-								console.log("useradded");
 								dispatch(setNewBidder({ contactPerson: data.userInfo?.[0] }));
 								break;
 							case "companyadded":
-								console.log("companyadded", appInfoReference.current, appInfo)
+								console.log("companyadded", appInfoReference.current, data)
 								dispatch(fetchCompanyList(appInfoReference.current));
 								dispatch(setNewCompany(data.companyInfo));
 								break;

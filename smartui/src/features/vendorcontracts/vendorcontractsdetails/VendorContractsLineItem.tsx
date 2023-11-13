@@ -115,7 +115,7 @@ const VendorContractsLineItem = (props: headerprops) => {
 		let presenceManager = new PresenceManager({
 			domElementId: presenceId,
 			initialconfig: {
-				'showLiveSupport': false,
+				'showLiveSupport': true,
 				'showLiveLink': false,
 				'showStreams': true,
 				'showComments': false,

@@ -54,6 +54,7 @@ const SafetyViolationDialog = (props: SafetyViolationDialogProps) => {
 		onAction = () => { },
 		showPositiveBtn = true,
 		showNegativeBtn = true,
+		className = '',
 		...others
 	} = props;
 	const [openDlg, setOpenDlg] = useState(false);
@@ -72,7 +73,7 @@ const SafetyViolationDialog = (props: SafetyViolationDialogProps) => {
 	return (
 		<Dialog
 			open={openDlg}
-			className="safety-violation-dialog-container"
+			className={"safety-violation-dialog-container " + className }
 			onClose={onClose}
 			sx={{
 				".MuiDialog-container": {

@@ -210,7 +210,7 @@ const LineItemDetails = (props: headerprops) => {
 		let presenceManager = new PresenceManager({
 			domElementId: presenceId,
 			initialconfig: {
-				'showLiveSupport': false,
+				'showLiveSupport': true,
 				'showLiveLink': false,
 				'showStreams': true,
 				'showComments': false,
@@ -225,7 +225,7 @@ const LineItemDetails = (props: headerprops) => {
 		let presenceManager = new PresenceManager({
 			domElementId: presenceId1,
 			initialconfig: {
-				'showLiveSupport': false,
+				'showLiveSupport': true,
 				'showLiveLink': false,
 				'showStreams': true,
 				'showComments': false,

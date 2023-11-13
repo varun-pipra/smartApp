@@ -290,9 +290,7 @@ const BidDetails = (props: any) => {
 			dispatch(fetchBudgetLineItems(appInfo));
 		});
 	};
-	useEffect(() => {
-		console.log('bidDetailsFormData', bidDetailsFormData)
-	}, [bidDetailsFormData])
+	
 
 	return (<div className='bidDetails-bidManager'>
 		<Grid container direction={'row'} spacing={3}>

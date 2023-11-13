@@ -179,6 +179,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 							setIframeEventData={props?.setIframeEventData}
 							presenceProps={{
 								showStreams: true,
+								showLiveSupport:  presenceProps?.presenceId,
 								presenceId: (presenceProps?.presenceId && presenceProps?.presenceId + '-lid') || ''
 							}}
 							navigationPages={gridNavigationCount}
@@ -245,6 +246,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 				setIframeEventData={props?.setIframeEventData}
 				presenceProps={{
 					showStreams: true,
+					showLiveSupport:  presenceProps?.presenceId,					
 					presenceId: (presenceProps?.presenceId && presenceProps?.presenceId + '-lid') || ''
 				}}
 			/> : ''}

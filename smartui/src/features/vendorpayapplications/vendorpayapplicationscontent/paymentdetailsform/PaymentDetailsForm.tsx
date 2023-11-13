@@ -13,6 +13,7 @@ import convertDateToDisplayFormat from 'utilities/commonFunctions';
 import { getAmountAlignment } from 'utilities/commonutills';
 import { getServer } from 'app/common/appInfoSlice';
 import { getAttachments, setAttachments } from 'features/vendorpayapplications/stores/payment/PayAppPaymentSentSlice';
+import pdfimage from 'resources/pdf.png';
 
 const PaymentDetailsForm = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -49,9 +50,14 @@ const PaymentDetailsForm = (props: any) => {
 	const localFileUpload = (selectedFiles: any) => {
 		const file = selectedFiles[0];
 		if (file) {
-			const reader = new FileReader();
-			reader.onload = (e: any) => {setFileList([{ id: 1, fileName: file?.name, thumbnail: e.target.result }]);};
-			reader.readAsDataURL(file);
+			if (file?.type == 'application/pdf') {
+				setFileList([{ id: 1, fileName: file?.name, thumbnail: pdfimage }]);
+			}
+			else {
+				const reader = new FileReader();
+				reader.onload = (e: any) => { setFileList([{ id: 1, fileName: file?.name, thumbnail: e.target.result }]); };
+				reader.readAsDataURL(file);
+			}
 		}
 
 		useLocalFileUpload(appInfo, selectedFiles).then((uploadedFiles) => {

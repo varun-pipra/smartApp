@@ -80,14 +80,24 @@ const Bidders = (props: BiddersProps) => {
 	const [newlyAddedCompany, setNewlyAddedCompany] = useState<any>(null);
 	const { newCompany, newBidder } = useAppSelector((state) => state.bidders);
 	const [bidPackageId, setBidPackageId] = useState();
+	const [selectedCompany, setSelectedCompany] = useState<any>();
 
 	useEffect(() => {
+		console.log('newCompany', newCompany)
 		setNewlyAddedCompany(newCompany);
+		const company = { company: { id: newCompany?.id, value: newCompany?.name, color: newCompany?.colorCode } };
+		console.log('company',company)
+		setSelectedBidder({ ...selectedBidder, ...company });
 	}, [newCompany]);
 
 	useEffect(() => {
+		ContactPersonFetch(selectedCompany)
 		setSelectedBidder({ ...selectedBidder, ...newBidder });
 	}, [newBidder]);
+
+	useEffect(() => {
+		console.log('selectedBidder', selectedBidder)
+	}, [selectedBidder]);
 
 	useEffect(() => {
 		setToggleBtnsData(selectedRecord);
@@ -134,6 +144,7 @@ const Bidders = (props: BiddersProps) => {
 				thumbnailUrl: data.thumbnailUrl
 			});
 		});
+		console.log('groupedList', groupedList)
 		if (groupedList.length > 0) {
 			let filterDataAndMap: any = [...groupedList].filter((item: any) => item.isOrgCompany).map((item: any) => ({ ...item, isSuggested: true }));
 			let removeDuplicates: any = [...groupedList]?.filter((item: any) => { return !item.isOrgCompany });
@@ -149,8 +160,9 @@ const Bidders = (props: BiddersProps) => {
 
 	useEffect(() => {
 		if (newlyAddedCompany) {
+			console.log('newlyAddedCompany', newlyAddedCompany)
 			const companyObj = {
-				id: newlyAddedCompany?.uniqueId,
+				id: newlyAddedCompany?.id,
 				value: newlyAddedCompany?.name,
 				name: newlyAddedCompany?.name,
 				color: newlyAddedCompany?.colorCode,
@@ -354,22 +366,28 @@ const Bidders = (props: BiddersProps) => {
 	};
 
 	const companyHandleValueChange = (value: any) => {
+		setSelectedCompany(value);
 		setSelectedBidder({ company: value[0], contactPerson: { id: '', displayId: '' }, email: '', phoneNo: '' });
-		const id = value[0]?.id;
-
-		dispatch(fetchContactPersonsList({ appInfo: appInfo, companyid: id })).then((data: any) => {
-			const contactPersonsList: any = data?.payload;
-			if (contactPersonsList?.length) {
-				setSelectedBidder({ ...selectedBidder, company: value[0], contactPerson: contactPersonsList[0], email: contactPersonsList[0]?.emailId, phoneNo: contactPersonsList[0]?.phNo })
-				setNewRecord({ ...newRecord, companyObj: value[0], company: { name: value[0]?.displayField }, contactPerson: { email: contactPersonsList[0]?.emailId, phone: contactPersonsList[0]?.phNo, id: contactPersonsList[0]?.id, displayField: contactPersonsList[0]?.displayField, projectZonePermissions: contactPersonsList[0]?.projectZonePermissions } })
-			} else {
-				setContactPersonOptions(contactPersonsList);
-				setSuggestContactPersons([]);
-				setSelectedBidder({ ...selectedBidder, company: value[0], contactPerson: { id: '', displayId: '' }, email: '', phoneNo: '' });
-				setNewRecord({ ...newRecord, companyObj: value[0], company: { name: value[0]?.displayField }, contactPerson: { email: '', phone: '', id: '', displayField: '', projectZonePermissions: null } });
-			}
-		});
+		ContactPersonFetch(value)
 	};
+
+	const ContactPersonFetch = (value: any) => {
+		if (value && value?.length > 0) {
+			const id = value[0]?.id;
+			dispatch(fetchContactPersonsList({ appInfo: appInfo, companyid: id })).then((data: any) => {
+				const contactPersonsList: any = data?.payload;
+				if (contactPersonsList?.length) {
+					setSelectedBidder({ ...selectedBidder, company: value[0], contactPerson: contactPersonsList[0], email: contactPersonsList[0]?.emailId, phoneNo: contactPersonsList[0]?.phNo })
+					setNewRecord({ ...newRecord, companyObj: value[0], company: { name: value[0]?.displayField }, contactPerson: { email: contactPersonsList[0]?.emailId, phone: contactPersonsList[0]?.phNo, id: contactPersonsList[0]?.id, displayField: contactPersonsList[0]?.displayField, projectZonePermissions: contactPersonsList[0]?.projectZonePermissions } })
+				} else {
+					setContactPersonOptions(contactPersonsList);
+					setSuggestContactPersons([]);
+					setSelectedBidder({ ...selectedBidder, company: value[0], contactPerson: { id: '', displayId: '' }, email: '', phoneNo: '' });
+					setNewRecord({ ...newRecord, companyObj: value[0], company: { name: value[0]?.displayField }, contactPerson: { email: '', phone: '', id: '', displayField: '', projectZonePermissions: null } });
+				}
+			});
+		}
+	}
 
 	const contactHandleValueChange = (value: any) => {
 		setSelectedBidder({ ...selectedBidder, contactPerson: value[0], email: value[0]?.emailId, phoneNo: value[0]?.phNo });
@@ -578,7 +596,7 @@ const getFilterMenuOptions = () => {
 				value: 'Non Compliant',
 				key: 'complianceStatus',
 			}
-		]
+			]
 		}
 	}];
 };

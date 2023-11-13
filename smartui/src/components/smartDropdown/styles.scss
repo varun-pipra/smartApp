@@ -35,6 +35,10 @@
     font-size: $medium !important;
 }
 
+.selectdropdown .MuiSelect-select .sd-icon-at-right {
+    display: none;
+}
+
 .selectdropdownnew {
     font-family: 'Roboto-Regular' !important;
     -webkit-font-smoothing: antialiased;
@@ -417,13 +421,12 @@ li .sd-desc-option-cell-wrapper-cls {
     width: 50%;
 }
 
-.sd-label-cell-icon{
-    width: 35px;
-    border-radius: 26px;
-    background-color: red;
+.sd-icon-at-right {
+    width: 30px;
+    border-radius: 50%;
     justify-content: center;
     align-items: center;
-    height: 35px;
+    height: 30px;
     display: flex;
     color: white;
 }

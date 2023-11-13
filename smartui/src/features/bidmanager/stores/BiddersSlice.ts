@@ -32,6 +32,7 @@ export const biddersSlice = createSlice({
 	initialState,
 	reducers: {
 		setNewCompany: (state, action: PayloadAction<any>) => {
+			console.log('setNewCompany', action);
 			state.newCompany = action.payload;
 		},
 		setNewBidder: (state, action: PayloadAction<any>) => {

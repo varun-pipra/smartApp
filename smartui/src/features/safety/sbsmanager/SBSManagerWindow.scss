@@ -10,3 +10,8 @@
             }
         }
     }
+    .safety-violation-dialog-container.sbs-manage-phases-dialog {
+        .MuiDialog-container .MuiDialogContent-root, .MuiDialogActions-root {
+            padding: 0 !important;
+        }
+    }

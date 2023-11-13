@@ -77,6 +77,8 @@ import ChangeEventRequestWindow from 'features/finance/changeeventrequests/Chang
 import SpecificationManagerWindow from 'features/field/specificationmanager/SpecificationManagerWindow';
 import SmartSubmittalsWindow from 'features/field/smartsubmittals/SmartSubmittalsWindow';
 import SmartSubmittalTabbedWindow from 'features/field/smartsubmittals/SmartSubmittalTabbedWindow';
+import PhasesColorPickerExample from 'examples/PhasesColorPicker/PhasesColorPickerExample';
+import PhasesGridListExample from 'examples/phasesGrid/PhasesGridExample';
 const AppRoutes = () => {
 	return <>
 		<Routes>
@@ -147,6 +149,8 @@ const AppRoutes = () => {
 				<Route path='iqdropdown' element={<IQDropDown />} />
 				<Route path='datagrid' element={<DataGrid />} />
 				<Route path='tabbedWindow' element={<TabbedWindowExample />} />
+				<Route path='phases-color-picker' element={<PhasesColorPickerExample />} />
+				<Route path='phases-grid-list' element={<PhasesGridListExample />} />
 			</Route>
 			{/* <Route path='examples'>
 				<Route path='costCodeSelect' element={<Costcodeselect />} />

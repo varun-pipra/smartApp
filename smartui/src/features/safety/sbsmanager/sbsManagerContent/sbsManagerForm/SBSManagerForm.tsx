@@ -7,31 +7,42 @@ import { useAppDispatch, useAppSelector } from "app/hooks";
 import { getServer } from "app/common/appInfoSlice";
 import SmartDropDown from "components/smartDropdown";
 import {
-  getPhaseDropdownValues,
+  getSBSGridList,
   setToastMessage,
 } from "features/safety/sbsmanager/operations/sbsManagerSlice";
 import { AddDescription } from "features/budgetmanager/headerPinning/AddDescription";
 import "./SBSManagerForm.scss";
 import {
   getTradeData,
-  fetchTradesData,
 } from "features/projectsettings/projectteam/operations/ptDataSlice";
-
+import { makeStyles, createStyles } from '@mui/styles';
+import { AddSbsManagerForm } from "../../operations/sbsManagerAPI";
+const useStyles: any = makeStyles((theme: any) =>
+	createStyles({
+		menuPaper: {
+			maxHeight: 48 * 5.2 + 8, //ITEM_HEIGHT = 48 ,ITEM_PADDING_TOP = 8;
+			maxWidth: '160px !important',
+		},
+	})
+);
 const defaultFormData = {
-  title: "",
-  client: "",
-  type: "",
+  name: "",
+  description: "",
+  category: {},
+  phase: {},
+  trades: [],
   startDate: "",
   endDate: "",
 };
-
 const SBSManagerForm = (props: any) => {
+  const classes = useStyles();
   // Redux State Variable
   const dispatch = useAppDispatch();
   const appInfo = useAppSelector(getServer);
 
   const tradesData: any = useAppSelector(getTradeData);
-  const { phaseDropDownOptions } = useAppSelector((state) => state.sbsManager);
+  const { phaseDropDownOptions,categoryDropDownOptions } = useAppSelector((state) => state.sbsManager);
+  const { lineItemDescription } = useAppSelector(state => state.tableColumns);
   // Local state vaiables
   const [formData, setFormData] = React.useState<any>(defaultFormData);
   const [disableAddButton, setDisableAddButoon] = React.useState<boolean>(true);
@@ -39,7 +50,7 @@ const SBSManagerForm = (props: any) => {
   // Effects
   React.useEffect(() => {
     setDisableAddButoon(
-      formData?.title !== "" && formData?.type !== "" ? false : true
+      formData?.name !== "" && formData?.category !== "" ? false : true
     );
   }, [formData]);
 
@@ -81,16 +92,22 @@ const SBSManagerForm = (props: any) => {
   }, [formData.endDate]);
 
   React.useEffect(() => {
-    dispatch(fetchTradesData(appInfo));
-    dispatch(getPhaseDropdownValues());
-  }, []);
-
+    if(lineItemDescription) {
+      handleOnChange(lineItemDescription, "description");
+    }
+  },[lineItemDescription]);
+  const GetDropDownId = (array: any, value: any) => {
+    const id = array.findIndex((x: any) => x.label === value);
+    return id;
+  };
   const getTradesOptions = () => {
     let groupedList: any = [];
     tradesData.map((data: any, index: any) => {
       groupedList.push({
         ...data,
-        displayField: data.name,
+        label: data.name,
+        value: data.uniqueId,
+				displayLabel: data.name,
       });
     });
     return groupedList;
@@ -105,21 +122,23 @@ const SBSManagerForm = (props: any) => {
 
   const handleAdd = () => {
     const payload = {
-      title: formData?.title,
-      client: {
-        id: formData.client[0]["id"],
-      },
-      type: formData?.type,
-      startDate: formData.startDate != "" ? formData?.startDate : null,
-      endDate: formData.endDate != "" ? formData?.endDate : null,
+     ...formData,
+      uniqueID: null
     };
+    AddSbsManagerForm(payload)
+      .then((res: any) => {
+        setFormData(defaultFormData);
+        dispatch(getSBSGridList());
+      })
+      .catch((err: any) => {
+        console.log("error", err);
+      });
   };
-
   return (
     <>
       <div className="sbs-title-description-container">
         <span className="title-text">SBS Manager</span>
-        <AddDescription value={""} />
+        <AddDescription value={!lineItemDescription ? '' : lineItemDescription} />
         <p className="right-spacer"></p>
       </div>
       <div className="sbs-manager-lineitem-form">
@@ -136,15 +155,15 @@ const SBSManagerForm = (props: any) => {
             Name
           </InputLabel>
           <TextField
-            id="title"
+            id="name"
             InputProps={{
               startAdornment: <span className="common-icon-title"> </span>,
             }}
             placeholder={"SBS Name"}
-            name="title"
+            name="name"
             variant="standard"
-            value={formData?.title}
-            onChange={(e: any) => handleOnChange(e.target.value, "title")}
+            value={formData?.name}
+            onChange={(e: any) => handleOnChange(e.target.value, "name")}
           />
         </div>
         <div className="type-field">
@@ -161,17 +180,14 @@ const SBSManagerForm = (props: any) => {
           </InputLabel>
           <SmartDropDown
             LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
-            options={[
-              { id: 1, label: "Proposal/Quote", value: "Proposal" },
-              { id: 1, label: "Contract", value: "Contract" },
-            ]}
+            options={categoryDropDownOptions || []}
             outSideOfGrid={true}
             isSearchField={false}
             isFullWidth
             Placeholder={"Select"}
-            selectedValue={formData?.type}
-            // menuProps={classes.menuPaper}
-            handleChange={(value: any) => handleOnChange(value[0], "type")}
+            // selectedValue={formData?.category}
+            menuProps={classes.menuPaper}
+            handleChange={(value: any) => handleOnChange({Id :GetDropDownId(categoryDropDownOptions , value?.[0])}, "category")}
           />
         </div>
         <div className="type-field">
@@ -191,37 +207,36 @@ const SBSManagerForm = (props: any) => {
             options={phaseDropDownOptions || []}
             outSideOfGrid={true}
             isSearchField={true}
-            showRightIcon={true}
             isFullWidth
             Placeholder={"Select"}
-            selectedValue={formData?.type}
-            handleChange={(value: any) => handleOnChange(value[0], "type")}
+            // selectedValue={formData?.phase}
+            menuProps={classes.menuPaper}
+            handleChange={(value: any) => handleOnChange({Id :GetDropDownId(phaseDropDownOptions , value?.[0])}, "phase")}
             ignoreSorting={true}
+            showIconInOptionsAtRight={true}
           />
         </div>
         <div className="type-field">
-          <InputLabel
-            required
-            className="inputlabel"
-            sx={{
-              "& .MuiFormLabel-asterisk": {
-                color: "red",
-              },
-            }}
-          >
-            Trade
-          </InputLabel>
           <SmartDropDown
-            LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
-            options={getTradesOptions() || []}
-            outSideOfGrid={true}
-            isSearchField={false}
-            
-            isFullWidth
-            Placeholder={"Select"}
-            selectedValue={formData?.type}
-            // menuProps={classes.menuPaper}
-            handleChange={(value: any) => handleOnChange(value[0], "type")}
+          required={true}
+					options={getTradesOptions()}
+					LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
+					dropDownLabel="Trade"
+					doTextSearch={true}
+					isSearchField={true}
+					isMultiple={true}
+					selectedValue={formData?.type}
+					isFullWidth
+					outSideOfGrid={true}
+					handleChange={(value: any) => handleOnChange(value, "trades")}
+					handleChipDelete={(value: any) => handleOnChange(value, "trades")}
+					menuProps={classes.menuPaper}
+					sx={{ fontSize: '18px' }}
+					Placeholder={'Select'}
+					isSearchPlaceHolder={'Search'}
+					showCheckboxes={true}
+					showAddButton={false}
+          reduceMenuHeight={true}
           />
         </div>
         <div className="start-date-field">
@@ -229,7 +244,7 @@ const SBSManagerForm = (props: any) => {
           <DatePickerComponent
             defaultValue={formData.startDate}
             onChange={(val: any) =>
-              handleOnChange(new Date(val)?.toISOString(), "startDate")
+              handleOnChange(val, "startDate")
             }
             maxDate={
               formData.endDate !== ""
@@ -251,7 +266,7 @@ const SBSManagerForm = (props: any) => {
           <DatePickerComponent
             defaultValue={formData.endDate}
             onChange={(val: any) =>
-              handleOnChange(new Date(val)?.toISOString(), "endDate")
+              handleOnChange(val, "endDate")
             }
             minDate={new Date(formData.startDate)}
             containerClassName={"iq-customdate-cont"}

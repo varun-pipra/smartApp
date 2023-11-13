@@ -228,7 +228,7 @@ const ClientPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 		appType: "clientPayApp",
 		presenceProps: {
 			presenceId: 'clientPayApp-LineItem-presence',
-			showLiveSupport: false,
+			showLiveSupport: true,
 			showLiveLink: false,
 			showStreams: true,
 			showComments: false,
