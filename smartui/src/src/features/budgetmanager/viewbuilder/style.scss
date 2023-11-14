@@ -1,0 +1,37 @@
+.iq-view-builder {
+	min-width: 18rem;
+	min-height: 2.5rem;
+	max-height: 3rem;
+
+	box-sizing: border-box;
+	border-radius: 0.5rem;
+	border: 1px solid rgb(194, 194, 194) !important;
+
+	.MuiButtonBase-root {
+		&.search-trigger {
+			border-radius: 0;
+			border-right: 1px solid rgb(194, 194, 194) !important;
+		}
+	}
+
+	.MuiInputBase-root {
+		flex: 1;
+		border-left: 1px solid rgb(194, 194, 194) !important;
+
+		input {
+			padding-left: 0.5rem;
+			padding-right: 0.5rem;
+		}
+	}
+
+	.search-trigger {
+		&.MuiIconButton-root {
+			padding-left: 0.25em;
+			padding-right: 0.25em;
+		}
+	}
+}
+.iq-view-eye-grid-bulider {
+    display: flex;
+	margin-left: 12px;
+}

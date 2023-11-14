@@ -1,0 +1,138 @@
+.sa-awarded-bidder-tooltip-root {
+    .MuiTooltip-tooltip {
+        background-color: #333;
+        padding: 0px;
+        box-shadow: 0px 1px 4px 0px #dadada;
+        .MuiTooltip-arrow:before {
+            color: #333;
+        }
+    }
+    .sa-awarded-bidder-tooltip {
+        position: relative;
+        width: 400px;
+        max-height: 200px;
+        overflow: hidden;
+        border-radius: 4px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        tr {
+            width: 100%;
+            display: inline-table;
+        }
+        tbody {
+            display: block;
+            height: fit-content;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        thead {
+            display: block;
+        }
+        &_th {
+            text-align: left;
+            height: 40px;
+            font-weight: 400;
+            &.sa-awarded-bidder-tooltip_bid-th {
+                text-align: right;
+                padding-right: 38px;
+            }
+        }
+        &_td {
+            text-align: left;
+            color: white;
+            font-weight: 400;
+            &.sa-awarded-bidder-tooltip_bid-td {
+                text-align: right;
+                padding-right: 38px;
+            }
+            svg {
+                align-items: center;
+                display: flex;
+            }
+        }
+        &_award-th,
+        &_award-td {
+            width: 8%;
+        }
+        &_award-td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        &_company-wrapper,
+        &_company-th {
+            width: 65%;
+        }
+        &_bid-th,
+        &_bid-td {
+            width: 25%;
+        }
+        &_td,
+        &_th {
+            border-bottom: 1px solid #434343;
+            height: 40px;
+            color: #e6e6e6;
+            font-size: 13.5px;
+        }
+        &_row.active {
+            background-color: #00BA64;
+            .sa-awarded-bidder-tooltip_td {
+                border-color: #00BA64;
+                color: #fff;
+                .common-icon-awarded-gray:before {
+                    font-size: 20px;
+                    color: #fff;
+                    line-height: 1.4;
+                }
+                .sa-awarded-bidder-tooltip_company-name {
+                    color: #fff;
+                }
+            }
+        }
+        &_company-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        &_company-wrapper-inner {
+            display: flex;
+            align-items: center;
+            .MuiAvatar-circular {
+                font-size: 14px;
+                padding-top: 4px;
+                border: 1px solid #ccc;
+            }
+        }
+        &_company-name {
+            padding-left: 6px;
+        }
+        &_close-icon {
+            font-size: 20px;
+            position: absolute;
+            top: 10px;
+            right: 6px;
+            cursor: pointer;
+            color: #e6e6e6;
+        }
+        &_companyLetter {
+            background: black;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            border: none;
+            border-radius: 20px;
+            justify-content: center;
+            border: 1px solid #ccc;
+        }
+    }
+}
+
+.info-tooltip-cls {
+    .common-icon-info-white:before {
+        font-size: 28px;
+        color: #059cdf;
+    }
+}

@@ -1,0 +1,40 @@
+.contract-footer-class {
+    float: left;
+    position: absolute;
+    margin-left: 100px;
+    .contract-footer-wrap {
+        .left {
+            float: left;
+            width: 34px;
+            height: 34px;
+            .common-icon-contracts,
+            .common-icon-reviewed-decline,
+            .common-icon-resubmitted,
+            .common-icon-reviewed-decline {
+                font-size: 26px;
+                border-radius: 50%;
+                padding: 4px;
+                width: 34px;
+                height: 34px;
+                position: absolute;
+                text-align: center;
+            }
+        }
+        .right {
+            float: left;
+            display: grid;
+            margin-left: 8px;
+            .label {
+                font-weight: bold;
+                font-size: 14px;
+                color: #333;
+                line-height: 1.4;
+            }
+            .label1 {
+                font-size: 12px;
+                color: #666;
+                line-height: 1.4;
+            }
+        }
+    }
+}

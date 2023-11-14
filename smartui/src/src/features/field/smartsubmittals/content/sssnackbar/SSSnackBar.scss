@@ -1,0 +1,12 @@
+.notification-bar-wrapper-smart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 49em;
+    border-radius: 5em;
+    gap: 10px;
+    height: 3em;
+    .notification-bar-container {
+        color: white
+    }
+}

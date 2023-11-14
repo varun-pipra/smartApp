@@ -1,0 +1,140 @@
+.iqgrid-window-details-root {
+    height: 100%;
+    .MuiPaper-root {
+        height: inherit;
+        .title-bar {
+            flex: 1;
+            padding: 0;
+            align-items: center;
+            justify-content: space-between;
+            .title {
+                padding-left: 1em;
+                font-size: 16px;
+                font-weight: 600;
+                font-family: "Roboto-Regular";
+                color: #333333;
+            }
+            .close-btn {
+                svg {
+                    color: #666;
+                    font-size: 28px;
+                }
+            }
+        }
+        .presence-box {
+            align-items: flex-end;
+            padding: 0 1em;
+            .common-participant-control {
+                display: flex;
+                padding: 0px 0px 0px 10px;
+                .cell {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    &.collboratortrayself-prewrapper {
+                        top: unset;
+                        width: 2px;
+                        margin: 5px;
+                        background-color: #DBDBDB;
+                        &::before {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+        .body {
+            flex: 20;
+            overflow: hidden;
+            .body-content {
+                overflow: hidden;
+                .dynamic-page-head {
+                    padding-bottom: 1em;
+                }
+                .dynamic-page-body {
+                    overflow: hidden;
+                }
+            }
+        }
+        .footer {
+            flex: 1.5;
+            display: flex;
+            align-items: center;
+            z-index: 0;
+            background-color: #ffffff;
+            box-shadow: 0 -1px 5px 0 rgb(0 0 0 / 25%);
+            justify-content: space-between;
+            .footer-left,
+            .footer-center,
+            .footer-right {
+                height: 100%;
+                padding: 0 1em;
+                display: flex;
+                align-items: center;
+                gap: 1em;
+                .footer-left-count {
+                    border: 1px solid #c2c2c2;
+                    padding: 4px 10px;
+                    border-radius: 12px;
+                }
+            }
+            .footer-right {
+                .btn-save-changes {
+                    height: 2.7em;
+                    border-radius: 2px;
+                    border-color: #059cdf !important;
+                    color: #059cdf;
+                    font-weight: bold;
+                    line-height: 1;
+                }
+                .btn-post-contract {
+                    height: 2.7em;
+                    border-radius: 2px;
+                    background-color: #059cdf !important;
+                    line-height: 1;
+                }
+                .Mui-disabled {
+                    opacity: 0.5;
+                }
+                .ce-buttons {
+                    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+                    background-color: #059cdf;
+                    color: #fff;
+                    height: 2.5em;
+                }
+            }
+            .footer-left {
+                .footer-icons {
+                    width: 1.5em;
+                    height: 1.5em;
+                    padding: 0px;
+                    border: 1px solid #059cdf;
+                    border-radius: 4px;
+                    .nav-icon {
+                        padding: 0;
+                        margin: 0;
+                        height: inherit;
+                        width: inherit;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        &:before {
+                            color: #059cdf;
+                            font-size: 0.6em;
+                            font-weight: bold;
+                        }
+                    }
+                    &.Mui-disabled {
+                        border-color: #333;
+                        opacity: 0.5;
+                        .nav-icon {
+                            &:before {
+                                color: #333;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

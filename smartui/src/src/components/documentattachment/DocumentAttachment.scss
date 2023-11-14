@@ -1,0 +1,10 @@
+.file-wrapper {
+  .file-input {
+    position: absolute;
+    opacity: 0;
+    
+  }
+  .spectification-text input::placeholder {
+    color: #000;
+  }
+}

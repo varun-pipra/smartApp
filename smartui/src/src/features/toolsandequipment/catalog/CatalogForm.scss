@@ -1,0 +1,116 @@
+@import "Smart_theme_variable";
+
+.catalog-form {
+	.form_field {
+		width: 100% !important;
+	}
+
+	.MuiInputLabel-root {
+		font-size: 9px;
+
+		&.Mui-required {
+			.MuiInputLabel-asterisk {
+				color: #ff9d00
+			}
+		}
+	}
+
+	.img-border {
+		border: 1px solid #d1cabf;
+		border-radius: 4px;
+	}
+
+	.img_padding {
+		padding: 7px
+	}
+
+
+	.input_label_margin {
+		.MuiInputLabel-root {
+			margin-left: 30px;
+		}
+	}
+
+	.grid_margin {
+		margin-bottom: 18px;
+	}
+
+	.model_grid_margin {
+		margin-bottom: 18px;
+	}
+
+	.image_section{
+		padding-left: 20px;
+	}
+
+	.form_section {
+		padding-right: 50px;
+		padding-left: 30px;
+	}
+
+	.font-size {
+		font-size: 13px !important;
+	}
+
+	.font_bottom_margin {
+		margin-bottom: 4px;
+	}
+
+	.span_margin {
+		margin-left: 30px;
+	}
+
+	.theme_colour {
+		color: #ff9d00
+	}
+
+	.select_type_height {
+		height: 36px !important
+	}
+
+	.button-container {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		margin-left: auto;
+		margin-right: auto;
+		justify-content: space-between;
+		margin-top: 75px;
+	}
+
+	.add-inventory-button {
+		height: 38px;
+		width: 150px;
+		text-align: center;
+		background-color: #059CDF;
+		color: white;
+		border: none;
+		border-radius: 2px;
+	}
+
+	.save-catalog-button {
+		height: 33px;
+		width: 150px;
+		text-align: center;
+		background-color: #ff9d00;
+		color: white;
+		border: none;
+		border-radius: 2px;
+
+	}
+
+	.MuiDialog-container {
+		.MuiPaper-root {
+			.MuiDialogTitle-root {
+				padding: 10px 10px 5px 24px !important;
+				// font-size: 25px;
+				font-size: $titleSize;
+				font-weight: 500;
+			}
+
+			.MuiDialogContent-root {
+				border-top: none;
+			}
+		}
+	}
+}

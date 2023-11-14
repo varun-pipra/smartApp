@@ -1,0 +1,28 @@
+.report-analytics-cls {
+    margin-right: 20px;
+    .ra-btn-cls {
+        border: 1px solid #ed7532;
+        color: #ed7532 !important;
+        font-size: 14px;
+        text-transform: none;
+        min-width: 94px;
+        padding: 6px 5px;
+        background-color: transparent !important;
+        .common-icon-report-bid-manager:before {
+            font-size: 19px;
+            margin-right: 6px;
+            line-height: 0.8;
+        }
+        .common-icon-orgconsole-analytics:before {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+    }
+    .MuiToggleButton-root {
+        &.Mui-selected {
+            color: #fff !important;
+            background-color: #ed7532 !important;
+            border-color: #ed7532 !important;
+        }
+    }
+}

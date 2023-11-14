@@ -1,0 +1,27 @@
+.manageTable-Section{
+	.addNew-button{
+			border: 1px solid #0590cd;
+			color: #0590cd;
+	}
+	.css-6bxxch-MuiPaper-root-MuiAccordion-root:before{
+			height:0px !important;
+	}
+	.manageTable{
+		.MuiSwitch-root{
+			width: 63px;
+		}
+
+		.MuiSwitch-thumb {
+			width: 20px !important;
+			height: 20px !important;
+			margin: 0px !important;
+		}
+		.css-ls8te1-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+				background-color: #0a6ed1 !important;
+				color: #fff !important;
+		}
+		.Mui-checked{
+			color: #fff !important;
+		}
+	}
+}

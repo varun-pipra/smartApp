@@ -1,0 +1,23 @@
+.notification-bar-main {
+    background-color: #46b862 !important;
+    border-radius: 5em;
+    bottom: 80px !important;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .15);
+    .sm-notification-bar-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 29em;
+        border-radius: 5em;
+        gap: 4px;
+        height: 3em;
+        .common-icon-tickmark {
+            font-size: 28px;
+            color: #fff;
+        }
+        .sm-notification-bar-container {
+            color: #fff;
+            font-size: 14px;
+        }
+    }
+}

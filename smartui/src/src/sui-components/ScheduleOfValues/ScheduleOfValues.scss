@@ -1,0 +1,33 @@
+.schedule-container {
+    text-align: left;
+    .schedule-select fieldset {
+        border: none !important;
+        border-bottom: 1px solid #ccc !important;
+        border-radius: initial !important;
+    }
+    .schedule-select {
+        padding: 0px !important;
+    }
+}
+
+.work-status {
+    background-color: #ffdfca;
+    color: #fe8d42;
+    border: 1px solid #fe8d42;
+    border-radius: 50%;
+    padding: 0px 4px;
+    margin-right: 16px;
+}
+
+.balance-amt {
+    color: gray;
+    font-size: 12px;
+}
+
+.schedule-menu-item:hover {
+    background-color: initial !important;
+}
+
+.schedule-menu-item {
+    background-color: initial !important;
+}

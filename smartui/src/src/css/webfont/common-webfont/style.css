@@ -1,0 +1,2937 @@
+@font-face {
+  font-family: 'common-webfont';
+  src:  url('fonts/common-webfont.eot?87edjp');
+  src:  url('fonts/common-webfont.eot?87edjp#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?87edjp') format('truetype'),
+    url('fonts/common-webfont.woff?87edjp') format('woff'),
+    url('fonts/common-webfont.svg?87edjp#common-webfont') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="common-icon-"], [class*=" common-icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'common-webfont' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.common-icon-Submittal-Summary:before {
+  content: "\ec5f";
+}
+.common-icon-sku:before {
+  content: "\ec5c";
+}
+.common-icon-ref-id:before {
+  content: "\ec5d";
+}
+.common-icon-price:before {
+  content: "\ec5e";
+}
+.common-icon-from-catalog:before {
+  content: "\ec5b";
+}
+.common-icon-extraction-area:before {
+  content: "\ec5a";
+}
+.common-icon-submit-brena .path1:before {
+  content: "\ec56";
+  color: rgb(153, 153, 153);
+}
+.common-icon-submit-brena .path2:before {
+  content: "\ec57";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-submit-brena .path3:before {
+  content: "\ec58";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-submit-check:before {
+  content: "\ec59";
+}
+.common-icon-report-bid-manager:before {
+  content: "\ec55";
+}
+.common-icon-manage-pay-icon:before {
+  content: "\ec54";
+}
+.common-icon-bid-package:before {
+  content: "\ec4c";
+}
+.common-icon-division:before {
+  content: "\ec4d";
+}
+.common-icon-Group:before {
+  content: "\ec4e";
+}
+.common-icon-pages:before {
+  content: "\ec4f";
+}
+.common-icon-phase:before {
+  content: "\ec50";
+}
+.common-icon-spec-number:before {
+  content: "\ec51";
+}
+.common-icon-spec-section:before {
+  content: "\ec52";
+}
+.common-icon-system-breakdown:before {
+  content: "\ec53";
+}
+.common-icon-safety .path1:before {
+  content: "\ec44";
+  color: rgb(242, 187, 19);
+}
+.common-icon-safety .path2:before {
+  content: "\ec45";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-planner .path1:before {
+  content: "\ec46";
+  color: rgb(49, 152, 242);
+}
+.common-icon-planner .path2:before {
+  content: "\ec47";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-finance .path1:before {
+  content: "\ec48";
+  color: rgb(0, 229, 176);
+}
+.common-icon-finance .path2:before {
+  content: "\ec49";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-field .path1:before {
+  content: "\ec4a";
+  color: rgb(55, 144, 0);
+}
+.common-icon-field .path2:before {
+  content: "\ec4b";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-feather-edit:before {
+  content: "\ec42";
+}
+.common-icon-upload-up-arrow:before {
+  content: "\ec43";
+}
+.common-icon-package:before {
+  content: "\ec41";
+}
+.common-icon-specbook:before {
+  content: "\ec3d";
+}
+.common-icon-brena:before {
+  content: "\ec3e";
+}
+.common-icon-smart-submittals:before {
+  content: "\ec3f";
+}
+.common-icon-spec-manager:before {
+  content: "\ec40";
+}
+.common-icon-quote-received:before {
+  content: "\ec3c";
+}
+.common-icon-quote-sent:before {
+  content: "\ec37";
+}
+.common-icon-c-mark:before {
+  content: "\ec38";
+}
+.common-icon-authorized:before {
+  content: "\ec39";
+}
+.common-icon-change-event-details:before {
+  content: "\ec3a";
+}
+.common-icon-funding-source:before {
+  content: "\ec3b";
+}
+.common-icon-standard-contract:before {
+  content: "\ec36";
+}
+.common-icon-bank-transfer:before {
+  content: "\ec35";
+}
+.common-icon-browse-locally:before {
+  content: "\ec34";
+}
+.common-icon-revise-resubmit1:before {
+  content: "\ec2f";
+}
+.common-icon-payment-sent:before {
+  content: "\ec30";
+}
+.common-icon-payment-received:before {
+  content: "\ec31";
+}
+.common-icon-payment-authorized1:before {
+  content: "\ec32";
+}
+.common-icon-auto-generated:before {
+  content: "\ec33";
+}
+.common-icon-certs-exclamation:before {
+  content: "\ec2e";
+}
+.common-icon-allow-back-icon:before {
+  content: "\ec2d";
+}
+.common-icon-expunge:before {
+  content: "\ec2c";
+}
+.common-icon-warning-medal:before {
+  content: "\ec29";
+}
+.common-icon-safety-violation:before {
+  content: "\ec2a";
+}
+.common-icon-exclamation:before {
+  content: "\ec2b";
+}
+.common-icon-Print1:before {
+  content: "\ec28";
+}
+.common-icon-work-team:before {
+  content: "\ec23";
+}
+.common-icon-name-id:before {
+  content: "\ec24";
+}
+.common-icon-worker-attestment:before {
+  content: "\ec25";
+}
+.common-icon-reinvite:before {
+  content: "\ec26";
+}
+.common-icon-pick-company-org:before {
+  content: "\ec27";
+}
+.common-icon-resubmitted:before {
+  content: "\ec21";
+}
+.common-icon-reviewed-decline:before {
+  content: "\ec22";
+}
+.common-icon-active-timer:before {
+  content: "\ec1d";
+}
+.common-icon-compliance-Status:before {
+  content: "\ec1e";
+}
+.common-icon-diverse-supplier:before {
+  content: "\ec1f";
+}
+.common-icon-scheduled:before {
+  content: "\ec20";
+}
+.common-icon-lien-waiver:before {
+  content: "\ec1c";
+}
+.common-icon-eraser:before {
+  content: "\ec1a";
+}
+.common-icon-signature:before {
+  content: "\ec1b";
+}
+.common-icon-billing-schedule:before {
+  content: "\ec15";
+}
+.common-icon-revise-resubmit:before {
+  content: "\ec16";
+}
+.common-icon-submitted-waiting-party:before {
+  content: "\ec17";
+}
+.common-icon-payment-authorized:before {
+  content: "\ec18";
+  color: #fff;
+}
+.common-icon-no-funds:before {
+  content: "\ec19";
+}
+.common-icon-pay-application:before {
+  content: "\ec10";
+}
+.common-icon-vendor-pay-applications:before {
+  content: "\ec11";
+}
+.common-icon-contracts:before {
+  content: "\ec12";
+}
+.common-icon-vendor-contracts:before {
+  content: "\ec13";
+}
+.common-icon-bid-response:before {
+  content: "\ec14";
+}
+.common-icon-bid-lookup:before {
+  content: "\ebfe";
+}
+.common-icon-change-events:before {
+  content: "\ebff";
+}
+.common-icon-contract-amount:before {
+  content: "\ec00";
+}
+.common-icon-contract-details:before {
+  content: "\ec01";
+}
+.common-icon-contract-files:before {
+  content: "\ec02";
+}
+.common-icon-deaft:before {
+  content: "\ec03";
+}
+.common-icon-delete:before {
+  content: "\ec04";
+}
+.common-icon-forecast:before {
+  content: "\ec05";
+}
+.common-icon-grid:before {
+  content: "\ec06";
+}
+.common-icon-payment-ledger:before {
+  content: "\ec07";
+}
+.common-icon-post-contract:before {
+  content: "\ec08";
+}
+.common-icon-print:before {
+  content: "\ec09";
+}
+.common-icon-refresh:before {
+  content: "\ec0a";
+}
+.common-icon-schedule-values:before {
+  content: "\ec0b";
+}
+.common-icon-title:before {
+  content: "\ec0c";
+}
+.common-icon-transactions:before {
+  content: "\ec0d";
+}
+.common-icon-upload:before {
+  content: "\ec0e";
+}
+.common-icon-view:before {
+  content: "\ec0f";
+}
+.common-icon-loading:before {
+  content: "\e91a";
+}
+.common-icon-scope:before {
+  content: "\e91b";
+}
+.common-icon-Shifts:before {
+  content: "\e929";
+}
+.common-icon-telephone-gray:before {
+  content: "\e930";
+}
+.common-icon-upload-icon:before {
+  content: "\e931";
+}
+.common-icon-building-gray:before {
+  content: "\ea53";
+}
+.common-icon-calendar-31:before {
+  content: "\ebb4";
+}
+.common-icon-briefcaseclockoutline:before {
+  content: "\ebb8";
+}
+.common-icon-Calculator:before {
+  content: "\ebb9";
+}
+.common-icon-DownArrow:before {
+  content: "\ebba";
+}
+.common-icon-Export:before {
+  content: "\ebbb";
+}
+.common-icon-Eye:before {
+  content: "\ebbc";
+}
+.common-icon-FilterIcon:before {
+  content: "\ebbd";
+}
+.common-icon-GroupIcon:before {
+  content: "\ebbe";
+  color: #666;
+}
+.common-icon-infoicon:before {
+  content: "\ebbf";
+  color: #666;
+}
+.common-icon-Newgridview:before {
+  content: "\ebc0";
+  color: #666;
+}
+.common-icon-noitemsavailable:before {
+  content: "\ebc1";
+}
+.common-icon-Pinned:before {
+  content: "\ebc2";
+}
+.common-icon-ReportsAnalytics:before {
+  content: "\ebc3";
+}
+.common-icon-Save:before {
+  content: "\ebc4";
+}
+.common-icon-Saveas:before {
+  content: "\ebc5";
+}
+.common-icon-SaveButtonWhite:before {
+  content: "\ebc6";
+}
+.common-icon-Streams:before {
+  content: "\ebc7";
+}
+.common-icon-UnPinned:before {
+  content: "\ebc8";
+}
+.common-icon-UpArrow:before {
+  content: "\ebc9";
+}
+.common-icon-BalanceModification:before {
+  content: "\ebca";
+}
+.common-icon-BudgetDetails:before {
+  content: "\ebcb";
+}
+.common-icon-BudgetDetailsOrange .path1:before {
+  content: "\ebcc";
+  color: rgb(237, 117, 50);
+}
+.common-icon-BudgetDetailsOrange .path2:before {
+  content: "\ebcd";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-BudgetModification:before {
+  content: "\ebce";
+}
+.common-icon-Contracts:before {
+  content: "\ebcf";
+}
+.common-icon-DirectCost:before {
+  content: "\ebd0";
+}
+.common-icon-Dispatch:before {
+  content: "\ebd1";
+}
+.common-icon-ForecastNew:before {
+  content: "\ebd2";
+}
+.common-icon-Group1:before {
+  content: "\ebd3";
+}
+.common-icon-Payments:before {
+  content: "\ebd4";
+}
+.common-icon-PlannerTag:before {
+  content: "\ebd5";
+}
+.common-icon-ReportsAnalyticsNew:before {
+  content: "\ebd6";
+}
+.common-icon-TransactionsNew:before {
+  content: "\ebd7";
+}
+.common-icon-TransferIn:before {
+  content: "\ebd8";
+}
+.common-icon-TransferOut:before {
+  content: "\ebd9";
+}
+.common-icon-Active:before {
+  content: "\ebda";
+}
+.common-icon-Add:before {
+  content: "\ebdb";
+}
+.common-icon-AwardBackGround:before {
+  content: "\ebdc";
+}
+.common-icon-awarded-gray:before {
+  content: "\ebdd";
+}
+.common-icon-Backward:before {
+  content: "\ebde";
+}
+.common-icon-biddersgray:before {
+  content: "\ebdf";
+}
+.common-icon-Biddetailsgray:before {
+  content: "\ebe0";
+}
+.common-icon-BiddingCCEmails:before {
+  content: "\ebe1";
+}
+.common-icon-BidManager:before {
+  content: "\ebe2";
+}
+.common-icon-BidPackageName:before {
+  content: "\ebe3";
+}
+.common-icon-BidQueries:before {
+  content: "\ebe4";
+}
+.common-icon-Block:before {
+  content: "\ebe5";
+}
+.common-icon-BRDraft:before {
+  content: "\ebe6";
+}
+.common-icon-Cancel:before {
+  content: "\ebe7";
+}
+.common-icon-Cancelled:before {
+  content: "\ebe8";
+}
+.common-icon-Closed:before {
+  content: "\ebe9";
+}
+.common-icon-CSV:before {
+  content: "\ebea";
+}
+.common-icon-DateCalendar:before {
+  content: "\ebeb";
+}
+.common-icon-Declined:before {
+  content: "\ebec";
+}
+.common-icon-Delete:before {
+  content: "\ebed";
+}
+.common-icon-Description:before {
+  content: "\ebee";
+  color: #ec711c;
+}
+.common-icon-Draft:before {
+  content: "\ebef";
+}
+.common-icon-Expired:before {
+  content: "\ebf0";
+}
+.common-icon-File:before {
+  content: "\ebf1";
+}
+.common-icon-forward:before {
+  content: "\ebf2";
+}
+.common-icon-Lock:before {
+  content: "\ebf3";
+}
+.common-icon-NotResponded:before {
+  content: "\ebf4";
+}
+.common-icon-Pause:before {
+  content: "\ebf5";
+}
+.common-icon-Pausestatus:before {
+  content: "\ebf6";
+}
+.common-icon-ReadyToPost:before {
+  content: "\ebf7";
+}
+.common-icon-ReadyToSubmit:before {
+  content: "\ebf8";
+}
+.common-icon-referance:before {
+  content: "\ebf9";
+}
+.common-icon-Scheduled:before {
+  content: "\ebfa";
+}
+.common-icon-StatusIconGray:before {
+  content: "\ebfb";
+}
+.common-icon-SubmittedBy:before {
+  content: "\ebfc";
+}
+.common-icon-SubmittedOn:before {
+  content: "\ebfd";
+}
+.common-icon-AwardBid:before {
+  content: "\ebb7";
+}
+.common-icon-tickmark:before {
+  content: "\ebb6";
+}
+.common-icon-BiddingInstructions:before {
+  content: "\ebb5";
+  color: #ec711c;
+}
+.common-icon-not-submitted:before {
+  content: "\ebb3";
+}
+.common-icon-bid-pending-icon:before {
+  content: "\ebb2";
+}
+.common-icon-Bidders:before {
+  content: "\ebb1";
+  color: #ec711c;
+}
+.common-icon-Curve:before {
+  content: "\ebb0";
+  color: #ed7532;
+}
+.common-icon-GantterbudgetOverdue:before {
+  content: "\ebaf";
+  color: #ffce02;
+}
+.common-icon-GeneratePullPlan:before {
+  content: "\ebae";
+}
+.common-icon-Budgetcalculator:before {
+  content: "\ebab";
+  color: #ec711c;
+}
+.common-icon-Filter:before {
+  content: "\ebac";
+}
+.common-icon-Cost:before {
+  content: "\ebad";
+  color: #707070;
+}
+.common-icon-singale-arrow:before {
+  content: "\ebaa";
+  color: #666;
+}
+.common-icon-email1:before {
+  content: "\eba7";
+  color: #767676;
+}
+.common-icon-login:before {
+  content: "\eba8";
+  color: #767676;
+}
+.common-icon-SMS:before {
+  content: "\eba9";
+}
+.common-icon-time-sheet:before {
+  content: "\eba6";
+}
+.common-icon-bid-manager:before {
+  content: "\eba3";
+}
+.common-icon-catalog-builder:before {
+  content: "\eba4";
+}
+.common-icon-budget-manager:before {
+  content: "\eba5";
+}
+.common-icon-workspace:before {
+  content: "\eba2";
+}
+.common-icon-sap-setting:before {
+  content: "\eba1";
+}
+.common-icon-un-view:before {
+  content: "\eba0";
+}
+.common-icon-chain-tag:before {
+  content: "\eb9d";
+  color: #666;
+}
+.common-icon-chain-copy-tag:before {
+  content: "\eb9e";
+  color: #666;
+}
+.common-icon-chain-manager:before {
+  content: "\eb9f";
+}
+.common-icon-bim-object-browser:before {
+  content: "\eb9c";
+}
+.common-icon-analytics:before {
+  content: "\eb9b";
+}
+.common-icon-right-double-arrow:before {
+  content: "\eb99";
+  color: #666;
+}
+.common-icon-copy:before {
+  content: "\eb9a";
+  color: #666;
+}
+.common-icon-folder:before {
+  content: "\eb98";
+  color: #ee7532;
+}
+.common-icon-map:before {
+  content: "\eb97";
+}
+.common-icon-sos-question-label:before {
+  content: "\eb96";
+}
+.common-icon-procor-icon:before {
+  content: "\eb95";
+}
+.common-icon-livenote-std:before {
+  content: "\eb94";
+  color: #767676;
+}
+.common-icon-drive-security:before {
+  content: "\eb93";
+}
+.common-icon-live-note:before {
+  content: "\eb92";
+  color: #178a35;
+}
+.common-icon-SOS-icon:before {
+  content: "\eb91";
+}
+.common-icon-theme-settings:before {
+  content: "\eb90";
+  color: #5b5b5b;
+}
+.common-icon-materials:before {
+  content: "\eb8e";
+  color: #666;
+}
+.common-icon-tools-equipments:before {
+  content: "\eb8f";
+  color: #666;
+}
+.common-icon-smartgate-settings:before {
+  content: "\eb8d";
+}
+.common-icon-team-member:before {
+  content: "\eb8c";
+}
+.common-icon-division-lookup-icon:before {
+  content: "\eb8b";
+  color: #059cdf;
+}
+.common-icon-wms:before {
+  content: "\eb8a";
+}
+.common-icon-safety-digest-notification:before {
+  content: "\eb87";
+  color: #8d8d8d;
+}
+.common-icon-SDN--1:before {
+  content: "\eb88";
+  color: #8d8d8d;
+}
+.common-icon-task1:before {
+  content: "\eb89";
+  color: #8d8d8d;
+}
+.common-icon-worker-report:before {
+  content: "\eb85";
+  color: #666;
+}
+.common-icon-worker-application:before {
+  content: "\eb86";
+  color: #666;
+}
+.common-icon-ascending:before {
+  content: "\eb7f";
+  color: #666;
+}
+.common-icon-descending:before {
+  content: "\eb80";
+  color: #666;
+}
+.common-icon-work-assigned:before {
+  content: "\eb81";
+  color: #666;
+}
+.common-icon-permits1:before {
+  content: "\eb82";
+  color: #666;
+}
+.common-icon-inspections:before {
+  content: "\eb83";
+  color: #666;
+}
+.common-icon-daily-reports:before {
+  content: "\eb84";
+  color: #666;
+}
+.common-icon-add-time:before {
+  content: "\eb7e";
+  color: #8d8d8d;
+}
+.common-icon-coming-soon:before {
+  content: "\eb7d";
+  color: #f7bd21;
+}
+.common-icon-None:before {
+  content: "\eb7c";
+  color: #666;
+}
+.common-icon-settings-icon:before {
+  content: "\eb7b";
+}
+.common-icon-reopen:before {
+  content: "\eb7a";
+  color: #666;
+}
+.common-icon-projects:before {
+  content: "\eb79";
+}
+.common-icon-view-levels1:before {
+  content: "\eb78";
+  color: #e76e25;
+}
+.common-icon-metro-flow-tree:before {
+  content: "\eb77";
+  color: #666;
+}
+.common-icon-smartgate-scanning:before {
+  content: "\eb75";
+}
+.common-icon-my-favarite-app:before {
+  content: "\eb74";
+  color: #666;
+}
+.common-icon-manage-favorite-app:before {
+  content: "\eb76";
+  color: #666;
+}
+.common-icon-column-edit-icon:before {
+  content: "\eb73";
+}
+.common-icon-portfolio:before {
+  content: "\eb72";
+}
+.common-icon-user-role-icon:before {
+  content: "\eb70";
+  color: #ed7532;
+}
+.common-icon-temperature:before {
+  content: "\eb71";
+  color: #ed7532;
+}
+.common-icon-no-group-available:before {
+  content: "\eb6f";
+}
+.common-icon-map-point:before {
+  content: "\eb6e";
+  color: #666;
+}
+.common-icon-global-settings:before {
+  content: "\eb6c";
+  color: #3a56e2;
+}
+.common-icon-qualifications-and-certs:before {
+  content: "\eb6d";
+  color: #f2bb13;
+}
+.common-icon-select-from-drive:before {
+  content: "\eb6b";
+  color: #ed7532;
+}
+.common-icon-drive-settings:before {
+  content: "\eb6a";
+  color: #666;
+}
+.common-icon-group-72969 .path1:before {
+  content: "\eb65";
+  color: rgb(101, 101, 101);
+}
+.common-icon-group-72969 .path2:before {
+  content: "\eb66";
+  margin-left: -0.9208984375em;
+  color: rgb(102, 102, 102);
+}
+.common-icon-group-72969 .path3:before {
+  content: "\eb67";
+  margin-left: -0.9208984375em;
+  color: rgb(102, 102, 102);
+}
+.common-icon-group-72969 .path4:before {
+  content: "\eb68";
+  margin-left: -0.9208984375em;
+  color: rgb(102, 102, 102);
+}
+.common-icon-group-72969 .path5:before {
+  content: "\eb69";
+  margin-left: -0.9208984375em;
+  color: rgb(102, 102, 102);
+}
+.common-icon-project-central:before {
+  content: "\eb64";
+  color: #ec711c;
+}
+.common-icon-Blockchain:before {
+  content: "\eb63";
+}
+.common-icon-Minimize:before {
+  content: "\eb5e";
+  color: #8d8d8d;
+}
+.common-icon-AllDate:before {
+  content: "\eb5f";
+}
+.common-icon-Upcoming:before {
+  content: "\eb60";
+}
+.common-icon-Overdue:before {
+  content: "\eb61";
+}
+.common-icon-Today:before {
+  content: "\eb62";
+}
+.common-icon-bring-forward:before {
+  content: "\eb59";
+}
+.common-icon-bring-front:before {
+  content: "\eb5a";
+}
+.common-icon-noteswidget:before {
+  content: "\eb5b";
+}
+.common-icon-send-back:before {
+  content: "\eb5c";
+}
+.common-icon-send-backward:before {
+  content: "\eb5d";
+}
+.common-icon-outline-user:before {
+  content: "\eb58";
+  color: #999;
+}
+.common-icon-Project-Numer01:before {
+  content: "\eb57";
+  color: #666;
+}
+.common-icon-Project-NumberOption:before {
+  content: "\eb56";
+  color: #666;
+}
+.common-icon-duration-time:before {
+  content: "\eb55";
+  color: #8d8d8d;
+}
+.common-icon-sort:before {
+  content: "\eb54";
+  color: #666;
+}
+.common-icon-monthly:before {
+  content: "\eb52";
+  color: #8d8d8d;
+}
+.common-icon-duration:before {
+  content: "\eb53";
+  color: #8d8d8d;
+}
+.common-icon-mute:before {
+  content: "\eb51";
+}
+.common-icon-magnetize:before {
+  content: "\eb50";
+}
+.common-icon-iql-copy:before {
+  content: "\eb4f";
+  color: #666;
+}
+.common-icon-import-status:before {
+  content: "\eb4d";
+}
+.common-icon-No-Item-Available:before {
+  content: "\eb4e";
+  color: #d9d9d9;
+}
+.common-icon-comments-reply:before {
+  content: "\eb4c";
+}
+.common-icon-multi:before {
+  content: "\eb4b";
+}
+.common-icon-follow-ups:before {
+  content: "\eb49";
+}
+.common-icon-invite:before {
+  content: "\eb4a";
+}
+.common-icon-no-items-available:before {
+  content: "\eb48";
+}
+.common-icon-stamp:before {
+  content: "\eb47";
+  color: #8d8d8d;
+}
+.common-icon-stamp-std:before {
+  content: "\eb46";
+  color: #666;
+}
+.common-icon-insert-locations:before {
+  content: "\eb45";
+  color: #bfbfbf;
+}
+.common-icon-stamp-time:before {
+  content: "\eb44";
+}
+.common-icon-daily-photos:before {
+  content: "\eb43";
+  color: #8d8d8d;
+}
+.common-icon-meeting-minutes:before {
+  content: "\eb42";
+  color: #f8a129;
+}
+.common-icon-stamp1:before {
+  content: "\eb41";
+  color: #00b555;
+}
+.common-icon-SOS-bulletin-notifications:before {
+  content: "\eb40";
+  color: #666;
+}
+.common-icon-task:before {
+  content: "\eb3e";
+  color: #ec711c;
+}
+.common-icon-safety-bulkletin:before {
+  content: "\eb3f";
+  color: #666;
+}
+.common-icon-Stamp-File2:before {
+  content: "\eb3d";
+  color: #666;
+}
+.common-icon-full-screen:before {
+  content: "\eb3c";
+  color: #666;
+}
+.common-icon-stamp-file:before {
+  content: "\eb3b";
+}
+.common-icon-record-dragging:before {
+  content: "\eb3a";
+  color: #666;
+}
+.common-icon-blockchain:before {
+  content: "\eb37";
+  color: #666;
+}
+.common-icon-file-drawing-route:before {
+  content: "\eb38";
+  color: #666;
+}
+.common-icon-livesupport-help:before {
+  content: "\eb36";
+}
+.common-icon-rearrange-icon:before {
+  content: "\eb35";
+}
+.common-icon-Live-Support-Help:before {
+  content: "\eb34";
+  color: #ee7532;
+}
+.common-icon-cart:before {
+  content: "\eb33";
+}
+.common-icon-payment-complete .path1:before {
+  content: "\eb31";
+  color: rgb(155, 155, 155);
+}
+.common-icon-payment-complete .path2:before {
+  content: "\eb32";
+  margin-left: -1em;
+  color: rgb(236, 106, 31);
+}
+.common-icon-Verification-projectteam:before {
+  content: "\eb30";
+  color: #a7a7a7;
+}
+.common-icon-both-side-Icons:before {
+  content: "\eb2f";
+  color: #059cdf;
+}
+.common-icon-oneside:before {
+  content: "\eb39";
+  color: #059cdf;
+}
+.common-icon-exclude-include-dropdown:before {
+  content: "\eb2e";
+}
+.common-icon-Certification-approve-icon:before {
+  content: "\eb2d";
+  color: #0ed62d;
+}
+.common-icon-ORG-Console:before {
+  content: "\eb2b";
+  color: #666;
+}
+.common-icon-Connect-Icon:before {
+  content: "\eb2c";
+  color: #666;
+}
+.common-icon-email-projecteam:before {
+  content: "\eb2a";
+}
+.common-icon-Runways:before {
+  content: "\eb26";
+  color: #059cdf;
+}
+.common-icon-Template:before {
+  content: "\eb27";
+  color: #666;
+}
+.common-icon-Select-Layer:before {
+  content: "\eb28";
+}
+.common-icon-Settings:before {
+  content: "\eb29";
+}
+.common-icon-gis-connector:before {
+  content: "\eb25";
+}
+.common-icon-location12:before {
+  content: "\eb24";
+}
+.common-icon-connecting:before {
+  content: "\eb23";
+}
+.common-icon-gate-entrance:before {
+  content: "\eb22";
+  color: #666;
+}
+.common-icon-upload-file:before {
+  content: "\eb21";
+}
+.common-icon-cluster:before {
+  content: "\eb20";
+}
+.common-icon-call:before {
+  content: "\eb1f";
+  color: #666;
+}
+.common-icon-work-category:before {
+  content: "\eb1e";
+  color: #ec711c;
+}
+.common-icon-test-history:before {
+  content: "\eb1d";
+  color: #059cdf;
+}
+.common-icon-medal:before {
+  content: "\eb1c";
+}
+.common-icon-download-no-caret:before {
+  content: "\eb1b";
+}
+.common-icon-enterprise-role-manager:before {
+  content: "\eb13";
+}
+.common-icon-notification-manager:before {
+  content: "\eb10";
+}
+.common-icon-vendor-data-manager:before {
+  content: "\eb11";
+  color: #666;
+}
+.common-icon-vendor-manager:before {
+  content: "\eb12";
+  color: #666;
+}
+.common-icon-global-delegation-manager:before {
+  content: "\eb14";
+  color: #666;
+}
+.common-icon-global-gecurtity-group-manager:before {
+  content: "\eb15";
+}
+.common-icon-user-company-manager:before {
+  content: "\eb16";
+  color: #666;
+}
+.common-icon-Iq-sketch-symbols-palettes:before {
+  content: "\eb17";
+  color: #666;
+}
+.common-icon-OCR-template-manager:before {
+  content: "\eb18";
+}
+.common-icon-universal-symbol-pallets:before {
+  content: "\eb19";
+}
+.common-icon-API-keys:before {
+  content: "\eb1a";
+  color: #666;
+}
+.common-icon-view-selection:before {
+  content: "\eb0f";
+}
+.common-icon-safety-failed:before {
+  content: "\eb0d";
+  color: #d53e3a;
+}
+.common-icon-safety-tracking1:before {
+  content: "\eb0e";
+  color: #666;
+}
+.common-icon-gantter-tag:before {
+  content: "\eb0c";
+}
+.common-icon-RightArrowQ:before {
+  content: "\eb0b";
+  color: #059cdf;
+}
+.common-icon-admin-console:before {
+  content: "\eb0a";
+  color: #5b5b5b;
+}
+.common-icon-ID-card:before {
+  content: "\eb09";
+}
+.common-icon-registration-completetion:before {
+  content: "\eb08";
+}
+.common-icon-erase-icon:before {
+  content: "\eb07";
+  color: #059cdf;
+}
+.common-icon-certification:before {
+  content: "\eb06";
+}
+.common-icon-calendar_48dp:before {
+  content: "\eb05";
+}
+.common-icon-text_area_48dp:before {
+  content: "\eb03";
+  color: #2380c4;
+}
+.common-icon-image_write_24dp:before {
+  content: "\eb04";
+}
+.common-icon-yes-no-Icon:before {
+  content: "\eaff";
+  color: #ec7120;
+}
+.common-icon-new-signature:before {
+  content: "\eb00";
+  color: #ed7532;
+}
+.common-icon-multiple-choice:before {
+  content: "\eb01";
+  color: #ec7120;
+}
+.common-icon-policy-notification-icon:before {
+  content: "\eb02";
+  color: #ffce02;
+}
+.common-icon-include:before {
+  content: "\eafd";
+}
+.common-icon-exclude:before {
+  content: "\eafe";
+}
+.common-icon-new-gear:before {
+  content: "\eaf9";
+}
+.common-icon-Jobsite-Board:before {
+  content: "\eafa";
+}
+.common-icon-Safety-Kiosk-Bundle--Option1:before {
+  content: "\eafb";
+}
+.common-icon-RTLS-Bundle:before {
+  content: "\eafc";
+}
+.common-icon-Commit-Plan-Board-1:before {
+  content: "\eaf8";
+}
+.common-icon-SafetyAuthorization:before {
+  content: "\eaf6";
+}
+.common-icon-SafetyPermit:before {
+  content: "\eaf7";
+}
+.common-icon-stage:before {
+  content: "\eaf5";
+}
+.common-icon-file:before {
+  content: "\eaf4";
+}
+.common-icon-Request-Safety-Permit:before {
+  content: "\eaf3";
+  color: #666;
+}
+.common-icon-stationary:before {
+  content: "\eaf2";
+}
+.common-icon-cloud-upload:before {
+  content: "\eaf1";
+}
+.common-icon-custom:before {
+  content: "\eaed";
+}
+.common-icon-gear:before {
+  content: "\eaee";
+}
+.common-icon-pdf:before {
+  content: "\eaef";
+}
+.common-icon-report:before {
+  content: "\eaf0";
+}
+.common-icon-smartapp-logo .path1:before {
+  content: "\eaea";
+  color: rgb(255, 255, 255);
+}
+.common-icon-smartapp-logo .path2:before {
+  content: "\eaeb";
+  margin-left: -1.005859375em;
+  color: rgb(16, 15, 12);
+}
+.common-icon-smartapp-logo .path3:before {
+  content: "\eaec";
+  margin-left: -1.005859375em;
+  color: rgb(228, 87, 24);
+}
+.common-icon-area:before {
+  content: "\eae9";
+}
+.common-icon-suggest-assist-icon:before {
+  content: "\eae8";
+  color: #fcfc3d;
+}
+.common-icon-uniEAE6:before {
+  content: "\eae6";
+}
+.common-icon-link-sketch:before {
+  content: "\eae7";
+}
+.common-icon-orgconsole-profile:before {
+  content: "\eae5";
+}
+.common-icon-user-details:before {
+  content: "\eae4";
+}
+.common-icon-sync-all-apps:before {
+  content: "\eae3";
+}
+.common-icon-badge:before {
+  content: "\eae2";
+}
+.common-icon-equipment:before {
+  content: "\eadf";
+}
+.common-icon-gateway:before {
+  content: "\eae0";
+}
+.common-icon-permits:before {
+  content: "\eae1";
+}
+.common-icon-visit-log:before {
+  content: "\eade";
+  color: #666;
+}
+.common-icon-approval-all-option:before {
+  content: "\eadd";
+  color: #666;
+}
+.common-icon-BIM-extract-icon:before {
+  content: "\eadc";
+  color: #666;
+}
+.common-icon-analytic:before {
+  content: "\ead7";
+}
+.common-icon-calibaration:before {
+  content: "\ead8";
+}
+.common-icon-daily:before {
+  content: "\ead9";
+}
+.common-icon-gantter:before {
+  content: "\eada";
+}
+.common-icon-tag:before {
+  content: "\eadb";
+}
+.common-icon-must-picklist--1:before {
+  content: "\ead6";
+  color: #ed7532;
+}
+.common-icon-safety-tick:before {
+  content: "\ead5";
+  color: #0a8727;
+}
+.common-icon-org-project-symbol:before {
+  content: "\ead4";
+}
+.common-icon-Grid:before {
+  content: "\eabf";
+  color: #666;
+}
+.common-icon-Schdule-Work:before {
+  content: "\eac0";
+  color: #059cdf;
+}
+.common-icon-LinkedField:before {
+  content: "\eac1";
+  color: #059cdf;
+}
+.common-icon-Links:before {
+  content: "\eac2";
+}
+.common-icon-Lebel:before {
+  content: "\eac3";
+  color: #059cdf;
+}
+.common-icon-ItemBarcode:before {
+  content: "\eac4";
+  color: #059cdf;
+}
+.common-icon-Signature:before {
+  content: "\eac5";
+  color: #059cdf;
+}
+.common-icon-DrawingLog:before {
+  content: "\eac6";
+  color: #059cdf;
+}
+.common-icon-AutoCheckin:before {
+  content: "\eac7";
+  color: #059cdf;
+}
+.common-icon-CurrentTime:before {
+  content: "\eac8";
+}
+.common-icon-ContactPicker:before {
+  content: "\eac9";
+}
+.common-icon-CatalogGrid:before {
+  content: "\eaca";
+}
+.common-icon-BlackInputGrid:before {
+  content: "\eacb";
+}
+.common-icon-Checkbox1:before {
+  content: "\eacc";
+}
+.common-icon-stage-MakeDefault:before {
+  content: "\eacd";
+  color: #666;
+}
+.common-icon-Notes:before {
+  content: "\eace";
+}
+.common-icon-Integer1:before {
+  content: "\eacf";
+}
+.common-icon-Decimal1:before {
+  content: "\ead0";
+}
+.common-icon-Date1:before {
+  content: "\ead1";
+}
+.common-icon-adminNote:before {
+  content: "\ead2";
+  color: #ed7532;
+}
+.common-icon-external1:before {
+  content: "\ead3";
+}
+.common-icon-play-left:before {
+  content: "\eabd";
+}
+.common-icon-play-right:before {
+  content: "\eabe";
+}
+.common-icon-map-location:before {
+  content: "\eabb";
+}
+.common-icon-road:before {
+  content: "\eabc";
+}
+.common-icon-add-circle:before {
+  content: "\eab9";
+}
+.common-icon-add-polygon:before {
+  content: "\eaba";
+}
+.common-icon-drawing-location:before {
+  content: "\eab8";
+  color: #666;
+}
+.common-icon-RTF:before {
+  content: "\eab5";
+}
+.common-icon-ODT:before {
+  content: "\eab6";
+}
+.common-icon-EPUB:before {
+  content: "\eab7";
+}
+.common-icon-linear:before {
+  content: "\eab3";
+  color: #666;
+}
+.common-icon-meters:before {
+  content: "\eab4";
+  color: #666;
+}
+.common-icon-floor:before {
+  content: "\eab1";
+}
+.common-icon-building:before {
+  content: "\eab2";
+}
+.common-icon-view-level:before {
+  content: "\eab0";
+}
+.common-icon-orgconsole-profile-name:before {
+  content: "\eaaf";
+  color: #c3c3c3;
+}
+.common-icon-name:before {
+  content: "\eaad";
+}
+.common-icon-orgconsole-contact:before {
+  content: "\eaae";
+}
+.common-icon-orgconsole-access-code:before {
+  content: "\eaac";
+}
+.common-icon-orgconsole-regions:before {
+  content: "\ea8c";
+}
+.common-icon-orgconsole-revisions:before {
+  content: "\ea8d";
+}
+.common-icon-orgconsole-rules:before {
+  content: "\ea8e";
+}
+.common-icon-orgconsole-SAC:before {
+  content: "\ea8f";
+}
+.common-icon-orgconsole-safety-policies:before {
+  content: "\ea90";
+}
+.common-icon-orgconsole-shifts-icon:before {
+  content: "\ea91";
+}
+.common-icon-orgconsole-SIC:before {
+  content: "\ea92";
+}
+.common-icon-orgconsole-SID:before {
+  content: "\ea93";
+}
+.common-icon-orgconsole-skills-certs:before {
+  content: "\ea94";
+}
+.common-icon-orgconsole-SRM:before {
+  content: "\ea95";
+}
+.common-icon-orgconsole-STAC:before {
+  content: "\ea96";
+}
+.common-icon-orgconsole-tags:before {
+  content: "\ea97";
+}
+.common-icon-orgconsole-team-safety-credentials:before {
+  content: "\ea98";
+}
+.common-icon-orgconsole-templates:before {
+  content: "\ea99";
+}
+.common-icon-orgconsole-trades:before {
+  content: "\ea9a";
+}
+.common-icon-orgconsole-work-cataegories:before {
+  content: "\ea9b";
+}
+.common-icon-orgconsole-work-teams:before {
+  content: "\ea9c";
+}
+.common-icon-orgconsole-connectors1:before {
+  content: "\ea9d";
+}
+.common-icon-orgconsole-copy:before {
+  content: "\ea9e";
+}
+.common-icon-orgconsole-daily-settings:before {
+  content: "\ea9f";
+}
+.common-icon-orgconsole-drive-safety-icon:before {
+  content: "\eaa0";
+}
+.common-icon-orgconsole-list-manager:before {
+  content: "\eaa1";
+}
+.common-icon-orgconsole-location:before {
+  content: "\eaa2";
+}
+.common-icon-orgconsole-palettes:before {
+  content: "\eaa3";
+}
+.common-icon-orgconsole-permission-groups:before {
+  content: "\eaa4";
+}
+.common-icon-orgconsole-project-supplemental-info:before {
+  content: "\eaa5";
+}
+.common-icon-orgconsole-analytics:before {
+  content: "\eaa6";
+}
+.common-icon-orgconsole-api:before {
+  content: "\eaa7";
+}
+.common-icon-orgconsole-apps:before {
+  content: "\eaa8";
+}
+.common-icon-orgconsole-app-studio:before {
+  content: "\eaa9";
+}
+.common-icon-orgconsole-calendar:before {
+  content: "\eaaa";
+}
+.common-icon-companies:before {
+  content: "\eaab";
+}
+.common-icon-vendor-id:before {
+  content: "\ea8b";
+}
+.common-icon-Admin-Settings:before {
+  content: "\ea47";
+  color: #666;
+}
+.common-icon-Approval-Role:before {
+  content: "\ea48";
+}
+.common-icon-Ato-Z:before {
+  content: "\ea49";
+  color: #666;
+}
+.common-icon-Calender:before {
+  content: "\ea4a";
+  color: #666;
+}
+.common-icon-Checkbox:before {
+  content: "\ea4b";
+  color: #666;
+}
+.common-icon-Comment--1:before {
+  content: "\ea4c";
+  color: #666;
+}
+.common-icon-Comment:before {
+  content: "\ea4d";
+  color: #666;
+}
+.common-icon-Companies:before {
+  content: "\ea4e";
+  color: #666;
+}
+.common-icon-Date:before {
+  content: "\ea4f";
+  color: #666;
+}
+.common-icon-Date-1:before {
+  content: "\ea50";
+  color: #666;
+}
+.common-icon-Decimal:before {
+  content: "\ea51";
+  color: #666;
+}
+.common-icon-Edit:before {
+  content: "\ea52";
+}
+.common-icon-Email:before {
+  content: "\ea54";
+  color: #666;
+}
+.common-icon-FIELD-TM-Settings:before {
+  content: "\ea55";
+  color: #44d789;
+}
+.common-icon-Finished:before {
+  content: "\ea56";
+  color: #666;
+}
+.common-icon-Inspection-Template:before {
+  content: "\ea57";
+}
+.common-icon-Integer:before {
+  content: "\ea58";
+  color: #666;
+}
+.common-icon-Last-Name:before {
+  content: "\ea59";
+}
+.common-icon-List-Manger:before {
+  content: "\ea5a";
+  color: #666;
+}
+.common-icon-Location:before {
+  content: "\ea5b";
+}
+.common-icon-Locations:before {
+  content: "\ea5c";
+}
+.common-icon-Note:before {
+  content: "\ea5d";
+  color: #ec711c;
+}
+.common-icon-Note-1:before {
+  content: "\ea5e";
+  color: #666;
+}
+.common-icon-Photo-Upload:before {
+  content: "\ea5f";
+  color: #a3a4a4;
+}
+.common-icon-Planner-Team-Settings:before {
+  content: "\ea60";
+  color: #239bf9;
+}
+.common-icon-Print:before {
+  content: "\ea61";
+  color: #666;
+}
+.common-icon-Pro-TM-Settings:before {
+  content: "\ea62";
+  color: #f7713d;
+}
+.common-icon-Project-Info:before {
+  content: "\ea63";
+}
+.common-icon-Project-Setting--1:before {
+  content: "\ea64";
+  color: #666;
+}
+.common-icon-Project-Team:before {
+  content: "\ea65";
+}
+.common-icon-Request-Template:before {
+  content: "\ea66";
+  color: #ec711c;
+}
+.common-icon-Safety-Authorization-Categories:before {
+  content: "\ea67";
+  color: #666;
+}
+.common-icon-Safety-Credentials:before {
+  content: "\ea68";
+  color: #666;
+}
+.common-icon-Safety-Incident-Categories:before {
+  content: "\ea69";
+  color: #666;
+}
+.common-icon-Safety-Incident-Category:before {
+  content: "\ea6a";
+  color: #ec711c;
+}
+.common-icon-Safety-Incident-Directory:before {
+  content: "\ea6b";
+  color: #666;
+}
+.common-icon-Safety-Onboarding-Flyer:before {
+  content: "\ea6c";
+}
+.common-icon-Safety-Policies:before {
+  content: "\ea6d";
+  color: #666;
+}
+.common-icon-Safety-Rules-Manager:before {
+  content: "\ea6e";
+  color: #666;
+}
+.common-icon-Safety-Settings:before {
+  content: "\ea6f";
+}
+.common-icon-Safety-Task-Analysis-Categories:before {
+  content: "\ea70";
+  color: #666;
+}
+.common-icon-Safety-Tm-Seetings:before {
+  content: "\ea71";
+}
+.common-icon-Safety-Tracking:before {
+  content: "\ea72";
+  color: #656565;
+}
+.common-icon-Select-app:before {
+  content: "\ea73";
+  color: #ec711c;
+}
+.common-icon-Select-Mode:before {
+  content: "\ea74";
+  color: #ec711c;
+}
+.common-icon-Select-Your-language:before {
+  content: "\ea75";
+  color: #666;
+}
+.common-icon-Select-Your-state:before {
+  content: "\ea76";
+  color: #666;
+}
+.common-icon-SmartApp-BLE-RTLS:before {
+  content: "\ea77";
+  color: #666;
+}
+.common-icon-Smartapp:before {
+  content: "\ea78";
+  color: #666;
+}
+.common-icon-Start1:before {
+  content: "\ea79";
+  color: #666;
+}
+.common-icon-Status1:before {
+  content: "\ea7a";
+  color: #666;
+}
+.common-icon-Team-Members:before {
+  content: "\ea7b";
+  color: #ec711c;
+}
+.common-icon-Team-Safety-Credentials:before {
+  content: "\ea7c";
+}
+.common-icon-Text:before {
+  content: "\ea7d";
+  color: #666;
+}
+.common-icon-Timer--1:before {
+  content: "\ea7e";
+  color: #666;
+}
+.common-icon-Timer--2:before {
+  content: "\ea7f";
+  color: #666;
+}
+.common-icon-Timer:before {
+  content: "\ea80";
+  color: #666;
+}
+.common-icon-Unattended-Mode:before {
+  content: "\ea81";
+  color: #666;
+}
+.common-icon-Upload-File:before {
+  content: "\ea82";
+  color: #ec711c;
+}
+.common-icon-Upload:before {
+  content: "\ea83";
+  color: #666;
+}
+.common-icon-Upload-1:before {
+  content: "\ea84";
+}
+.common-icon-User-name:before {
+  content: "\ea85";
+  color: #666;
+}
+.common-icon-Verification-Sucessfully:before {
+  content: "\ea86";
+  color: #52861e;
+}
+.common-icon-Visitor-Tracking:before {
+  content: "\ea87";
+  color: #666;
+}
+.common-icon-Visitor:before {
+  content: "\ea88";
+}
+.common-icon-Workactivity:before {
+  content: "\ea89";
+  color: #666;
+}
+.common-icon-Worker:before {
+  content: "\ea8a";
+}
+.common-icon-photo:before {
+  content: "\ea46";
+}
+.common-icon-download-folder:before {
+  content: "\ea45";
+}
+.common-icon-pln:before {
+  content: "\ea44";
+}
+.common-icon-super-admin:before {
+  content: "\ea43";
+  color: #666;
+}
+.common-icon-calendar-newtag:before {
+  content: "\ea39";
+  color: #999;
+}
+.common-icon-checkbox_checked-newtag:before {
+  content: "\ea3a";
+}
+.common-icon-checkbox-newtag:before {
+  content: "\ea3b";
+}
+.common-icon-complete-newtag:before {
+  content: "\ea3c";
+  color: #666;
+}
+.common-icon-ellipse-newtag:before {
+  content: "\ea3d";
+  color: #666;
+}
+.common-icon-location-newtag:before {
+  content: "\ea3e";
+}
+.common-icon-message-newtag:before {
+  content: "\ea3f";
+}
+.common-icon-note-newtag:before {
+  content: "\ea40";
+}
+.common-icon-planing-duration-newtag:before {
+  content: "\ea41";
+}
+.common-icon-portfolio-newtag:before {
+  content: "\ea42";
+}
+.common-icon-smartapp-field:before {
+  content: "\ea36";
+  color: #6dce81;
+}
+.common-icon-smartapp-planner:before {
+  content: "\ea37";
+  color: #29a5ff;
+}
+.common-icon-smartapp-pro:before {
+  content: "\ea38";
+  color: #ed7532;
+}
+.common-icon-report-manger:before {
+  content: "\ea35";
+  color: #666;
+}
+.common-icon-default-icon:before {
+  content: "\ea34";
+  color: #666;
+}
+.common-icon-calender-31:before {
+  content: "\ea32";
+  color: #ec711c;
+}
+.common-icon-info-white:before {
+  content: "\ea33";
+  color: #666;
+}
+.common-icon-API:before {
+  content: "\ea2f";
+  color: #666;
+}
+.common-icon-connectors:before {
+  content: "\ea30";
+  color: #666;
+}
+.common-icon-pro-settings:before {
+  content: "\ea31";
+  color: #666;
+}
+.common-icon-Ato-Z-filtering:before {
+  content: "\ea2e";
+  color: #666;
+}
+.common-icon-external:before {
+  content: "\ea2c";
+}
+.common-icon-restore:before {
+  content: "\ea2d";
+}
+.common-icon-live-support .path1:before {
+  content: "\ea2a";
+  color: rgb(238, 117, 50);
+}
+.common-icon-live-support .path2:before {
+  content: "\ea2b";
+  margin-left: -1.0234375em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-reciept:before {
+  content: "\ea29";
+}
+.common-icon-appdependenticon:before {
+  content: "\ea26";
+}
+.common-icon-appnodependenticon:before {
+  content: "\ea27";
+}
+.common-icon-smartapptype:before {
+  content: "\ea28";
+}
+.common-icon-team:before {
+  content: "\ea24";
+}
+.common-icon-smartlayers:before {
+  content: "\ea25";
+}
+.common-icon-enterprise:before {
+  content: "\ea22";
+}
+.common-icon-invited:before {
+  content: "\ea23";
+}
+.common-icon-default-board-icon:before {
+  content: "\ea21";
+  color: #666;
+}
+.common-icon-polygon:before {
+  content: "\ea20";
+}
+.common-icon-user-icon:before {
+  content: "\ea1f";
+  color: #4d4d4d;
+}
+.common-icon-anchor-manager:before {
+  content: "\ea1d";
+}
+.common-icon-battery:before {
+  content: "\ea1e";
+}
+.common-icon-logouticon:before {
+  content: "\ea1c";
+  color: #999;
+}
+.common-icon-Importui-appcls:before {
+  content: "\ea1b";
+  color: #666;
+}
+.common-icon-Import-latest:before {
+  content: "\ea1a";
+  color: #666;
+}
+.common-icon-link-map:before {
+  content: "\ea19";
+}
+.common-icon-no-dashboard:before {
+  content: "\ea17";
+}
+.common-icon-permission:before {
+  content: "\ea18";
+}
+.common-icon-home:before {
+  content: "\ea15";
+}
+.common-icon-drive-icon:before {
+  content: "\ea16";
+}
+.common-icon-payment-successfull:before {
+  content: "\ea14";
+}
+.common-icon-pencil:before {
+  content: "\ea13";
+}
+.common-icon-activity:before {
+  content: "\ea0f";
+}
+.common-icon-filters:before {
+  content: "\ea10";
+}
+.common-icon-flags:before {
+  content: "\ea11";
+}
+.common-icon-Items:before {
+  content: "\ea12";
+}
+.common-icon-collapse-on:before {
+  content: "\ea0e";
+}
+.common-icon-collapase-off:before {
+  content: "\ea0d";
+}
+.common-icon-company-filter:before {
+  content: "\ea09";
+  color: #666;
+}
+.common-icon-item-filter:before {
+  content: "\ea0a";
+  color: #666;
+}
+.common-icon-user-filter:before {
+  content: "\ea0b";
+  color: #666;
+}
+.common-icon-comment-reply:before {
+  content: "\ea0c";
+  color: #666;
+}
+.common-icon-flag:before {
+  content: "\ea08";
+}
+.common-icon-toggle-on:before {
+  content: "\ea06";
+  color: #059cdf;
+}
+.common-icon-toggle-off:before {
+  content: "\ea07";
+  color: #666;
+}
+.common-icon-Status-new:before {
+  content: "\ea04";
+  color: #666;
+}
+.common-icon-Calender-new:before {
+  content: "\ea05";
+  color: #666;
+}
+.common-icon-list-menu:before {
+  content: "\ea03";
+}
+.common-icon-vendor-manager-menu:before {
+  content: "\ea02";
+}
+.common-icon-personal-info:before {
+  content: "\ea01";
+}
+.common-icon-this-project:before {
+  content: "\e9ff";
+}
+.common-icon-all-project:before {
+  content: "\ea00";
+}
+.common-icon-link:before {
+  content: "\e9fe";
+}
+.common-icon-Calendar-outlined:before {
+  content: "\e9fd";
+}
+.common-icon-Play:before {
+  content: "\e9fc";
+  color: #30840a;
+}
+.common-icon-open-in-desktop:before {
+  content: "\e9fb";
+}
+.common-icon-lock-fill:before {
+  content: "\e9fa";
+}
+.common-icon-help:before {
+  content: "\e9f7";
+}
+.common-icon-logout:before {
+  content: "\e9f8";
+}
+.common-icon-edit-profile:before {
+  content: "\e9f9";
+}
+.common-icon-bd-tax:before {
+  content: "\e9f2";
+}
+.common-icon-bd-phone:before {
+  content: "\e9f3";
+}
+.common-icon-bd-organisation:before {
+  content: "\e9f4";
+}
+.common-icon-bd-name:before {
+  content: "\e9f5";
+}
+.common-icon-bd-adress:before {
+  content: "\e9f6";
+}
+.common-icon-smartapp-BLE-RTLS:before {
+  content: "\e9f1";
+  color: #666;
+}
+.common-icon-download:before {
+  content: "\e9f0";
+}
+.common-icon-by-owner:before {
+  content: "\e9ef";
+}
+.common-icon-filter-ob:before {
+  content: "\e9ed";
+}
+.common-icon-gruping-ob:before {
+  content: "\e9ee";
+}
+.common-icon-bid:before {
+  content: "\e9ec";
+}
+.common-icon-marketplace:before {
+  content: "\e9eb";
+}
+.common-icon-switch-tiles:before {
+  content: "\e9e9";
+}
+.common-icon-switch-analytics:before {
+  content: "\e9ea";
+}
+.common-icon-album:before {
+  content: "\e9e0";
+}
+.common-icon-bim:before {
+  content: "\e9e1";
+}
+.common-icon-drawings:before {
+  content: "\e9e2";
+}
+.common-icon-external-url:before {
+  content: "\e9e3";
+}
+.common-icon-files:before {
+  content: "\e9e4";
+}
+.common-icon-iq360:before {
+  content: "\e9e6";
+}
+.common-icon-subsketch:before {
+  content: "\e9e7";
+}
+.common-icon-view-point:before {
+  content: "\e9e8";
+}
+.common-icon-ProjectApp:before {
+  content: "\e9df";
+}
+.common-icon-none:before {
+  content: "\e9de";
+}
+.common-icon-email-message:before {
+  content: "\e9dc";
+}
+.common-icon-header-print:before {
+  content: "\e9dd";
+}
+.common-icon-add-new-contact:before {
+  content: "\e9d9";
+  color: #666;
+}
+.common-icon-add-new-user:before {
+  content: "\e9da";
+  color: #666;
+}
+.common-icon-admin-with-billing:before {
+  content: "\e9db";
+  color: #666;
+}
+.common-icon-Deactivate:before {
+  content: "\e9d8";
+}
+.common-icon-resolve:before {
+  content: "\e9d7";
+}
+.common-icon-crop:before {
+  content: "\e9d6";
+}
+.common-icon-paymeny-successful .path1:before {
+  content: "\e9c7";
+  color: rgb(155, 155, 155);
+}
+.common-icon-paymeny-successful .path2:before {
+  content: "\e9c8";
+  margin-left: -1em;
+  color: rgb(155, 155, 155);
+}
+.common-icon-paymeny-successful .path3:before {
+  content: "\e9c9";
+  margin-left: -1em;
+  color: rgb(155, 155, 155);
+}
+.common-icon-paymeny-successful .path4:before {
+  content: "\e9ca";
+  margin-left: -1em;
+  color: rgb(155, 155, 155);
+}
+.common-icon-paymeny-successful .path5:before {
+  content: "\e9cb";
+  margin-left: -1em;
+  color: rgb(155, 155, 155);
+}
+.common-icon-paymeny-successful .path6:before {
+  content: "\e9cc";
+  margin-left: -1em;
+  color: rgb(155, 155, 155);
+}
+.common-icon-paymeny-successful .path7:before {
+  content: "\e9cd";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+}
+.common-icon-paymeny-successful .path8:before {
+  content: "\e9ce";
+  margin-left: -1em;
+  color: rgb(0, 153, 255);
+}
+.common-icon-paymeny-successful .path9:before {
+  content: "\e9cf";
+  margin-left: -1em;
+  color: rgb(0, 153, 255);
+}
+.common-icon-paymeny-successful .path10:before {
+  content: "\e9d0";
+  margin-left: -1em;
+  color: rgb(155, 155, 155);
+}
+.common-icon-paymeny-successful .path11:before {
+  content: "\e9d1";
+  margin-left: -1em;
+  color: rgb(155, 155, 155);
+}
+.common-icon-credit-card:before {
+  content: "\e9d2";
+}
+.common-icon-invoice:before {
+  content: "\e9d3";
+}
+.common-icon-contract-type-icon:before {
+  content: "\e9d4";
+}
+.common-icon-Pro-Icon:before {
+  content: "\e9d5";
+}
+.common-icon-external-link:before {
+  content: "\e9c6";
+}
+.common-icon-timelapsemp4:before {
+  content: "\e9c5";
+}
+.common-icon-print1:before {
+  content: "\e9c4";
+}
+.common-icon-double-arrow:before {
+  content: "\e9c3";
+}
+.common-icon-bim-pdf:before {
+  content: "\e9c2";
+}
+.common-icon-Distance-Icon:before {
+  content: "\e9bc";
+  color: #666;
+}
+.common-icon-left-arrow:before {
+  content: "\e9bd";
+  color: #666;
+}
+.common-icon-Location-filled:before {
+  content: "\e9be";
+}
+.common-icon-Location-outlined:before {
+  content: "\e9bf";
+}
+.common-icon-Right-arrow:before {
+  content: "\e9c0";
+  color: #666;
+}
+.common-icon-unlock-padlock:before {
+  content: "\e9c1";
+}
+.common-icon-apps1:before {
+  content: "\e991";
+}
+.common-icon-archive:before {
+  content: "\e992";
+}
+.common-icon-billings:before {
+  content: "\e993";
+}
+.common-icon-cart1:before {
+  content: "\e994";
+}
+.common-icon-category-Icon:before {
+  content: "\e995";
+}
+.common-icon-chat-Icon:before {
+  content: "\e996";
+}
+.common-icon-company:before {
+  content: "\e997";
+}
+.common-icon-company-Icon:before {
+  content: "\e998";
+}
+.common-icon-contract-type:before {
+  content: "\e999";
+}
+.common-icon-copy1:before {
+  content: "\e99a";
+}
+.common-icon-delete1:before {
+  content: "\e99b";
+}
+.common-icon-down-arrow:before {
+  content: "\e99c";
+}
+.common-icon-filter:before {
+  content: "\e99d";
+}
+.common-icon-group:before {
+  content: "\e99e";
+}
+.common-icon-hide-sample-project-icon:before {
+  content: "\e99f";
+}
+.common-icon-industry-icon:before {
+  content: "\e9a0";
+}
+.common-icon-info:before {
+  content: "\e9a1";
+}
+.common-icon-location1:before {
+  content: "\e9a2";
+}
+.common-icon-menu:before {
+  content: "\e9a3";
+}
+.common-icon-notification-icon:before {
+  content: "\e9a4";
+}
+.common-icon-payment:before {
+  content: "\e9a5";
+}
+.common-icon-payment-type:before {
+  content: "\e9a6";
+}
+.common-icon-pick-role:before {
+  content: "\e9a7";
+}
+.common-icon-pin:before {
+  content: "\e9a8";
+}
+.common-icon-product--tour:before {
+  content: "\e9a9";
+}
+.common-icon-project-area:before {
+  content: "\e9aa";
+}
+.common-icon-project-budget:before {
+  content: "\e9ab";
+}
+.common-icon-project-duration:before {
+  content: "\e9ac";
+}
+.common-icon-project-name:before {
+  content: "\e9ad";
+}
+.common-icon-project-team:before {
+  content: "\e9ae";
+}
+.common-icon-project-type:before {
+  content: "\e9af";
+}
+.common-icon-refresh1:before {
+  content: "\e9b0";
+}
+.common-icon-roles:before {
+  content: "\e9b1";
+}
+.common-icon-share:before {
+  content: "\e9b2";
+}
+.common-icon-stream_icon:before {
+  content: "\e9b3";
+}
+.common-icon-subscription:before {
+  content: "\e9b4";
+}
+.common-icon-subscription-icon:before {
+  content: "\e9b5";
+}
+.common-icon-switch-icon:before {
+  content: "\e9b6";
+}
+.common-icon-time-zone-icon:before {
+  content: "\e9b7";
+}
+.common-icon-trail-icon:before {
+  content: "\e9b8";
+}
+.common-icon-verification-cod:before {
+  content: "\e9b9";
+}
+.common-icon-wrong-code:before {
+  content: "\e9ba";
+}
+.common-icon-your-email:before {
+  content: "\e9bb";
+}
+.common-icon-File-search:before {
+  content: "\e980";
+  color: #666;
+}
+.common-icon-Hashword-search:before {
+  content: "\e981";
+  color: #666;
+}
+.common-icon-Owner-search:before {
+  content: "\e982";
+}
+.common-icon-Status-search .path1:before {
+  content: "\e983";
+  color: rgb(153, 153, 153);
+}
+.common-icon-Status-search .path2:before {
+  content: "\e984";
+  margin-left: -1em;
+  color: rgb(102, 102, 102);
+}
+.common-icon-Activate-ap:before {
+  content: "\e985";
+}
+.common-icon-Calender-ap:before {
+  content: "\e986";
+  color: #666;
+}
+.common-icon-Cart-ap:before {
+  content: "\e987";
+}
+.common-icon-Checklist-ap:before {
+  content: "\e988";
+}
+.common-icon-Copy-ap:before {
+  content: "\e989";
+}
+.common-icon-Delete-ap:before {
+  content: "\e98a";
+  color: #bfbfbf;
+}
+.common-icon-Form-ap:before {
+  content: "\e98b";
+  color: #999;
+}
+.common-icon-Import-ap:before {
+  content: "\e98c";
+}
+.common-icon-Info-ap:before {
+  content: "\e98d";
+}
+.common-icon-Play-ap:before {
+  content: "\e98e";
+}
+.common-icon-Project-ap:before {
+  content: "\e98f";
+}
+.common-icon-Refresh-ap:before {
+  content: "\e990";
+}
+.common-icon-Dispatch-Board:before {
+  content: "\e97e";
+  color: #666;
+}
+.common-icon-calendar-icon:before {
+  content: "\e97f";
+}
+.common-icon-message1:before {
+  content: "\e9e5";
+}
+.common-icon-awaiting-schedule:before {
+  content: "\e97d";
+  color: #666;
+}
+.common-icon-AssignedTo:before {
+  content: "\e96c";
+  color: #666;
+}
+.common-icon-Calendar:before {
+  content: "\e96d";
+  color: #fff;
+}
+.common-icon-Carpenter:before {
+  content: "\e96e";
+  color: #666;
+}
+.common-icon-Clock:before {
+  content: "\e96f";
+  color: #ec711c;
+}
+.common-icon-Company:before {
+  content: "\e970";
+}
+.common-icon-Graph:before {
+  content: "\e971";
+  color: #666;
+}
+.common-icon-Location-Pin:before {
+  content: "\e972";
+  color: #666;
+}
+.common-icon-Pin:before {
+  content: "\e973";
+  color: #666;
+}
+.common-icon-Plumber:before {
+  content: "\e974";
+  color: #666;
+}
+.common-icon-Progress-Tick:before {
+  content: "\e975";
+  color: #666;
+}
+.common-icon-Resources:before {
+  content: "\e976";
+}
+.common-icon-Send-Back:before {
+  content: "\e977";
+  color: #666;
+}
+.common-icon-Start:before {
+  content: "\e978";
+  color: #666;
+}
+.common-icon-Status:before {
+  content: "\e979";
+}
+.common-icon-User-Tick:before {
+  content: "\e97a";
+  color: #666;
+}
+.common-icon-Verify:before {
+  content: "\e97b";
+}
+.common-icon-Work-Activity:before {
+  content: "\e97c";
+  color: #666;
+}
+.common-icon-add-comment:before {
+  content: "\e96b";
+}
+.common-icon-down-arrow1:before {
+  content: "\e96a";
+}
+.common-icon-schdulenow:before {
+  content: "\e967";
+  color: #666;
+}
+.common-icon-s_icon:before {
+  content: "\e968";
+  color: #0b8f18;
+}
+.common-icon-refresh11:before {
+  content: "\e969";
+}
+.common-icon-schedule:before {
+  content: "\e966";
+}
+.common-icon-calendar1:before {
+  content: "\e965";
+}
+.common-icon-local-upload:before {
+  content: "\e962";
+  color: #666;
+}
+.common-icon-cloud-drive:before {
+  content: "\e963";
+  color: #666;
+}
+.common-icon-clipmap:before {
+  content: "\e964";
+  color: #666;
+}
+.common-icon-outdoor:before {
+  content: "\e960";
+}
+.common-icon-indoorpin:before {
+  content: "\e961";
+  color: #059cdf;
+}
+.common-icon-sketch:before {
+  content: "\e95f";
+}
+.common-icon-people-marker:before {
+  content: "\e95e";
+}
+.common-icon-play-timelapse:before {
+  content: "\e95b";
+}
+.common-icon-becon-location:before {
+  content: "\e95c";
+  color: #666;
+}
+.common-icon-becon:before {
+  content: "\e95d";
+  color: #666;
+}
+.common-icon-map-marker:before {
+  content: "\e95a";
+}
+.common-icon-company-new:before {
+  content: "\e959";
+}
+.common-icon-Arrow:before {
+  content: "\e958";
+}
+.common-icon-manager:before {
+  content: "\e957";
+}
+.common-icon-discipline:before {
+  content: "\e956";
+}
+.common-icon-filter-option:before {
+  content: "\e955";
+}
+.common-icon-resource:before {
+  content: "\e954";
+}
+.common-icon-maximise:before {
+  content: "\e953";
+}
+.common-icon-view1:before {
+  content: "\e952";
+}
+.common-icon-manage:before {
+  content: "\e950";
+}
+.common-icon-multiple-user:before {
+  content: "\e951";
+}
+.common-icon-adduser:before {
+  content: "\e94f";
+  color: #999;
+}
+.common-icon-user-space:before {
+  content: "\e94e";
+}
+.common-icon-left-indent:before {
+  content: "\e94c";
+}
+.common-icon-right-indent:before {
+  content: "\e94d";
+}
+.common-icon-exesting-symbol:before {
+  content: "\e949";
+}
+.common-icon-insert:before {
+  content: "\e94a";
+}
+.common-icon-color-palette:before {
+  content: "\e94b";
+}
+.common-icon-upload1:before {
+  content: "\e948";
+}
+.common-icon-abc:before {
+  content: "\e944";
+}
+.common-icon-add:before {
+  content: "\e945";
+}
+.common-icon-save:before {
+  content: "\e946";
+}
+.common-icon-template:before {
+  content: "\e947";
+}
+.common-icon-tick:before {
+  content: "\e943";
+}
+.common-icon-export:before {
+  content: "\e940";
+  color: #666;
+}
+.common-icon-import:before {
+  content: "\e941";
+  color: #666;
+}
+.common-icon-active:before {
+  content: "\e942";
+  color: #666;
+}
+.common-icon-add-user:before {
+  content: "\e93b";
+}
+.common-icon-list:before {
+  content: "\e93c";
+}
+.common-icon-livehuddle:before {
+  content: "\e93d";
+}
+.common-icon-searching:before {
+  content: "\e93e";
+}
+.common-icon-stylus:before {
+  content: "\e93f";
+}
+.common-icon-pause:before {
+  content: "\e93a";
+}
+.common-icon-manage-dashboard:before {
+  content: "\e939";
+}
+.common-icon-verify-report:before {
+  content: "\e938";
+}
+.common-icon-barcode1:before {
+  content: "\e934";
+}
+.common-icon-bluetooth:before {
+  content: "\e935";
+}
+.common-icon-bluetooth-new:before {
+  content: "\e936";
+}
+.common-icon-location11:before {
+  content: "\e937";
+}
+.common-icon-timelapse-icon:before {
+  content: "\e92f";
+  color: #666;
+}
+.common-icon-downarrow:before {
+  content: "\e932";
+}
+.common-icon-calender-Icon:before {
+  content: "\e933";
+  color: #666;
+}
+.common-icon-note:before {
+  content: "\e92c";
+}
+.common-icon-trade:before {
+  content: "\e92d";
+}
+.common-icon-warning:before {
+  content: "\e92e";
+}
+.common-icon-business:before {
+  content: "\e927";
+}
+.common-icon-email:before {
+  content: "\e928";
+}
+.common-icon-mail:before {
+  content: "\e92a";
+}
+.common-icon-mobile:before {
+  content: "\e92b";
+}
+.common-icon-website:before {
+  content: "\e925";
+}
+.common-icon-phone:before {
+  content: "\e926";
+}
+.common-icon-barcode:before {
+  content: "\e924";
+}
+.common-icon-upload-video:before {
+  content: "\e923";
+}
+.common-icon-video:before {
+  content: "\e922";
+}
+.common-icon-back:before {
+  content: "\e91c";
+}
+.common-icon-livelink:before {
+  content: "\e91d";
+}
+.common-icon-next-arrow:before {
+  content: "\e91e";
+}
+.common-icon-previous-arrow:before {
+  content: "\e91f";
+}
+.common-icon-session:before {
+  content: "\e920";
+}
+.common-icon-vertical-menu:before {
+  content: "\e921";
+}
+.common-icon-version-delete:before {
+  content: "\e918";
+}
+.common-icon-version-download:before {
+  content: "\e919";
+}
+.common-icon-daily-tick:before {
+  content: "\e917";
+}
+.common-icon-manage-version:before {
+  content: "\e912";
+}
+.common-icon-create-version:before {
+  content: "\e913";
+}
+.common-icon-delete-fill:before {
+  content: "\e914";
+}
+.common-icon-edit-fill:before {
+  content: "\e915";
+}
+.common-icon-play:before {
+  content: "\e916";
+}
+.common-icon-capture-canvas:before {
+  content: "\e911";
+}
+.common-icon-QR-Code:before {
+  content: "\e910";
+}
+.common-icon-add-comments:before {
+  content: "\e902";
+}
+.common-icon-chat:before {
+  content: "\e903";
+}
+.common-icon-chatting:before {
+  content: "\e904";
+}
+.common-icon-close:before {
+  content: "\e905";
+}
+.common-icon-company1:before {
+  content: "\e906";
+}
+.common-icon-filter1:before {
+  content: "\e907";
+}
+.common-icon-item:before {
+  content: "\e908";
+}
+.common-icon-resize:before {
+  content: "\e909";
+}
+.common-icon-search:before {
+  content: "\e90a";
+}
+.common-icon-smartapp:before {
+  content: "\e90b";
+}
+.common-icon-streams:before {
+  content: "\e90c";
+}
+.common-icon-users:before {
+  content: "\e90d";
+}
+.common-icon-join:before {
+  content: "\e90e";
+}
+.common-icon-exit:before {
+  content: "\e90f";
+}
+.common-icon-delete11:before {
+  content: "\e900";
+}
+.common-icon-edit:before {
+  content: "\e901";
+}
+.common-icon-minimize:before {
+  content: "\eecc";
+}
+.common-icon-maximize3:before {
+  content: "\f1d9";
+}

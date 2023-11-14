@@ -1,0 +1,122 @@
+.iq-gridwindow {
+    .MuiDialog-container {
+        .MuiPaper-root {
+            .MuiDialogTitle-root {
+                .presence-box {
+                    align-items: flex-end; // padding: 0 1em;
+                    .common-participant-control {
+                        display: flex;
+                        .cell {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            &.commentbutton-main {
+                                width: 44px;
+                            }
+                            &.collboratortrayself-prewrapper {
+                                top: unset;
+                                width: 2px;
+                                margin: 5px;
+                                background-color: #DBDBDB;
+                                margin-right: 10px;
+                                &::before {
+                                    display: none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .MuiDialogContent-root:has(.iqobjectpage-main-container) {
+                border: unset;
+            }
+            .MuiDialogContent-root {
+                display: flex;
+                >.iqobjectpage-main-container {
+                    width: 100%;
+                    .iqobjectpage-tabbar-outer {
+                        flex: unset;
+                        .MuiTabs-flexContainer {
+                            align-items: center;
+                            justify-content: flex-start;
+                            gap: 1em;
+                            padding: 0.5em;
+                        }
+                    }
+                    .iqobjectpage-content-outer {
+                        .iqobjectpage-section {
+                            padding: unset;
+                            .iqgridwrapper-root {
+                                .toolbar-root-container {
+                                    padding: 0.5em;
+                                }
+                            }
+                        }
+                    }
+                }
+                .dynamic-page:has(.head-control-box) {
+                    .dynamic-page-body {
+                        .iqgridwrapper-root {
+                            .toolbar-root-container {
+                                padding: 1rem 1rem 0.5em;
+                            }
+                        }
+                    }
+                }
+                .dynamic-page {
+                    width: 100%;
+                    .dynamic-page-body {
+                        height: 100%;
+                        .dynamic-loading-container {
+                            display: none;
+                        }
+                    }
+                }
+                .dynamic-page:has(.dynamic-loading-container.showloadmask) {
+                    position: relative;
+                    .dynamic-page-body {
+                        .dynamic-loading-container.showloadmask {
+                            display: flex !important;
+                            align-items: center;
+                            justify-content: center;
+                            width: 100%;
+                            height: 100%;
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            background: black;
+                            opacity: 0.5;
+                            z-index: 2;
+                            .dynamic-loading-indicator {
+                                color: silver;
+                                position: absolute;
+                                font-size: 11px;
+                                animation-delay: 0.16s !important;
+                            }
+                            .dynamic-loading-indicator:before {
+                                content: '';
+                                position: absolute;
+                                left: -1.15em;
+                            }
+                            .dynamic-loading-indicator:after {
+                                content: '';
+                                position: absolute;
+                                left: 1.25em;
+                                animation-delay: 0.32s !important;
+                            }
+                            .dynamic-loading-indicator:before,
+                            .dynamic-loading-indicator,
+                            .dynamic-loading-indicator:after {
+                                background: silver;
+                                -webkit-animation: load1 1s infinite ease-in-out;
+                                animation: load1 1s infinite ease-in-out;
+                                width: 1em;
+                                height: 4em;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

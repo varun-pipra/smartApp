@@ -1,0 +1,93 @@
+.ProjectTeam-userDetails {
+    .MuiGrid-container {
+        .MuiGrid-item {
+            padding-top: 26px;
+        }
+        .roles-section-cls {
+            .common-icon-Project-Info {
+                font-size: 26px;
+                cursor: pointer;
+                color: #333;
+                line-height: 1.6;
+            }
+        }
+    }
+    .notranslate:after {
+        color: #666;
+    }
+    label.inputlabel {
+        color: #999 !important;
+        line-height: 17px;
+        min-height: 24px;
+    }
+    .MuiInputBase-root:before,
+    .Mui-focused::after {
+        border-bottom: 1px solid #9e9e9e !important;
+    }
+    .MuiInputBase-input {
+        color: #333;
+    }
+    .userdetails_icons {
+        font-size: 1.5rem;
+    }
+    .common-icon-location11:before {
+        color: #ef7c35;
+        font-size: 18px;
+        line-height: 2.2;
+    }
+    .common-icon-barcode1:before {
+        color: #333;
+        font-size: 14px;
+        line-height: 1.6;
+        padding-right: 2px;
+    }
+    .userdetails_icon_Color {
+        color: #ef7c35;
+    }
+    .email-auto-complete .MuiInputBase-root:before {
+        color: #999;
+        border-bottom: 0px !important;
+    }
+    .common-icon-Last-Name:before {
+        margin-left: 2px;
+        font-size: 17px;
+        color: #ef7c35;
+        line-height: 1.8;
+        margin-right: 2px;
+    }
+    .common-icon-company-new {
+        margin-top: -4px;
+        &:before {
+            font-size: 20px;
+            line-height: 1.8;
+        }
+    }
+    .common-icon-orgconsole-trades:before {
+        font-size: 18px;
+        line-height: 1.6;
+        margin-left: 2px;
+    }
+    .common-icon-orgconsole-skills-certs:before {
+        font-size: 16px;
+        margin-left: 2px;
+        line-height: 2;
+    }
+    .common-icon-calendar-31 {
+        margin-top: -4px;
+        &:before {
+            font-size: 20px;
+            line-height: 1.7;
+        }
+    }
+    .common-icon-Shifts:before {
+        font-size: 20px;
+        line-height: 1.4;
+    }
+    .btn-viewedit-changes {
+        border: 1px solid #059cdf !important;
+        color: #059cdf !important;
+        height: 36px;
+        border-radius: 2px;
+        background-color: transparent !important;
+    }
+}

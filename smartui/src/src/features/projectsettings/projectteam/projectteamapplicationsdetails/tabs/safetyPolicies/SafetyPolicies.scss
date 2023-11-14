@@ -1,0 +1,152 @@
+ .safetyPolicies {
+     &.safety-policies-cotainer-tab {
+         flex: 1;
+         display: flex;
+         flex-direction: column;
+         height: unset;
+     }
+     flex: 1;
+     display: flex;
+     flex-direction: column;
+     .ag-row {
+         .MuiCheckbox-root:after {
+             content: "\ebb6";
+             content: var(--ag-icon-font-code-checkbox-checked, "\ebb6");
+             color: #ddd;
+             font-size: 27px;
+             border: 0px;
+             line-height: 0.5;
+         }
+         .MuiCheckbox-root.Mui-checked:after {
+             content: "\ebb6";
+             content: var(--ag-icon-font-code-checkbox-checked, "\ebb6");
+             color: #10d628;
+         }
+     }
+     .email-hotlink-cls {
+         display: flex;
+         align-items: center;
+         justify-content: end;
+     }
+     .userEmail_icons {
+         font-size: 1.25rem;
+         margin-right: 6px;
+         height: 19px;
+     }
+     .safetyPolices-name {
+         font-size: 1.2em;
+         color: #333;
+     }
+     .version-cls {
+         display: grid;
+         text-align: left;
+         color: #666;
+         font-style: italic;
+         font-size: 0.95em;
+     }
+     .agreedOn-cls {
+         display: grid;
+         text-align: left;
+         line-height: 10px;
+     }
+     .header-text {
+         height: 3em;
+         padding: 1em 0.4em 0em 0em;
+         font-size: 16px;
+         font-weight: bold;
+     }
+     .email-cls {
+         margin-top: 2px;
+         font-size: 14px;
+         color: #289BDB;
+         cursor: pointer;
+     }
+     .progress-header-text {
+         height: 3em;
+         padding: 1em 0em;
+         font-size: 14px;
+         color: #666;
+         b {
+             color: #333;
+         }
+     }
+     .policy-name-first-row {
+         display: flex;
+         align-items: center;
+         justify-content: space-around;
+         gap: 1em;
+         color: #333;
+         line-height: 1.4;
+     }
+     .row-count-circle-cls {
+         font-size: 1.6em;
+         border: 1px solid #e5e5e5;
+         height: 2em;
+         width: 2em;
+         display: flex;
+         border-radius: 50%;
+         justify-content: center;
+         align-items: center;
+         color: #666;
+     }
+     .ag-header {
+         background-color: #fff !important;
+         .ag-header-cell-text {
+             text-transform: uppercase;
+             color: #333;
+             font-size: 13px;
+             font-weight: bold;
+         }
+     }
+     .thumbnailUrl-cls {
+         object-fit: contain;
+         padding: 2px;
+         min-width: 80px;
+         height: 80px;
+         cursor: pointer;
+         border: 1px solid #ececec;
+     }
+     .awarded-icon-cls {
+         width: 38px;
+         height: 38px;
+         color: #9a9a9a;
+         border: 1px solid #f1f1f1;
+         border-radius: 50%;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         box-sizing: content-box;
+         box-shadow: 0px 1px 4px 0px #dadada;
+         cursor: pointer;
+     }
+     .floating-toast-cls {
+         background-color: #333 !important;
+         border: 1px solid #333 !important;
+         border-radius: 30px !important;
+         box-shadow: none !important;
+         padding: 4px !important;
+         width: 350px;
+         left: 55%;
+         .MuiAlert-icon {
+             display: none;
+         }
+         .MuiAlert-action {
+             display: none;
+         }
+     }
+     .ag-theme-alpine,
+     .ag-theme-alpine-dark {
+         --ag-selected-row-background-color: tranparent !important;
+         --ag-row-hover-color: tranparent !important;
+     }
+     .ag-theme-alpine {
+         .ag-root-wrapper {
+             .ag-body-viewport {
+                 //  min-height: 52vh;
+             }
+         }
+     }
+     .no-rows-msg {
+         margin-top: -45px;
+     }
+ }

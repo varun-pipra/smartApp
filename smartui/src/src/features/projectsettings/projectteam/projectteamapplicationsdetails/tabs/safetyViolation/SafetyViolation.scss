@@ -1,0 +1,234 @@
+.safety-violation-container {
+    &.safety-violation-cotainer-tab {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: unset;
+    }
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    .ag-header-cell-text {
+        font-size: 11.5pt;
+        text-transform: capitalize;
+    }
+    .safety-violation-toolbar {
+        display: flex;
+        justify-content: space-between;
+        height: 65px;
+        .safety-violation-left-toolbar {
+            display: flex;
+            align-items: center;
+            .info-tooltip-cls {
+                padding-left: 0px;
+                margin-right: 5px;
+            }
+            .common-icon-expunge {
+                font-size: 22px !important;
+            }
+            .common-icon-delete {
+                font-size: 27px !important;
+            }
+        }
+        .safety-privacy-toolbar {
+            display: flex;
+            align-items: center; // cursor: pointer;
+            .historical-privacy-violation {
+                display: contents;
+                color: #059cdf;
+                cursor: pointer; //color: #a19d9d;
+                .common-icon-warning-medal {
+                    font-size: 24px;
+                    margin-right: 4px;
+                }
+            }
+            .toolbar-item-wrapper {
+                margin-left: 20px;
+                .iqsearch-field {
+                    max-height: 2.2rem;
+                    border-radius: 4px;
+                    .MuiInputBase-input {
+                        padding: 5px 0 5px 8px;
+                    }
+                    .MuiInputBase-root {
+                        border-left: 0px !important;
+                    }
+                    .search-trigger {
+                        border-right: 0px !important;
+                    }
+                }
+            }
+        }
+    }
+    .add-standard-btn {
+        margin: 0px 8px 0px 0px;
+        padding: 2px 12px;
+        text-transform: capitalize !important;
+    }
+    .add-standard-btn:hover {
+        background-color: #23a3dc;
+    }
+    .safety-viol-delete-btn {
+        color: #333 !important;
+        margin-top: 3px;
+    }
+    .safety-viol-expunge-btn {
+        color: #333 !important;
+        margin-right: 4px;
+    }
+    .Mui-disabled {
+        opacity: 0.4;
+    }
+    .safety-viol-grid {
+        img {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #f2f2f2;
+            /* border-radius: 50%; */
+            object-fit: cover;
+            margin: 0px 6px;
+        }
+        .common-icon-expunge {
+            position: absolute;
+            left: 2%;
+            font-size: 16px;
+            color: #ed7431;
+            margin-right: 10px
+        }
+        .ag-header {
+            .ag-header-cell {
+                background-color: #f2f2f2 !important;
+            }
+        }
+        .ag-row {
+            border-bottom: var(--ag-borders-row) #eee;
+        }
+        .no-rows-msg {
+            border: 0px dotted #d9d9d9;
+            background-color: transparent;
+            .common-icon-No-Item-Available {
+                background-image: url(/resources/images/No-Safety-Violation-items-available.png);
+                background-size: 100%;
+                background-repeat: no-repeat;
+                width: 400px;
+                height: 204px;
+                display: block;
+            }
+            .common-icon-No-Item-Available:before {
+                content: "";
+            }
+            .empty-rows-mark {
+                color: #666;
+            }
+        }
+    }
+}
+
+.safety-violation-warning {
+    display: grid;
+    gap: 20px;
+    bottom: 60px;
+    padding: 15px 24px 20px 12px;
+    background-color: #ffeebb;
+    width: 100%;
+    border: 1px solid #EE7A3A;
+    border-left: 10px solid #EE7A3A;
+    border-radius: 4px;
+    left: auto;
+    position: absolute;
+    width: 64vw;
+    right: 10px;
+    min-width: 60em;
+    z-index: 3;
+    .warning-content-wrap {
+        display: grid;
+        gap: 12px;
+        .warning-content {
+            display: inline-flex;
+            align-content: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            align-items: end;
+            .common-icon-exclamation:before {
+                float: left;
+                color: #fff;
+                background-color: #EE7A3A;
+                font-size: 40px;
+                border-radius: 50%;
+                padding: 10px;
+                width: 50px;
+                height: 50px;
+                margin: 0px 10px;
+                text-align: center;
+                line-height: 1.1;
+            }
+            .content-right {
+                float: left;
+                h6 {
+                    margin: 0px;
+                    font-size: 16px;
+                    color: #333;
+                    line-height: 2;
+                }
+                .common-icon-close:before {
+                    color: #666;
+                    position: absolute;
+                    right: 16px;
+                    top: 12px;
+                    font-size: 18px;
+                    cursor: pointer;
+                }
+                div {
+                    font-size: 13px;
+                    line-height: 1.4;
+                    color: #333;
+                }
+                .previous-user-name {
+                    font-weight: bold;
+                    color: #23a3dc;
+                }
+                .current-user-name {
+                    font-weight: bold;
+                }
+            }
+        }
+        .grey-content {
+            margin-left: 100px;
+            background-color: #f0f0f0;
+            border: 1px solid #999;
+            border-radius: 4px;
+            font-style: italic;
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 1.4;
+            padding: 15px;
+            color: #333;
+        }
+    }
+    .footer-buttons {
+        display: flex;
+        justify-content: space-between;
+        .btn-overrule-changes {
+            border: 1px solid #666;
+            color: #666;
+            height: 36px;
+            font-size: 15px !important;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        .btn-deny-changes {
+            border: 1px solid #EE7A3A;
+            color: #EE7A3A;
+            height: 36px;
+            font-size: 15px !important;
+            font-weight: 600;
+        }
+    }
+}
+
+.safetyViolation_tooltip_content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
