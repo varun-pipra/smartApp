@@ -1,0 +1,24 @@
+.bidDetails-bidManager {
+    // .quill {
+    // 	height: 100px;
+    // }
+    // .line-item-label .MuiTextField-root::before {
+    // 	border: none;
+    // }
+    .originalbudget {
+        margin-left: -10px !important;
+    }
+    .pre-bid-info {
+        display: block;
+        .walkthrough-notes-cls {
+			max-width: 100%;
+			margin-top: 12px;
+            .MuiGrid-container {
+                display: block;
+                .MuiGrid-item {
+                    max-width: 100%;
+                }
+            }
+        }
+    }
+}

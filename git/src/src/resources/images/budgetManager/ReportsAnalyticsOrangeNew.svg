@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_154661" data-name="Rectangle 154661" width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Analytics" clip-path="url(#clip-path)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <g id="forcast" clip-path="url(#clip-path)">
+      <rect id="Rectangle_154660" data-name="Rectangle 154660" width="48" height="48" fill="rgba(255,255,255,0)"/>
+    </g>
+    <path id="Path_chart-box-outline" data-name="Path / chart-box-outline" d="M15,31H11V17h4V31m8,0H19V11h4V31m8,0H27V23h4v8m4,4H7V7H35V35.2M35,3H7A4.012,4.012,0,0,0,3,7V35a4.012,4.012,0,0,0,4,4H35a4.012,4.012,0,0,0,4-4V7A4.012,4.012,0,0,0,35,3Z" transform="translate(3 3)" fill="#e45718"/>
+  </g>
+</svg>

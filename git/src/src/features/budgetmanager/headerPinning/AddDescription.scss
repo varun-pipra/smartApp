@@ -1,0 +1,15 @@
+.main-container {
+    .MuiButton-root {
+        border: 1px solid darkgrey;
+        color: black;
+        &:hover {
+            background-color: white;
+            border: 1px solid #73c1e9
+        }
+        
+	}
+	.description ::placeholder {
+		font-style: italic;
+	}
+
+}

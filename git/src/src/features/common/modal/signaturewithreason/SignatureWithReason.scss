@@ -1,0 +1,60 @@
+.signature-with-reason {
+	.MuiPaper-root {
+		min-width: unset;
+
+		.MuiDialogTitle-root {
+			padding-left: 1em !important;
+
+			.titlebar-inner-items {
+				&.title-text {
+					font-size: 18px !important;
+					font-weight: bold;
+					width: max-content;
+				}
+			}
+		}
+
+		.MuiDialogContent-root {
+			padding: 1.5em !important;
+			border: unset;
+
+			.reason-field {
+				height: 45%;
+
+				.title-box {
+					padding-bottom: 0.25em;
+					display: flex;
+					align-items: center;
+					gap: 0.25em;
+
+					[class*=common-icon] {
+						&:before {
+							line-height: 0.8;
+							font-size: 20px;
+							color: #666 !important;
+						}
+					}
+
+					.title-text {
+						color: #666;
+						font-size: 15px;
+					}
+				}
+			}
+
+			.sign-box {
+				gap: 1em;
+			}
+
+			.declaration {
+				height: 10%;
+				padding-top: 1em;
+				font-size: 14px;
+
+				.MuiCheckbox-root {
+					padding-left: unset;
+				}
+			}
+		}
+	}
+}

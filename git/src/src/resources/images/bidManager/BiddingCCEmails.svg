@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_154709" data-name="Rectangle 154709" width="33" height="24.954" fill="#ed7532"/>
+    </clipPath>
+    <clipPath id="clip-Bidding_CC_Emails">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Bidding_CC_Emails" data-name="Bidding CC Emails" clip-path="url(#clip-Bidding_CC_Emails)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <g id="Group_145954" data-name="Group 145954" transform="translate(8 12)">
+      <path id="Path_111054" data-name="Path 111054" d="M.662,0,15.685,15.422,30.567,0Z" transform="translate(0.885)" fill="#ed7532"/>
+      <path id="Path_111055" data-name="Path 111055" d="M0,22.438,10.548,11.513,0,.682Z" transform="translate(0 0.912)" fill="#ed7532"/>
+      <g id="Group_144950" data-name="Group 144950" transform="translate(0 0)">
+        <g id="Group_144949" data-name="Group 144949" clip-path="url(#clip-path)">
+          <path id="Path_111056" data-name="Path 111056" d="M16.456,9.8l-.035.035A1.067,1.067,0,0,1,14.912,9.8L11.218,6,.663,16.933l29.9,0L20.066,6.065Z" transform="translate(0.886 8.02)" fill="#ed7532"/>
+          <path id="Path_111057" data-name="Path 111057" d="M9.632,11.559l10.5,10.873V.686Z" transform="translate(12.871 0.917)" fill="#ed7532"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

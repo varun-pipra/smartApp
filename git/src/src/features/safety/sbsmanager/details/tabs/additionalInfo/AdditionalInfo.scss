@@ -1,0 +1,22 @@
+.additional-info-tile {
+    display: flex;
+    justify-content: unset;
+    align-items: center;
+    padding: 13px 0px;
+}
+
+.additional-info-radio-group {
+    margin-left: 30px;
+    display: flex;
+}
+
+.additional-info-details-content {
+    display: grid;
+    grid-gap: 1em 2em;
+    grid-template-columns: repeat(3, 30%);
+    padding: 13px 0px;
+}
+
+.additional-info-header {
+    border: 1px solid #dfdcdc;
+}

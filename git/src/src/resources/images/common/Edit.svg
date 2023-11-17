@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-Edit">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Edit" clip-path="url(#clip-Edit)">
+    <rect width="48" height="48" fill="rgba(228,228,228,0)"/>
+    <g id="outline-edit-24px" transform="translate(6 6)">
+      <path id="Path_4009" data-name="Path 4009" d="M21.431,13.032l1.533,1.533-15.1,15.1H6.333V28.13l15.1-15.1M27.43,3a1.668,1.668,0,0,0-1.167.483l-3.05,3.05,6.249,6.249,3.05-3.05a1.66,1.66,0,0,0,0-2.35l-3.9-3.9A1.636,1.636,0,0,0,27.43,3Zm-6,5.316L3,26.747V33H9.249L27.68,14.565,21.431,8.316Z" fill="#666"/>
+    </g>
+  </g>
+</svg>

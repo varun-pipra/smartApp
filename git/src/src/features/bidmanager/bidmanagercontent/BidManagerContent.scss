@@ -1,0 +1,209 @@
+.bid-manager-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .collapsible-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        max-height: 10rem;
+        background-color: #fafafa; // box-shadow: 0 0 5px 2px rgb(0 0 0 / 10%);
+        .bid-lineitem-form-box {
+            width: 100%;
+            height: calc(100% - 1px);
+            padding: 0.8em 1em 1.8em 1em;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.15);
+            z-index: 1;
+            .bid-lineitem-form-title {
+                font-size: 16px;
+                font-weight: bold;
+                margin: 0;
+            }
+        }
+        .header-buttons-container {
+            height: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center; // background-color: #eaeaea;
+            min-width: 5em;
+            width: 5em;
+            margin: 0 auto;
+            &.abs-position {
+                position: absolute;
+            }
+            .header-button {
+                width: 1em;
+                height: 1em;
+                z-index: 1;
+                margin: 0 0.15em;
+                border-radius: 0.15em;
+                background-color: #fff;
+                border: 1px solid #059cdf;
+                &.btn-focused {
+                    background-color: #059cdf;
+                }
+                .MuiSvgIcon-root {
+                    width: 1em;
+                    height: 1em;
+                    font-size: 0.75em;
+                    color: #059cdf;
+                    &.focused {
+                        color: #fff;
+                    }
+                    &.pin {
+                        transform: rotate(45deg);
+                    }
+                }
+            }
+        }
+    }
+    .bid-manager-grid-box {
+        flex: auto;
+        display: flex;
+        flex-direction: column;
+        &.check-box-customize {
+            .bid-manager-grid {
+                .ag-pinned-left-cols-container {
+                    .ag-row {
+                        .ag-cell {
+                            padding-left: 34px;
+                        }
+                    }
+                }
+                .ag-pinned-left-header {
+                    .ag-header-row {
+                        .ag-header-cell {
+                            padding-left: 35px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+//TODO: Following global rules needs to removed
+.companyimg-cls {
+    border: 1px solid #ccc;
+    object-fit: cover;
+    vertical-align: middle;
+}
+
+.rightpanel-footer {
+    height: 3.5em;
+    z-index: 0;
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    transition: 0.3s;
+    padding: 0px 18px 0px 18px;
+    background-color: #ffffff;
+    box-shadow: 0 -1px 5px 0 rgb(0 0 0 / 25%);
+    .toastmessage {
+        padding: 0.5em 1em;
+        border: 1px solid lightgrey;
+        border-radius: 2em;
+        font-size: 14px;
+        font-family: "Roboto-Regular";
+    }
+    .footer-lineitem-counter {
+        font-family: 'Roboto-Regular';
+    }
+    .footer-icons {
+        border: 1px solid #059cdf;
+        border-radius: 4px;
+        color: #059cdf;
+        padding: 0px;
+        .MuiSvgIcon-root {
+            width: 1em !important;
+            height: 1em !important;
+        }
+    }
+    .Mui-disabled {
+        border: 1px solid transparent;
+        color: #fff;
+        opacity: 0.5;
+    }
+    .btn-post-bid {
+        display: flex;
+        justify-content: flex-end;
+        height: 2.7em;
+        border-radius: 2px;
+        &.Mui-disabled {
+            opacity: 0.5;
+            background-color: #0a8727;
+        }
+    }
+    .btn-decline-bid {
+        display: flex;
+        justify-content: flex-end;
+        background-color: white !important;
+        color: #696969;
+        border: 1px solid gray;
+        height: 2.7em;
+        border-radius: 2px;
+        &.Mui-disabled {
+            opacity: 0.5;
+        }
+    }
+    .btn-acknowledge-bid {
+        height: 2.7em;
+        border-radius: 2px;
+        background-color: #e8793e !important;
+    }
+    .award-bid-cls {
+        border: 1px solid #0a8727;
+        color: #fff !important;
+        margin-top: 4px;
+    }
+    .estimated-bid-cls {
+        background-color: #fdf5cd;
+        padding: 0px 10px;
+        border: 1px solid #ecda57;
+        border-radius: 4px;
+        color: #333;
+        align-items: center;
+        display: flex;
+        height: 46px;
+        .common-icon-info-white:before {
+            background-color: #dbbc3a;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 24px;
+            margin-right: 6px;
+            vertical-align: sub;
+            padding: 2px;
+            float: left;
+        }
+        .text {
+            text-transform: capitalize;
+            font-size: 13px;
+            color: #333;
+            display: flex;
+            p {
+                margin: 0px;
+                font-size: 14px;
+            }
+            .red {
+                color: #d95f5f;
+                font-weight: bold;
+            }
+        }
+        .btn-award-update {
+            background-color: #fdf5cd;
+            color: #ed7431;
+            border: 1px solid #ed7431;
+            padding: 6px;
+            margin-left: 15px;
+            border-radius: 4px;
+            box-shadow: none;
+            &.Mui-disabled {
+                opacity: 0.5;
+            }
+        }
+    }
+}

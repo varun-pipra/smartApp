@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-Paused">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Paused" clip-path="url(#clip-Paused)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <path id="Path_111146" data-name="Path 111146" d="M119,28a21,21,0,1,0,21,21A21.02,21.02,0,0,0,119,28Zm0,2.569A18.431,18.431,0,1,1,100.569,49,18.411,18.411,0,0,1,119,30.569Zm-6.323,8.149a2.883,2.883,0,0,0-2.89,2.889V56.391a2.884,2.884,0,0,0,2.89,2.89h1.445a2.885,2.885,0,0,0,2.891-2.89V41.608a2.884,2.884,0,0,0-2.891-2.889Zm11.2,0a2.884,2.884,0,0,0-2.89,2.889V56.391a2.884,2.884,0,0,0,2.89,2.89h1.445a2.885,2.885,0,0,0,2.891-2.89V41.608a2.884,2.884,0,0,0-2.891-2.889Z" transform="translate(-95 -25)" fill="#fff" fill-rule="evenodd"/>
+  </g>
+</svg>

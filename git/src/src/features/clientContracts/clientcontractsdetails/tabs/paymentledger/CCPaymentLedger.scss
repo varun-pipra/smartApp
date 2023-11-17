@@ -1,0 +1,85 @@
+.cc-payment-ledger {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    .iqsearch-field {
+        float: right;
+    }
+    button {
+        .common-icon-payment-received:before {
+            color: #fff;
+        }
+    }
+    .header {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        .title-action,
+        .search-action {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .title-action {
+            padding: 1em 0;
+            .title {
+                margin-right: 1em;
+                font-family: 'Roboto-Regular';
+                font-size: 17px;
+                font-weight: bold;
+            }
+            .iq-menu-button {
+                height: 2em;
+            }
+        }
+        .kpi-fields {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .kpi-item-tile {
+                .kpi-label {
+                    font-size: 1rem;
+                    color: #808080;
+                    display: flex;
+                    align-items: center;
+                }
+                .kpi-field-container {
+                    color: #808080;
+                    display: flex;
+                    align-items: center;
+                    .kpi-value {
+                        line-height: 2;
+                        margin-left: 4px;
+                        color: #333;
+                    }
+                }
+            }
+        }
+        .search-action {
+            justify-content: space-between;
+            padding: 1em 0;
+        }
+    }
+    .cc-payment-ledger-list {
+        flex: 4;
+        .ag-cell {
+            button {
+                padding: 6px 6px;
+                background-color: transparent;
+            }
+            .payment-status-icon {
+                font-size: 20px;
+                margin: 0px 6px 0px 3px;
+                &:before {
+                    color: #fff;
+                }
+            }
+            .common-icon-payment-authorized {
+                font-size: 12px;
+                line-height: 1.9;
+            }
+        }
+    }
+}

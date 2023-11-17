@@ -1,0 +1,61 @@
+.user-selection-tiles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    &:hover {
+        cursor: pointer;
+    }
+    &_item {
+        border: 1px solid lightgrey;
+        padding: 10px 8px;
+        border-radius: 5px;
+        max-height: 120px;
+        width: 120px;
+        margin-right: 10px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        &:last-child {
+            margin-right: 0;
+        }
+        &.active {
+            border: 1px solid #059cdf;
+            background-color: rgba(5, 156, 223, 0.08);
+        }
+        &.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: none;
+        }
+        &-title-wrapper {
+            align-items: center;
+            padding-bottom: 0.5em;
+            .MuiRadio-root {
+                padding: 0;
+            }
+        }
+        &-title {
+            font-weight: 600;
+        }
+        &-desc {
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+    }
+    .user-selection-tiles_item-desc .common-icon-oneside:before {
+        color: #059cdf;
+        content: "\eb39";
+        font-size: 4.5rem;
+        align-items: center;
+    }
+    .user-selection-tiles_item-desc .common-icon-bothside:before {
+        color: #059cdf;
+        content: "\eb2f";
+        font-size: 4.5rem;
+        align-items: center;
+    }
+}

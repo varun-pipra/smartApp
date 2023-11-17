@@ -1,0 +1,178 @@
+.vendor-pay-application-form {
+    padding: 0.5em 1em 2em;
+    box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.15);
+    position: relative;
+    .form-title {
+        margin: 0;
+        padding: 0.5em 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    .vendor-pay-apps-lineitem-form {
+        .first-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1em;
+            .company-field {
+                // width: 40em;
+                flex: 2;
+                .MuiInputBase-root {
+                    //	padding-top: 4px;
+                }
+            }
+            .contract-field {
+                // width: 40em;
+                flex: 2;
+            }
+            .po-field {
+                // width: 40em;
+                flex: 1.4;
+                .MuiInputBase-input {
+                    padding-left: 5px;
+                }
+            }
+            .amount-field {
+                .MuiInputBase-input {
+                    padding-left: 5px;
+                }
+            }
+            .start-date-field,
+            .end-date-field {
+                // width: 10em;
+                flex: 1;
+                .iq-customdate-cont {
+                    margin-top: 10px;
+                }
+            }
+            .common-icon-title:before,
+            .common-icon-Companies:before,
+            .common-icon-contracts:before,
+            .common-icon-contract-amount:before {
+                font-size: 18px;
+                color: #ed7431
+            }
+            .common-icon-Companies:before {
+                font-size: 26px !important;
+            }
+            .common-icon-contracts:before {
+                font-size: 20px !important;
+            }
+            .common-icon-post-contract:before {
+                font-size: 18px !important;
+                color: #ed7431;
+            }
+            .common-icon-contract-amount {
+                margin-top: 4px;
+                &:before {
+                    font-size: 20px;
+                }
+            }
+        }
+        .second-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            gap: 1em;
+            .work-items {
+                // flex: 2;
+                width: 43%;
+            }
+            .schedule-values {
+                // flex: 2;
+                width: 53%;
+                margin-right: 5%;
+            }
+            .common-icon-smartapp:before {
+                color: #ed7431;
+                font-size: 18px;
+            }
+            .common-icon-schedule-values:before {
+                font-size: 21px;
+                color: #ed7431;
+            }
+        }
+    }
+}
+
+.payment-details-cls {
+    h2.MuiDialogTitle-root {
+        padding: 4px 30px;
+        .title-text {
+            font-size: 20px;
+        }
+    }
+    .MuiDialogContent-root {
+        border: 0px;
+        .payment-details-wrap {
+            padding: 10px 30px;
+            height: 100%;
+            overflow-y: auto;
+            .ponumber-invoice-cls {
+                display: flex;
+                gap: 1em;
+                margin-bottom: 15px;
+                .ponumber-cls,
+                .invoice-cls {
+                    width: 100%;
+                }
+                .ponumber-label,
+                .invoice-label {
+                    font-size: 14px;
+                    color: #666;
+                    margin-bottom: 8px;
+                }
+            }
+            .date-sent-cls {
+                margin-bottom: 15px;
+                .iq-customdate-cont {
+                    width: 100%;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    padding: 8px 15px;
+                    margin-top: 0px;
+                    .rmdp-input {
+                        border: 0px solid #ccc;
+                        vertical-align: middle;
+                    }
+                }
+            }
+            .amount-sent-cls,
+            .mode-payment-cls {
+                margin-bottom: 15px;
+            }
+            .mode-payment-cls {
+                .MuiSelect-select {
+                    padding: 10px 14px;
+                }
+            }
+        }
+    }
+    .btn-add-line-items.cancel {
+        background-color: #666 !important;
+        margin-right: 20px;
+    }
+    label.MuiFormLabel-root {
+        margin-bottom: 2px !important;
+    }
+    .doc-upload-base-container {
+        .doc-lbl-hdr {
+            font-size: 14px;
+        }
+        .doc-upload-text-cont {
+            margin-left: 0px;
+        }
+        .doc-file-cont-wrap {
+            .doc-file-cont {
+                min-height: 145px;
+            }
+            .doc-file-grid-view {
+                height: 145px;
+            }
+        }
+    }
+    .MuiDialogActions-root {
+        padding: 1em 2em !important;
+    }
+}

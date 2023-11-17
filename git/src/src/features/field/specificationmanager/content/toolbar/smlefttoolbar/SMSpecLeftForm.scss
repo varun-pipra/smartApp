@@ -1,0 +1,120 @@
+.smleft-toolbar-spec-container {
+    min-height: 564px;
+    display: flex;
+    width: 60em;
+    flex-direction: column;
+    .inputlabel {
+        font-family: "Roboto-Regular" !important;
+        color: #666 !important;
+        font-size: 14px !important;
+        line-height: 1.6;
+        text-align: left;
+    }
+}
+
+.smleft-toolbar-spec-tab {
+    border: 1px solid #dadada;
+    top: 13em;
+    border-radius: 2px;
+    width: 32em;
+    position: fixed;
+    z-index: 1000;
+    max-Width: 900px !important;
+    background-color: #fff;
+    box-shadow: 0px 1px 4px 0px #dadada;
+    .popover-spec {
+        width: 29em;
+        height: 20em;
+        margin: 20px;
+        .header {
+            color: #333 !important;
+        }
+        .MuiInputLabel-asterisk {
+            color: red !important;
+        }
+        .reason-textfield-cls {
+            display: flex;
+            gap: 4px;
+            margin-top: 10px;
+        }
+        .fields-container-spec {
+            margin-top: 14px;
+            padding-top: 5px;
+            width: 70%;
+            gap: 20px;
+            .fields-spec {
+                display: block;
+                width: 33.3%;
+                .common-icon-warning-medal:before {
+                    font-size: 20px;
+                    color: #ed7431;
+                }
+            }
+            .MuiInputBase-input {
+                text-align: left;
+                padding: 6px 18px 2px 0px;
+            }
+        }
+        .add-spec {
+            display: grid;
+            gap: 12px;
+            .text-extractor-icon {
+                align-items: flex-end;
+                display: flex;
+                margin-left: 12px;
+                margin-bottom: 6px;
+                .common-icon-extraction-area:before {
+                    font-size: 24px;
+                    color: #059cdf;
+                    border: 1px solid #059cdf;
+                    border-radius: 3px;
+                    cursor: pointer;
+                    padding: 4px;
+                }
+            }
+            .common-icon-spec-number:before {
+                color: #ec711c;
+                font-size: 20px;
+            }
+            .common-icon-division:before {
+                color: #ec711c;
+                font-size: 20px;
+            }
+            .common-icon-bid-lookup:before {
+                font-size: 20px;
+                color: #ec711c;
+            }
+        }
+        .common-icon-pages:before {
+            color: #ec711c;
+            font-size: 20px;
+        }
+        .common-icon-system-breakdown:before {
+            font-size: 18px;
+            color: #ec711c;
+        }
+        .common-icon-phase:before {
+            font-size: 20px;
+            color: #ec711c;
+        }
+        .add-button-cls {
+            display: flex;
+            justify-content: flex-end;
+            text-align: center;
+            margin: 16px 0px;
+            .MuiButton-root {
+                justify-content: center !important;
+                border: 1px solid #ea5b0e;
+                color: #f75c09 !important;
+                background-color: transparent !important;
+                height: 34px;
+                border-radius: 2px;
+            }
+        }
+    }
+}
+
+.common-icon-title {
+    color: #ed7532;
+    font-size: 1em;
+}

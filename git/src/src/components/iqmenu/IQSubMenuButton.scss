@@ -1,0 +1,14 @@
+#submenu-popover {
+    .user-menu-items {
+        .MuiListItem-root {
+            padding-left: 10px;
+            .MuiTypography-root {
+                font-size: 15px;
+                color: rgb(51, 51, 51)
+            }
+            .MuiListItemIcon-root {
+                min-width: 40px;
+            }
+        }
+    }
+}

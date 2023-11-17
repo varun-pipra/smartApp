@@ -1,0 +1,30 @@
+.ss-brena-card-section {
+    overflow-y: auto; // max-height: 75vh; //TODO:
+    //margin-bottom: 50px;
+    &_title-wrapper {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 10px 5px 12px !important;
+        font-size: 15px;
+        position: sticky;
+        top: 0;
+        background-color: #e2e2e2;
+        min-height: 38px;
+        border-bottom: 1px solid #ccc;
+        border-top: 1px solid #ccc;
+    }
+    &_count {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: #666666;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+    }
+    &_name {
+        font-weight: 700;
+    }
+}

@@ -1,0 +1,63 @@
+.sm-right-panel {
+    height: 100%;
+    display: flex;
+    .iq-brena-doc-viewer:focus-visible {
+        outline: none !important;
+    }
+      .iq-brena-doc-viewer {
+        // position: relative;
+        height: 80% !important;
+        .canvas-wrapper-cls {
+            border: none;
+        }
+        .common-zoom-control {
+            top: 80% !important;
+            left: 85% !important;
+        }
+        .common-navigation-control {
+            left: 45% !important;
+        }
+        .canvas-wrapper-cls {
+            height: 100%;
+            border-top: 0px;
+        }
+    }
+    .sm-doc-cont {
+        height: 100%; // width:60%;
+        z-index: 100;
+        box-shadow: -2px 1px 8px #0000001a;
+    }
+    .sm-right-panel:focus-visible {
+        outline: none;
+    }
+    .sm-doc-cont:focus-visible {
+        outline: none;
+    }
+    .sm-search-cont:focus-visible {
+        outline: none;
+    }
+    .sm-search-cont {
+        width: 35%;
+        position: absolute;
+        right: 0px;
+        box-shadow: -2px 1px 8px #0000001a;
+        height: 100vh;
+        z-index: 1000;
+    }
+    .iq-brena-search-cont {
+        padding: 5px;
+        //border: 1px solid rgb(194, 194, 194) !important;
+        box-shadow: -2px 1px 8px #0000001a;
+        width: 100%;    
+        .iqsearch-field {
+            width: 300px;
+            margin: auto;
+            .MuiInputBase-root {
+                border-left: 0px !important;
+            }
+            .MuiButtonBase-root.search-trigger {
+                border-right: 0px !important;
+            }
+        }
+    }
+}

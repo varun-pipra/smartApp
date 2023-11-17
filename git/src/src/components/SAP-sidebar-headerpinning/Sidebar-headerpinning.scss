@@ -1,0 +1,52 @@
+.sidbar-headerPinning{
+	.DynamicPageAnchorBar-anchorBarActionButton-0-2-50{
+		border-radius: 12px;
+	}
+	.DynamicPage-headerCollapsed-0-2-2{
+		padding:16px 0px 0px 0px;
+		background-color: white
+	}
+	.leftSection{
+		.user-image{
+			    height: 3em;
+				width: 3em;
+				object-fit: contain;
+				border-radius: 49px;
+		}
+		.user-details{
+			padding: 10px 10px 10px 14px;
+			.lastModified{
+				color:#8080808a;
+			}
+			.dateTime{
+				color: black;
+				padding: 4px 0px 0px 0px;
+			}
+		}
+	}
+	.rightSection{
+		.budget-amount-container{	
+			align-items: flex-end;		
+			.budgetSection{
+				padding: 7px 6px;
+				.budgetTag,.balanceTag{
+					font-size: 14x;
+				}
+				.balanceTag{
+					color:#008000c2
+				}
+				.amountLabel , .balanceLabel{
+					padding:0px 6px;
+					font-size: 14px;
+					font-weight: bold;
+				}
+				.amountLabel{
+					color:black;
+				}
+				.balanceLabel{
+					color:#008000c2
+				}
+			}
+		}
+	}
+}

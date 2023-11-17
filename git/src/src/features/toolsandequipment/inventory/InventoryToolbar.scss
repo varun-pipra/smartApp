@@ -1,0 +1,37 @@
+.inventory-toolbar-root-container {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	
+	.toolbar-item-wrapper {
+		flex: 1;
+
+		&.search-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		&.toolbar-group-button-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+		}
+	}
+
+	.MuiIconButton-root {
+		padding-left: 0.5em;
+		padding-right: 0.5em;
+	}
+
+	.MuiToggleButtonGroup-root {
+		height: 2rem;
+
+		.MuiToggleButton-root {
+			&.Mui-selected {
+				color: #fff;
+				background-color: #059cdf;
+			}
+		}
+	}
+}

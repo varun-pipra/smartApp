@@ -1,0 +1,117 @@
+.forecast-transaction-box {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    .forecast-transaction-header {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        .title-action,
+        .search-action {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .title-action {
+            padding: 1em 0;
+            .title {
+                margin-right: 10px;
+                font-family: Roboto-Regular;
+                font-size: 17px;
+                font-weight: bold;
+            }
+        }
+        .forecast-kpi-fields {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .kpi-item-tile {
+                .kpi-label {
+                    font-size: 14px;
+                    color: #808080;
+                }
+                .kpi-field-container {
+                    color: #808080;
+                    display: flex;
+                    align-items: center;
+                    .kpi-value {
+                        line-height: 2;
+                        margin-left: 4px;
+                        color: #333;
+                    }
+                }
+            }
+            .kpi-stack {
+                display: grid;
+                gap: 0.5em;
+                grid-template-columns: 11em minmax(4.3em, auto);
+                .bold {
+                    font-weight: 600;
+                }
+                .kpi-label,
+                .amount {
+                    font-size: 14px;
+                    padding: 0.25em 0.5em;
+                }
+                .amount {
+                    border-radius: 0.25em;
+                    background-color: #efefef;
+                }
+                .positive {
+                    background-color: #c9e59f;
+                }
+                .negative {
+                    background-color: #f7adad;
+                }
+                .kpi-label {
+                    text-align: right;
+                }
+            }
+        }
+        .search-action {
+            justify-content: end;
+            padding: 1em 0;
+        }
+    }
+    .forecast-transaction-list {
+		flex: 4;
+
+		.ag-row-group {
+			.ag-cell {
+				.ag-row-group {
+					.ag-group-value {
+						font-weight: bold;
+					}
+				}
+			}
+		}
+		
+		.bold-font {
+			font-weight: bold;
+		}
+
+		.vertical-center-align {
+			display: flex;
+			align-items: center;
+		}
+
+		.mouse-pointer {
+			cursor: pointer;
+		}
+
+		.blue-color {
+			color: #059cdf;
+		}
+		
+		.right-align {
+			width: 100%;
+			text-align: right;
+		}
+
+		.center-align {
+			width: 100%;
+			text-align: center;
+		}
+    }
+}

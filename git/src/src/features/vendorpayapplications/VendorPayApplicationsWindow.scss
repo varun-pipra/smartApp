@@ -1,0 +1,51 @@
+.vendorpayapp-cls {
+    .titlebar-inner-items.title-text {
+        font-size: 24px;
+        padding-top: 5px;
+        &:before {
+            content: "\ec11";
+            font-family: 'common-webfont';
+            margin-right: 6px;
+        }
+    }
+    .ag-row-group-expanded,
+    .ag-row-group-contracted {
+        background: #c8cbcc !important;
+        // height: 38px !important;
+        opacity: 1;
+        &::before {
+            content: normal;
+            background: #c8cbcc !important;
+        }
+        .ag-cell-wrapper.ag-row-group {
+            background: #c8cbcc !important;
+            .ag-checkbox-input-wrapper.ag-checked:after {
+                font-size: 27px;
+                margin-left: -5.5px;
+                margin-top: 0.8px;
+            }
+        }
+        .ag-cell-wrapper.ag-row-group span.ag-group-value {
+            z-index: 1 !important;
+        }
+        .ag-cell {
+            background-color: #c8cbcc !important;
+            .ag-group-child-count {
+                color: #333;
+            }
+            .ag-row-group {
+                .ag-group-value {
+                    /* border-radius: 50%;
+                    width: 20px;
+                    height: 20px;
+                    line-height: 1.4;
+                    text-align: center;
+                    margin: auto;
+                    border: 1px solid #666;
+                    margin-right: 8px;
+                    background-color: #fff;*/
+                }
+            }
+        }
+    }
+}

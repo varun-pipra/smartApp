@@ -1,0 +1,13 @@
+.DateTimeSection{
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1em;
+
+	.dateSection{
+		width:50%;
+	}
+	.timeSection{
+		width:50%;
+	}
+}

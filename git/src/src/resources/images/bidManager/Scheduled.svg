@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-Scheduled">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Scheduled" clip-path="url(#clip-Scheduled)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <path id="Subtraction_203" data-name="Subtraction 203" d="M31.667,42.221H6.333A6.333,6.333,0,0,1,0,35.887V12.666A6.333,6.333,0,0,1,6.333,6.332H8.444V0h4.222V6.332H25.334V0h4.222V6.332h2.112A6.333,6.333,0,0,1,38,12.666V35.887A6.333,6.333,0,0,1,31.667,42.221Zm2.111-31.667H4.222V38H33.778ZM19,26.389H8.143V15.834H19Z" transform="translate(5 3.001)" fill="#fff" fill-rule="evenodd"/>
+  </g>
+</svg>

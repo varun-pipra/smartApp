@@ -1,0 +1,58 @@
+.iq-toggle {
+    padding: 0 !important;
+    width: 2.8em !important;
+    height: 1.25em !important;
+    border-radius: 25%/50%;
+    background-color: #636262;
+    .MuiSwitch-switchBase {
+        height: inherit; // padding: 0;
+        padding: 0 0 0 0.2em;
+        &.Mui-checked {
+            color: unset;
+            transform: translateX(1.5em);
+            +.MuiSwitch-track {
+                opacity: 1;
+                background-color: #059cdf;
+                &:before {
+                    display: flex;
+                    align-items: center;
+                }
+                &:after {
+                    display: none;
+                }
+            }
+        }
+        .MuiSwitch-thumb {
+            color: #fff !important;
+            width: 1.0em;
+            height: 1.0em;
+            box-shadow: unset;
+        }
+    }
+    .MuiSwitch-switchBase.Mui-disabled+.MuiSwitch-track {
+        background-color: #86cceb;
+        border: 1px solid #86cceb;
+    }
+    .MuiSwitch-track {
+        opacity: 1;
+        background-color: #636262;
+        &:before,
+        &:after {
+            color: #fff !important;
+            height: inherit; // align-items: center;
+            font-size: 9px;
+            font-family: 'Roboto-Regular';
+            text-transform: uppercase;
+        }
+        &:before {
+            display: none;
+            padding-left: 0.9em;
+        }
+        &:after {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.6em;
+        }
+    }
+}

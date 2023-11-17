@@ -1,0 +1,29 @@
+.badger-card-header {
+    .card {
+        border: 1px solid #e2e2e2;
+        box-shadow: 0px 0px 4px 0px #c2c2c2;
+        border-radius: 10px;
+        margin-top: 12px;
+        .card-header-body {
+            display: flex;
+            justify-content: space-between;
+        }
+        .card-body-content {
+            display: flex;
+            align-items: center;
+        }
+        .MuiCardContent-root {
+            height: 18.5em;
+            width: 28em;
+            padding: 12px !important;
+        }
+    }
+}
+
+.viewcard {
+    text-align: center;
+    margin-top: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #333;
+}

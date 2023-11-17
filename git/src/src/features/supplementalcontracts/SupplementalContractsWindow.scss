@@ -1,0 +1,75 @@
+.contract-attachments-window {
+	.MuiDialogTitle-root {
+		.title-tools {
+			.MuiIconButton-root {
+				.help-icon {
+					width: 1.8em;
+					height: 1.8em;
+					border: 1px solid #d5d1d1;
+					border-radius: 50%;
+					display: flex;
+					// align-items: center;
+					justify-content: center;
+
+					&::before {
+						width: inherit;
+						font-size: 1.75em;
+					}
+				}
+			}
+		}
+	}
+    .MuiDialogContent-root {
+        display: flex;
+        flex-direction: column;
+
+        .body-box {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+
+            .toolbar {
+                padding: 0.5em 1em;
+                .sub-section {
+                    flex: 1;
+                    .iqsearch-field {
+                        .MuiInputBase-root {
+                            border-left: 0px solid rgb(194, 194, 194) !important;
+                        }
+                        .search-trigger {
+                            border-right: 0px solid rgb(194, 194, 194) !important;
+                        }
+                    }
+                }
+            }
+            .grid-box {
+                flex: auto;
+                .sui-grid {
+                    .ag-row {
+                        // height: 60px !important;
+                        .ag-cell {
+                            .hotlink {
+                                color: #059cdf;
+                            }
+                            .thumbnail {
+                                width: 2.5em;
+                                height: 2.5em;
+                                object-fit: cover;
+                                border: 1px solid #ddd;
+                                margin-top: 2px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .MuiDialogActions-root {
+        button {
+            height: 36px;
+        }
+    }
+    .title-text {
+        font-size: 20px;
+    }
+}

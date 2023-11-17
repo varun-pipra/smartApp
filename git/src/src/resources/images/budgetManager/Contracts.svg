@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_154661" data-name="Rectangle 154661" width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Contracts" clip-path="url(#clip-path)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <g id="forcast" clip-path="url(#clip-path)">
+      <rect id="Rectangle_154660" data-name="Rectangle 154660" width="48" height="48" fill="rgba(255,255,255,0)"/>
+    </g>
+    <g id="contracts-2" data-name="contracts" transform="translate(8 6)">
+      <path id="Path_54849" data-name="Path 54849" d="M155.39,16.8A1.3,1.3,0,0,0,154,17.952V51.717a1.34,1.34,0,0,0,1.391,1.151h23.186a1.573,1.573,0,0,0,.985-.348l6.492-5.372a1.073,1.073,0,0,0,.406-.8V17.952a1.34,1.34,0,0,0-1.391-1.151Zm1.391,2.3h26.9V45.195h-5.1a1.326,1.326,0,0,0-1.391,1.151v4.221h-20.4Zm18.433,1.139a1.523,1.523,0,0,0-.927.4l-5.652,5.336-2.666-1.655a1.672,1.672,0,0,0-1.971.216,1.06,1.06,0,0,0,.29,1.619l3.71,2.3a1.668,1.668,0,0,0,1.884-.156l6.492-6.139a1.02,1.02,0,0,0,.217-1.283,1.519,1.519,0,0,0-1.377-.635ZM160.955,31a1.172,1.172,0,1,0,0,2.3H179.5a1.172,1.172,0,1,0,0-2.3Zm0,5.372a1.172,1.172,0,1,0,0,2.3H179.5a1.172,1.172,0,1,0,0-2.3Zm0,5.372a1.172,1.172,0,1,0,0,2.3H179.5a1.172,1.172,0,1,0,0-2.3ZM179.968,47.5h1.739l-1.739,1.439Z" transform="translate(-153.999 -16.801)" fill="#666"/>
+    </g>
+  </g>
+</svg>

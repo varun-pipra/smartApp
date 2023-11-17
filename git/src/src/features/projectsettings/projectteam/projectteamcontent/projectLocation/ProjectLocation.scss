@@ -1,0 +1,75 @@
+.ProjectLocation {
+    label {
+        margin-bottom: 8px;
+    }
+    .MuiFormControl-root {
+        margin: 0px;
+    }
+    .email-dropdown-chip-cls {
+        border-radius: 4px !important;
+        height: 24px !important;
+        margin-left: 25px;
+    }
+    .email-dropdown-chip-close-cls {
+        transform: rotate(45deg);
+    }
+}
+
+.projectLocation_autocompleteMultiple {
+    margin: 0px !important;
+    .MuiInputBase-root {
+        padding: 0px !important;
+        &:before {
+            content: "\e9be";
+            font-family: "common-webfont";
+            color: #ef7c35;
+            font-size: 20px;
+            padding-top: 2px;
+            padding-bottom: 4px;
+        }
+        .MuiAutocomplete-input {
+            padding: 7px 4px 5px 6px !important;
+        }
+        .MuiAutocomplete-endAdornment {
+            right: 0px !important;
+            top: calc(56% - 14px) !important;
+        }
+        .MuiAutocomplete-tag {
+            background: #ebebeb;
+            border: none;
+            border-radius: 50%;
+            padding: 2px 2px 2px 2px;
+        }
+    }
+    .MuiOutlinedInput-notchedOutline {
+        border: none !important;
+        border-bottom: 1px solid #ccc !important;
+        border-radius: initial;
+    }
+}
+
+.projectLocation_autocomplete {
+    .MuiInputBase-root {
+        padding: 0px !important;
+        &:before {
+            content: "\e9be";
+            font-family: "common-webfont";
+            color: #ef7c35;
+            font-size: 20px;
+            padding-top: 2px;
+            padding-bottom: 4px;
+        }
+        .MuiAutocomplete-input {
+            padding: 7px 4px 5px 30px !important;
+        }
+        .MuiAutocomplete-endAdornment {
+            right: 0px !important;
+            top: calc(56% - 14px) !important;
+        }
+    }
+    .MuiOutlinedInput-notchedOutline {
+        border: none !important;
+        border-bottom: 1px solid #ccc !important;
+        border-radius: initial;
+    }
+}

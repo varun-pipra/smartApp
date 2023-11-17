@@ -1,0 +1,44 @@
+.ConformationDailog {
+    .MuiDialog-container {
+        .MuiPaper-root {
+            max-width: 440px;
+        }
+        h2 {
+            font-size: 16px !important;
+            font-weight: bold;
+            justify-content: space-between;
+            .closeButton {
+                cursor: pointer;
+            }
+        }
+        .MuiDialogContent-root {
+            padding: 0px 24px 8px 24px !important;
+            p {
+                color: #333;
+            }
+        }
+    }
+    .MuiDialogActions-root {
+        padding: 1.45em 1em !important;
+        .cancel-cls {
+            background-color: #666;
+            color: #fff;
+            padding: 12px;
+            height: 37px;
+            border-radius: 2px;
+            text-transform: uppercase !important;
+            margin-right: 10px;
+            box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+        }
+        .yes-cls {
+            background-color: #059cdf;
+            color: #fff;
+            padding: 12px;
+            height: 37px;
+            display: block;
+            border-radius: 2px;
+            text-transform: uppercase !important;
+            margin-right: 8px;
+        }
+    }
+}
