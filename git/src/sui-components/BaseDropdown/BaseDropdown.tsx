@@ -66,6 +66,7 @@ interface SUIBaseDropdownSelectorProps {
 	insideGridCellEditor?: boolean;
 	handleListOpen?: Function;
 	handleListClose?: Function;
+	disabled?: boolean;
 }
 
 const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
@@ -105,6 +106,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 		insideGridCellEditor = false,
 		handleListOpen= () => { },
 		handleListClose= () => { },
+		disabled = false,
 	} = props;
 
 	const [selectedOptions, setSelectedOptions] = React.useState<any[]>(value);
@@ -506,6 +508,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 						value={selectedOptions}
 						onChange={handleChange}
 						open={open}
+						disabled={disabled}
 						onClose={handleClose}
 						onOpen={handleOpen}
 						renderValue={(selected: any) => {

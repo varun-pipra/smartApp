@@ -11,7 +11,7 @@ const PhasesGridListExample = () => {
 
   return (
     <div style={{ width: 400, height: 300, margin: '100px 0' }}>
-      <PhasesGridList data={PhasesData}></PhasesGridList>
+      <PhasesGridList></PhasesGridList>
     </div>
   );
 };

@@ -7,10 +7,10 @@ const moduleName = "Project Team: Grid Data";
 export const fetchPtGridDataList = async (appInfo: any, payload: any, callback: any) => {
 	let response;
 	// if (!isLocalhost) response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/Safety/Credential.iapi/GetMembersSafetyData?sessionId=${appInfo?.sessionId}&projectId=${appInfo?.projectId}`);
-	if (isLocalhost) response = await fetch(`https://5ba09a787d0a4ea1bc0f0c1420152d1c.smartappbeta.com/Enterprisedesktop/api/v2/users/filtered?sessionId=3a62f03dd83d4e25b36fc38e5213fe1d`, {
+	if (!isLocalhost) response = await fetch(`${appInfo?.hostUrl}/Enterprisedesktop/api/v2/users/filtered?sessionId=${appInfo?.sessionId}`, {
 		method: 'POST',
 		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify({"projectId":"6e83792a-3e66-49d6-9442-c6a1e918b48f","limit":10000,"offset":0,"sortBy":"lastName","sortDirection":"ASC"})
+		body: JSON.stringify(payload)
 	});
 	else {
 		if (localServer) {
@@ -26,22 +26,21 @@ export const fetchPtGridDataList = async (appInfo: any, payload: any, callback: 
 	const responseData = await response.json(),
 		gridData = responseData?.values || responseData?.data || [];
 	// if (gridData && gridData.length > 0) {
-	// postMessage({
-	// 	event: 'projectteam',
-	// 	evnt: 'updatetotalcount',
-	// 	body: {
-	// 		evt: "updatetotalcount",
-	// 		totalCount: responseData?.actualCount || gridData?.length || 0
-	// 	},
-	// 	data: {
-	// 		evt: "updatetotalcount",
-	// 		totalCount: responseData?.actualCount || gridData?.length || 0
-	// 	}
-	// });
+	postMessage({
+		event: 'projectteam',
+		evnt: 'updatetotalcount',
+		body: {
+			evt: "updatetotalcount",
+			totalCount: responseData?.actualCount || gridData?.length || 0
+		},
+		data: {
+			evt: "updatetotalcount",
+			totalCount: responseData?.actualCount || gridData?.length || 0
+		}
+	});
 	// }
 	const modifiedRespone = gridData.map((row: any, index: number) => {
-		return { ...row,
-			rowNum:index, 
+		return { ...row,rowNum:index, 
 			// rowId: row.id + '-' + new Date().getTime(), 
 			roleIds: row.roles?.map((r: any) => r.objectId) }
 	});

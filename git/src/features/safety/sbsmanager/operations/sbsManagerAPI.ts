@@ -6,6 +6,7 @@ import {
   PhasesData,
   gridDetailsByIdData,
 } from "data/sbsManager/sbsData";
+import { appsData } from "data/sbsManager/appsList";
 
 const moduleName = "Sbs Manager";
 export const fetchPhaseDropdownData = async () => {
@@ -81,7 +82,7 @@ export const deletePhase = async (payload: any) => {
     response = await fetch(
       `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/phase?sessionId=${appInfo?.sessionId}`,
       {
-        method: "POST",
+        method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(payload),
       }
@@ -91,7 +92,7 @@ export const deletePhase = async (payload: any) => {
   } else return { success: true };
 };
 
-export const createOrUpdatePhases = async (payload: any) => {
+export const createNewPhase = async (payload: any) => {
   let response;
   const appInfo: any = getServerInfo();
   if (!isLocalhost) {
@@ -108,14 +109,30 @@ export const createOrUpdatePhases = async (payload: any) => {
   } else return { success: true };
 };
 
-export const fetchGridDetailsDataByID = async (uniqueid: any) => {
+export const updatePhases = async (payload: any) => {
   let response;
   const appInfo: any = getServerInfo();
   if (!isLocalhost) {
     response = await fetch(
-      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/${{
-        uniqueid,
-      }}?sessionId=${appInfo?.sessionId}`
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/phase?sessionId=${appInfo?.sessionId}`,
+      {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
+    const responseData = await response.json();
+    return responseData || {};
+  } else return { success: true };
+};
+
+export const fetchGridDetailsDataByID = async (uniqueid: any) => {
+  let response;
+  const appInfo: any = getServerInfo();
+  // let detail = {}
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/${uniqueid}?sessionId=${appInfo?.sessionId}`
     );
     if (!response.ok) {
       const message = `API Request Error (${moduleName}): ${response.status}`;
@@ -124,8 +141,26 @@ export const fetchGridDetailsDataByID = async (uniqueid: any) => {
     const responseData = await response.json();
     return responseData?.data || [];
   }
-  return gridDetailsByIdData || [];
+  return GridData?.filter((obj:any) => obj?.id == uniqueid)[0]
 };
+
+export const fetchAppsList = async () => {
+  let response;
+  const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/wdc/GetSmartAppViews?sessionId=${appInfo?.sessionId}`
+    );
+    if (!response.ok) {
+      const message = `API Request Error (${moduleName}): ${response.status}`;
+      throw new Error(message);
+    }
+    const responseData = await response.json();
+    return responseData?.data || [];
+  }
+  return appsData?.data;
+};
+
 
 export const deleteSBSGridRecs = async (payload: any) => {
   let response;

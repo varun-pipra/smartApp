@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "./PhasesGridList.scss";
 import PhasesColorPicker from "../phasesColorPicker/PhasesColorPicker";
@@ -6,16 +6,19 @@ import { Button, IconButton } from "@mui/material";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import SUIAlert from "sui-components/Alert/Alert";
 import { getPhaseDropdownValues } from "../operations/sbsManagerSlice";
-import { useAppDispatch } from 'app/hooks';
+import { useAppDispatch, showLoadMask, hideLoadMask, useAppSelector } from 'app/hooks';
 import { TextField } from "@mui/material";
-import { deletePhase, createOrUpdatePhases } from "../operations/sbsManagerAPI";
+import { deletePhase, createNewPhase, updatePhases } from "../operations/sbsManagerAPI";
+import {PhasesColors} from '../utils';
 
-const PhasesGridList = (props: any) => {
+const PhasesGridList = () => {
   const dispatch = useAppDispatch()
-  const [rowData] = useState(props.data || []);
+  const { phaseDropDownOptions } = useAppSelector((state) => state.sbsManager);
+  const [rowData, setRowData] = useState(phaseDropDownOptions || []);
   const gridRef = useRef<any>();
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [newPhase, setNewPhase] = useState<any>('');
+  
   const [alert, setAlert] = React.useState<any>({
     open: false,
     contentText: "",
@@ -24,6 +27,10 @@ const PhasesGridList = (props: any) => {
     actions: true,
     dailogClose: false,
   });
+
+  useEffect(() => {
+    setRowData(phaseDropDownOptions || []);
+  }, [phaseDropDownOptions]);
 
   const [columnDefs] = useState([
     {
@@ -88,25 +95,38 @@ const PhasesGridList = (props: any) => {
     let formattedRows: any = [];
     rowsToDisplay.forEach((rec: any, index: any) => {
       if (rec?.data) {
-        let obj = { ...rec.data, sequence: index + 1 };
+        let obj = { ...rec.data, sequenceNo: index + 1 };
         formattedRows.push(obj);
       }
     });
     return formattedRows;
   };
 
+  /**
+   * Getting updated sequence based data and making patch api call
+   * @author Srinivas Nadendla
+   */
   const onSaveBtnClick = () => {
     const updatedData: any = getUpdatedRowDataWithSequence();
-    //TODO: Check with BE team for API's changes - as current implementattion not supporting array of objects save.
-    if (newPhase?.length >0) {
-      //Add it to the last as new record and hit api
-    }
-    //TODO: createOrUpdatePhases()
-    console.log(updatedData);
+    const payload = {
+      phases: updatedData,
+    };
+    showLoadMask();
+    updatePhases(payload)
+      .then((res: any) => {
+        hideLoadMask();
+        onRefreshButtonClick();
+      })
+      .catch((err: any) => {
+        hideLoadMask();
+        console.log("error", err);
+      })
   };
 
   const onRefreshButtonClick = ()=> {
     dispatch(getPhaseDropdownValues());
+    setSelectedRows([]);
+    gridRef.current.api.deselectAll();
   };
 
   /**
@@ -128,12 +148,15 @@ const PhasesGridList = (props: any) => {
    */
   const onDeleteConfirm = () => {
     const payload: any = pullOutIdsFromPhases(selectedRows);
+    showLoadMask();
     deletePhase(payload)
       .then((res: any) => {
+        hideLoadMask();
         setAlert({ open: false });
-        dispatch(getPhaseDropdownValues());
+        onRefreshButtonClick();
       })
       .catch((err: any) => {
+        hideLoadMask();
         console.log("error", err);
       });
   };
@@ -171,6 +194,47 @@ const PhasesGridList = (props: any) => {
     setSelectedRows(selectedRowItems);
   };
 
+  /**
+   * 
+   * @returns Unique color which is not present in the grid. If all are present, then returns existing color
+   * @author Srinivas Nadendla
+   */
+  const getUniqueColor = ()=>{
+    const updatedData = gridRef.current?.api?.rowModel?.rowsToDisplay || [];
+    const usedColors = [...updatedData].map((rec: any)=> rec.color?.toUpperCase());
+    const combined = [...PhasesColors, ...usedColors];
+    const unUsedColors = combined.filter((item,pos)=> {
+      return combined.indexOf(item) === pos;
+    });
+    return unUsedColors?.length > 0 ? unUsedColors[0] : usedColors[0];
+  }
+
+  /**
+   * On enter firing an add api & on success refreshing the grid
+   * @param val 
+   * @author Srinivas Nadendla
+   */
+  const addNewRecord = (val: any) => {
+    const payload = {
+      phase: {
+        name: val?.trim(),
+        color: getUniqueColor(),
+        sequenceNo: rowData?.length + 1,
+      },
+    };
+    showLoadMask();
+    createNewPhase(payload)
+      .then((res: any) => {
+        hideLoadMask();
+        onRefreshButtonClick();
+        setNewPhase("");
+      })
+      .catch((err: any) => {
+        hideLoadMask();
+        console.log("Failed to add new phase", err);
+      });
+  };
+
   return (
     <>
       <div className="phases-grid-wrapper ag-theme-alpine">
@@ -197,6 +261,11 @@ const PhasesGridList = (props: any) => {
             variant="standard"
             value={newPhase}
             onChange={(e: any) => setNewPhase(e.target.value)}
+            onKeyDown={(e: any) => {
+              if (e.keyCode === 13 && e.target.value?.length > 0) {
+                addNewRecord(e.target.value);
+              }
+            }}
           />
         </div>
         <div className="phases-grid">

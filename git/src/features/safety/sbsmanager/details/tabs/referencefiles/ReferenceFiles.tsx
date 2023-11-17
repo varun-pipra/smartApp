@@ -2,7 +2,7 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import './ReferenceFiles.scss';
 import UploadMenu from "sui-components/DocUploader/UploadMenu/UploadMenu";
-import { useDriveFileBrowser, useAppSelector } from 'app/hooks';
+import { useDriveFileBrowser, useAppSelector,useLocalFileUpload } from 'app/hooks';
 import { getServer } from 'app/common/appInfoSlice';
 import { IconButton, Button } from "@mui/material";
 import IQTooltip from "components/iqtooltip/IQTooltip";
@@ -197,10 +197,31 @@ const ReferenceFiles = () => {
 	], []);
 
 	const projectFileUpload = (folderType: string) => {
-		useDriveFileBrowser({ iframeId: 'vendorContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorContracts', folderType: folderType });
+		console.log('folderType',folderType)
+			useDriveFileBrowser({ iframeId: 'sbsManagerIFrame', roomId: appInfo && appInfo.presenceRoomId, appType: 'SBSManager', folderType: folderType });
 	};
+	
 	const localFileUpload = (data: any) => {
 		console.log('data', data)
+		useLocalFileUpload(appInfo, data).then((fileList: any) => {
+			const structuredFiles = fileList?.map((file: any) => {
+				return {
+					type: 'Additional',
+					name: file.name,
+					description: file.description,
+					stream: {
+						fileId: file.id
+					}
+				};
+			});
+
+			// addContractFiles(appInfo, currentContract?.id, structuredFiles)
+			// 	.then((res: any) => {
+			// 		dispatch(setAdditionalFiles(res?.additional));
+			// 		dispatch(setContractFilesCount((res?.standard?.length || 0) + (res?.additional?.length || 0)));
+			// 		dispatch(getClientContractDetails({ appInfo: appInfo, contractId: currentContract.id }));
+			// 	});
+		});
 	}
 	const onSelectedFilesDownload = () => {
 		console.log('onSelectedFilesDownload', selected)

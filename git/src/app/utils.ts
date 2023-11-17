@@ -34,6 +34,16 @@ export const currencyCode: any = {
 	'ILS': 'he-IL', // Israeli New Sheqel
 	'JPY': 'ja-JP', // Japanese Yen
 };
+
+export const currencyDescription:any = {
+		'USD': 'Dollars', // US Dollar
+		'EUR': 'Euros', // Euro
+		'INR': 'Rupees', // Indian Rupee
+		'GBP': 'Pounds', // British Pound Sterling
+		'CRC': 'Colon', // Costa Rican Colón
+		'ILS': 'Shekel', // Israeli New Sheqel
+		'JPY': 'Yen', // Japanese Yen
+}
 export const setCookie = (name: any, value: any) => {
 	document.cookie = name + "=" + value;
 }

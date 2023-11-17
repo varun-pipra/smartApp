@@ -16,7 +16,7 @@ import { SBSToolbarLeftButtons, SBSToolbarRightButtons } from './sbsManagerConte
 import SBSCategoryRightPanel from './SBSCategoryRightPanel/SBSCategoryRightPanel';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import { getTrades } from "./enums";
-import { getCategoryDropDownOptions, getPhaseDropdownValues, getSBSGridList, setShowSbsPanel,setSelectedNodes } from "./operations/sbsManagerSlice";
+import { getAppsList, getCategoryDropDownOptions, getPhaseDropdownValues, getSBSGridList, setShowSbsPanel, setSelectedNodes } from "./operations/sbsManagerSlice";
 import { formatDate } from "utilities/datetime/DateTimeUtils";
 import _ from 'lodash';
 import { fetchTradesData, getTradeData } from 'features/projectsettings/projectteam/operations/ptDataSlice';
@@ -95,11 +95,11 @@ const SBSManagerWindow = (props: any) => {
   const iframeID = "sbsManagerIFrame";
   const appType = "SBSManager";
   const [showManagePhasesModal, setShowManagePhasesModal] = useState<any>(false);
-  const { phaseDropDownOptions } = useAppSelector((state) => state.sbsManager);
   const [defaultTabId, setDefaultTabId] = useState<any>('');
   const [openRightPanel, setOpenRightPanel] = useState(false);
   const [currentRowSelection, setCurrentRowSelection] = useState<any>(null);
-  
+  const [driveFileQueue, setDriveFileQueue] = useState<any>([]);
+
   useEffect(() => {
 		if (tradesData?.length && filterOptions?.length) {
 			findAndUpdateFiltersData(tradesData, 'trade');
@@ -112,6 +112,8 @@ const SBSManagerWindow = (props: any) => {
       dispatch(fetchTradesData(appInfo));
       dispatch(getPhaseDropdownValues());
       dispatch(getCategoryDropDownOptions());
+      dispatch(getAppsList());
+      
     }
   }, [appInfo]);
   
@@ -157,6 +159,13 @@ const SBSManagerWindow = (props: any) => {
                 const localUploadedFiles = data.data;
                 // dispatch(setUploadedFilesFromLocal(localUploadedFiles));
                 break;
+                case 'getdrivefiles':
+                  try {
+                    setDriveFileQueue(data.data);
+                  } catch (error) {
+                    console.log('Error in adding Bid Reference file from Drive', error);
+                  }
+								break;
               case "updateparticipants":
                 triggerEvent("updateparticipants", {
                   data: data.data,
@@ -183,6 +192,32 @@ const SBSManagerWindow = (props: any) => {
       }
     }
   }, [localhost, appData]);
+  const saveFilesFromDrive = (appInfo: any, fileList: Array<any>) => {
+		const structuredFiles = fileList.map((file: any) => {
+			return {
+				type: 'Additional',
+				description: file.description,
+				stream: {
+					driveObjectId: file.id
+				}
+			};
+		});
+    console.log('structuredFiles',structuredFiles)
+		// addContractFiles(appInfo, currentContract?.id, structuredFiles)
+		// 	.then((res: any) => {
+		// 		dispatch(setAdditionalFiles(res?.additional));
+		// 		dispatch(setContractFilesCount((res?.standard?.length || 0) + (res?.additional?.length || 0)));
+		// 		dispatch(getClientContractDetails({ appInfo: appInfo, contractId: currentContract.id }));
+		// 	});
+	};
+  useEffect(() => {
+		if (driveFileQueue?.length > 0) {
+      console.log('driveFileQueue',driveFileQueue);
+			saveFilesFromDrive(appInfo, [...driveFileQueue]);
+			setDriveFileQueue([]);
+		}
+	}, [appInfo, driveFileQueue]);
+
 
   const columns = [
     {
@@ -192,7 +227,6 @@ const SBSManagerWindow = (props: any) => {
       pinned: "left",
       checkboxSelection: true,
       headerCheckboxSelection: true,
-      rowGroup : true,
       keyCreator: (params: any) => params.data?.category?.name || "None",
       valueGetter: (params: any) => `${params?.data?.category?.name}`,
       minWidth: 350,
@@ -227,7 +261,6 @@ const SBSManagerWindow = (props: any) => {
       field: "phase",
       pinned: "left",
       suppressMenu: true,
-      // rowGroup : true,
       // checkboxSelection: true,
       keyCreator: (params: any) => params.data?.phase?.name || "None",
       minWidth: 250,
@@ -370,6 +403,10 @@ const SBSManagerWindow = (props: any) => {
   const onGridSearch = (searchTxt: string) => {
 		    setGridSearchText(searchTxt);
 	};
+  const onRowSelection = (e: any) => {
+    const SelectionService = e.api.getSelectedRows();
+    dispatch(setSelectedNodes(SelectionService))
+  }
   const searchAndFilter = (list: any) => {
 		return list.filter((item: any) => {
       const tradeNames = item.trades?.map((x: any) => x?.name?.toString());
@@ -406,11 +443,6 @@ const SBSManagerWindow = (props: any) => {
 			return searchVal && filterVal;
 		});
 	};
-
-  const onRowSelection = (e: any) => {
-		const SelectionService = e.api.getSelectedRows();
-      dispatch(setSelectedNodes(SelectionService))
-  }
   useEffect(() => {
 		if(gridSearchText || selectedFilters) {
 			const data = searchAndFilter([...modifiedList]);
@@ -473,7 +505,7 @@ const SBSManagerWindow = (props: any) => {
                 onGroupChange: onGroupingChange,
                 onFilterChange: onFilterChange,
                 onSearchChange: onGridSearch,
-                // defaultGroups: "category",
+                defaultGroups: "category",
               },
             },
             grid: {
@@ -484,7 +516,7 @@ const SBSManagerWindow = (props: any) => {
               groupIncludeFooter: false,
               groupSelectsChildren: true,
               rowSelection: "multiple",
-              groupDefaultExpanded: -1,
+              groupDefaultExpanded: 1,
               grouped: true,
               groupRowRendererParams: groupRowRendererParams,
               groupDisplayType: "groupRows",
@@ -536,7 +568,7 @@ const SBSManagerWindow = (props: any) => {
         <SBSManagePhasesModal 
           open={showManagePhasesModal}
           className={'sbs-manage-phases-dialog'}
-          contentText={<PhasesGridList data={phaseDropDownOptions}></PhasesGridList>}
+          contentText={<PhasesGridList></PhasesGridList>}
           title={""}
           showActions={false}
           dialogClose={true}

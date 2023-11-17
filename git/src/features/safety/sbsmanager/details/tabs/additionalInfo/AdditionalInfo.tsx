@@ -3,8 +3,17 @@ import { RadioGroup, FormControlLabel, Radio, InputLabel } from "@mui/material";
 import { appsData } from "data/sbsManager/appsList";
 import SUIBaseDropdownSelector from "sui-components/BaseDropdown/BaseDropdown";
 import { AdditionalInfoGrid } from "./AdditionalInfoGrid";
+import React from "react";
+import { useAppSelector } from "app/hooks";
 
-export const AdditionalInfo = (props:any) => {
+export const AdditionalInfo = () => {
+  const { detailsData, appsList } = useAppSelector(state => state.sbsManager)
+  const [additionalInfo, setAdditionalInfo] = React.useState<any>();
+  React.useEffect(() => {console.log("setAdditionalInfo", additionalInfo, detailsData); setAdditionalInfo(detailsData)}, [detailsData]);
+  const handleOnChange = (name: string, value: any) => {
+    console.log("value", value)
+    setAdditionalInfo({...additionalInfo, [name]: value})
+  }
   return (
     <div className="sbs-details">
       <div className="eventrequest-details-box">
@@ -21,13 +30,13 @@ export const AdditionalInfo = (props:any) => {
           <div className="additional-info-radio-group">
             <RadioGroup
               row
-              name="markupFee"
+              name="configureSupplementalInfo"
               className="associated-to"
-              // value={formData?.addMarkupFee}
-              onChange={(e: any) => {}}
+              value={additionalInfo?.configureSupplementalInfo ? 'yes' : "no"}
+              onChange={(e: any) => handleOnChange('configureSupplementalInfo', e.target.value == 'yes' ? true :  false)}
             >
-              <FormControlLabel value={props.configureSupplementalInfo} checked={props.configureSupplementalInfo ? true : false} control={<Radio />} label="Yes" />
-              <FormControlLabel value={props.configureSupplementalInfo} checked={props.configureSupplementalInfo ? false : true} control={<Radio />} label="No" />
+              <FormControlLabel value={'yes'} control={<Radio />} label="Yes" />
+              <FormControlLabel value={'no'} control={<Radio />} label="No" />
             </RadioGroup>
           </div>
         </div>
@@ -43,13 +52,14 @@ export const AdditionalInfo = (props:any) => {
               Select an App to configure supplemental info
             </InputLabel>
             <SUIBaseDropdownSelector
-              // value={formData?.vendor ? formData?.vendor : []}
+              value={appsList?.filter((obj:any) => obj?.id==additionalInfo?.configureSupplementalInfoApp)} 
               width="150%"
               menuWidth="200px"
               icon={<span className="common-icon-smartapp-logo"> </span>}
               placeHolder={"Select App"}
-              dropdownOptions={appsData?.data}
-              // handleValueChange={(value: any, params: any) => handleOnChange(value, 'vendor')}
+              dropdownOptions={appsList}
+              disabled={!additionalInfo?.configureSupplementalInfo}
+              handleValueChange={(value: any, params: any) => handleOnChange('configureSupplementalInfoApp', value[0]?.id)}
               showFilterInSearch={false}
               multiSelect={false}
               companyImageWidth={"17px"}
@@ -69,7 +79,7 @@ export const AdditionalInfo = (props:any) => {
         </div>
         <div>
           <div>
-            <AdditionalInfoGrid />
+            <AdditionalInfoGrid disabled={!(additionalInfo?.configureSupplementalInfo && additionalInfo?.configureSupplementalInfoApp)}/>
           </div>
         </div>
       </div>

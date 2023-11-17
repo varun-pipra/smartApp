@@ -92,7 +92,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 
 	const handleGridRowDoubleClick = (row: any) => {
 		const result = lidCondition ? lidCondition(row.data) : '';
-		if((!lidCondition || result === true) && !row?.node?.group) {
+		if(!lidCondition || result === true) {
 			setOpenLID(true);
 			setDetails(row.data);
 		}
@@ -138,52 +138,20 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 		} else {
 			const grid = gridRef?.current;
 			const node = grid?.api?.getSelectedNodes()[0];
-			let rowIndex = node?.rowIndex || 0;
+			const rowIndex = node?.rowIndex || 0;
 			const totalCount = grid?.api?.getDisplayedRowCount() || 0;
-			const directionCount = direction === '+' ? rowIndex + 1 : rowIndex -1;
-			const grouped = grid?.api?.getDisplayedRowAtIndex(directionCount)?.group;
-
 			let currentRecord;
-			if(grouped) {
-				const rows = gridRef?.current?.api?.getRenderedNodes();
-		// let index:any;
-		if(direction === '-') {
-			for(let i = rows.length; i--;) {
-				if(rows[i].rowIndex < directionCount && !rows[i].group) {
-					rowIndex = rows[i].rowIndex;
-					break;
-				}
+
+			if(direction === '-') {
+				currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex - 1);
+				if((rowIndex - 1) === 0) setNavFlag(-1);
+				else setNavFlag(0);
+			} else if(direction === '+') {
+				currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex + 1);
+				if((rowIndex + 1) === (totalCount - 1)) setNavFlag(1);
+				else setNavFlag(0);
 			}
-		} else if(direction === '+') {
-			for(let j = 0; j < rows.length; j++) {
-				if(rows[j].rowIndex > directionCount && !rows[j].group) {
-					rowIndex = rows[j].rowIndex;
-					break;
-				}
-			}
-		}
-		if(direction === '-') {
-			currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex);
-			grid?.api?.getDisplayedRowAtIndex(rowIndex).setExpanded(true);
-			if((rowIndex - 1) === 0) setNavFlag(-1);
-			else setNavFlag(0);
-		} else if(direction === '+') {
-			currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex);
-			grid?.api?.getDisplayedRowAtIndex(rowIndex).setExpanded(true);
-			if((rowIndex + 1) === (totalCount - 1)) setNavFlag(1);
-			else setNavFlag(0);
-		}
-			} else {
-				if(direction === '-') {
-					currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex - 1);
-					if((rowIndex - 1) === 0) setNavFlag(-1);
-					else setNavFlag(0);
-				} else if(direction === '+') {
-					currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex + 1);
-					if((rowIndex + 1) === (totalCount - 1)) setNavFlag(1);
-					else setNavFlag(0);
-				}
-			}
+
 			if(currentRecord) {
 				currentRecord.setSelected(true, true);
 				setDetails(currentRecord.data);

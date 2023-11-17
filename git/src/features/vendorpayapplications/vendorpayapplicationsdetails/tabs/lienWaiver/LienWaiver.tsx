@@ -20,6 +20,7 @@ import SignatureCanvas from "react-signature-canvas";
 import convertDateToDisplayFormat from "utilities/commonFunctions";
 import { isUserGCForVPA } from "features/vendorpayapplications/utils";
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import { currencyDescription } from "app/utils";
 
 
 interface LienWaiverProps { }
@@ -325,7 +326,7 @@ const LienWaiver = (props: LienWaiverProps) => {
 								: ""
 								} `}</span>
 						)}
-						Dollars
+						{currencyDescription?.[appInfo?.currencyType] ?? 'Dollars'}
 						<span className="bracket">
 							(</span>
 						<span className="amount">

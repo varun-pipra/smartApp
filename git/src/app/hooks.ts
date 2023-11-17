@@ -33,6 +33,13 @@ export const hideLoadMask = () => {
 	}
 };
 
+export const showLoadMask = () => {
+	const loader = document.getElementById('smartapp-react-loader');
+	if (loader) {
+		loader.style.display = 'flex';
+	}
+};
+
 export const useDriveFileBrowser = (params: DriveFileParams) => {
 	postMessage({
 		event: 'getdrivefiles',

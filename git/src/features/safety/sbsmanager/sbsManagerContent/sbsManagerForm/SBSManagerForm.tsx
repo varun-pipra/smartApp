@@ -12,27 +12,25 @@ import {
 } from "features/safety/sbsmanager/operations/sbsManagerSlice";
 import { AddDescription } from "features/budgetmanager/headerPinning/AddDescription";
 import "./SBSManagerForm.scss";
-import {
-  getTradeData,
-} from "features/projectsettings/projectteam/operations/ptDataSlice";
-import { makeStyles, createStyles } from '@mui/styles';
+import { getTradeData } from "features/projectsettings/projectteam/operations/ptDataSlice";
+import { makeStyles, createStyles } from "@mui/styles";
 import { AddSbsManagerForm } from "../../operations/sbsManagerAPI";
 import RTHelper from "utilities/realtime/RTHelper";
-import {setLineItemDescription} from 'features/budgetmanager/operations/tableColumnsSlice'
+import { setLineItemDescription } from "features/budgetmanager/operations/tableColumnsSlice";
 
 const useStyles: any = makeStyles((theme: any) =>
-	createStyles({
-		menuPaper: {
-			maxHeight: 48 * 5.2 + 8, //ITEM_HEIGHT = 48 ,ITEM_PADDING_TOP = 8;
-			maxWidth: '160px !important',
-		},
-	})
+  createStyles({
+    menuPaper: {
+      maxHeight: 48 * 5.2 + 8, //ITEM_HEIGHT = 48 ,ITEM_PADDING_TOP = 8;
+      maxWidth: "160px !important",
+    },
+  })
 );
 const defaultFormData = {
   name: "",
   description: "",
-  category: {id:"",name:"",value:""},
-  phase: {id:"",name:""},
+  category: { id: "", name: "", value: "" },
+  phase: { id: "", name: "" },
   trades: [],
   startDate: "",
   endDate: "",
@@ -45,8 +43,10 @@ const SBSManagerForm = (props: any) => {
   const appInfo = useAppSelector(getServer);
 
   const tradesData: any = useAppSelector(getTradeData);
-  const { phaseDropDownOptions,categoryDropDownOptions } = useAppSelector((state) => state.sbsManager);
-  const { lineItemDescription } = useAppSelector(state => state.tableColumns);
+  const { phaseDropDownOptions, categoryDropDownOptions } = useAppSelector(
+    (state) => state.sbsManager
+  );
+  const { lineItemDescription } = useAppSelector((state) => state.tableColumns);
   // Local state vaiables
   const [formData, setFormData] = React.useState<any>(defaultFormData);
   const [disableAddButton, setDisableAddButoon] = React.useState<boolean>(true);
@@ -96,46 +96,53 @@ const SBSManagerForm = (props: any) => {
   }, [formData.endDate]);
 
   React.useEffect(() => {
-    if(lineItemDescription) {
+    if (lineItemDescription) {
       handleOnChange(lineItemDescription, "description");
     }
-  },[lineItemDescription]);
-  const GetDropDownId = (array: any, value: any) => {
-    console.log(array,value,"value")
-    const id = array.findIndex((x: any) => x.label === value);
-    return id;
+  }, [lineItemDescription]);
+
+  const GetDropDownId = (array: any, value: any, key: any) => {
+    const obj = array.find((x: any) => x.label === value);
+    return obj[key];
   };
+
   const getTradesOptions = () => {
     let groupedList: any = [];
     tradesData.map((data: any, index: any) => {
       groupedList.push({
         ...data,
         label: data.name,
-        value: data.uniqueId,
-				displayLabel: data.name,
+        value: data.objectId,
+        displayLabel: data.name,
       });
     });
     return groupedList;
   };
 
   // onchange methods
-
   const handleOnChange = (value: any, name: any) => {
     console.log("val", value, name);
     setFormData({ ...formData, [name]: value });
-    console.log(formData,"FormData")
   };
 
   const handleAdd = () => {
-    dispatch(setLineItemDescription(""))
+    dispatch(setLineItemDescription(""));
     let data = formData;
-    data.category = {id:GetDropDownId(categoryDropDownOptions ,formData.category.name || formData.category.value )}
-    data.phase = {id:GetDropDownId(phaseDropDownOptions ,formData.phase.name)}
-    const payload = {
-     ...data,
-      uniqueID: uuidForSbs
+    data.category = {
+      Id: GetDropDownId(
+        categoryDropDownOptions,
+        formData.category.name || formData.category.value,
+        "listId"
+      ),
     };
-    console.log("formData",formData)
+    data.phase = {
+      Id: GetDropDownId(phaseDropDownOptions, formData.phase.name, "id"),
+    };
+
+    const payload = {
+      ...data,
+      uniqueID: uuidForSbs,
+    };
     AddSbsManagerForm(payload)
       .then((res: any) => {
         setFormData(defaultFormData);
@@ -149,7 +156,9 @@ const SBSManagerForm = (props: any) => {
     <>
       <div className="sbs-title-description-container">
         <span className="title-text">SBS Manager</span>
-        <AddDescription value={!lineItemDescription ? '' : lineItemDescription} />
+        <AddDescription
+          value={!lineItemDescription ? "" : lineItemDescription}
+        />
         <p className="right-spacer"></p>
       </div>
       <div className="sbs-manager-lineitem-form">
@@ -198,7 +207,6 @@ const SBSManagerForm = (props: any) => {
             Placeholder={"Select"}
             selectedValue={formData?.category.name || formData?.category.value}
             menuProps={classes.menuPaper}
-            // handleChange={(value: any) => handleOnChange({Id :GetDropDownId(categoryDropDownOptions , value?.[0])}, "category")}
             handleChange={(value: any) => {
               const selRec: any = categoryDropDownOptions.find(
                 (rec: any) => rec.value === value[0]
@@ -228,7 +236,6 @@ const SBSManagerForm = (props: any) => {
             Placeholder={"Select"}
             selectedValue={formData?.phase.name}
             menuProps={classes.menuPaper}
-            // handleChange={(value: any) => handleOnChange({Id :GetDropDownId(phaseDropDownOptions , value?.[0])}, "phase")}
             handleChange={(value: any) => {
               const selRec: any = phaseDropDownOptions.find(
                 (rec: any) => rec.value === value[0]
@@ -241,34 +248,32 @@ const SBSManagerForm = (props: any) => {
         </div>
         <div className="type-field">
           <SmartDropDown
-          required={true}
-					options={getTradesOptions()}
-					LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
-					dropDownLabel="Trade"
-					doTextSearch={true}
-					isSearchField={true}
-					isMultiple={true}
-					selectedValue={formData?.trades}
-					isFullWidth
-					outSideOfGrid={true}
-					handleChange={(value: any) => handleOnChange(value, "trades")}
-					handleChipDelete={(value: any) => handleOnChange(value, "trades")}
-					menuProps={classes.menuPaper}
-					sx={{ fontSize: '18px' }}
-					Placeholder={'Select'}
-					isSearchPlaceHolder={'Search'}
-					showCheckboxes={true}
-					showAddButton={false}
-          reduceMenuHeight={true}
+            required={true}
+            options={getTradesOptions()}
+            LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
+            dropDownLabel="Trade"
+            doTextSearch={true}
+            isSearchField={true}
+            isMultiple={true}
+            selectedValue={formData?.trades}
+            isFullWidth
+            outSideOfGrid={true}
+            handleChange={(value: any) => handleOnChange(value, "trades")}
+            handleChipDelete={(value: any) => handleOnChange(value, "trades")}
+            menuProps={classes.menuPaper}
+            sx={{ fontSize: "18px" }}
+            Placeholder={"Select"}
+            isSearchPlaceHolder={"Search"}
+            showCheckboxes={true}
+            showAddButton={false}
+            reduceMenuHeight={true}
           />
         </div>
         <div className="start-date-field">
           <InputLabel className="inputlabel">Est. Start Date</InputLabel>
           <DatePickerComponent
             defaultValue={formData.startDate}
-            onChange={(val: any) =>
-              handleOnChange(val, "startDate")
-            }
+            onChange={(val: any) => handleOnChange(val, "startDate")}
             maxDate={
               formData.endDate !== ""
                 ? new Date(formData.endDate)
@@ -288,9 +293,7 @@ const SBSManagerForm = (props: any) => {
           <InputLabel className="inputlabel">Est. End Date</InputLabel>
           <DatePickerComponent
             defaultValue={formData.endDate}
-            onChange={(val: any) =>
-              handleOnChange(val, "endDate")
-            }
+            onChange={(val: any) => handleOnChange(val, "endDate")}
             minDate={new Date(formData.startDate)}
             containerClassName={"iq-customdate-cont"}
             render={

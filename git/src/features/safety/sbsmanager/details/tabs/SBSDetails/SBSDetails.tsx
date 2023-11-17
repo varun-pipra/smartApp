@@ -23,16 +23,14 @@ const SBSDetailsTab = (props: any) => {
   const { phaseDropDownOptions, categoryDropDownOptions, detailsData } =
     useAppSelector((state) => state.sbsManager);
 
-  const [selectedRecData,setSelectedRecordData] = React.useState<any>({});
-  
+  const [selectedRecData,setSelectedRecordData] = React.useState<any>({});  
   React.useEffect(()=>{
     setSelectedRecordData(detailsData);
   },[detailsData])
-
+  
   const handleOnChange = (value: any, name: any) => {
-		setSelectedRecordData({...selectedRecData, [name]: value});
-	};
-
+    setSelectedRecordData({...selectedRecData, [name]: value});
+  };
 
   const getTradesOptions = () => {
     let localTradList = [
@@ -97,7 +95,6 @@ const SBSDetailsTab = (props: any) => {
             placeholder="Enter Description"
             name="description"
             onChange={(e: any) => handleOnChange(e.target.value, "description")}
-
           />
         </div>
         <div className="eventrequest-details-content">
@@ -120,7 +117,6 @@ const SBSDetailsTab = (props: any) => {
                 selectedValue={
                   selectedRecData.category ? selectedRecData.category.name || selectedRecData.category.value : ""
                 }
-                // handleChange={(value: any) => handleOnChange(let secRcr:categoryDropDownOptions.filter((ele:any) => return ele.value == value[0]}), "category")}
                 handleChange={(value: any) => {
                   const selRec: any = categoryDropDownOptions.find(
                     (rec: any) => rec.value === value[0]
@@ -226,12 +222,12 @@ const SBSDetailsTab = (props: any) => {
             <InputLabel className="inputlabel">Est. End Date</InputLabel>
             <DatePickerComponent
               containerClassName={"iq-customdate-cont"}
-              onChange={(val: any) => handleOnChange(val, 'startDate')}
               defaultValue={formatDate(selectedRecData?.endDate, {
                 year: "numeric",
                 month: "2-digit",
                 day: "2-digit",
               })}
+              onChange={(val: any) => handleOnChange(val, 'endDate')}
               render={
                 <InputIcon
                   placeholder={"Select"}

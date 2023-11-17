@@ -88,8 +88,10 @@ export const GridData = [
       "isImportedFromOrg": false
   },
       ],
-      configureSupplementalInfo: false,
+      configureSupplementalInfo: true,
+      configureSupplementalInfoApp: "ad97b41b-afda-4175-810c-e4cdee2d5dac",
       status: 0,
+
     },
     {
       id: 4,
@@ -705,61 +707,3 @@ export const GridData = [
     "referencefiles": [],
     "links": []
 }
-
-export const additionalInfoGridDropdownOptions = [
-  {
-    id: 1,
-    name: "SBS Fields",
-    color: "#F44336",
-    uniqueId: "e2ae03bd-f828-4da2-9d71-edfe9abd520b",
-    value: "e2ae03bd-f828-4da2-9d71-edfe9abd520b",
-    sequenceNo: 1,
-  },
-  {
-    id: 2,
-    name: "SBS Name",
-    color: "#E91E63",
-    uniqueId: "fe20f93a-0b8b-40af-8980-d8b74922c407",
-    value: "fe20f93a-0b8b-40af-8980-d8b74922c407",
-    sequenceNo: 2,
-  },
-  {
-    id: 3,
-    name: "Category",
-    color: "#9C27B0",
-    uniqueId: "2b4b3571-d90e-4185-ad7d-7a2108488d23",
-    value: "2b4b3571-d90e-4185-ad7d-7a2108488d23",
-    sequenceNo: 3,
-  },{
-    id: 4,
-    name: "phase",
-    color: "#9C27B0",
-    uniqueId: "2b4b3571-d90e-4185-ad7d-7a2108488d23",
-    value: "2b4b3571-d90e-4185-ad7d-7a2108488d23",
-    sequenceNo: 3,
-  },
-
-  {
-    id: 5,
-    name: "Trade",
-    color: "#673AB7",
-    uniqueId: "7fac0e31-cf2e-4a14-b09a-2c7b3d683353",
-    value: "7fac0e31-cf2e-4a14-b09a-2c7b3d683353",
-    sequenceNo: 4,
-  },{
-    id: 6,
-    name: "Est End Date",
-    color: "#E91E63",
-    uniqueId: "fe20f93a-0b8b-40af-8980-d8b74922c407",
-    value: "fe20f93a-0b8b-40af-8980-d8b74922c407",
-    sequenceNo: 2,
-  },
-  {
-    id: 7,
-    name: "Est Start Date",
-    color: "#9C27B0",
-    uniqueId: "2b4b3571-d90e-4185-ad7d-7a2108488d23",
-    value: "2b4b3571-d90e-4185-ad7d-7a2108488d23",
-    sequenceNo: 3,
-  },
-]

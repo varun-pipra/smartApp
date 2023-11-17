@@ -1,13 +1,13 @@
-.sbs-lineitem-detail{
+.sbs-lineitem-detail {
     .iqobjectpage-main-container {
-    #SBSDetails {
-        height: fit-content !important;
-        padding: 1em 1.6em;
-    }
-    #SBSAdditionalInfo {
-        height: fit-content !important;
-        padding: 1em 1.6em;
-    }
+        #SBSDetails {
+            height: fit-content !important;
+            padding: 1em 1.6em;
+        }
+        #SBSAdditionalInfo {
+            height: fit-content !important;
+            padding: 1em 1.6em;
+        }
     }
     .iqobjectpage-main-container .iqobjectpage-tabbar-outer .MuiTabs-flexContainer {
         padding-bottom: 0.25em !important;
@@ -22,6 +22,7 @@
         .title {
             width: 100%;
             .textField {
+                
                 margin-top: 2px;
                 margin-bottom: 2px;
             }

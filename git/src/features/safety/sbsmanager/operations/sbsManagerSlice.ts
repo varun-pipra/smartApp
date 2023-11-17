@@ -5,7 +5,7 @@ import {
   fetchPhaseDropdownData,
   fetchDataList,
   fetchGridDetailsDataByID,
-  deleteSBSGridRecs
+  fetchAppsList,
 } from "./sbsManagerAPI";
 export interface SBSManagerState {
   loading: boolean;
@@ -15,7 +15,8 @@ export interface SBSManagerState {
   sbsGridData: any;
   showSbsPanel: boolean;
   detailsData: any;
-  selectedNodes:any
+  appsList:any;
+  selectedNodes:any;
 }
 
 const initialState: SBSManagerState = {
@@ -26,6 +27,7 @@ const initialState: SBSManagerState = {
   sbsGridData: [],
   showSbsPanel: false,
   detailsData: {},
+  appsList: [],
   selectedNodes:[]
 };
 
@@ -60,11 +62,10 @@ export const getSBSDetailsById = createAsyncThunk<any, any>(
   }
 );
 
-export const deleteSbsRecords = createAsyncThunk<any, any>(
-  "deleteSbsRecords",
-  async (recordIds: any) => {
-    console.log(recordIds)
-    const response = await deleteSBSGridRecs(recordIds);
+export const getAppsList = createAsyncThunk<any>(
+  "getApps",
+  async () => {
+    const response = await fetchAppsList();
     return response;
   }
 );
@@ -109,16 +110,6 @@ export const SBSManagerSlice = createSlice({
       .addCase(getSBSDetailsById.rejected, (state) => {
         state.loading = false;
       })
-      .addCase(deleteSbsRecords.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(deleteSbsRecords.fulfilled, (state, action) => {
-        state.loading = false;
-        console.log(action?.payload)
-      })
-      .addCase(deleteSbsRecords.rejected, (state) => {
-        state.loading = false;
-      })
       .addCase(getCategoryDropDownOptions.pending, (state) => {
         state.loading = true;
       })
@@ -140,10 +131,26 @@ export const SBSManagerSlice = createSlice({
       })
       .addCase(getSBSGridList.rejected, (state) => {
         state.loading = false;
+      })
+      .addCase(getAppsList.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAppsList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.appsList = action.payload?.map((appObj:any) => 	{ return {
+          id: appObj?.appid,
+          objectId: appObj?.id,
+          thumbnailUrl: appObj?.iconUrl,
+          name: appObj?.name,
+          displayField: appObj?.name,
+        }});
+      })
+      .addCase(getAppsList.rejected, (state) => {
+        state.loading = false;
       });
   },
 });
 
-export const { setToastMessage, setShowSbsPanel,setSelectedNodes } = SBSManagerSlice.actions;
+export const { setToastMessage, setShowSbsPanel, setSelectedNodes } = SBSManagerSlice.actions;
 
 export default SBSManagerSlice.reducer;

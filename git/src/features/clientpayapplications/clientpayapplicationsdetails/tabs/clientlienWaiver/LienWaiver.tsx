@@ -20,6 +20,7 @@ import { isUserGCForCPA } from "features/clientpayapplications/utils";
 import { patchClientPayAppDetails } from "features/clientpayapplications/stores/GridAPI";
 import { setEnableSubmitPayApp, setSelectedRecord, setSignatureToAuthorize } from "features/clientpayapplications/stores/ClientPayAppsSlice";
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import { currencyDescription } from "app/utils";
 
 interface LienWaiverProps { }
 
@@ -312,7 +313,7 @@ const LienWaiver = (props: LienWaiverProps) => {
 								: ""
 								} `}</span>
 						)}
-						Dollars
+						{currencyDescription?.[appInfo?.currencyType] ?? 'Dollars'}
 						<span className="bracket">
 							(</span>
 						<span className="amount">

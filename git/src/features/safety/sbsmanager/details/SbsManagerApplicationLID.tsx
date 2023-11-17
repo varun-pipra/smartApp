@@ -42,7 +42,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
       label: "Additional Info",
       showCount: false,
       iconCls: "common-icon-referance",
-			content: <AdditionalInfo selectedRec={data}/>
+			content: <AdditionalInfo />
       
     },
     {
@@ -80,7 +80,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
     },
     tabs: tabConfig,
     footer: {
-      hideNavigation: false,
+      hideNavigation: true,
       rightNode: (
         <>
           <IQButton

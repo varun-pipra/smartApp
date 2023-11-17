@@ -3,25 +3,14 @@ import IQTooltip from "components/iqtooltip/IQTooltip";
 import React, { useEffect } from "react";
 import { IconButton } from "@mui/material";
 import SmartDropDown from "components/smartDropdown";
-import { additionalInfoGridDropdownOptions } from "data/sbsManager/sbsData";
 import SUIGrid from 'sui-components/Grid/Grid';
+import { mappingExpressionsList } from "./mappingExpressionsList";
 
-export const AdditionalInfoGrid = () => {
-  const initialRecord = [{ dependentAppFields: "", mappingExpression: "" }];
+export const AdditionalInfoGrid = (props:any) => {
+  const initialRecord = [{ id: Math.random(), dependentAppFields: "", mappingExpression: "" }];
   const [tableData, setTableData] = React.useState<any>(initialRecord);
   const [newRecord, setNewRecord] = React.useState<any>(initialRecord[0]);
-  const [mappingExpressionOptions, setMappingExpression] = React.useState<any>(
-    []
-  );
-
-  useEffect(() => {
-    let gridDrpDwnOptions: any = [];
-    additionalInfoGridDropdownOptions.map((ele, idx) => {
-      let object = { ...ele, label: ele.name };
-      gridDrpDwnOptions[idx] = object;
-    });
-    setMappingExpression(gridDrpDwnOptions);
-  }, [additionalInfoGridDropdownOptions]);
+  const [mappingExpression, setMappingExpression] = React.useState<any>();
 
   const AIColumns = [
     {
@@ -35,9 +24,11 @@ export const AdditionalInfoGrid = () => {
         return (
           <div style={{ textAlign: "start" }}>
             <SmartDropDown
+              disabled={props?.disabled}            
               // LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
-              options={[]}
-              selectedValue={"selected value"}
+              options={[{id: 1, value: 'SBS Phase Name', label: 'SBS Phase Name'}, {id: 2, value: 'SBS Phase Id', label: 'SBS Phase Id'}]}
+              selectedValue={[params?.data?.dependentAppFields]}
+              handleChange={(val:any) => handleOnUpdate(params, val, 'dependentAppFields')}              
               outSideOfGrid={true}
               isSearchField={false}
               isFullWidth
@@ -56,12 +47,13 @@ export const AdditionalInfoGrid = () => {
         return (
           <div style={{ textAlign: "start" }}>
             <SmartDropDown
-              // LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
-              options={mappingExpressionOptions}
-              selectedValue={""}
-              //  showIconInOptionsAtLeft={true}
+              disabled={props?.disabled}
+              options={mappingExpressionsList}
               outSideOfGrid={true}
               isSearchField={false}
+              isMultiple={false}
+              selectedValue={[params?.data?.mappingExpression]}
+              handleChange={(val:any) => handleOnUpdate(params, val, 'mappingExpression')}
               //  checkboxSelection={true}
               isFullWidth
               Placeholder={"Select"}
@@ -75,23 +67,35 @@ export const AdditionalInfoGrid = () => {
   const onGridRecordAdd = () => {
     let data = [
       ...tableData,
-      { dependentAppFields: "", mappingExpression: "" },
+      { id: Math.random(), dependentAppFields: "", mappingExpression: "" },
     ];
     setTableData(data);
   };
 
+  const handleOnUpdate = (params:any, value: any, key: string) => {
+    console.log("va", params, value)
+    const updatedData = tableData?.map((row:any) => {
+      if(row?.id == params?.data?.id) return {...row, [key]: value[0]}
+      return {...row};
+    })
+    console.log("data", updatedData)
+    setTableData([...updatedData])
+  }
+
   return (
-    <div>
+    <div className={props?.disabled ? 'disable-cls' : ''}>
       <div className="additional-info-header">
         <IQTooltip title="sketch" placement="bottom">
           <IconButton
             className="common-icon-Add"
-            disabled={false}
+            disabled={props?.disabled}
             onClick={() => onGridRecordAdd()}
           ></IconButton>
         </IQTooltip>
         <IQTooltip title="Delete" placement="bottom">
-          <IconButton className="ref-delete-btn">
+          <IconButton className="ref-delete-btn" 
+            disabled={props?.disabled}
+          >
             <span className="common-icon-delete"></span>
           </IconButton>
         </IQTooltip>

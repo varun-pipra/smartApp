@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?87edjp');
-  src:  url('fonts/common-webfont.eot?87edjp#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?87edjp') format('truetype'),
-    url('fonts/common-webfont.woff?87edjp') format('woff'),
-    url('fonts/common-webfont.svg?87edjp#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?2ivz9o');
+  src:  url('fonts/common-webfont.eot?2ivz9o#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?2ivz9o') format('truetype'),
+    url('fonts/common-webfont.woff?2ivz9o') format('woff'),
+    url('fonts/common-webfont.svg?2ivz9o#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-forward1:before {
+  content: "\ec60";
+}
+.common-icon-SBS:before {
+  content: "\ec61";
+}
+.common-icon-manage-sbs-phase:before {
+  content: "\ec62";
+}
+.common-icon-sbs-name:before {
+  content: "\ec63";
+}
+.common-icon-dynamic-dates:before {
+  content: "\ec64";
+}
 .common-icon-Submittal-Summary:before {
   content: "\ec5f";
 }
