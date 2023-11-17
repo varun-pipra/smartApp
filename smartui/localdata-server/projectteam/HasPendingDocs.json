@@ -1,9 +1,0 @@
-{
-    "policyStatus": 2,
-    "certificateStatus": 5,
-    "pendingPolicyCount": 0,
-    "pendingCertificateCount": 9,
-    "safetyStatus": 1,
-    "hasViolated": true,
-    "violationCount": 0
-  }
