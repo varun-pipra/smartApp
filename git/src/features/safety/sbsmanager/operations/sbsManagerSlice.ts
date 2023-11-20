@@ -6,6 +6,7 @@ import {
   fetchDataList,
   fetchGridDetailsDataByID,
   fetchAppsList,
+  fetchDependentAppFields,
 } from "./sbsManagerAPI";
 export interface SBSManagerState {
   loading: boolean;
@@ -16,6 +17,7 @@ export interface SBSManagerState {
   showSbsPanel: boolean;
   detailsData: any;
   appsList:any;
+  appDependentFields:any;
   selectedNodes:any;
 }
 
@@ -28,6 +30,7 @@ const initialState: SBSManagerState = {
   showSbsPanel: false,
   detailsData: {},
   appsList: [],
+  appDependentFields: [],
   selectedNodes:[]
 };
 
@@ -66,6 +69,14 @@ export const getAppsList = createAsyncThunk<any>(
   "getApps",
   async () => {
     const response = await fetchAppsList();
+    return response;
+  }
+);
+
+export const getAppDependentFields = createAsyncThunk<any, any>(
+  "getAppDependentFields",
+  async (appId:any) => {
+    const response = await fetchDependentAppFields(appId);
     return response;
   }
 );
@@ -146,6 +157,18 @@ export const SBSManagerSlice = createSlice({
         }});
       })
       .addCase(getAppsList.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(getAppDependentFields.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAppDependentFields.fulfilled, (state, action) => {
+        state.loading = false;
+        state.appDependentFields = action.payload?.MainItemCollections?.[0]?.Fields?.map((obj:any) => {
+          return {id: obj?.Id, value: obj?.Id, label: obj?.Label}
+        });
+      })
+      .addCase(getAppDependentFields.rejected, (state) => {
         state.loading = false;
       });
   },

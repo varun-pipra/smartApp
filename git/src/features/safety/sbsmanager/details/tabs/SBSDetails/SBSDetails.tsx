@@ -86,7 +86,7 @@ const SBSDetailsTab = (props: any) => {
           </InputLabel>
           <TextField
             id="description"
-            value={selectedRecData.description}
+            value={selectedRecData?.description}
             variant="outlined"
             fullWidth
             multiline
@@ -115,7 +115,7 @@ const SBSDetailsTab = (props: any) => {
                 LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
                 options={categoryDropDownOptions || []}
                 selectedValue={
-                  selectedRecData.category ? selectedRecData.category.name || selectedRecData.category.value : ""
+                  selectedRecData?.category ? selectedRecData?.category?.name || selectedRecData?.category?.value : ""
                 }
                 handleChange={(value: any) => {
                   const selRec: any = categoryDropDownOptions.find(
@@ -146,7 +146,7 @@ const SBSDetailsTab = (props: any) => {
               <SmartDropDown
                 LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
                 options={phaseDropDownOptions || []}
-                selectedValue={selectedRecData.phase ? selectedRecData.phase.name : ""}
+                selectedValue={selectedRecData?.phase ? selectedRecData?.phase?.name : ""}
                 handleChange={(value: any) => {
                   const selRec: any = phaseDropDownOptions.find(
                     (rec: any) => rec.value === value[0]
@@ -179,7 +179,7 @@ const SBSDetailsTab = (props: any) => {
                 LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
                 options={getTradesOptions()}
                 outSideOfGrid={true}
-                selectedValue={selectedRecData.trades || []}
+                selectedValue={selectedRecData?.trades || []}
                 handleChange={(value: any) => {console.log("value",value)}}
                 isSearchField={true}
                 Placeholder={"Select"}

@@ -112,7 +112,7 @@ const SBSManagerForm = (props: any) => {
       groupedList.push({
         ...data,
         label: data.name,
-        value: data.objectId,
+        value: data.name,
         displayLabel: data.name,
       });
     });
@@ -132,12 +132,18 @@ const SBSManagerForm = (props: any) => {
       Id: GetDropDownId(
         categoryDropDownOptions,
         formData.category.name || formData.category.value,
-        "listId"
+        "id"
       ),
     };
-    data.phase = {
-      Id: GetDropDownId(phaseDropDownOptions, formData.phase.name, "id"),
-    };
+    data.phase = [
+      {
+        Id: GetDropDownId(phaseDropDownOptions, formData.phase.name, "id"),
+      },
+    ];
+
+    data.trades = formData?.trades?.map((tid: any) => {
+      return { Id: GetDropDownId(getTradesOptions(), tid, "objectId") };
+    });
 
     const payload = {
       ...data,
@@ -177,7 +183,7 @@ const SBSManagerForm = (props: any) => {
           <TextField
             id="name"
             InputProps={{
-              startAdornment: <span className="common-icon-title"> </span>,
+              startAdornment: <span className="common-icon-sbs-name"> </span>,
             }}
             placeholder={"SBS Name"}
             name="name"
@@ -228,7 +234,7 @@ const SBSManagerForm = (props: any) => {
             Phase
           </InputLabel>
           <SmartDropDown
-            LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
+            LeftIcon={<div className="common-icon-phase"></div>}
             options={phaseDropDownOptions || []}
             outSideOfGrid={true}
             isSearchField={true}
@@ -250,7 +256,7 @@ const SBSManagerForm = (props: any) => {
           <SmartDropDown
             required={true}
             options={getTradesOptions()}
-            LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
+            LeftIcon={<div className="common-icon-trade"></div>}
             dropDownLabel="Trade"
             doTextSearch={true}
             isSearchField={true}

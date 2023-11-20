@@ -24,10 +24,10 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
 
   useEffect(() => {
 		// To show the grid data if GET Api fails
-		if (data?.id) {
-			loadData(data.id);
+		if (data?.uniqueid) {
+			loadData(data.uniqueid);
 		}
-	}, [data?.id]);
+	}, [data?.uniqueid]);
 
   const tabConfig = [
     {
@@ -76,7 +76,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
     headContent: {
       showCollapsed: true,
       regularContent: <HeaderContent data={data} />,
-      collapsibleContent: <CollapseContent />,
+      collapsibleContent: <CollapseContent data={data} />,
     },
     tabs: tabConfig,
     footer: {
@@ -124,7 +124,7 @@ const HeaderContent = memo((props: any) => {
 					<span className="last-modified-label grey-font">Last Modified:</span>
 					<span className="budgetid-label grey-fontt">
 						{`${moment(data?.modifiedOn).format("MM/DD/YYYY hh:mm A")} by`}{" "}
-						{`${data?.modifiedBy?.lastName}, ${data?.modifiedBy?.firstName}`}
+						{`${data?.modifiedBy?.lastName ?? ""}, ${data?.modifiedBy?.firstName ?? ""}`}
 					</span>
 				</div>
 			</div>
@@ -138,7 +138,7 @@ const CollapseContent = memo((props: any) => {
 		<div className="kpi-section">
 			<div className="kpi-vertical-container">
 				<div className="lid-details-container">
-					<span className="budgetid-label grey-font">Status:</span>
+					<span className="budgetid-label grey-font">Phase:</span>
 					<span
 						className="status-pill"
 						style={{ backgroundColor: data?.phase?.color, color: "#fff" }}
@@ -154,7 +154,7 @@ const CollapseContent = memo((props: any) => {
 						style={{ marginTop: "4px" }}
 					>
 						{`${moment(data?.modifiedOn).format("MM/DD/YYYY hh:mm A")} by`}{" "}
-						{`${data?.modifiedBy?.lastName}, ${data?.modifiedBy?.firstName}`}
+						{`${data?.modifiedBy?.lastName ?? ""}, ${data?.modifiedBy?.firstName ?? ""}`}
 					</span>
 				</span>
 			</div>

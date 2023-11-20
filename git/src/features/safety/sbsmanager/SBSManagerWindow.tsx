@@ -57,8 +57,8 @@ const SBSManagerWindow = (props: any) => {
 				? null
 				: unique.push(x)
 		);
-		unique.sort((a: any, b: any) =>
-			a?.[key].localeCompare(b?.[key], undefined, {numeric: true})
+		unique?.sort((a: any, b: any) =>
+			a?.[key]?.localeCompare(b?.[key], undefined, {numeric: true})
 		);
 		return unique;
 	};
@@ -251,7 +251,7 @@ const SBSManagerWindow = (props: any) => {
                 />
               </IQTooltip>
             )}
-            {params.data?.category?.name || "None"}
+            {params.data?.category?.name || "N/A"}
           </div>
         );
       },
@@ -263,7 +263,7 @@ const SBSManagerWindow = (props: any) => {
       suppressMenu: true,
       // checkboxSelection: true,
       keyCreator: (params: any) => params.data?.phase?.name || "None",
-      minWidth: 250,
+      minWidth: 260,
       cellRenderer: (params: any) => {
         const phase = params.data?.phase?.name;
         const buttonStyle = {
@@ -274,10 +274,12 @@ const SBSManagerWindow = (props: any) => {
 
         return (
           <>
-            <Button style={buttonStyle} className="phase-btn">
-              <span className="common-icon-phase"></span>
-              {phase}
-            </Button>
+            {phase ? (
+              <Button style={buttonStyle} className="phase-btn">
+                <span className="common-icon-phase"></span>
+                {phase}
+              </Button>
+            ) : null}
           </>
         );
       },
@@ -454,7 +456,8 @@ const SBSManagerWindow = (props: any) => {
       <GridWindow
         open={true}
         title="System Breakdown Structure (SBS) Manager"
-        // iconCls='common-icon-vendor-pay-applications'
+        iconCls='common-icon-SBS'
+        className={'SBS-window-cls'}
         appType={appType}
         appInfo={appInfoData}
         iFrameId={iframeID}
@@ -463,7 +466,11 @@ const SBSManagerWindow = (props: any) => {
         defaultTabId={defaultTabId}
         manualLIDOpen={openRightPanel}
         currentRowSelectionData={currentRowSelection}
+        //showPinned={true}
         // isFullView={true}
+        lidCondition={(rowData: any) => {
+					return true;
+				}}
         presenceProps={{
           presenceId: "sbs-manager-presence",
           showLiveSupport: true,
