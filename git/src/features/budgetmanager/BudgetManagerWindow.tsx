@@ -1,35 +1,35 @@
-import {Fragment, useEffect, useRef, useState} from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import _ from 'lodash';
 import './BudgetManagerWindow.scss';
-import {IconButton} from "@mui/material";
+import { IconButton } from "@mui/material";
 
-import {postMessage, isLocalhost, currency, currencyCode} from "app/utils";
+import { postMessage, isLocalhost, currency, currencyCode } from "app/utils";
 import SmartDialog from "components/smartdialog/SmartDialog";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import HeaderPinning from './headerPinning/HeaderPinning';
 import ManageTableColumns from "./managetablecolumns/ManageTableColumns";
-import {useAppSelector, useAppDispatch, useHomeNavigation} from "app/hooks";
-import {useLocation} from 'react-router-dom';
-import {appInfoData} from 'data/appInfo';
-import {getToastMessage} from './operations/tableColumnsSlice';
-import {setPresenceData} from './operations/gridSlice';
+import { useAppSelector, useAppDispatch, useHomeNavigation } from "app/hooks";
+import { useLocation } from 'react-router-dom';
+import { appInfoData } from 'data/appInfo';
+import { getToastMessage } from './operations/tableColumnsSlice';
+import { setPresenceData } from './operations/gridSlice';
 import {
 	getServer, setServer, setCostCodeList, setFullView,
 	setCostUnitList, setCurrencySymbol, setCurrencyCode, setAppWindowMaximize
 } from 'app/common/appInfoSlice';
-import {setUploadedFilesFromLocal, setUploadedFilesFromDrive} from "./operations/transactionsSlice";
-import {triggerEvent} from 'utilities/commonFunctions';
+import { setUploadedFilesFromLocal, setUploadedFilesFromDrive } from "./operations/transactionsSlice";
+import { triggerEvent } from 'utilities/commonFunctions';
 import PresenceManager from "utilities/presence/PresenceManager.js";
 import 'utilities/presence/PresenceManager.css';
 import Toast from "components/toast/Toast";
 import SUIAlert from "sui-components/Alert/Alert";
-import {isBudgetManager} from "app/common/userLoginUtils";
-import {initRTDocument} from 'utilities/realtime/Realtime';
-import {budgetManagerMainGridRTListener} from './BudgetManagerRT';
+import { isBudgetManager } from "app/common/userLoginUtils";
+import { initRTDocument } from 'utilities/realtime/Realtime';
+import { budgetManagerMainGridRTListener } from './BudgetManagerRT';
 
 const BudgetManagerWindow = (props: any) => {
 	const dispatch = useAppDispatch();
-	const {showTableColumnsPopup} = useAppSelector((state: any) => state.tableColumns);
+	const { showTableColumnsPopup } = useAppSelector((state: any) => state.tableColumns);
 	const showToastMessage = useAppSelector(getToastMessage);
 	const [isFullView, setIsFullView] = useState(false);
 	const [localhost] = useState(isLocalhost);
@@ -39,21 +39,21 @@ const BudgetManagerWindow = (props: any) => {
 	const [isMaximize, setMaximize] = useState(appInfo?.fullScreen);
 	const [isInline, setInline] = useState(false);
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
-	const [toastMessage, setToastMessage] = useState<any>({displayToast: false, message: ''});
+	const [toastMessage, setToastMessage] = useState<any>({ displayToast: false, message: '' });
 	const gridRT = useRef<boolean>(false);
 
 	useEffect(() => {
 		const loader = document.getElementById('smartapp-react-loader');
-		if(loader) {
+		if (loader) {
 			loader.style.display = 'none';
 		}
 	}, []);
 
 	useEffect(() => {
 		setTimeout(() => {
-			setToastMessage({displayToast: false, message: ''});
+			setToastMessage({ displayToast: false, message: '' });
 		}, 3000);
-		setToastMessage({...showToastMessage});
+		setToastMessage({ ...showToastMessage });
 	}, [showToastMessage]);
 
 	const presenceRef = useRef(false);
@@ -62,12 +62,12 @@ const BudgetManagerWindow = (props: any) => {
 	const queryParams: any = new URLSearchParams(location.search);
 
 	useEffect(() => {
-		const {pathname, search} = location;
-		if(pathname.includes('home')) {
+		const { pathname, search } = location;
+		if (pathname.includes('home')) {
 			setIsFullView(true);
 			dispatch(setFullView(true));
 		}
-		if(queryParams?.size > 0) {
+		if (queryParams?.size > 0) {
 			// const params: any = new URLSearchParams(search);
 			setMaxByDefault(queryParams?.get('maximizeByDefault') === 'true');
 			setInline(queryParams?.get('inlineModule') === 'true');
@@ -76,7 +76,7 @@ const BudgetManagerWindow = (props: any) => {
 	}, [location]);
 
 	useEffect(() => {
-		if(localhost) {
+		if (localhost) {
 			dispatch(setCostCodeList(appData?.DivisionCost?.CostCode));
 			// dispatch(setCostTypeList(appData?.DivisionCost?.CostType));
 			dispatch(setCostUnitList(appData?.DivisionCost?.CostUnit));
@@ -85,13 +85,13 @@ const BudgetManagerWindow = (props: any) => {
 			dispatch(setCurrencySymbol(currency['USD']));
 			dispatch(setCurrencyCode(currencyCode['USD']));
 		} else {
-			if(!appInfo) {
+			if (!appInfo) {
 				window.onmessage = (event: any) => {
 					let data = event.data;
 					data = typeof (data) == "string" ? JSON.parse(data) : data;
 					data = data.hasOwnProperty("args") && data.args[0] ? data.args[0] : data;
-					if(data) {
-						switch(data.event || data.evt) {
+					if (data) {
+						switch (data.event || data.evt) {
 							case "hostAppInfo":
 								const structuredData = data.data;
 								dispatch(setCostCodeList(structuredData?.DivisionCost?.CostCode));
@@ -112,11 +112,11 @@ const BudgetManagerWindow = (props: any) => {
 								break;
 							case "updateparticipants":
 								// console.log("updateparticipants", data)
-								triggerEvent('updateparticipants', {data: data.data, appType: data.appType});
+								triggerEvent('updateparticipants', { data: data.data, appType: data.appType });
 								break;
 							case "updatecommentbadge":
 								// console.log("updatecommentbadge", data)
-								triggerEvent('updatecommentbadge', {data: data.data, appType: data.appType});
+								triggerEvent('updatecommentbadge', { data: data.data, appType: data.appType });
 								break;
 							case "updatechildparticipants":
 								// console.log("updatechildparticipants", data)
@@ -127,19 +127,19 @@ const BudgetManagerWindow = (props: any) => {
 				};
 				postMessage({
 					event: "hostAppInfo",
-					body: {iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager"}
+					body: { iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager" }
 				});
 			}
 		}
 	}, [localhost, appData]);
 
 	useEffect(() => {
-		if(appInfo) {
-			if(presenceRef.current) return;
+		if (appInfo) {
+			if (presenceRef.current) return;
 			presenceRef.current = true;
 			renderPresence(appInfo);
 			setMaximize(appInfo?.fullScreen);
-			if(gridRT.current) return;
+			if (gridRT.current) return;
 			else {
 				gridRT.current = true;
 				const documentId = `${appInfo.urlAppZoneID}_${appInfo.uniqueId}`;
@@ -151,11 +151,11 @@ const BudgetManagerWindow = (props: any) => {
 	}, [appInfo]);
 
 	const addPresenceListener = (presenceManager: any, appInfo: any) => {
-		if(presenceManager && presenceManager.control) {
+		if (presenceManager && presenceManager.control) {
 			let participantCtrl = presenceManager.control;
 
 			participantCtrl.addEventListener('brenabtnclick', function (e: any) {
-				postMessage({event: 'openbrena'});
+				postMessage({ event: 'openbrena' });
 			});
 			participantCtrl.addEventListener('livesupportbtnclick', function (e: any) {
 				handleHelp();
@@ -163,42 +163,42 @@ const BudgetManagerWindow = (props: any) => {
 			participantCtrl.addEventListener('livelinkbtnclick', function (e: any) {
 				postMessage({
 					event: "launchcommonlivelink",
-					body: {iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager"},
+					body: { iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager" },
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('streambuttonclick', function (e: any) {
 				postMessage({
 					event: "launchcommonstream",
-					body: {iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager"},
+					body: { iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager" },
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('commentbuttonclick', function (e: any) {
 				postMessage({
 					event: "launchcommoncomment",
-					body: {iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager"},
+					body: { iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager" },
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('presencecountclick', function (e: any) {
 				let participantsjson = participantCtrl.getParticipants(),
 					participantids = [];
-				if(participantsjson) {
-					for(var i = 0;i < participantsjson.length;i++) {
+				if (participantsjson) {
+					for (var i = 0; i < participantsjson.length; i++) {
 						participantids.push((participantsjson[i].userid));
 					}
 				}
 				postMessage({
 					event: "launchlivechat",
-					body: {iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager"},
-					livechatData: {participantsIds: participantids}
+					body: { iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager" },
+					livechatData: { participantsIds: participantids }
 				});
 			});
 			participantCtrl.addEventListener('presenceuserclick', function (e: any) {
 				postMessage({
 					event: "launchcontactcard",
-					body: {iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager"},
+					body: { iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager" },
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -210,7 +210,7 @@ const BudgetManagerWindow = (props: any) => {
 			participantCtrl.addEventListener('presenceuserhover', function (e: any) {
 				postMessage({
 					event: "launchcontactcard",
-					body: {iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager"},
+					body: { iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager" },
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -220,23 +220,23 @@ const BudgetManagerWindow = (props: any) => {
 				});
 			});
 			document.addEventListener("updateparticipants", function (event: any) {
-				if(event.detail.appType === "BudgetManager") {
+				if (event.detail.appType === "BudgetManager") {
 					// console.log("event in BM Window", event);
 					participantCtrl.updateParticipants(event.detail.data);
 				}
 			});
 			document.addEventListener("updatecommentbadge", function (event: any) {
-				if(event.detail.appType === 'BudgetManager') {
+				if (event.detail.appType === 'BudgetManager') {
 					// console.log("updatecommentbadge in BM Window", event);
 					let chatCount = event.detail.data,
 						animation = (chatCount.eventType === "commentReceived") ? true : false;
 					participantCtrl.setButtonBadge('comment', chatCount.count, animation);
 				}
 			});
-			if(appInfo) {
+			if (appInfo) {
 				postMessage({
 					event: "joinroom",
-					body: {iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager", roomTitle: "Budget Manager"}
+					body: { iframeId: "budgetManagerIframe", roomId: appInfo.presenceRoomId, appType: "BudgetManager", roomTitle: "Budget Manager" }
 				});
 			}
 			return;
@@ -267,19 +267,19 @@ const BudgetManagerWindow = (props: any) => {
 	const handleHelp = () => {
 		postMessage({
 			event: "help",
-			body: {iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager"}
+			body: { iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager" }
 		});
 	};
 
 	const handleNewTab = () => {
 		postMessage({
 			event: "openinnewtab",
-			body: {iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager"}
+			body: { iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager" }
 		});
 	};
 
 	const handleBrena = () => {
-		postMessage({event: 'openbrena'});
+		postMessage({ event: 'openbrena' });
 	};
 
 	const handleWindowMaximize = (event: any, value: boolean) => {
@@ -288,7 +288,7 @@ const BudgetManagerWindow = (props: any) => {
 	};
 
 	const handleIconClick = () => {
-		if(isInline) useHomeNavigation('budgetManagerIframe', 'BudgetManager');
+		if (isInline) useHomeNavigation('budgetManagerIframe', 'BudgetManager');
 	};
 
 	const optionalTools = <Fragment>{
@@ -341,10 +341,10 @@ const BudgetManagerWindow = (props: any) => {
 					maxByDefault: isMaxByDefault
 				}}
 				onClose={(event, reason) => {
-					if(reason && reason == "closeButtonClick") {
+					if (reason && reason == "closeButtonClick") {
 						postMessage({
 							event: "closeiframe",
-							body: {iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager"}
+							body: { iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager" }
 						});
 					}
 				}}
@@ -360,7 +360,7 @@ const BudgetManagerWindow = (props: any) => {
 				onClose={() => {
 					postMessage({
 						event: 'closeiframe',
-						body: {iframeId: 'budgetManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BudgetManager'}
+						body: { iframeId: 'budgetManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BudgetManager' }
 					});
 				}}
 				contentText={"You Are Not Authorized"}
@@ -368,7 +368,7 @@ const BudgetManagerWindow = (props: any) => {
 				onAction={(e: any, type: string) => {
 					type == 'close' && postMessage({
 						event: 'closeiframe',
-						body: {iframeId: 'budgetManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BudgetManager'}
+						body: { iframeId: 'budgetManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BudgetManager' }
 					});
 				}}
 				showActions={false}

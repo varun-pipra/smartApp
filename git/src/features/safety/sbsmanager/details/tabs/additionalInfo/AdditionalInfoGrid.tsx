@@ -7,10 +7,13 @@ import SUIGrid from 'sui-components/Grid/Grid';
 import { mappingExpressionsList } from "./mappingExpressionsList";
 
 export const AdditionalInfoGrid = (props:any) => {
-  const initialRecord = [{ id: Math.random(), dependentAppFields: "", mappingExpression: "" }];
-  const [tableData, setTableData] = React.useState<any>(initialRecord);
+  const initialRecord = [{ rowId: Math.random(), dependentAppFields: "", mappingExpression: "" }];
+  const [tableData, setTableData] = React.useState<any>([...props?.gridData, initialRecord]);
   const [newRecord, setNewRecord] = React.useState<any>(initialRecord[0]);
   const [mappingExpression, setMappingExpression] = React.useState<any>();
+  const [selectedRows, setSelectedRows] = React.useState<any>([]);
+  console.log("fieldsList", props?.fieldsList)
+  
 
   const AIColumns = [
     {
@@ -26,7 +29,7 @@ export const AdditionalInfoGrid = (props:any) => {
             <SmartDropDown
               disabled={props?.disabled}            
               // LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
-              options={[{id: 1, value: 'SBS Phase Name', label: 'SBS Phase Name'}, {id: 2, value: 'SBS Phase Id', label: 'SBS Phase Id'}]}
+              options={props?.fieldsList}
               selectedValue={[params?.data?.dependentAppFields]}
               handleChange={(val:any) => handleOnUpdate(params, val, 'dependentAppFields')}              
               outSideOfGrid={true}
@@ -67,19 +70,51 @@ export const AdditionalInfoGrid = (props:any) => {
   const onGridRecordAdd = () => {
     let data = [
       ...tableData,
-      { id: Math.random(), dependentAppFields: "", mappingExpression: "" },
+      { rowId: Math.random(), dependentAppFields: "", mappingExpression: "" },
     ];
     setTableData(data);
   };
 
   const handleOnUpdate = (params:any, value: any, key: string) => {
     console.log("va", params, value)
+    let updatedRow:any;
     const updatedData = tableData?.map((row:any) => {
-      if(row?.id == params?.data?.id) return {...row, [key]: value[0]}
+      if(row?.id && row?.id == params?.data?.id) {
+        updatedRow = {...row, [key]: value[0]};        
+        return {...row, [key]: value[0]}
+      } 
+      else if (row?.rowId == params?.data?.rowId)  { 
+        updatedRow = {...row, [key]: value[0]};
+        return {...row, [key]: value[0]} 
+      }
       return {...row};
     })
-    console.log("data", updatedData)
+    console.log("data", updatedData, updatedRow)
     setTableData([...updatedData])
+    if(updatedRow?.dependentAppFields && updatedRow?.mappingExpression) props?.onAdd(updatedRow);
+  }
+  const handleRowSelected = (row:any) => {
+    console.log("dart", row);
+    let selectedRowsClone:any = [...selectedRows]
+			const selectedRowData = row?.data;
+			if(selectedRowData !== undefined) {
+				const selected: boolean = row?.node?.selected;
+				if(selected === true) {
+					selectedRowsClone = [...selectedRowsClone, selectedRowData];
+				}
+				else {
+					selectedRowsClone.map((row: any, index: number) => {
+						if(row.id === selectedRowData.id) {
+							selectedRowsClone.splice(index, 1);
+						}
+					});
+				}
+      }
+      setSelectedRows([...selectedRowsClone])
+    
+			// if(action.payload?.length === 0) {
+			// 	state.selectedRows = action.payload;
+			// }
   }
 
   return (
@@ -94,7 +129,8 @@ export const AdditionalInfoGrid = (props:any) => {
         </IQTooltip>
         <IQTooltip title="Delete" placement="bottom">
           <IconButton className="ref-delete-btn" 
-            disabled={props?.disabled}
+            disabled={props?.disabled || !selectedRows?.length}
+            onClick={() =>props?.onDelete(selectedRows)}
           >
             <span className="common-icon-delete"></span>
           </IconButton>
@@ -104,6 +140,7 @@ export const AdditionalInfoGrid = (props:any) => {
         <SUIGrid
           headers={AIColumns}
           data={tableData}
+          rowSelected={(value:any) => handleRowSelected(value)}
           // onAdd={(value: any, updatedRecords: any) =>
           // onGridRecordAdd(value, updatedRecords)
           // }

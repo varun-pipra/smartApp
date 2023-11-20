@@ -89,7 +89,7 @@ export const GridData = [
   },
       ],
       configureSupplementalInfo: true,
-      configureSupplementalInfoApp: "ad97b41b-afda-4175-810c-e4cdee2d5dac",
+      supplementalInfoAppId: "ad97b41b-afda-4175-810c-e4cdee2d5dac",
       status: 0,
 
     },

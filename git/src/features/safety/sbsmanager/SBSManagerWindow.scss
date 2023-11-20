@@ -39,3 +39,44 @@
         margin-left: 10px;
     }
 }
+
+.SBS-window-cls {
+    .titlebar-inner-items.title-text:before {
+        // content: "\ec61";
+        //font-family: "common-webfont";
+        //float: left;
+        //display: contents;
+    }
+    .sbs-manager-lineitem-form {
+        .common-icon-sbs-name:before,
+        .common-icon-phase:before,
+        .common-icon-trade:before {
+            color: #ec711c;
+            font-size: 20px;
+        }
+    }
+    .phase-btn {
+        .common-icon-phase {
+            padding-right: 6px;
+            font-size: 20px;
+        }
+    }
+    .no-rows-msg {
+        border: 0px dotted #d9d9d9;
+        background-color: transparent;
+        .common-icon-No-Item-Available {
+            background-image: url(/resources/images/SBS-Watermark.png);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            width: 400px;
+            height: 204px;
+            display: block;
+        }
+        .common-icon-No-Item-Available:before {
+            content: "";
+        }
+        .empty-rows-mark {
+            color: #666;
+        }
+    }
+}

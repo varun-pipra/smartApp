@@ -1,36 +1,36 @@
-import {Close, ExpandLess, ExpandMore, PushPinOutlined as PushPin} from '@mui/icons-material';
-import {IconButton, Paper, Stack} from '@mui/material';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
-import React, {useState} from 'react';
+import { Close, ExpandLess, ExpandMore, PushPinOutlined as PushPin } from '@mui/icons-material';
+import { IconButton, Paper, Stack } from '@mui/material';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import React, { useState, useRef } from 'react';
 import 'utilities/presence/PresenceManager.css';
 import './LineItemDetails.scss';
-import {setLineItemDescription, showRightPannel} from '../operations/tableColumnsSlice';
+import { setLineItemDescription, showRightPannel } from '../operations/tableColumnsSlice';
 import BalanceModification from 'resources/images/budgetManager/BalanceModification.svg';
 import BudgetModification from 'resources/images/budgetManager/BudgetModification.svg';
 import DirectCost from 'resources/images/budgetManager/DirectCost.png';
 import TransferIn from 'resources/images/budgetManager/TransferIn.svg';
 import TransferOut from 'resources/images/budgetManager/TransferOut.svg';
-import {amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
+import { amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
 import IQObjectPage from 'components/iqobjectpage/IQObjectPage';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import Toast from 'components/toast/Toast';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import PresenceManager from 'utilities/presence/PresenceManager.js';
-import {AddDescription} from '../headerPinning/AddDescription';
+import { AddDescription } from '../headerPinning/AddDescription';
 import CommittedTransaction from './tabs/committed/CommittedTransaction';
 import BudgetDetails from './tabs/details/BudgetDetails';
 import ForecastTransactions from './tabs/forecast/ForecastTransactions';
 import CreateBudgetTransfer from './transactionForms/budgettransfer/BudgetTransferForm';
 import AddDirectCostForm from './transactionForms/directcost/DirectCostForm';
 
-import {getServer} from 'app/common/appInfoSlice';
-import {postMessage} from 'app/utils';
-import {setOpenBudgetTransferForm, setOpenCostForm, setOpenTransactionList, fetchRollupTaskData, fetchCompanyList} from 'features/budgetmanager/operations/rightPanelSlice';
-import {stringToUSDateTime2} from 'utilities/commonFunctions';
-import {SUIToast} from 'sui-components/Toast/Suitoast';
-import {fetchTransactionsData} from 'features/budgetmanager/operations/transactionsSlice';
-import {fetchForecastData} from 'features/budgetmanager/operations/forecastSlice';
-import {fetchLineItemData} from '../operations/gridSlice';
+import { getServer } from 'app/common/appInfoSlice';
+import { postMessage } from 'app/utils';
+import { setOpenBudgetTransferForm, setOpenCostForm, setOpenTransactionList, fetchRollupTaskData, fetchCompanyList } from 'features/budgetmanager/operations/rightPanelSlice';
+import { stringToUSDateTime2 } from 'utilities/commonFunctions';
+import { SUIToast } from 'sui-components/Toast/Suitoast';
+import { fetchTransactionsData } from 'features/budgetmanager/operations/transactionsSlice';
+import { fetchForecastData } from 'features/budgetmanager/operations/forecastSlice';
+import { fetchLineItemData } from '../operations/gridSlice';
 
 export interface headerprops {
 	image: any;
@@ -41,22 +41,24 @@ export interface headerprops {
 const LineItemDetails = (props: headerprops) => {
 	const dispatch = useAppDispatch();
 	const ref = React.useRef<HTMLDivElement | null>(null);
-	const {selectedRow} = useAppSelector(state => state.rightPanel);
-	const {transactionsData} = useAppSelector(state => state.transactionsData);
-	const {forecastData} = useAppSelector(state => state.forecast);
-	const {lineItemDescription} = useAppSelector(state => state?.tableColumns);
+	const { selectedRow } = useAppSelector(state => state.rightPanel);
+	const { transactionsData } = useAppSelector(state => state.transactionsData);
+	const { forecastData } = useAppSelector(state => state.forecast);
+	const { lineItemDescription } = useAppSelector(state => state?.tableColumns);
 	const appInfo = useAppSelector(getServer);
-	const {currencySymbol} = useAppSelector((state) => state.appInfo);
-	const {openCostForm, openBudgetTransferForm} = useAppSelector(state => state.rightPanel);
+	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const { openCostForm, openBudgetTransferForm } = useAppSelector(state => state.rightPanel);
 	const [showFullHeader, setShowFullHeader] = React.useState<boolean>(true);
 	const presenceRef = React.useRef(false);
 	const presenceId = 'budgetmanager-lineitem-presence';
 	const presenceId1 = 'budgetmanager-lineitem-presence1';
 	const [collapsed, setCollapsed] = useState(false);
 	const [pinned, setPinned] = useState(true);
-	const [tabSelected, setTabSelected] = React.useState('budget-details');
-	const [showToast, setShowToast] = React.useState<any>({displayToast: false, message: ''});
+	const [tabSelected, setTabSelected] = React.useState<any>('budget-details');
+	const [showToast, setShowToast] = React.useState<any>({ displayToast: false, message: '' });
 	const rightPannel = useAppSelector(showRightPannel);
+	const tabidd = useRef('budget-details');
+
 	const presenceTools = <React.Fragment>{
 		<>
 			<div id={presenceId} className='budgetmanager-presence'></div>
@@ -64,7 +66,7 @@ const LineItemDetails = (props: headerprops) => {
 	}</React.Fragment>;
 
 	setTimeout(() => {
-		showToast?.displayToast && setShowToast({displayToast: false, message: ''})
+		showToast?.displayToast && setShowToast({ displayToast: false, message: '' })
 	}, 1000)
 
 	const [transactionHeader, setTransactionHeader] = React.useState<any>();
@@ -78,10 +80,10 @@ const LineItemDetails = (props: headerprops) => {
 
 	const header = `${selectedRow?.name} - ${selectedRow.division} - ${selectedRow.costCode} : ${selectedRow.costType}`;
 
-	React.useEffect(() => {presenceRef.current = false;}, [selectedRow, showFullHeader]);
+	React.useEffect(() => { presenceRef.current = false; }, [selectedRow, showFullHeader]);
 
 	React.useEffect(() => {
-		if(presenceRef.current) return;
+		if (presenceRef.current) return;
 		presenceRef.current = true;
 		// postMessage({
 		// 	event: 'exitroom',
@@ -92,19 +94,19 @@ const LineItemDetails = (props: headerprops) => {
 	}, [selectedRow, showFullHeader]);
 
 	React.useEffect(() => {
-		if(selectedRow?.id) {
-			dispatch(fetchRollupTaskData({'appInfo': appInfo}));
-			dispatch(fetchCompanyList({'appInfo': appInfo}));
+		if (selectedRow?.id) {
+			dispatch(fetchRollupTaskData({ 'appInfo': appInfo }));
+			dispatch(fetchCompanyList({ 'appInfo': appInfo }));
 			dispatch(setLineItemDescription(selectedRow.description));
-			dispatch(fetchTransactionsData({'appInfo': appInfo, id: selectedRow.id}));
-			dispatch(fetchForecastData({'appInfo': appInfo, id: selectedRow.id}));
-			dispatch(fetchLineItemData({'appInfo': appInfo, id: selectedRow.id}));
+			dispatch(fetchTransactionsData({ 'appInfo': appInfo, id: selectedRow.id }));
+			dispatch(fetchForecastData({ 'appInfo': appInfo, id: selectedRow.id }));
+			dispatch(fetchLineItemData({ 'appInfo': appInfo, id: selectedRow.id }));
 
 			const interval = setInterval(() => {
-				if(rightPannel) {
-					dispatch(fetchTransactionsData({'appInfo': appInfo, id: selectedRow.id}));
-					dispatch(fetchForecastData({'appInfo': appInfo, id: selectedRow.id}));
-					dispatch(fetchLineItemData({'appInfo': appInfo, id: selectedRow.id}));
+				if (rightPannel) {
+					dispatch(fetchTransactionsData({ 'appInfo': appInfo, id: selectedRow.id }));
+					dispatch(fetchForecastData({ 'appInfo': appInfo, id: selectedRow.id }));
+					dispatch(fetchLineItemData({ 'appInfo': appInfo, id: selectedRow.id }));
 				}
 			}, 10000);
 			return () => clearInterval(interval);
@@ -116,47 +118,51 @@ const LineItemDetails = (props: headerprops) => {
 	};
 
 	const addPresenceListener = (presenceManager: any) => {
-		if(presenceManager && presenceManager.control) {
+
+		if (presenceManager && presenceManager.control) {
 			let participantCtrl = presenceManager.control;
 			participantCtrl.addEventListener('livelinkbtnclick', function (e: any) {
 				postMessage({
 					event: 'launchcommonlivelink',
-					body: {iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem'},
+					body: { iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem' },
 					data: participantCtrl.getParticipants()
 				});
+			});
+			participantCtrl.addEventListener('livesupportbtnclick', function (e: any) {
+				help();
 			});
 			participantCtrl.addEventListener('streambuttonclick', function (e: any) {
 				postMessage({
 					event: 'launchcommonstream',
-					body: {iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem'},
+					body: { iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem' },
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('commentbuttonclick', function (e: any) {
 				postMessage({
 					event: 'launchcommoncomment',
-					body: {iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem'},
+					body: { iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem' },
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('presencecountclick', function (e: any) {
 				let participantsjson = participantCtrl.getParticipants(),
 					participantids = [];
-				if(participantsjson) {
-					for(var i = 0;i < participantsjson.length;i++) {
+				if (participantsjson) {
+					for (var i = 0; i < participantsjson.length; i++) {
 						participantids.push((participantsjson[i].userid));
 					}
 				}
 				postMessage({
 					event: 'launchlivechat',
-					body: {iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem'},
-					livechatData: {participantsIds: participantids}
+					body: { iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem' },
+					livechatData: { participantsIds: participantids }
 				});
 			});
 			participantCtrl.addEventListener('presenceuserclick', function (e: any) {
 				postMessage({
 					event: 'launchcontactcard',
-					body: {iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem'},
+					body: { iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem' },
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -168,7 +174,7 @@ const LineItemDetails = (props: headerprops) => {
 			participantCtrl.addEventListener('presenceuserhover', function (e: any) {
 				postMessage({
 					event: 'launchcontactcard',
-					body: {iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem'},
+					body: { iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem' },
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -178,19 +184,19 @@ const LineItemDetails = (props: headerprops) => {
 				});
 			});
 			document.addEventListener('updateparticipants', function (event: any) {
-				if(participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
+				if (participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
 					return;
 				}
-				if(event.detail.appType === 'BudgetManagerLineItem') {
+				if (event.detail.appType === 'BudgetManagerLineItem') {
 					// console.log('Right panel presence',event);
 					participantCtrl.updateParticipants(event.detail.data);
 				}
 			});
 			document.addEventListener('updatecommentbadge', function (event: any) {
-				if(participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
+				if (participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
 					return;
 				}
-				if(event.detail.appType === 'BudgetManagerLineItem') {
+				if (event.detail.appType === 'BudgetManagerLineItem') {
 					let chatCount = event.detail.data,
 						animation = (chatCount.eventType === 'commentReceived') ? true : false;
 					participantCtrl.setButtonBadge('comment', chatCount.count, animation);
@@ -198,7 +204,7 @@ const LineItemDetails = (props: headerprops) => {
 			});
 			postMessage({
 				event: 'joinroom',
-				body: {iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem', roomTitle: selectedRow?.name}
+				body: { iframeId: 'budgetManagerIframe', roomId: selectedRow.id, appType: 'BudgetManagerLineItem', roomTitle: selectedRow?.name }
 			});
 			return;
 		}
@@ -206,6 +212,15 @@ const LineItemDetails = (props: headerprops) => {
 			addPresenceListener(presenceManager);
 		}, 1000);
 	};
+	const help = () => {
+		console.log('useref', tabidd.current);
+		const body = { iframeId: "budgetManagerIframe", roomId: selectedRow.id, appType: "BudgetManagerLineItem", tabName: tabidd.current }
+		console.log('help', body)
+		postMessage({
+			event: "help",
+			body: body
+		});
+	}
 	const renderPresence = () => {
 		let presenceManager = new PresenceManager({
 			domElementId: presenceId,
@@ -238,11 +253,13 @@ const LineItemDetails = (props: headerprops) => {
 	};
 
 	const tabSelectedValue = (value: any) => {
+		tabidd.current = value;
 		setTabSelected(value);
+		help();
 	};
 
 	const onScroll = (value: any) => {
-		if(pinned == false) {
+		if (pinned == false) {
 			setCollapsed(value);
 		}
 	};
@@ -270,15 +287,15 @@ const LineItemDetails = (props: headerprops) => {
 		// icon: (tabSelected === 'forecast' ? <span className='common-icon-ForecastNew tabicon tabicon_orange' /> : <span className='common-icon-ForecastNew tabicon' />),
 		iconCls: 'common-icon-ForecastNew',
 		content: <ForecastTransactions />
-	}, 
-	// {
-	// 	tabId: 'analysis',
-	// 	label: 'Analysis',
-	// 	showCount: false,
-	// 	// icon: (tabSelected === 'analysis' ? <span className='common-icon-ReportsAnalyticsNew tabicon tabicon_orange' /> : <span className='common-icon-ReportsAnalyticsNew tabicon' />),
-	// 	iconCls: 'common-icon-ReportsAnalyticsNew',
-	// 	content: <div style={{padding: '1em 0', fontWeight: "bold"}}>{"Analysis"}</div>
-	// }
+	},
+		// {
+		// 	tabId: 'analysis',
+		// 	label: 'Analysis',
+		// 	showCount: false,
+		// 	// icon: (tabSelected === 'analysis' ? <span className='common-icon-ReportsAnalyticsNew tabicon tabicon_orange' /> : <span className='common-icon-ReportsAnalyticsNew tabicon' />),
+		// 	iconCls: 'common-icon-ReportsAnalyticsNew',
+		// 	content: <div style={{padding: '1em 0', fontWeight: "bold"}}>{"Analysis"}</div>
+		// }
 	];
 
 	return (
@@ -317,11 +334,11 @@ const LineItemDetails = (props: headerprops) => {
 						{collapsed === true ? <ExpandMore fontSize='small' /> : <ExpandLess fontSize='small' />}
 					</IconButton>
 					{!collapsed && <IconButton className={`header-button ${pinned === true ? 'btn-focused' : ''}`} aria-label={pinned === true ? 'Pinned' : 'Not Pinned'} onClick={() => setPinned(pPinned => !pPinned)}>
-						{<PushPin fontSize='small' className={`pin ${pinned === true ? 'focused' : ''}`} {...(pinned === true ? {color: 'primary'} : {})} />}
+						{<PushPin fontSize='small' className={`pin ${pinned === true ? 'focused' : ''}`} {...(pinned === true ? { color: 'primary' } : {})} />}
 					</IconButton>}
 				</div>
 			</div>
-			<div className='tab-panel-container' style={{maxHeight: (collapsed ? 'calc(100% - 9.5em)' : 'calc(100% - 12.5em)')}}>
+			<div className='tab-panel-container' style={{ maxHeight: (collapsed ? 'calc(100% - 9.5em)' : 'calc(100% - 12.5em)') }}>
 				<IQObjectPage
 					tabs={tabConfig}
 					scroll={(value: any) => onScroll(value)}
@@ -341,31 +358,31 @@ const LineItemDetails = (props: headerprops) => {
 				showclose={true} />}
 			{(openBudgetTransferForm || openCostForm) &&
 				<SUIDrawer
-					PaperProps={{style: {position: 'absolute', height: 'fit-content', display: 'block', overflow: 'auto', marginTop: '6.2%', marginRight: '20px', boxShadow: '0 4px 8px 1px rgb(0 0 0 / 25%)'}}}
+					PaperProps={{ style: { position: 'absolute', height: 'fit-content', display: 'block', overflow: 'auto', marginTop: '6.2%', marginRight: '20px', boxShadow: '0 4px 8px 1px rgb(0 0 0 / 25%)' } }}
 					anchor='right'
 					variant='permanent'
 				>
 					<Paper
-						sx={{width: '58vw', height: '99.5%', paddingBottom: '15px', border: '1px solid rgba(0, 0, 0, 0.12) !important'}}
+						sx={{ width: '58vw', height: '99.5%', paddingBottom: '15px', border: '1px solid rgba(0, 0, 0, 0.12) !important' }}
 						role='presentation'
 						elevation={24}
 					>
-						<Stack direction="row" alignItems="center" style={{padding: '10px 10px 10px 20px'}} className='mainadditem'>
-							<Stack direction="row" alignItems="center" style={{width: '95%', }}>
-								<img src={iconObj[transactionHeader.type]} style={{width: '30px'}} />
+						<Stack direction="row" alignItems="center" style={{ padding: '10px 10px 10px 20px' }} className='mainadditem'>
+							<Stack direction="row" alignItems="center" style={{ width: '95%', }}>
+								<img src={iconObj[transactionHeader.type]} style={{ width: '30px' }} />
 								<span className='addTranscation_heading'>{transactionHeader.primaryHeader}</span>
 								<span className='addTransscation_subheading'>{openCostForm ? '(' + transactionHeader.secondaryHeader + ')' : null}</span>
 							</Stack>
 							<Stack direction="row" alignItems="center">
 								<IQTooltip title='' placement={'bottom'}>
 									<IconButton aria-label='Close Right Pane'
-										onClick={() => {dispatch(setOpenCostForm(false)); dispatch(setOpenBudgetTransferForm(false)); dispatch(setOpenTransactionList(false));}}>
+										onClick={() => { dispatch(setOpenCostForm(false)); dispatch(setOpenBudgetTransferForm(false)); dispatch(setOpenTransactionList(false)); }}>
 										<Close fontSize={'small'} />
 									</IconButton>
 								</IQTooltip>
 							</Stack>
 						</Stack>
-						<div style={{height: '35%'}}>
+						<div style={{ height: '35%' }}>
 							{
 								openCostForm ? <AddDirectCostForm type={transactionHeader.type} /> : <CreateBudgetTransfer type={transactionHeader.type} />
 							}

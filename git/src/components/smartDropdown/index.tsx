@@ -1168,7 +1168,7 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 					>
 						<em>Clear</em>
 					</MenuItem>
-					{options.map((option: any, index: number) => {
+					{options?.map((option: any, index: number) => {
 						return (
 							option.label &&
 							option.label != "null" && (
