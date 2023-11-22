@@ -131,27 +131,27 @@ const ClientPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 
 	const tabConfig = [
 		{
-			tabId: 'payApplicationDetails',
+			tabId: 'pay-Application-Details',
 			label: 'Pay Application Details',
 			showCount: false,
 			iconCls: 'common-icon-pay-application',
 			// icon: <span className='common-icon-pay-application tabicon tabicon_orange' />,
 			content: <ClientPayDetails />
 		}, {
-			tabId: 'scheduleValues',
+			tabId: 'billing-Schedules',
 			label: 'Billing Schedules',
 			showCount: true,
 			iconCls: 'common-icon-schedule-values',
 			// icon: <span className='common-icon-schedule-values tabicon tabicon_orange' />,
 			content: <ScheduleOFValues />
 		}, {
-			tabId: 'lienWaiver',
+			tabId: 'lien-Waiver',
 			label: 'Lien Waiver',
 			showCount: true,
 			iconCls: 'common-icon-lien-waiver',
 			// icon: <span className='common-icon-lien-waiver tabicon tabicon_orange' />,
 			content: <LienWaiver />
-		}, 
+		},
 		// {
 		// 	tabId: 'links',
 		// 	label: 'Links',
@@ -165,7 +165,7 @@ const ClientPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 
 	const lidProps = {
 		title: `Pay Application ID: ${clientPayAppLineItem?.code}`,
-		defaultTabId: 'payApplicationDetails',
+		defaultTabId: 'pay-Application-Details',
 		tabPadValue: 10,
 		headContent: {
 			regularContent: <HeaderContent headerData={clientPayAppLineItem} />,
@@ -226,6 +226,7 @@ const ClientPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 		appInfo: appInfo,
 		iFrameId: "clientPayAppIframe",
 		appType: "clientPayApp",
+		isFromHelpIcon: true,
 		presenceProps: {
 			presenceId: 'clientPayApp-LineItem-presence',
 			showLiveSupport: true,

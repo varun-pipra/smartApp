@@ -77,7 +77,7 @@ const CollapseContent = (props: any) => {
 };
 
 const VendorPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) => {
-	
+
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const vendorPayAppLineItem: any = useAppSelector(getSelectedRecord);
@@ -125,8 +125,8 @@ const VendorPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 	useEffect(() => {
 		if (vPayAppId) {
 			const callList: Array<any> = [
-					dispatch(getPayAppDetails({ appInfo: appInfo, id: vPayAppId }))
-				];
+				dispatch(getPayAppDetails({ appInfo: appInfo, id: vPayAppId }))
+			];
 
 			Promise.all(callList).then(() => {
 				hideLoadMask();
@@ -136,24 +136,24 @@ const VendorPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 
 	const tabConfig = [
 		{
-			tabId: 'payApplicationDetails',
+			tabId: 'pay-Application-Details',
 			label: 'Pay Application Details',
 			showCount: false,
 			iconCls: 'common-icon-pay-application',
 			content: <VendorPayDetails />
 		}, {
-			tabId: 'scheduleValues',
+			tabId: 'schedule-of-Values',
 			label: 'Schedule of Values',
 			showCount: true,
 			iconCls: 'common-icon-schedule-values',
 			content: <ScheduleOFValues />
 		}, {
-			tabId: 'lienWaiver',
+			tabId: 'lien-Waiver',
 			label: 'Lien Waiver',
 			showCount: true,
 			iconCls: 'common-icon-lien-waiver',
 			content: <LienWaiver />
-		}, 
+		},
 		// {
 		// 	tabId: 'links',
 		// 	label: 'Links',
@@ -166,8 +166,7 @@ const VendorPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 
 	const lidProps = {
 		title: `Pay Application ID: ${vendorPayAppLineItem?.code}`,
-
-		defaultTabId: 'payApplicationDetails',
+		defaultTabId: 'pay-Application-Details',
 		tabPadValue: 15,
 		headContent: {
 			showCollapsed: true,
@@ -225,7 +224,7 @@ const VendorPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 					formType={contractDialog?.type}
 					userName={appInfo?.currentUserInfo?.name}
 					onModalClose={() => { setContractDialog({ ...contractDialog, show: false }) }}
-					onSubmit={(value: any) => { rejectPayApp(appInfo, signature !== null ? { reason: value?.reason, signature: signature } : { reason: value?.reason}, vendorPayAppLineItem?.id, (response: any) => { dispatch(setSelectedRecord(response)); dispatch(getVendorPayAppsLst(appInfo)); setContractDialog({ ...contractDialog, show: false }) }) }}
+					onSubmit={(value: any) => { rejectPayApp(appInfo, signature !== null ? { reason: value?.reason, signature: signature } : { reason: value?.reason }, vendorPayAppLineItem?.id, (response: any) => { dispatch(setSelectedRecord(response)); dispatch(getVendorPayAppsLst(appInfo)); setContractDialog({ ...contractDialog, show: false }) }) }}
 				></ContractSignModal>}
 			</>,
 			leftNode: <>
@@ -246,6 +245,7 @@ const VendorPayApplicationsLID = ({ data, ...props }: IQGridWindowDetailProps) =
 		appInfo: appInfo,
 		iFrameId: "vendorPayAppIframe",
 		appType: "VendorPayAppLineItem",
+		isFromHelpIcon: true,
 		presenceProps: {
 			presenceId: 'VendorPayApp-LineItem-presence',
 			showLiveSupport: true,

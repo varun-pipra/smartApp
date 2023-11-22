@@ -1,7 +1,16 @@
 .sbs-details {
     .eventrequest-details-box {
         //padding: 0 1em;
-        padding:0px;
+        padding: 0px;
+        .common-icon-Description:before {
+            font-size: 24px;
+            vertical-align: bottom;
+            padding-right: 4px;
+        }
+        .common-icon-Budgetcalculator:before {
+            color: #ec711c;
+            font-size: 22px;
+        }
         .eventrequest-details-header {
             min-height: 3em;
             display: flex;
@@ -12,8 +21,9 @@
                 align-items: center;
                 .title {
                     font-family: "Roboto-Regular";
-                    font-size: 17px;
+                    font-size: 15px;
                     font-weight: bold;
+                    color: #333;
                 }
             }
         }
@@ -102,7 +112,7 @@
                     .common-icon-Budgetcalculator {
                         font-size: 1.3rem;
                     }
-                }               
+                }
             }
         }
         .smdetails-dropdown {

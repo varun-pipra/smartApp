@@ -1,7 +1,7 @@
 import PresenceManager from 'utilities/presence/PresenceManager.js';
 import { postMessage } from 'app/utils';
 
-export const renderPresence = (presenceProps: any, appInfoData: any, iFrameId: string, appType: string, lid = null, lname = null) => {
+export const renderPresence = (presenceProps: any, appInfoData: any, iFrameId: string, appType: string, isFromHelpIcon: any, tabName: any, lid = null, lname = null) => {
 	if (presenceProps?.presenceId) {
 		let presenceManager = new PresenceManager({
 			domElementId: presenceProps?.presenceId,
@@ -16,12 +16,12 @@ export const renderPresence = (presenceProps: any, appInfoData: any, iFrameId: s
 				participants: [appInfoData?.currentUserInfo || '']
 			}
 		});
-		addPresenceListener(presenceManager, appInfoData, iFrameId, appType, lid, lname);
+		addPresenceListener(presenceManager, appInfoData, iFrameId, appType, lid, lname, isFromHelpIcon, tabName);
 	}
 };
 
-export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId: string, appType: string, lineItemId: any, lineItemName: any) => {
-	// console.log('addPresenceListener', { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType })
+export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId: string, appType: string, lineItemId: any, lineItemName: any, isFromHelpIcon: any, tabName: any) => {
+	console.log('addPresenceListener', { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType, isFromHelpIcon: isFromHelpIcon, tabName: tabName })
 	if (presenceManager && presenceManager.control) {
 		let participantCtrl = presenceManager.control;
 		participantCtrl.addEventListener('brenabtnclick', function (e: any) {
@@ -29,9 +29,11 @@ export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId
 		});
 
 		participantCtrl.addEventListener('livesupportbtnclick', function (e: any) {
+			const body = { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType, tabName: tabName, isFromHelpIcon: isFromHelpIcon };
+			console.log('helpbody', body)
 			postMessage({
 				event: 'help',
-				body: { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType }
+				body: body
 			});
 		});
 
@@ -124,6 +126,6 @@ export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId
 	}
 
 	setTimeout(function () {
-		addPresenceListener(presenceManager, appInfo, iFrameId, appType, lineItemId, lineItemName);
+		addPresenceListener(presenceManager, appInfo, iFrameId, appType, lineItemId, lineItemName, isFromHelpIcon, tabName);
 	}, 1000);
 };

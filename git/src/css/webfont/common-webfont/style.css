@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?2ivz9o');
-  src:  url('fonts/common-webfont.eot?2ivz9o#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?2ivz9o') format('truetype'),
-    url('fonts/common-webfont.woff?2ivz9o') format('woff'),
-    url('fonts/common-webfont.svg?2ivz9o#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?hyrp6u');
+  src:  url('fonts/common-webfont.eot?hyrp6u#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?hyrp6u') format('truetype'),
+    url('fonts/common-webfont.woff?hyrp6u') format('woff'),
+    url('fonts/common-webfont.svg?hyrp6u#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -1170,7 +1170,6 @@
 }
 .common-icon-global-delegation-manager:before {
   content: "\eb14";
-  color: #666;
 }
 .common-icon-global-gecurtity-group-manager:before {
   content: "\eb15";
@@ -1191,7 +1190,6 @@
 }
 .common-icon-API-keys:before {
   content: "\eb1a";
-  color: #666;
 }
 .common-icon-view-selection:before {
   content: "\eb0f";
@@ -1213,7 +1211,6 @@
 }
 .common-icon-admin-console:before {
   content: "\eb0a";
-  color: #5b5b5b;
 }
 .common-icon-ID-card:before {
   content: "\eb09";
@@ -1363,11 +1360,9 @@
 }
 .common-icon-approval-all-option:before {
   content: "\eadd";
-  color: #666;
 }
 .common-icon-BIM-extract-icon:before {
   content: "\eadc";
-  color: #666;
 }
 .common-icon-analytic:before {
   content: "\ead7";
@@ -1401,34 +1396,27 @@
 }
 .common-icon-Schdule-Work:before {
   content: "\eac0";
-  color: #059cdf;
 }
 .common-icon-LinkedField:before {
   content: "\eac1";
-  color: #059cdf;
 }
 .common-icon-Links:before {
   content: "\eac2";
 }
 .common-icon-Lebel:before {
   content: "\eac3";
-  color: #059cdf;
 }
 .common-icon-ItemBarcode:before {
   content: "\eac4";
-  color: #059cdf;
 }
 .common-icon-Signature:before {
   content: "\eac5";
-  color: #059cdf;
 }
 .common-icon-DrawingLog:before {
   content: "\eac6";
-  color: #059cdf;
 }
 .common-icon-AutoCheckin:before {
   content: "\eac7";
-  color: #059cdf;
 }
 .common-icon-CurrentTime:before {
   content: "\eac8";
@@ -2029,7 +2017,6 @@
 }
 .common-icon-logouticon:before {
   content: "\ea1c";
-  color: #999;
 }
 .common-icon-Importui-appcls:before {
   content: "\ea1b";
@@ -2084,7 +2071,6 @@
 }
 .common-icon-item-filter:before {
   content: "\ea0a";
-  color: #666;
 }
 .common-icon-user-filter:before {
   content: "\ea0b";

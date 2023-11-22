@@ -5,35 +5,53 @@ import SUIBaseDropdownSelector from "sui-components/BaseDropdown/BaseDropdown";
 import { AdditionalInfoGrid } from "./AdditionalInfoGrid";
 import React from "react";
 import { useAppSelector, useAppDispatch } from "app/hooks";
-import { getAppDependentFields } from "features/safety/sbsmanager/operations/sbsManagerSlice";
-import { deleteSupplementalAppFields, updateSupplementalAppFields } from "features/safety/sbsmanager/operations/sbsManagerAPI";
+import { getAppDependentFields, setDetailsData } from "features/safety/sbsmanager/operations/sbsManagerSlice";
+import { deleteSupplementalAppFields, updateAdditionalInfo } from "features/safety/sbsmanager/operations/sbsManagerAPI";
 
 export const AdditionalInfo = () => {
   const dispatch = useAppDispatch();
   const { detailsData, appsList, appDependentFields  } = useAppSelector(state => state.sbsManager)
   const [additionalInfo, setAdditionalInfo] = React.useState<any>();
-  React.useEffect(() => {console.log("setAdditionalInfo", additionalInfo, detailsData); setAdditionalInfo(detailsData)}, [detailsData]);
-  const handleOnChange = (name: string, value: any) => {
-    console.log("value", value)
-    setAdditionalInfo({...additionalInfo, [name]: value})
-  }
+  const [ additionalFields, setAdditionalFields] = React.useState<any>([])
+  React.useEffect(() => {
+    let gridData:any = [];
+    console.log("setAdditionalInfo", additionalInfo, detailsData); 
+    setAdditionalInfo(detailsData);
+    if(detailsData?.categoryFieldId) gridData = [...gridData, {mappingExpression: 'categoryFieldId', dependentAppFields: detailsData?.categoryFieldId }]
+    if(detailsData?.phaseFieldId) gridData = [...gridData, {mappingExpression: 'phaseFieldId', dependentAppFields: detailsData?.phaseFieldId }]
+    if(detailsData?.SBSNameFieldId) gridData = [...gridData, {mappingExpression: 'SBSNameFieldId', dependentAppFields: detailsData?.SBSNameFieldId }]
+    if(detailsData?.tradeFieldId) gridData = [...gridData, {mappingExpression: 'tradeFieldId', dependentAppFields: detailsData?.tradeFieldId }]
+    if(detailsData?.estStartDateFieldId) gridData = [...gridData, {mappingExpression: 'estStartDateFieldId', dependentAppFields: detailsData?.estStartDateFieldId }]
+    if(detailsData?.estEndDateFieldId) gridData = [...gridData, {mappingExpression: 'estEndDateFieldId', dependentAppFields: detailsData?.estEndDateFieldId }]
+    setAdditionalFields([...gridData])
+  }, [detailsData]);
+
   React.useEffect(() => {dispatch(getAppDependentFields(additionalInfo?.supplementalInfoAppId))}, [additionalInfo?.supplementalInfoAppId]);
+  
+  const handleOnChange = (name: string, value: any) => {
+    console.log("value", value, additionalInfo?.uniqueid)
+    setAdditionalInfo({...additionalInfo, [name]: value});
+
+    let payload = {}
+    if(name == 'configureSupplementalInfo' && value == false) payload={uniqueID: additionalInfo?.uniqueid, [name]: value, categoryFieldId: null, phaseFieldId: null, SBSNameFieldId: null, tradeFieldId:null, estStartDateFieldId:null, estEndDateFieldId: null, supplementalInfoAppId: 0}
+    else payload = {uniqueID: additionalInfo?.uniqueid, [name]: value}
+    updateAdditionalInfo([payload], (response:any) => {console.log("update fileds resp", response); dispatch(setDetailsData(response[0])) })    
+  }
   
   const handleOnAddRow = (obj:any) => {
     console.log("obj", obj, additionalInfo)
-    const payload = {details: {
-      sbsId: additionalInfo?.uniqueid,
-      smartItemId: obj?.dependentAppFields,
-      fieldId: obj?.mappingExpression,
-    }}
-    updateSupplementalAppFields(payload, (response:any) => {console.log("update fileds resp", response)})
-    // { "details":{ "smartItemId":25,"fieldId": "fldDesDel","sbsId": 8, "phaseId": 12}}
+
+    const payload = {uniqueID: additionalInfo?.uniqueid, [obj?.mappingExpression] : obj?.dependentAppFields }
+    updateAdditionalInfo([payload], (response:any) => {console.log("update fileds resp", response); dispatch(setDetailsData(response[0]))})
   }
   const handleOnDeleteRows = (rows:any) => {
-    console.log("rowss", rows)
-    deleteSupplementalAppFields(rows?.filter((row:any) => row?.id), (response:any) => {
-      console.log("delete response", response)
+    console.log("rowss", rows);
+    let payload = {uniqueID: additionalInfo?.uniqueid}
+    rows?.map?.((row:any) => {
+      payload = {...payload, [row?.mappingExpression]: null}
     })
+    updateAdditionalInfo([payload], (response:any) => {console.log("update fileds resp", response); dispatch(setDetailsData(response[0]))})    
+
   }
   return (
     <div className="sbs-details">
@@ -70,13 +88,13 @@ export const AdditionalInfo = () => {
             className="vendor-field"
           >
             <InputLabel>
-              Select an App to configure supplemental info
+              Select an App to configure supplemental info:
             </InputLabel>
             <SUIBaseDropdownSelector
-              value={appsList?.filter((obj:any) => obj?.id==additionalInfo?.supplementalInfoAppId)} 
-              width="150%"
+              value={appsList?.filter((obj:any) => obj?.id==additionalInfo?.supplementalInfoAppId)}
+              width="60%"
               menuWidth="200px"
-              icon={<span className="common-icon-smartapp-logo"> </span>}
+              icon={<span className="common-icon-smartapp"></span>}
               placeHolder={"Select App"}
               dropdownOptions={appsList}
               disabled={!additionalInfo?.configureSupplementalInfo}
@@ -103,7 +121,7 @@ export const AdditionalInfo = () => {
             <AdditionalInfoGrid 
               disabled={!(additionalInfo?.configureSupplementalInfo && additionalInfo?.supplementalInfoAppId)}
               fieldsList={appDependentFields}
-              gridData={additionalInfo?.additionalInfo ? additionalInfo?.additionalInfo : []}
+              gridData={additionalFields ? additionalFields : []}
               onAdd={(row:any) => handleOnAddRow(row)}
               onDelete={(rows:any) => handleOnDeleteRows(rows)}
             />

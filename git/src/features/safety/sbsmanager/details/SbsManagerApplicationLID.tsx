@@ -10,12 +10,14 @@ import Links from './tabs/links/Links';
 import moment from "moment";
 import { AdditionalInfo } from "./tabs/additionalInfo/AdditionalInfo";
 
-import {getSBSDetailsById} from "../operations/sbsManagerSlice"
+import {getSBSDetailsById, getSBSGridList, setEnableSaveButton, setSaveDetailsObj} from "../operations/sbsManagerSlice"
+import { saveRightPanelData } from "../operations/sbsManagerAPI";
 const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
   const dispatch = useAppDispatch();
   const { smEnableButton } = useAppSelector(
     (state) => state.specificationManager
   );
+  const { detailsData,sbsSaveEnableBtn,sbsDetailsPayload } = useAppSelector((state) => state.sbsManager);
   const [lidTitle, setLidTitle] = useState(data?.category?.name);
 
   const loadData = (id: any) => {
@@ -34,14 +36,14 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
       tabId: "SBSDetails",
       label: "Details",
       showCount: false,
-      iconCls: "common-icon-smart-submittals",
+      iconCls: "common-icon-SBS",
       content: <SBSDetailsTab selectedRec={data} />,
     },
     {
       tabId: "SBSAdditionalInfo",
       label: "Additional Info",
       showCount: false,
-      iconCls: "common-icon-referance",
+      iconCls: "common-icon-orgconsole-project-supplemental-info",
 			content: <AdditionalInfo />
       
     },
@@ -60,13 +62,40 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
 	  content: <Links></Links>
     },
   ];
-  const handleSave = () => {};
+  const handleSave = () => {
+    saveRightPanelData(sbsDetailsPayload)
+			.then((res: any) => {
+				if(res) {
+					dispatch(setEnableSaveButton(false));
+					dispatch(setSaveDetailsObj([]));
+          			dispatch(getSBSGridList());
+				}
+			})
+			.catch((err: any) => {
+				console.log("error", err);
+				dispatch(setEnableSaveButton(false));
+				dispatch(setSaveDetailsObj([]));
+        		dispatch(getSBSGridList());
+			});
+  };
   const lidProps = {
     title: (
       <TextField
         className="textField"
         variant="outlined"
-        onChange={(e: any) => setLidTitle(e.target?.value)}
+        onChange={(e: any) => {
+			setLidTitle(e.target?.value);
+			dispatch(setEnableSaveButton(true));
+			if(sbsDetailsPayload.length === 0) {
+				let payload = {
+					name : e.target.value,
+					uniqueID : detailsData?.uniqueid
+				};
+				dispatch(setSaveDetailsObj([payload]));
+			} else {
+				dispatch(setSaveDetailsObj([{...sbsDetailsPayload?.[0], name : e.target.value}]));
+			};
+		}}
         value={lidTitle}
       />
     ),
@@ -75,18 +104,18 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
     tabPadValue:10,
     headContent: {
       showCollapsed: true,
-      regularContent: <HeaderContent data={data} />,
-      collapsibleContent: <CollapseContent data={data} />,
+      regularContent: <HeaderContent data={detailsData} />,
+      collapsibleContent: <CollapseContent data={detailsData} />,
     },
     tabs: tabConfig,
     footer: {
-      hideNavigation: true,
+      hideNavigation: false,
       rightNode: (
         <>
           <IQButton
             className="ce-buttons"
             color="blue"
-            disabled={!smEnableButton}
+            disabled={!sbsSaveEnableBtn}
             onClick={() => handleSave()}
           >
             SAVE
@@ -116,15 +145,15 @@ const HeaderContent = memo((props: any) => {
 					<span className="budgetid-label grey-font">Phase:</span>
 					<span
 						className="status-pill"
-						style={{ backgroundColor: data?.phase?.color, color: "#fff" }}
+						style={{ backgroundColor: data?.phase?.[0]?.color, color: "#fff" }}
 					>
 						<span className="common-icon-phase"></span>
-						{data?.phase?.name}
+						{data?.phase?.[0]?.name}
 					</span>
 					<span className="last-modified-label grey-font">Last Modified:</span>
 					<span className="budgetid-label grey-fontt">
 						{`${moment(data?.modifiedOn).format("MM/DD/YYYY hh:mm A")} by`}{" "}
-						{`${data?.modifiedBy?.lastName ?? ""}, ${data?.modifiedBy?.firstName ?? ""}`}
+						{`${data?.modifiedBy?.name ?? ""}`}
 					</span>
 				</div>
 			</div>
@@ -141,10 +170,10 @@ const CollapseContent = memo((props: any) => {
 					<span className="budgetid-label grey-font">Phase:</span>
 					<span
 						className="status-pill"
-						style={{ backgroundColor: data?.phase?.color, color: "#fff" }}
+						style={{ backgroundColor: data?.phase?.[0]?.color, color: "#fff" }}
 					>
 						<span className="common-icon-phase"></span>
-						{data?.phase?.name}
+						{data?.phase?.[0]?.name}
 					</span>
 				</div>
 				<span className="kpi-right-container">
@@ -154,7 +183,7 @@ const CollapseContent = memo((props: any) => {
 						style={{ marginTop: "4px" }}
 					>
 						{`${moment(data?.modifiedOn).format("MM/DD/YYYY hh:mm A")} by`}{" "}
-						{`${data?.modifiedBy?.lastName ?? ""}, ${data?.modifiedBy?.firstName ?? ""}`}
+						{`${data?.modifiedBy?.name ?? ""}`}
 					</span>
 				</span>
 			</div>

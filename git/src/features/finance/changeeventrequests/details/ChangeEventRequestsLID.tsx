@@ -153,20 +153,20 @@ const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 
 	const tabConfig = [
 		{
-			tabId: 'changeEventsDetails',
+			tabId: 'change-Event-Details',
 			label: 'Change Event Details',
 			showCount: false,
 			iconCls: 'common-icon-change-event-details',
 			content: <ChangeEventsDetails />
 		}, {
-			tabId: 'budgetlineitems',
+			tabId: 'budget-line-items',
 			label: 'Budget Line Items',
 			showCount: true,
 			count: changeRequestDetails?.budgetItems?.length,
 			iconCls: 'common-icon-smartapptype',
 			content: <BudgetLineItem />
 		}, {
-			tabId: 'referencefiles',
+			tabId: 'reference-files',
 			label: 'Reference Files',
 			showCount: referenceFiles?.length > 0,
 			count: referenceFiles?.length,
@@ -204,7 +204,7 @@ const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 
 	const lidProps = {
 		title: <TextField className='textField' variant='outlined' value={changeRequestDetails?.name} size='small' margin='normal' style={{ width: '40%' }} />,
-		defaultTabId: 'changeEventDetails',
+		defaultTabId: 'change-Event-Details',
 		tabPadValue: 10,
 		headContent: {
 			showCollapsed: true,
@@ -303,6 +303,7 @@ const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 		appInfo: appInfo,
 		iFrameId: "changeEventRequestIframe",
 		appType: "ChangeEventRequests",
+		isFromHelpIcon: true,
 		presenceProps: {
 			presenceId: 'ChangeEventRequests-LineItem-presence',
 			showLiveSupport: true,

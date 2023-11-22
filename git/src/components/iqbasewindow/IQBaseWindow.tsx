@@ -1,24 +1,24 @@
-import {Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import merge from 'lodash/merge';
-import {memo, useEffect, useRef, useState} from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 
 import 'utilities/presence/PresenceManager.css';
 import './IQBaseWindow.scss';
 
 // Project files and internal support import
 import Toast from 'components/toast/Toast';
-import {renderPresence} from 'utilities/presence/Presence';
+import { renderPresence } from 'utilities/presence/Presence';
 import WindowTools from './IQBaseWindowTools';
-import {IQBaseWindowProps} from './IQBaseWindowTypes';
+import { IQBaseWindowProps } from './IQBaseWindowTypes';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import {postMessage} from 'app/utils';
-import {useAppDispatch} from "app/hooks";
-import {setIsAppMaximized} from "app/common/appInfoSlice";
+import { postMessage } from 'app/utils';
+import { useAppDispatch } from "app/hooks";
+import { setIsAppMaximized } from "app/common/appInfoSlice";
 
 // Component definition
-const IQBaseWindow = ({open, appType, appInfo, actions, className, maxByDefault, moduleColor, onIconClick,
+const IQBaseWindow = ({ open, appType, appInfo, actions, className, maxByDefault, moduleColor, onIconClick,
 	inlineModule, isFullView, iconCls, title, tools, presenceProps, children, zIndex, centerPiece, titleInfo,
-	onMaximize, onClose, iFrameId, toast, toastTimeout, PaperProps, showBrena = false, isBrenaOpen = false, ...dialogProps}: IQBaseWindowProps) => {
+	onMaximize, onClose, iFrameId, isFromHelpIcon, tabName, toast, toastTimeout, PaperProps, showBrena = false, isBrenaOpen = false, ...dialogProps }: IQBaseWindowProps) => {
 	// State declaration
 	const [isOpen, setOpen] = useState(open);
 	const [showToast, setShowToast] = useState(false);
@@ -26,7 +26,7 @@ const IQBaseWindow = ({open, appType, appInfo, actions, className, maxByDefault,
 	const dispatch = useAppDispatch();
 
 	const handleBrena = () => {
-		postMessage({event: 'openbrena'});
+		postMessage({ event: 'openbrena' });
 	};
 
 	// Local variable declaration
@@ -47,7 +47,7 @@ const IQBaseWindow = ({open, appType, appInfo, actions, className, maxByDefault,
 	}, [maximized]);
 
 	useEffect(() => {
-		if(toast != '' && toast != undefined) {
+		if (toast != '' && toast != undefined) {
 			setShowToast(true);
 		} else {
 			setShowToast(false);
@@ -59,11 +59,10 @@ const IQBaseWindow = ({open, appType, appInfo, actions, className, maxByDefault,
 	}, [maximized]);
 
 	useEffect(() => {
-		if(appInfo) {
-			// console.log('appinfo', appInfo)
-			if(presenceRef.current) return;
+		if (appInfo) {
+			if (presenceRef.current) return;
 			presenceRef.current = true;
-			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '');
+			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, tabName);
 		}
 	}, [appInfo]);
 
@@ -77,7 +76,7 @@ const IQBaseWindow = ({open, appType, appInfo, actions, className, maxByDefault,
 			}
 		}, PaperProps)}
 		open={isOpen}
-		style={{zIndex: zIndex ? zIndex : 1300}}
+		style={{ zIndex: zIndex ? zIndex : 1300 }}
 		className={`iqbase-window${className ? ` ${className}` : ''}`}
 		{...dialogProps}
 	>
@@ -85,7 +84,7 @@ const IQBaseWindow = ({open, appType, appInfo, actions, className, maxByDefault,
 			{title ? <div className='titlebar-inner-items title-text'>
 				{iconCls && <span
 					onClick={onIconClick}
-					style={{color: inlineModule ? moduleColor : 'initial'}}
+					style={{ color: inlineModule ? moduleColor : 'initial' }}
 					className={`title-icon ${inlineModule ? 'common-icon-home' : iconCls}`}
 				></span>}
 				{title}
@@ -122,7 +121,7 @@ const IQBaseWindow = ({open, appType, appInfo, actions, className, maxByDefault,
 		</DialogTitle>
 		<DialogContent dividers>{children}</DialogContent>
 		{actions ? <DialogActions>{actions}</DialogActions> : ''}
-		{showToast ? <Toast message={toast} interval={toastTimeout || 3000} onHide={() => {setShowToast(false);}} /> : ''}
+		{showToast ? <Toast message={toast} interval={toastTimeout || 3000} onHide={() => { setShowToast(false); }} /> : ''}
 	</Dialog>;
 };
 

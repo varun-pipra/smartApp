@@ -186,6 +186,8 @@ const BidManagerWindow = () => {
 				title='Bid Manager'
 				appInfo={appInfo}
 				appType={'BidManager'}
+				iFrameId={'bidManagerIframe'}
+				isFromHelpIcon={true}
 				isFullView={isFullView}
 				disableEscapeKeyDown={true}
 				onMaximize={handleWindowMaximize}

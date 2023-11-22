@@ -19,6 +19,11 @@ export interface SBSManagerState {
   appsList:any;
   appDependentFields:any;
   selectedNodes:any;
+  showPhaseModel?:boolean;
+  addPhaseText?:String;
+  sbsSaveEnableBtn?:boolean;
+  sbsDetailsPayload?:any;
+  toast: string;
 }
 
 const initialState: SBSManagerState = {
@@ -31,7 +36,12 @@ const initialState: SBSManagerState = {
   detailsData: {},
   appsList: [],
   appDependentFields: [],
-  selectedNodes:[]
+  selectedNodes:[],
+  showPhaseModel:false,
+  addPhaseText:'',
+  sbsSaveEnableBtn:false,
+  sbsDetailsPayload:[],
+  toast: ''
 };
 
 export const getSBSGridList = createAsyncThunk<any>(
@@ -93,7 +103,25 @@ export const SBSManagerSlice = createSlice({
     },
     setSelectedNodes:(state, action: PayloadAction<any>)=>{
       state.selectedNodes = action.payload
-    }
+    },
+    setShowPhaseModel:(state, action: PayloadAction<any>)=>{
+      state.showPhaseModel = action.payload
+    },
+    setAddPhaseText:(state, action: PayloadAction<any>)=>{
+      state.addPhaseText = action.payload
+    },
+    setEnableSaveButton: (state, action: PayloadAction<any>) => {
+      state.sbsSaveEnableBtn = action.payload;
+    },
+    setSaveDetailsObj: (state, action: PayloadAction<any>) => {
+      state.sbsDetailsPayload = action.payload;
+    },
+    setDetailsData: (state, action: PayloadAction<any>) => {
+      state.detailsData = action.payload;
+    },
+		setToast: (state, action: PayloadAction<any>) => {
+			state.toast = action.payload;
+		},
   },
   extraReducers: (builder) => {
     builder
@@ -149,8 +177,8 @@ export const SBSManagerSlice = createSlice({
       .addCase(getAppsList.fulfilled, (state, action) => {
         state.loading = false;
         state.appsList = action.payload?.map((appObj:any) => 	{ return {
-          id: appObj?.appid,
-          objectId: appObj?.id,
+          id: appObj?.id,
+          objectId: appObj?.appid,
           thumbnailUrl: appObj?.iconUrl,
           name: appObj?.name,
           displayField: appObj?.name,
@@ -165,7 +193,7 @@ export const SBSManagerSlice = createSlice({
       .addCase(getAppDependentFields.fulfilled, (state, action) => {
         state.loading = false;
         state.appDependentFields = action.payload?.MainItemCollections?.[0]?.Fields?.map((obj:any) => {
-          return {id: obj?.Id, value: obj?.Id, label: obj?.Label}
+          return {id: obj?.Name, value: obj?.Name, label: obj?.Label}
         });
       })
       .addCase(getAppDependentFields.rejected, (state) => {
@@ -174,6 +202,6 @@ export const SBSManagerSlice = createSlice({
   },
 });
 
-export const { setToastMessage, setShowSbsPanel, setSelectedNodes } = SBSManagerSlice.actions;
+export const { setToastMessage, setShowSbsPanel, setSelectedNodes,setShowPhaseModel,setAddPhaseText,setEnableSaveButton,setSaveDetailsObj, setDetailsData,setToast } = SBSManagerSlice.actions;
 
 export default SBSManagerSlice.reducer;

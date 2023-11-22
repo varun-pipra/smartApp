@@ -183,7 +183,7 @@
     .tab-panel-container {
         flex: auto;
         padding-top: 1.5em;
-        #lienWaiver {
+        #lien-Waiver{
             height: fit-content !important;
         }
     }
@@ -199,12 +199,13 @@
     }
     .iqobjectpage-main-container .iqobjectpage-tabbar-outer {
         flex: 0 !important;
-    }
+	}
+	
     .dynamic-page-body {
-        #payApplicationDetails {
+        #pay-Application-Details {
             height: fit-content !important;
         }
-        #scheduleValues {
+        #schedule-of-Values {
             height: fit-content !important;
             .scheduleOFvalue {
                 .grid_section {

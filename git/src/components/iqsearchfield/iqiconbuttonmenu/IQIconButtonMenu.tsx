@@ -2,16 +2,19 @@ import {useEffect, useState, ReactNode} from 'react';
 import _ from 'lodash';
 import {
 	Button, Checkbox, ListItemIcon, ListItemText, ListItemButton,
-	ListSubheader, ListItem, MenuList, ClickAwayListener, Paper, Popper, Divider
+	ListSubheader, ListItem, MenuList, ClickAwayListener, Paper, Popper, Divider, Box, TextField, InputAdornment
 } from '@mui/material';
 import {KeyboardArrowRight as ArrowRight} from '@mui/icons-material';
 
 import './IQIconButtonMenu.scss';
 import IQIconButtonMenuProps, {IQIconButtonMenuChildren, IQIconButtonMenuChildrenItem} from './IQIconButtonMenu.d';
 import IQMenuListItem from '../iqlistitem/IQMenuListItem';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
+import React from 'react';
 
 const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
-	const {defaultFilters, defaultGroups = "", headerStatusFilters} = props;
+	const {defaultFilters, defaultGroups = "", headerStatusFilters, showSearchField = false} = props;
 	const [open, setOpen] = useState(false);
 	const [anchor, setAnchor] = useState();
 	const selection: any = props.allowSubMenu ? _.findKey(props.defaultValue, function (value) {return value.length > 0;}) : _.keys(props.defaultValue);
@@ -147,7 +150,7 @@ const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
 						{props.menuProps?.header ? <ListSubheader aria-label={`${props.menuProps.header} menu`}>{props.menuProps.header}</ListSubheader> : ''}
 						{props.options?.length ? optionList?.map((el: any, index: number) => {
 							const hasSubMenu = props.allowSubMenu && (el.children?.items?.length > 0 || el.children?.component);
-							const subMenuNode = hasSubMenu ? getSubMenuNodeByType(el.value, el.children, props.defaultValue[(el.value)], handleChange) : undefined;
+							const subMenuNode = hasSubMenu ? getSubMenuNodeByType(el.value, el.children, props.defaultValue[(el.value)], handleChange, showSearchField) : undefined;
 							const MenuListItem = hasSubMenu ? IQMenuListItem : ListItem;
 							const secondaryActionProp = hasSubMenu ? {
 								menu: subMenuNode,
@@ -212,7 +215,7 @@ const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
 
 export default IQIconButtonMenu;
 
-const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, selected: any, changeHandler: any): ReactNode => {
+const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, selected: any, changeHandler:any, isSearchField?: boolean): ReactNode => {
 	let subMenuNodes: ReactNode = <></>;
 
 	switch(child.type ?? name) {
@@ -223,7 +226,7 @@ const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, 
 			subMenuNodes = <MultipleSubMenu name={name} childItems={child} selection={selected} onChange={changeHandler} />;
 			break;
 		case 'checkbox':
-			subMenuNodes = <CheckboxListMenu name={name} items={child.items} selection={selected} onChange={changeHandler} />;
+			subMenuNodes = <CheckboxListMenu name={name} items={child.items} selection={selected} onChange={changeHandler} isSearchField={isSearchField} />;
 			break;
 		case 'radio':
 			subMenuNodes = child.component;
@@ -281,10 +284,11 @@ export const MultipleSubMenu = (props: any) => {
 };
 
 
-export const CheckboxListMenu = (props: {name: string, selection: any, items: Array<IQIconButtonMenuChildrenItem> | undefined, onChange: any;}) => {
+export const CheckboxListMenu = (props: {name: string, selection: any, items: Array<IQIconButtonMenuChildrenItem> | undefined, onChange: any, isSearchField?: boolean}) => {
+	const {isSearchField, ...rest} = props;
 	let itemList = _.concat([{text: 'All', value: 'all'}], props.items);
+	const [menuItems, setMenuItems] = React.useState(itemList || []);
 	const [selection, setSelection] = useState(props.selection || []);
-
 	const onItemClick = (e: any) => {
 		const currentValue = e.currentTarget.getAttribute('data-value');
 		const valueIndex = selection.indexOf(currentValue);
@@ -307,49 +311,115 @@ export const CheckboxListMenu = (props: {name: string, selection: any, items: Ar
 	useEffect(() => {
 		props.onChange && props.onChange({[props.name]: selection});
 	}, [selection]);
+	const [searchValue, setSearchValue] = useState("");
 
-	return (props.items?.length ? <MenuList>
-		{itemList?.map((item: any, index) => {
-			const labelId = `checkbox-list-${item?.value}-${index}`;
+	const handleSearch = (e: any) => {
+		let keyword = e?.target?.value;
+		setSearchValue(keyword);
+		const res = JSON.parse(JSON.stringify(itemList)).filter((obj: any) => {
+			return obj.value && JSON.stringify(obj.value)?.toLowerCase()?.includes(keyword);
+		});
+		setMenuItems(res);
+	};
+	
+	const handleSearchClear = () => {
+		setSearchValue('');
+		setMenuItems(itemList);
+	};
+	
+	return props.items?.length ? (
+    <MenuList>
+      {isSearchField && (
+        <Box className="search-wrapper skill-search">
+          <TextField
+            variant={"outlined"}
+            autoFocus
+            value={searchValue}
+            onChange={handleSearch}
+            size="small"
+            fullWidth
+            tabIndex={1}
+            className={"smart-dropdown-search-box search-field "}
+            onKeyDown={(e: any) => {
+              if (e.key !== "Escape") {
+                e.stopPropagation();
+              }
+            }}
+            placeholder={"Search"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  {searchValue == "" ? (
+                    <SearchIcon />
+                  ) : (
+                    <ClearIcon
+                      onClick={handleSearchClear}
+                      style={{ cursor: "pointer" }}
+                    />
+                  )}
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+      )}
+      {menuItems?.map((item: any, index) => {
+        const labelId = `checkbox-list-${item?.value}-${index}`;
 
-			return (
-				<div>
-
-					{!item?.hidden && (<ListItem key={`listitem-${item?.value}-${index}`} className={props.selection?.indexOf(item?.value) > -1 ? 'menu-selected' : ''}>
-						<ListItemButton
-							key={`listitembutton-${item?.value}-${index}`}
-							dense
-							disableRipple
-							role={undefined}
-							data-value={item?.value}
-							onClick={onItemClick}
-						>
-							<ListItemIcon key={`listitem-icon-${item?.value}-${index}`}>
-								<Checkbox
-									key={`listitem-checkbox-${item?.value}-${index}`}
-									edge="start"
-									tabIndex={-1}
-									disableRipple
-									checked={selection.indexOf(item?.value) > -1}
-									inputProps={{'aria-labelledby': labelId}}
-								/>
-							</ListItemIcon>
-							{(item?.basecustomline ?? false) && (
-								<div className="base-custom-line"
-									style={{backgroundColor: `#${item.color}`}}></div>
-							)}
-							{item.iconCls && (
-								<ListItemIcon key={`iqmenu-item-icon-${item.value}-${index}`}>
-									<span className={item.iconCls} style={{color: item.color}}></span>
-								</ListItemIcon>
-							)}
-							<ListItemText id={labelId} primary={item?.text} />
-						</ListItemButton>
-					</ListItem>)}
-				</div>
-			);
-		})}
-	</MenuList> : null);
+        return (
+          <div>
+            {!item?.hidden && (
+              <ListItem
+                key={`listitem-${item?.value}-${index}`}
+                className={
+                  props.selection?.indexOf(item?.value) > -1
+                    ? "menu-selected"
+                    : ""
+                }
+              >
+                <ListItemButton
+                  key={`listitembutton-${item?.value}-${index}`}
+                  dense
+                  disableRipple
+                  role={undefined}
+                  data-value={item?.value}
+                  onClick={onItemClick}
+                >
+                  <ListItemIcon key={`listitem-icon-${item?.value}-${index}`}>
+                    <Checkbox
+                      key={`listitem-checkbox-${item?.value}-${index}`}
+                      edge="start"
+                      tabIndex={-1}
+                      disableRipple
+                      checked={selection.indexOf(item?.value) > -1}
+                      inputProps={{ "aria-labelledby": labelId }}
+                    />
+                  </ListItemIcon>
+                  {(item?.basecustomline ?? false) && (
+                    <div
+                      className="base-custom-line"
+                      style={{ backgroundColor: `#${item.color}` }}
+                    ></div>
+                  )}
+                  {item.iconCls && (
+                    <ListItemIcon
+                      key={`iqmenu-item-icon-${item.value}-${index}`}
+                    >
+                      <span
+                        className={item.iconCls}
+                        style={{ color: item.color }}
+                      ></span>
+                    </ListItemIcon>
+                  )}
+                  <ListItemText id={labelId} primary={item?.text} />
+                </ListItemButton>
+              </ListItem>
+            )}
+          </div>
+        );
+      })}
+    </MenuList>
+  ) : null;
 };
 
 export const PopoverSelect = (props: any) => {

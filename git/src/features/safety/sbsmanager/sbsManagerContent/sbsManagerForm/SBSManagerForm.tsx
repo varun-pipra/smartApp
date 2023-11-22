@@ -8,6 +8,9 @@ import { getServer } from "app/common/appInfoSlice";
 import SmartDropDown from "components/smartDropdown";
 import {
   getSBSGridList,
+  setAddPhaseText,
+  setShowPhaseModel,
+  setToast,
   setToastMessage,
 } from "features/safety/sbsmanager/operations/sbsManagerSlice";
 import { AddDescription } from "features/budgetmanager/headerPinning/AddDescription";
@@ -49,52 +52,41 @@ const SBSManagerForm = (props: any) => {
   const { lineItemDescription } = useAppSelector((state) => state.tableColumns);
   // Local state vaiables
   const [formData, setFormData] = React.useState<any>(defaultFormData);
-  const [disableAddButton, setDisableAddButoon] = React.useState<boolean>(true);
+  const [disableAddButton, setDisableAddButton] = React.useState<boolean>(true);
   const [uuidForSbs, setUUIDForSbs] = React.useState(rtHelperIns.getUuid());
+  const [dynamicClose, setDynamicClose] = React.useState(false);
+  const [showAddIcon, setShowAddIcon] = React.useState(false);
   // Effects
   React.useEffect(() => {
-    setDisableAddButoon(
-      formData?.name !== "" && formData?.category !== "" ? false : true
+    setDisableAddButton(
+      formData?.name !== "" &&
+        Object.keys(formData?.category).length > 0 &&
+        Object.keys(formData?.phase).length > 0 &&
+        formData?.trades?.length > 0
+        ? false
+        : true
     );
-  }, [formData]);
-
-  React.useEffect(() => {
     if (formData.startDate != "") {
-      // console.log('startdate', formDatClone)
       if (new Date(formData.startDate) > new Date(formData.endDate)) {
-        setDisableAddButoon(true);
         dispatch(
           setToastMessage({
             displayToast: true,
             message: "Start Date should not be greater than End Date",
           })
         );
-      } else {
-        if (formData?.title !== "" && formData?.type !== "") {
-          setDisableAddButoon(false);
-        }
       }
-    }
-  }, [formData.startDate]);
-
-  React.useEffect(() => {
+    };
     if (formData.endDate != "") {
       if (new Date(formData.endDate) < new Date(formData.startDate)) {
-        setDisableAddButoon(true);
         dispatch(
           setToastMessage({
             displayToast: true,
             message: "End Date Should Not be less Than start Date",
           })
         );
-      } else {
-        if (formData?.title !== "" && formData?.type !== "") {
-          setDisableAddButoon(false);
-        }
-      }
-    }
-  }, [formData.endDate]);
-
+      };
+    };
+  }, [formData]);
   React.useEffect(() => {
     if (lineItemDescription) {
       handleOnChange(lineItemDescription, "description");
@@ -153,15 +145,26 @@ const SBSManagerForm = (props: any) => {
       .then((res: any) => {
         setFormData(defaultFormData);
         dispatch(getSBSGridList());
+        dispatch(setToast('New SBS Item Created Successfully'));
       })
       .catch((err: any) => {
         console.log("error", err);
       });
   };
+  const handlePhaseAdd = (item: any, val: any) => {
+    dispatch(setShowPhaseModel(true));
+    setDynamicClose(!dynamicClose);
+    dispatch(setAddPhaseText(val));
+    setShowAddIcon(false);
+  };
+  const handleSearchProp= (items:any, key:any) => {
+    if(items?.length === 0) setShowAddIcon(true);
+    else setShowAddIcon(false);
+  };
   return (
     <>
       <div className="sbs-title-description-container">
-        <span className="title-text">SBS Manager</span>
+        <span className="title-text">Create New SBS</span>
         <AddDescription
           value={!lineItemDescription ? "" : lineItemDescription}
         />
@@ -250,6 +253,10 @@ const SBSManagerForm = (props: any) => {
             }}
             ignoreSorting={true}
             showIconInOptionsAtRight={true}
+            handleAddCategory={(val:any) => handlePhaseAdd('phase', val)}
+            isCustomSearchField={showAddIcon}
+            dynamicClose={dynamicClose}
+            handleSearchProp={(items:any, key:any) => handleSearchProp(items, key)}
           />
         </div>
         <div className="type-field">

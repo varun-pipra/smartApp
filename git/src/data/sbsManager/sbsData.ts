@@ -46,12 +46,12 @@ export const GridData = [
         id: 12,
         name: "Electrical",
       },
-      phase: {
+      phase: [{
         id: 14,
         name: "Pre Construction",
         color: "#81c3dc",
         uniqueId: null,
-      },
+      }],
       trades: [
         {
           "objectId": 1,
@@ -91,6 +91,7 @@ export const GridData = [
       configureSupplementalInfo: true,
       supplementalInfoAppId: "ad97b41b-afda-4175-810c-e4cdee2d5dac",
       status: 0,
+      "sbsNameFieldId": "fld0b2dfc09",
 
     },
     {
@@ -105,12 +106,12 @@ export const GridData = [
         id: 11,
         name: "Stucatural",
       },
-      phase: {
+      phase: [{
         id: 12,
         name: "In Construction",
         color: "#d6a827",
         uniqueId: null,
-      },
+      }],
       trades: [
         {
           "objectId": 4,
@@ -151,6 +152,8 @@ export const GridData = [
       ],
       configureSupplementalInfo: false,
       status: 0,
+      "sbsNameFieldId": "fld0b2dfc09",
+      
     },
     {
       id: 5,
@@ -164,12 +167,12 @@ export const GridData = [
         id: 12,
         name: "Utillites",
       },
-      phase: {
+      phase: [{
         id: 14,
         name: "Post Construction",
         color: "#fd8d27",
         uniqueId: null,
-      },
+      }],
       trades: [{
         "objectId": 7,
         "status": 1,
@@ -182,6 +185,69 @@ export const GridData = [
         "isDrawingDiscipline": false,
         "isImportedFromOrg": false
     },
+    {
+      "id": 14,
+      "uniqueid": "84cdf129-6b47-4689-a874-9da67ba7defb",
+      "displayId": "SBS0014",
+      "name": "FinanceBid",
+      "startDate": "2023-11-21T00:00:00",
+      "endDate": "2023-11-29T00:00:00",
+      "description": "Photosdesk",
+      "category": {
+          "id": 1155,
+          "name": "Exterior Walls & Doors"
+      },
+      "phase": [
+          {
+              "id": 1,
+              "name": "Pre Construction",
+              "color": "#81c3dc",
+              "uniqueId": null,
+              "sequenceNo": null
+          }
+      ],
+      "trades": [
+          {
+              "id": 2,
+              "name": "Audio / Video"
+          },
+          {
+              "id": 70,
+              "name": "aDD "
+          }
+      ],
+      "configureSupplementalInfo": false,
+      "supplementalInfoAppId": 0,
+      "status": 0,
+      "additionalInfo": [
+          {
+              "id": null,
+              "sbsId": 14,
+              "name": null,
+              "appId": null,
+              "appName": null,
+              "icon": null
+          }
+      ],
+      "sbsNameFieldId": "fld0b2dfc09",
+      "categoryFieldId": null,
+      "phaseFieldId": null,
+      "tradeFieldId": null,
+      "estStartDateFieldId": null,
+      "estEndDateFieldId": null,
+      "createdBy": {
+          "id": 534917,
+          "name": ""
+      },
+      "createdDate": "2023-11-20T07:11:37.83",
+      "modifiedBy": {
+          "id": 534917,
+          "name": "MK, Sudeep"
+      },
+      "modifiedDate": null,
+      "referencefiles": [],
+      "links": []
+  },
     {
         "objectId": 8,
         "status": 1,
@@ -221,12 +287,12 @@ export const GridData = [
         id: 12,
         name: "Stucatural",
       },
-      phase: {
+      phase: [{
         id: 14,
         name: "Operations and Maintenance",
         "color": "#b88fc6",
         uniqueId: null,
-      },
+      }],
       trades: [],
       configureSupplementalInfo: false,
       status: 0,
@@ -706,4 +772,64 @@ export const GridData = [
     "modifiedDate": "2023-06-06T12:21:39.927",
     "referencefiles": [],
     "links": []
+}
+
+export const getGridDataById ={
+  "id": 13,
+  "uniqueid": "a87452a0-1a3f-4603-b0f4-d926a13a400e",
+  "displayId": "SBS0013",
+  "name": "SBS Name",
+  "startDate": "2023-11-20T00:00:00",
+  "endDate": "2023-11-21T00:00:00",
+  "description": "SBS Manger",
+  "category": {
+      "id": 1159,
+      "name": "Structural"
+  },
+  "phase": [
+      {
+          "id": 1,
+          "name": "Pre Construction",
+          "color": "#81c3dc",
+          "uniqueId": null,
+          "sequenceNo": null
+      }
+  ],
+  "trades": [
+      {
+          "id": 2,
+          "name": "Capentry2 "
+      }
+  ],
+  "configureSupplementalInfo": false,
+  "supplementalInfoAppId": 0,
+  "status": 0,
+  "additionalInfo": [
+      {
+          "id": null,
+          "sbsId": 13,
+          "name": null,
+          "appId": null,
+          "appName": null,
+          "icon": null
+      }
+  ],
+  "SBSNameFieldId": "fld0b2dfc09" ,
+  "categoryFieldId": null,
+  "phaseFieldId": null,
+  "tradeFieldId": null,
+  "estStartDateFieldId": null,
+  "estEndDateFieldId": null,
+  "createdBy": {
+      "id": 534917,
+      "name": ""
+  },
+  "createdDate": "2023-11-20T05:32:38.57",
+  "modifiedBy": {
+      "id": 534917,
+      "name": "MK, Sudeep"
+  },
+  "modifiedDate": null,
+  "referencefiles": [],
+  "links": []
 }

@@ -1,7 +1,7 @@
 import { Close, ExpandLess, ExpandMore, PushPinOutlined as PushPin } from '@mui/icons-material';
 import { IconButton, Paper, Stack } from '@mui/material';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import 'utilities/presence/PresenceManager.css';
 import './LineItemDetails.scss';
 import { setLineItemDescription, showRightPannel } from '../operations/tableColumnsSlice';
@@ -57,7 +57,7 @@ const LineItemDetails = (props: headerprops) => {
 	const [tabSelected, setTabSelected] = React.useState<any>('budget-details');
 	const [showToast, setShowToast] = React.useState<any>({ displayToast: false, message: '' });
 	const rightPannel = useAppSelector(showRightPannel);
-	const tabidd = useRef('budget-details');
+	const tabid = useRef('budget-details');
 
 	const presenceTools = <React.Fragment>{
 		<>
@@ -129,7 +129,7 @@ const LineItemDetails = (props: headerprops) => {
 				});
 			});
 			participantCtrl.addEventListener('livesupportbtnclick', function (e: any) {
-				help();
+				help(true);
 			});
 			participantCtrl.addEventListener('streambuttonclick', function (e: any) {
 				postMessage({
@@ -212,15 +212,17 @@ const LineItemDetails = (props: headerprops) => {
 			addPresenceListener(presenceManager);
 		}, 1000);
 	};
-	const help = () => {
-		console.log('useref', tabidd.current);
-		const body = { iframeId: "budgetManagerIframe", roomId: selectedRow.id, appType: "BudgetManagerLineItem", tabName: tabidd.current }
+
+	const help = (isFromHelpIcon: any) => {
+		console.log('useref', tabid.current);
+		const body = { iframeId: "budgetManagerIframe", roomId: selectedRow.id, appType: "BudgetManagerLineItem", tabName: tabid.current, isFromHelpIcon: isFromHelpIcon }
 		console.log('help', body)
 		postMessage({
 			event: "help",
 			body: body
 		});
 	}
+
 	const renderPresence = () => {
 		let presenceManager = new PresenceManager({
 			domElementId: presenceId,
@@ -253,10 +255,14 @@ const LineItemDetails = (props: headerprops) => {
 	};
 
 	const tabSelectedValue = (value: any) => {
-		tabidd.current = value;
+		tabid.current = value;
 		setTabSelected(value);
-		help();
 	};
+	useEffect(() => {
+		if (tabSelected) {
+			help(false);
+		}
+	}, [tabSelected]);
 
 	const onScroll = (value: any) => {
 		if (pinned == false) {

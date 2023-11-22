@@ -16,7 +16,7 @@ import { SBSToolbarLeftButtons, SBSToolbarRightButtons } from './sbsManagerConte
 import SBSCategoryRightPanel from './SBSCategoryRightPanel/SBSCategoryRightPanel';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import { getTrades } from "./enums";
-import { getAppsList, getCategoryDropDownOptions, getPhaseDropdownValues, getSBSGridList, setShowSbsPanel, setSelectedNodes } from "./operations/sbsManagerSlice";
+import { getAppsList, getCategoryDropDownOptions, getPhaseDropdownValues, getSBSGridList, setShowSbsPanel, setSelectedNodes, setShowPhaseModel, setToast } from "./operations/sbsManagerSlice";
 import { formatDate } from "utilities/datetime/DateTimeUtils";
 import _ from 'lodash';
 import { fetchTradesData, getTradeData } from 'features/projectsettings/projectteam/operations/ptDataSlice';
@@ -86,7 +86,7 @@ const SBSManagerWindow = (props: any) => {
   const [appData] = React.useState(appInfoData);
   const appInfo = useAppSelector(getServer);
   const { currencySymbol } = useAppSelector((state) => state.appInfo);
-  const { sbsGridData, showSbsPanel } = useAppSelector((state) => state.sbsManager);
+  const { sbsGridData, showSbsPanel,showPhaseModel, toast } = useAppSelector((state) => state.sbsManager);
   const [gridSearchText, setGridSearchText] = useState("");
 	const [selectedFilters, setSelectedFilters] = useState<any>();
   const [rowData, setRowData] = useState([]);
@@ -99,7 +99,10 @@ const SBSManagerWindow = (props: any) => {
   const [openRightPanel, setOpenRightPanel] = useState(false);
   const [currentRowSelection, setCurrentRowSelection] = useState<any>(null);
   const [driveFileQueue, setDriveFileQueue] = useState<any>([]);
-
+  const [toastMessage, setToastMessage] = useState<string>('');
+  useEffect(() => {
+      setShowManagePhasesModal(showPhaseModel)
+  },[showPhaseModel]);
   useEffect(() => {
 		if (tradesData?.length && filterOptions?.length) {
 			findAndUpdateFiltersData(tradesData, 'trade');
@@ -251,7 +254,7 @@ const SBSManagerWindow = (props: any) => {
                 />
               </IQTooltip>
             )}
-            {params.data?.category?.name || "N/A"}
+            {params.data?.name || "N/A"}
           </div>
         );
       },
@@ -262,12 +265,12 @@ const SBSManagerWindow = (props: any) => {
       pinned: "left",
       suppressMenu: true,
       // checkboxSelection: true,
-      keyCreator: (params: any) => params.data?.phase?.name || "None",
+      keyCreator: (params: any) => params.data?.phase?.[0]?.name || "None",
       minWidth: 260,
       cellRenderer: (params: any) => {
-        const phase = params.data?.phase?.name;
+        const phase = params.data?.phase?.[0]?.name;
         const buttonStyle = {
-          backgroundColor: params.data?.phase?.color ?? "red",
+          backgroundColor: params.data?.phase?.[0]?.color ?? "red",
           color: "#fff",
           alignItems: "center",
         };
@@ -451,6 +454,13 @@ const SBSManagerWindow = (props: any) => {
 			setRowData(data);
 		}
 	}, [gridSearchText, selectedFilters]);
+  useEffect(() => {
+		setToastMessage(toast);
+		setTimeout(() => {
+			setToastMessage('');
+			dispatch(setToast(''));
+		}, 3000);
+	}, [toast]);
   return (
     <div className="sbs-manager-cls">
       <GridWindow
@@ -466,7 +476,7 @@ const SBSManagerWindow = (props: any) => {
         defaultTabId={defaultTabId}
         manualLIDOpen={openRightPanel}
         currentRowSelectionData={currentRowSelection}
-        //showPinned={true}
+        showPinned={true}
         // isFullView={true}
         lidCondition={(rowData: any) => {
 					return true;
@@ -491,6 +501,7 @@ const SBSManagerWindow = (props: any) => {
             height: "90%",
           },
         }}
+        toast={toastMessage}
         content={{
           headContent: {
             regularContent: <SBSManagerForm />,
@@ -543,7 +554,7 @@ const SBSManagerWindow = (props: any) => {
             marginTop: "9%",
             marginRight: "2.5%",
             height: "76%",
-            borderRadius: "10px",
+            borderRadius: "4px",
             boxShadow: "-6px 0px 10px -10px",
             border: "1px solid rgba(0, 0, 0, 0.12) !important",
           },
@@ -553,13 +564,12 @@ const SBSManagerWindow = (props: any) => {
         elevation={2}
         open={false}
       >
-        <Box sx={{ width: "20.5vw", height: "100%" }} role="presentation">
+        <Box sx={{ width: "20.5vw", height: "100%" }} role="presentation" className="general-window-cls">
           <Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
-            <IconButton
+            <IconButton className="Close-btn"
               aria-label="Close Right Pane"
               onClick={() => dispatch(setShowSbsPanel(false))}
-            >
-              <Close />
+            ><span className="common-icon-Declined"></span>
             </IconButton>
           </Stack>
           <div style={{ height: "calc(100% - 5em)" }}>
@@ -587,6 +597,7 @@ const SBSManagerWindow = (props: any) => {
           }
           onAction={() => {
             setShowManagePhasesModal(false);
+            if(showPhaseModel) dispatch(setShowPhaseModel(false));
           }}
           customButtons={true}
           customButtonsContent={<></>}

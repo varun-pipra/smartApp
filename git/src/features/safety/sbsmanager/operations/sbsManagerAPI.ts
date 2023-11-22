@@ -4,6 +4,7 @@ import {
   CategoryList,
   GridData,
   PhasesData,
+  getGridDataById,
   gridDetailsByIdData,
 } from "data/sbsManager/sbsData";
 import { appDependentFieldsData, appsData } from "data/sbsManager/appsList";
@@ -140,9 +141,9 @@ export const fetchGridDetailsDataByID = async (uniqueid: any) => {
       throw new Error(message);
     }
     const responseData = await response.json();
-    return responseData?.data || [];
+    return responseData || [];
   }
-  return GridData?.filter((obj:any) => obj?.id == uniqueid)[0]
+  return getGridDataById
 };
 
 export const deleteSBSGridRecs = async (payload: any) => {
@@ -161,8 +162,7 @@ export const deleteSBSGridRecs = async (payload: any) => {
       const message = `API Request Error (${moduleName}): ${response.status}`;
       throw new Error(message);
     }
-    const responseData = await response.json();
-    return responseData || [];
+    return response;
   } else return {success: true};
 };
 
@@ -189,29 +189,31 @@ export const fetchDependentAppFields = async (appId:any) => {
   let response;
   const appInfo: any = getServerInfo();
   if (!isLocalhost) {
-    response = await fetch(
-      `${appInfo?.hostUrl}/admin/WorkPlanner/GetAppMDCollections?appId=${appId}&sessionId=${appInfo?.sessionId}`
-    );
-    if (!response.ok) {
-      const message = `API Request Error (${moduleName}): ${response.status}`;
-      throw new Error(message);
+    if(appId) {
+      response = await fetch(
+        `${appInfo?.hostUrl}/admin/WorkPlanner/GetAppMDCollections?appId=${appId}&sessionId=${appInfo?.sessionId}`
+      );
+      if (!response.ok) {
+        const message = `API Request Error (${moduleName}): ${response.status}`;
+        throw new Error(message);
+      }
+      const responseData = await response.json();
+      return responseData || [];
     }
-    const responseData = await response.json();
-    return responseData || [];
   }
   return appDependentFieldsData;
 };
 
-export const updateSupplementalAppFields = async (payload: any, callback: any) => {
+export const updateAdditionalInfo = async (payload: any, callback: any) => {
 	const server: any = getServerInfo();
-	console.log("updateSupplementalAppFields", payload);
+	console.log("updateAdditionalInfo", payload);
 	const options = {
 		method: 'PATCH',
 		headers: { 'content-type': 'application/json' },
 		body: JSON.stringify(payload),
 	};
 	if (!isLocalhost) {
-		const response = await sbsRequest(server, `/additionalInfo`, options);
+		const response = await sbsRequest(server, ``, options);
 		callback && callback(response);
 	}
 };
@@ -227,5 +229,27 @@ export const deleteSupplementalAppFields = async (payload: any, callback: any) =
 		const response = await sbsRequest(server, `/additionalInfo`, options, true);
 		callback && callback(response);
 	}
+};
+
+export const saveRightPanelData = async (body: any) => {
+  const appInfo: any = getServerInfo();
+  let response;
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}?sessionId=${appInfo?.sessionId}`,
+      {
+        method: "PATCH",
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      }
+    );
+    if (!response?.ok) {
+      const message = `API Request Error (${moduleName}): ${response?.status}`;
+      throw new Error(message);
+    }
+    const data = await response?.json();
+    return data;
+  };
+  return true;
 };
 

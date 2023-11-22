@@ -152,7 +152,7 @@ const ReferenceFiles = () => {
 			cellRenderer: (params: any) => {
 				return params.data && (
 					<div className={`app-items-cell-contentt`}>
-						<span className='ref-name-icon'>T</span>
+						<span className='ref-name-icon'><span className="common-icon-drawings"></span></span>
 						<span className='ref-name-tag' style={{ color: params.data?.smartAppId ? '#059CDF' : '' }}>{params.value}</span>
 					</div>
 				);
@@ -160,7 +160,7 @@ const ReferenceFiles = () => {
 		}, {
 			headerName: 'Description',
 			field: 'description',
-			minWidth: 150,
+			minWidth: 180,
 		}, {
 			headerName: 'Created By',
 			field: 'createdby',
@@ -173,11 +173,13 @@ const ReferenceFiles = () => {
 		},
 		{
 			headerName: 'type',
+			maxWidth: 120,
 			field: 'type',
 		},
 		{
 			headerName: 'Phases',
 			field: 'phase',
+			minWidth: 250,
 			cellRenderer: (params: any) => {
 				return (
 					<Button disabled
@@ -303,8 +305,7 @@ const ReferenceFiles = () => {
 								className="ref-download-btn"
 								disabled={disableDownloadBtn}
 								onClick={() => { onSelectedFilesDownload(); }}
-							>
-								<span className="common-icon-version-download"></span>
+							><span className="common-icon-download"></span>
 							</IconButton>
 						</IQTooltip>
 						}
@@ -313,8 +314,7 @@ const ReferenceFiles = () => {
 								className="ref-sketch-btn"
 								disabled={false}
 								onClick={() => { console.log('sketchclick'); }}
-							>
-								<span className="common-icon-sketch"></span>
+							><span className="common-icon-sketch"></span>
 							</IconButton>
 						</IQTooltip>
 						<IQTooltip title="Delete" placement="bottom">
@@ -322,8 +322,7 @@ const ReferenceFiles = () => {
 								className="ref-delete-btn"
 								disabled={disableDeleteBtn}
 								onClick={() => { onSelectedFilesDelete() }}
-							>
-								<span className="common-icon-delete"></span>
+							><span className="common-icon-delete"></span>
 							</IconButton>
 						</IQTooltip>
 					</div>

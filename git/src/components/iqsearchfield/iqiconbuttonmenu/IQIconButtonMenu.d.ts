@@ -41,6 +41,7 @@ export interface IQIconButtonMenuProps {
 	defaultFilters?:any;
 	defaultGroups?:any;
 	headerStatusFilters?:any;
+	showSearchField?:boolean;
 }
 
 export default IQIconButtonMenuProps;

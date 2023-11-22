@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?2ivz9o');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?2ivz9o#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?2ivz9o') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?2ivz9o') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?2ivz9o##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?hyrp6u');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?hyrp6u#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?hyrp6u') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?hyrp6u') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?hyrp6u##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -1852,8 +1852,7 @@
 }
 .common-icon-global-delegation-manager {
   &:before {
-    content: $common-icon-global-delegation-manager;     
-    color: #666;
+    content: $common-icon-global-delegation-manager; 
   }
 }
 .common-icon-global-gecurtity-group-manager {
@@ -1885,8 +1884,7 @@
 }
 .common-icon-API-keys {
   &:before {
-    content: $common-icon-API-keys;     
-    color: #666;
+    content: $common-icon-API-keys; 
   }
 }
 .common-icon-view-selection {
@@ -1919,8 +1917,7 @@
 }
 .common-icon-admin-console {
   &:before {
-    content: $common-icon-admin-console;     
-    color: #5b5b5b;
+    content: $common-icon-admin-console; 
   }
 }
 .common-icon-ID-card {
@@ -2159,14 +2156,12 @@
 }
 .common-icon-approval-all-option {
   &:before {
-    content: $common-icon-approval-all-option;     
-    color: #666;
+    content: $common-icon-approval-all-option; 
   }
 }
 .common-icon-BIM-extract-icon {
   &:before {
-    content: $common-icon-BIM-extract-icon;     
-    color: #666;
+    content: $common-icon-BIM-extract-icon; 
   }
 }
 .common-icon-analytic {
@@ -2219,14 +2214,12 @@
 }
 .common-icon-Schdule-Work {
   &:before {
-    content: $common-icon-Schdule-Work;     
-    color: #059cdf;
+    content: $common-icon-Schdule-Work; 
   }
 }
 .common-icon-LinkedField {
   &:before {
-    content: $common-icon-LinkedField;     
-    color: #059cdf;
+    content: $common-icon-LinkedField; 
   }
 }
 .common-icon-Links {
@@ -2236,32 +2229,27 @@
 }
 .common-icon-Lebel {
   &:before {
-    content: $common-icon-Lebel;     
-    color: #059cdf;
+    content: $common-icon-Lebel; 
   }
 }
 .common-icon-ItemBarcode {
   &:before {
-    content: $common-icon-ItemBarcode;     
-    color: #059cdf;
+    content: $common-icon-ItemBarcode; 
   }
 }
 .common-icon-Signature {
   &:before {
-    content: $common-icon-Signature;     
-    color: #059cdf;
+    content: $common-icon-Signature; 
   }
 }
 .common-icon-DrawingLog {
   &:before {
-    content: $common-icon-DrawingLog;     
-    color: #059cdf;
+    content: $common-icon-DrawingLog; 
   }
 }
 .common-icon-AutoCheckin {
   &:before {
-    content: $common-icon-AutoCheckin;     
-    color: #059cdf;
+    content: $common-icon-AutoCheckin; 
   }
 }
 .common-icon-CurrentTime {
@@ -3209,8 +3197,7 @@
 }
 .common-icon-logouticon {
   &:before {
-    content: $common-icon-logouticon;     
-    color: #999;
+    content: $common-icon-logouticon; 
   }
 }
 .common-icon-Importui-appcls {
@@ -3298,8 +3285,7 @@
 }
 .common-icon-item-filter {
   &:before {
-    content: $common-icon-item-filter;     
-    color: #666;
+    content: $common-icon-item-filter; 
   }
 }
 .common-icon-user-filter {

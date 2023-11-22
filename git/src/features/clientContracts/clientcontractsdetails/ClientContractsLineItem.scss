@@ -199,11 +199,15 @@
     }
     .iqobjectpage-main-container .iqobjectpage-tabbar-outer {
         flex: 0 !important;
-    }
+	}
+
     .tab-panel-container #contract-details,
-    .tab-panel-container #contractFiles,
-    .tab-panel-container #scheduleValues,
-    .tab-panel-container #billingSchedule {
-        height: fit-content !important;
+    .tab-panel-container #contract-Files,
+    .tab-panel-container #schedule-of-Values,
+	.tab-panel-container #billing-Schedule ,
+	.tab-panel-container #change-Events,
+	.tab-panel-container #payment-Ledger{
+		height: fit-content !important;
+		display:grid;
     }
 }

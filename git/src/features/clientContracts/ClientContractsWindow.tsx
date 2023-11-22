@@ -260,6 +260,8 @@ const ClientContractsWindow = () => {
 				className='client-contracts-window custom-style'
 				appInfo={appInfo}
 				appType={'ClientContracts'}
+				iFrameId={'clientContractsIframe'}
+				isFromHelpIcon={true}
 				title='Client Contracts'
 				iconCls='common-icon-contracts'
 				titleInfo={isUserGCForCC(appInfo) ? null : {

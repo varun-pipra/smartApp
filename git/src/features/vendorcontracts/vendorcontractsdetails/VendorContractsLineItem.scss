@@ -186,10 +186,11 @@
     .tab-panel-container {
         flex: auto;
         padding-top: 1.5em;
-        #contractdetails,
-        #scheduleValues,
-        #contractFiles {
-            height: fit-content !important;
+        #contract-details,
+        #schedule-of-Values,
+        #contract-Files,#change-Events,#payment-Ledger{
+			height: fit-content !important;
+			display: grid !important;
         }
     }
     .addTranscation_heading {

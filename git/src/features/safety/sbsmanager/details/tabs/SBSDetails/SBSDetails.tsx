@@ -5,7 +5,7 @@ import { InputLabel, TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import DatePickerComponent from "components/datepicker/DatePicker";
 import InputIcon from "react-multi-date-picker/components/input_icon";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+//import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import globalStyles, {
   primaryIconSize,
 } from "features/budgetmanager/BudgetManagerGlobalStyles";
@@ -14,24 +14,49 @@ import { formatDate } from "utilities/datetime/DateTimeUtils";
 import { useEffect } from "react";
 
 import { getTradeData } from "features/projectsettings/projectteam/operations/ptDataSlice";
+import { setSaveDetailsObj, setEnableSaveButton } from "features/safety/sbsmanager/operations/sbsManagerSlice";
 
 const SBSDetailsTab = (props: any) => {
   const { selectedRec, ...rest } = props;
   const tradesData: any = useAppSelector(getTradeData);
   const dispatch = useAppDispatch();
 
-  const { phaseDropDownOptions, categoryDropDownOptions, detailsData } =
+  const { phaseDropDownOptions, categoryDropDownOptions, detailsData,sbsDetailsPayload } =
     useAppSelector((state) => state.sbsManager);
 
-  const [selectedRecData,setSelectedRecordData] = React.useState<any>({});  
+  const [selectedRecData,setSelectedRecData] = React.useState<any>({});  
+  const [selectedTradeIds, setSelectedTradeIds] = React.useState([]);
+  const [payloadState,setPayloadState] = React.useState<any>({});  
   React.useEffect(()=>{
-    setSelectedRecordData(detailsData);
+    setSelectedRecData(detailsData);
+    console.log("detailsData",detailsData)
+    const ids = detailsData?.trades?.map((a:any) => a?.id);
+    setSelectedTradeIds(ids);
   },[detailsData])
-  
   const handleOnChange = (value: any, name: any) => {
-    setSelectedRecordData({...selectedRecData, [name]: value});
+    setSelectedRecData({...selectedRecData, [name]: value});
+    setPayloadState({...selectedRecData, [name]: value});
+    dispatch(setEnableSaveButton(true));
   };
-
+  React.useEffect(() => {
+        if(Object.keys(payloadState)?.length > 0) {
+          const {name, description, startDate, endDate, uniqueid, category, phase, trades} = payloadState;
+        let payload: any = {
+            name: name,
+            description: description,
+            startDate: startDate,
+            endDate: endDate,
+            uniqueID: uniqueid,
+            category: { Id: category?.id },
+            phase: [{ Id: phase?.[0]?.id }]
+        };
+          const filterData = trades?.filter((item: any) => {return item !== undefined && item !== null});
+          const res = filterData?.map((b: any) => ({ Id : b?.id ? b?.id : b}));
+          payload["trades"] = res;
+          dispatch(setSaveDetailsObj([payload]));
+      }
+  },[payloadState])
+  console.log("sbsDetailsPayload", sbsDetailsPayload)
   const getTradesOptions = () => {
     let localTradList = [
       {
@@ -46,8 +71,23 @@ const SBSDetailsTab = (props: any) => {
         isDrawingDiscipline: !0,
         isImportedFromOrg: !1,
         label: "Capentry",
-        value: "64bf0c89-2636-4673-9e2c-a1be824fdb27",
+        value: 1,
         displayLabel: "Capentry",
+      },
+      {
+        objectId: 2,
+        status: 2,
+        isPrimary: !2,
+        companyId: null,
+        uniqueId: "64bf0c89-2636-4673-9e2c-a1be824fdb272",
+        name: "Capentry2",
+        description: "Capentry2",
+        color: "#1D2899",
+        isDrawingDiscipline: !0,
+        isImportedFromOrg: !1,
+        label: "Capentry2",
+        value: 2,
+        displayLabel: "Capentry2",
       },
     ];
     let groupedList: any = [];
@@ -55,11 +95,11 @@ const SBSDetailsTab = (props: any) => {
       groupedList.push({
         ...data,
         label: data.name,
-        value: data.uniqueId,
+        value: data.objectId,
         displayLabel: data.name,
       });
     });
-    return groupedList.length ? groupedList : localTradList;
+    return groupedList.length ? groupedList : [];
   };
 
   return (
@@ -77,11 +117,7 @@ const SBSDetailsTab = (props: any) => {
             className="inputlabel"
             style={{ marginBottom: "5px", marginTop: "25px" }}
           >
-            <DescriptionOutlinedIcon
-              style={{ marginBottom: "-4px", marginRight: "7px" }}
-              fontSize={primaryIconSize}
-              sx={{ color: globalStyles.primaryColor }}
-            />
+           <span className="common-icon-Description"></span>
             Description
           </InputLabel>
           <TextField
@@ -114,9 +150,7 @@ const SBSDetailsTab = (props: any) => {
               <SmartDropDown
                 LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
                 options={categoryDropDownOptions || []}
-                selectedValue={
-                  selectedRecData?.category ? selectedRecData?.category?.name || selectedRecData?.category?.value : ""
-                }
+                selectedValue={(selectedRecData?.category?.value ?? selectedRecData?.category?.name) ||  ""}
                 handleChange={(value: any) => {
                   const selRec: any = categoryDropDownOptions.find(
                     (rec: any) => rec.value === value[0]
@@ -146,12 +180,12 @@ const SBSDetailsTab = (props: any) => {
               <SmartDropDown
                 LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
                 options={phaseDropDownOptions || []}
-                selectedValue={selectedRecData?.phase ? selectedRecData?.phase?.name : ""}
+                selectedValue={selectedRecData?.phase?.length > 0 ? selectedRecData?.phase?.[0]?.name : ""}
                 handleChange={(value: any) => {
                   const selRec: any = phaseDropDownOptions.find(
                     (rec: any) => rec.value === value[0]
                   );
-                  handleOnChange(selRec, "phase");
+                  handleOnChange([selRec], "phase");
                 }}
                 outSideOfGrid={true}
                 isSearchField={true}
@@ -179,8 +213,9 @@ const SBSDetailsTab = (props: any) => {
                 LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
                 options={getTradesOptions()}
                 outSideOfGrid={true}
-                selectedValue={selectedRecData?.trades || []}
-                handleChange={(value: any) => {console.log("value",value)}}
+                selectedValue={selectedTradeIds || []}
+                handleChange={(value: any) => {handleOnChange(value, "trades")}}
+                handleChipDelete={(value: any) => {handleOnChange(value, "trades")}}
                 isSearchField={true}
                 Placeholder={"Select"}
                 ignoreSorting={true}

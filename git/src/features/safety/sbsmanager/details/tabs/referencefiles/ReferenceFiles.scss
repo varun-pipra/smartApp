@@ -16,10 +16,29 @@
              display: flex;
              .icon-section {
                  display: flex;
+                 margin-left: 10px;
+                 button {
+                     width: 40px;
+                     height: 40px;
+                     color: #333;
+                     span {
+                         font-size: 22px; //color: #333;
+                     }
+                     .common-icon-sketch {
+                         font-size: 18px;
+                     }
+                 }
+                 .Mui-disabled {
+                     color: #999;
+                 }
              }
          }
          .right-section {
              display: flex;
+             gap: 0.5em;
+             .iqsearch-field .MuiInputBase-root {
+                 border-left: 0px solid rgb(194, 194, 194) !important;
+             }
          }
      }
      .grid {
@@ -30,17 +49,18 @@
              .ref-name-icon {
                  background-color: #059cdf;
                  border-radius: 50%;
-                 width: 24px;
-                 height: 24px;
+                 width: 28px;
+                 height: 28px;
                  text-align: center;
                  display: flex;
                  align-content: stretch;
                  justify-content: center;
                  flex-direction: column;
-                 margin-right: 4px;
+                 margin-right: 8px;
+                 color: #fff;
              }
              .ref-name-tag {
-                 font-weight: 600;
+                 color: #059cdf;
              }
          }
      }
@@ -50,5 +70,13 @@
          width: auto;
          text-overflow: ellipsis;
          align-items: center !important;
+         padding: 6px 10px;
+         color: #fff !important;
+         .common-icon-phase {
+             padding-right: 6px;
+             font-size: 20px;
+             color: #fff;
+             margin-top: -4px;
+         }
      }
  }

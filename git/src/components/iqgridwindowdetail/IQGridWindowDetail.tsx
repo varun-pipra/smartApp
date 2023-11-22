@@ -1,6 +1,6 @@
 import './IQGridWindowDetail.scss';
 
-import {IQBaseWindowPresenceProp} from 'components/iqbasewindow/IQBaseWindowTypes';
+import { IQBaseWindowPresenceProp } from 'components/iqbasewindow/IQBaseWindowTypes';
 import IQButton from 'components/iqbutton/IQButton';
 import IQGridLID from 'components/iqgridwindowdetail/IQGridWindowDetail';
 import IQObjectPage from 'components/iqobjectpage/IQObjectPage';
@@ -8,14 +8,14 @@ import IQTooltip from 'components/iqtooltip/IQTooltip';
 import DynamicPage, {
 	DynamicPageProps, IQDynamicPropsHeadContentProps
 } from 'components/ui5/dynamicpage/DynamicPage';
-import {appInfoData} from 'data/appInfo';
+import { appInfoData } from 'data/appInfo';
 import AwardBid from 'features/bidmanager/bidpackagedetails/tabs/awardbid/AwardBid';
 import Bidders from 'features/bidmanager/bidpackagedetails/tabs/bidders/Bidders';
-import React, {memo, useEffect, useRef, useState} from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
-import {renderPresence} from 'utilities/presence/Presence';
-import {Close} from '@mui/icons-material';
-import {Box, IconButton, InputAdornment, InputLabel, Stack, TextField} from '@mui/material';
+import { renderPresence } from 'utilities/presence/Presence';
+import { Close } from '@mui/icons-material';
+import { Box, IconButton, InputAdornment, InputLabel, Stack, TextField } from '@mui/material';
 
 interface IQGridWindowDetailFooterProps {
 	hideNavigation?: boolean;
@@ -31,10 +31,11 @@ export interface IQGridWindowDetailProps {
 	appType?: string;
 	appInfo?: any;
 	iFrameId?: string;
+	isFromHelpIcon?: any;
 	onClose?: any;
 	presenceProps?: IQBaseWindowPresenceProp;
 	headContent?: IQDynamicPropsHeadContentProps;
-	defaultTabId?: string;
+	defaultTabId?: any;
 	tabPadValue?: number;
 	iframeEventData?: any;
 	tabs?: Array<any>;
@@ -54,7 +55,7 @@ export interface IQGridWindowDetailProps {
 
 const IQGridWindowDetail = ({
 	appType, appInfo, data, presenceProps, title, subtitle, showSubTitle = false,
-	iFrameId, onClose, headContent, defaultTabId, tabPadValue = 0, tabs, footer, onNavigation, handleActiveTab, hideNavigation = false,
+	iFrameId, isFromHelpIcon, onClose, headContent, defaultTabId, tabPadValue = 0, tabs, footer, onNavigation, handleActiveTab, hideNavigation = false,
 	navigationDisableFlag, defaultSpacing = false, onPrevious, onNext, ...props
 }: IQGridWindowDetailProps) => {
 	const [tabSelected, setTabSelected] = useState(defaultTabId);
@@ -63,20 +64,33 @@ const IQGridWindowDetail = ({
 	const [collapsed, setCollapsed] = useState(false);
 	const [pinned, setPinned] = useState(true);
 	const presenceRef = useRef(false);
-
+	const tabid = useRef(defaultTabId);
 	const tabSelectedValue = (value: any) => {
+		tabid.current = value;
 		setTabSelected(value);
 		handleActiveTab(value);
 	};
 
 	useEffect(() => {
-		if(appInfo) {
-			// console.log('datasssssssss', data);
-			if(presenceRef.current) return;
+		if (tabSelected) {
+			console.log('tabSelected', tabSelected);
+			const body = { iframeId: iFrameId, roomId: data?.id, appType: appType, tabName: tabid.current, isFromHelpIcon: false }
+			console.log('help', body)
+			postMessage({
+				event: "help",
+				body: body
+			});
+		}
+	}, [tabSelected]);
+
+	useEffect(() => {
+		if (appInfo) {
+			if (presenceRef.current) return;
 			presenceRef.current = true;
-			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', data?.id, data?.code);
+			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, defaultTabId, data?.id, data?.code);
 		}
 	}, [data, appInfo]);
+
 
 	useEffect(() => {
 		setPrevBtnDisabled(navigationDisableFlag === -1);
@@ -84,7 +98,7 @@ const IQGridWindowDetail = ({
 	}, [navigationDisableFlag]);
 
 	const onScroll = (value: any) => {
-		if(pinned == false) {setCollapsed(value);}
+		if (pinned == false) { setCollapsed(value); }
 	};
 
 	const presenceId = presenceProps?.presenceId || '';
@@ -93,7 +107,7 @@ const IQGridWindowDetail = ({
 		pinned: pinned,
 		headContent: headContent,
 		collapsed: collapsed,
-		onPinClick: (value: any) => {setPinned(value);},
+		onPinClick: (value: any) => { setPinned(value); },
 		bodyContent: <IQObjectPage
 			tabs={tabs || []}
 			defaultTabId={defaultTabId}
@@ -106,7 +120,7 @@ const IQGridWindowDetail = ({
 
 	return <SUIDrawer
 		className='iqgrid-window-details-root'
-		PaperProps={{style: {position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a'}}}
+		PaperProps={{ style: { position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a' } }}
 		anchor='right'
 		variant='permanent'
 		elevation={8}
@@ -139,7 +153,7 @@ const IQGridWindowDetail = ({
 							size='small'
 							disabled={prevBtnDisabled}
 							onClick={() => {
-								if(onPrevious) onPrevious();
+								if (onPrevious) onPrevious();
 								else
 									onNavigation && onNavigation('-');
 							}}
@@ -159,7 +173,7 @@ const IQGridWindowDetail = ({
 							size='small'
 							disabled={nextBtnDisabled}
 							onClick={() => {
-								if(onNext) onNext();
+								if (onNext) onNext();
 								else
 									onNavigation && onNavigation('+');
 							}}

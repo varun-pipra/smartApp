@@ -1,18 +1,18 @@
-import {AgGridReact} from 'ag-grid-react';
-import {ReactNode, memo, isValidElement, useEffect, useRef, useState} from 'react';
+import { AgGridReact } from 'ag-grid-react';
+import { ReactNode, memo, isValidElement, useEffect, useRef, useState } from 'react';
 
 import './IQGridWindow.scss';
 
-import {hideLoadMask, useAppSelector} from 'app/hooks';
+import { hideLoadMask, useAppSelector } from 'app/hooks';
 import BaseWindow from 'components/iqbasewindow/IQBaseWindow';
-import {IQBaseWindowProps} from 'components/iqbasewindow/IQBaseWindowTypes';
-import BaseWindowBody, {IQBaseWindowBodyProps} from 'components/iqbasewindow/iqbasewindowbody/IQBaseWindowBody';
+import { IQBaseWindowProps } from 'components/iqbasewindow/IQBaseWindowTypes';
+import BaseWindowBody, { IQBaseWindowBodyProps } from 'components/iqbasewindow/iqbasewindowbody/IQBaseWindowBody';
 import IQGridWrapper from 'components/iqbasewindow/iqgridwrapper/IQGridWrapper';
 import IQGridToolbar from 'components/iqbasewindow/iqgridwrapper/iqgridtoolbar/IQGridToolbar';
 import DynamicPage from 'components/ui5/dynamicpage/DynamicPage';
 import SUIGrid from 'sui-components/Grid/Grid-copy';
 import IQObjectPage from 'components/iqobjectpage/IQObjectPage';
-import {getCurrentDetailInfoSelectionIndex} from 'app/common/appInfoSlice';
+import { getCurrentDetailInfoSelectionIndex } from 'app/common/appInfoSlice';
 
 type IQGridWindowProps = IQBaseWindowProps & {
 	content?: IQBaseWindowBodyProps;
@@ -28,10 +28,11 @@ type IQGridWindowProps = IQBaseWindowProps & {
 	handleMainWindowTab?: any;
 	detailGridNavigation?: boolean;
 	currentRowSelectionData?: any;
+	showPinned?: boolean;
 };
 
-const IQGridWindow = ({className, content = {}, companyInfo = false, lidCondition, manualLIDOpen, onDetailClose,
-	titleMessage, presenceProps, gridRef = useRef<AgGridReact>(), handleMainWindowTab = () => {}, detailGridNavigation = false,currentRowSelectionData = null, ...props}: IQGridWindowProps) => {
+const IQGridWindow = ({ className, content = {}, companyInfo = false, lidCondition, manualLIDOpen, onDetailClose, showPinned = false,
+	titleMessage, presenceProps, gridRef = useRef<AgGridReact>(), handleMainWindowTab = () => { }, detailGridNavigation = false, currentRowSelectionData = null, ...props }: IQGridWindowProps) => {
 	const [openLID, setOpenLID] = useState(false);
 	const [details, setDetails] = useState(undefined);
 	const [navFlag, setNavFlag] = useState(0);
@@ -42,19 +43,19 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 		endPage: 0
 	});
 	const detailInfoSelectionIndex = useAppSelector(getCurrentDetailInfoSelectionIndex);
-	const {gridContainer = {}, detailView, type = 'default', tabs, ...otherContent} = content;
-	const {toolbar, grid} = gridContainer;
+	const { gridContainer = {}, detailView, type = 'default', tabs, ...otherContent } = content;
+	const { toolbar, grid } = gridContainer;
 	const LineItemWindow = type === 'default' ? detailView : tabDetailView;
 
 	useEffect(() => {
 		hideLoadMask();
-		if(type === 'tabs') {
+		if (type === 'tabs') {
 			handleMainWindowTabChange(tabs && tabs.length > 0 ? tabs[0].tabId : undefined);
 		}
 	}, []);
 
 	useEffect(() => {
-		if(manualLIDOpen === true) {
+		if (manualLIDOpen === true) {
 			setOpenLID(true);
 		} else {
 			setOpenLID(false);
@@ -64,35 +65,38 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 
 	useEffect(() => {
 		const grid = gridRef?.current;
-		if(detailGridNavigation && (grid ?? false)) {
+		if (detailGridNavigation && (grid ?? false)) {
 			handleNavigation();
-		} else if(grid ?? false) {
+		} else if (grid ?? false) {
 			const node = grid?.api?.getSelectedNodes()[0];
-			const rowIndex = node?.rowIndex || 0;
+			let rowIndex = node?.rowIndex || 0;
 			const totalCount = grid?.api?.getDisplayedRowCount() || 0;
-
-			if(rowIndex === 0) setNavFlag(-1);
-			else if(rowIndex === (totalCount - 1)) setNavFlag(1);
+			const grouped = grid?.api?.getDisplayedRowAtIndex(rowIndex - node?.uiLevel)?.group;
+			if (grouped && rowIndex !== (totalCount - 1)) {
+				rowIndex -= node?.uiLevel;
+			};
+			if (rowIndex === 0) setNavFlag(-1);
+			else if (rowIndex === (totalCount - 1)) setNavFlag(1);
 			else setNavFlag(0);
 		}
 	}, [details, manualLIDOpen]);
 
 	useEffect(() => {
 		const grid = gridRef?.current;
-		if(detailInfoSelectionIndex && (grid ?? false)) {
+		if (detailInfoSelectionIndex && (grid ?? false)) {
 			handleNavigation();
 		}
 	}, [detailInfoSelectionIndex]);
 
 	useEffect(() => {
-    if (currentRowSelectionData) {
-      setDetails(currentRowSelectionData);
-    }
-  }, currentRowSelectionData);
+		if (currentRowSelectionData) {
+			setDetails(currentRowSelectionData);
+		}
+	}, currentRowSelectionData);
 
 	const handleGridRowDoubleClick = (row: any) => {
 		const result = lidCondition ? lidCondition(row.data) : '';
-		if(!lidCondition || result === true) {
+		if ((!lidCondition || result === true) && !row?.node?.group) {
 			setOpenLID(true);
 			setDetails(row.data);
 		}
@@ -105,7 +109,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 	};
 
 	const handleNavigation = (direction?: string) => {
-		if(detailGridNavigation) {
+		if (detailGridNavigation) {
 			const grid = gridRef?.current;
 			const splitDetailId = detailInfoSelectionIndex?.split(" ");
 			const detailGrid = grid?.api?.detailGridInfoMap?.[splitDetailId?.[0]];
@@ -117,42 +121,62 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 				endPage: totalCount
 			});
 			let currentRecord;
-			if(direction === '-') {
+			if (direction === '-') {
 				currentRecord = detailGrid?.api?.getDisplayedRowAtIndex(rowIndex - 1);
-				if((rowIndex - 1) === 0) setNavFlag(-1);
+				if ((rowIndex - 1) === 0) setNavFlag(-1);
 				else setNavFlag(0);
-			} else if(direction === '+') {
+			} else if (direction === '+') {
 				currentRecord = detailGrid?.api?.getDisplayedRowAtIndex(rowIndex + 1);
-				if((rowIndex + 1) === (totalCount - 1)) setNavFlag(1);
+				if ((rowIndex + 1) === (totalCount - 1)) setNavFlag(1);
 				else setNavFlag(0);
-			} else if(direction === undefined) {
+			} else if (direction === undefined) {
 				currentRecord = detailGrid?.api?.getDisplayedRowAtIndex(rowIndex);
-				if(rowIndex === 0) setNavFlag(-1);
-				else if(rowIndex === (totalCount - 1)) setNavFlag(1);
+				if (rowIndex === 0) setNavFlag(-1);
+				else if (rowIndex === (totalCount - 1)) setNavFlag(1);
 				else setNavFlag(0);
 			};
-			if(currentRecord) {
+			if (currentRecord) {
 				currentRecord.setSelected(true, true);
 				setDetails(currentRecord.data);
 			}
 		} else {
 			const grid = gridRef?.current;
 			const node = grid?.api?.getSelectedNodes()[0];
-			const rowIndex = node?.rowIndex || 0;
+			let rowIndex = node?.rowIndex || 0;
 			const totalCount = grid?.api?.getDisplayedRowCount() || 0;
 			let currentRecord;
-
-			if(direction === '-') {
-				currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex - 1);
-				if((rowIndex - 1) === 0) setNavFlag(-1);
-				else setNavFlag(0);
-			} else if(direction === '+') {
-				currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex + 1);
-				if((rowIndex + 1) === (totalCount - 1)) setNavFlag(1);
-				else setNavFlag(0);
+			const directionCount = direction === '+' ? rowIndex + 1 : rowIndex - 1;
+			const grouped = grid?.api?.getDisplayedRowAtIndex(directionCount)?.group;
+			if (grouped) {
+				const rows = gridRef?.current?.api?.getRenderedNodes();
+				if (direction === '-') {
+					for (let i = rows.length; i--;) {
+						if (rows[i].rowIndex < directionCount && !rows[i].group) {
+							rowIndex = rows[i].rowIndex;
+							break;
+						}
+					}
+				} else if (direction === '+') {
+					for (let j = 0; j < rows.length; j++) {
+						if (rows[j].rowIndex > directionCount && !rows[j].group) {
+							rowIndex = rows[j].rowIndex;
+							break;
+						}
+					}
+				}
+				currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex);
+			} else {
+				if (direction === '-') {
+					currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex - 1);
+					if ((rowIndex - 1) === 0) setNavFlag(-1);
+					else setNavFlag(0);
+				} else if (direction === '+') {
+					currentRecord = grid?.api?.getDisplayedRowAtIndex(rowIndex + 1);
+					if ((rowIndex + 1) === (totalCount - 1)) setNavFlag(1);
+					else setNavFlag(0);
+				}
 			}
-
-			if(currentRecord) {
+			if (currentRecord) {
 				currentRecord.setSelected(true, true);
 				setDetails(currentRecord.data);
 			}
@@ -161,7 +185,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 
 	const getTabContents = (tabList: any) => {
 		const transformedTabs = tabList?.map((container: any) => {
-			const {content, ...otherProps} = container;
+			const { content, ...otherProps } = container;
 
 			return {
 				...otherProps, ...{
@@ -186,7 +210,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 							setIframeEventData={props?.setIframeEventData}
 							presenceProps={{
 								showStreams: true,
-								showLiveSupport:  presenceProps?.presenceId,
+								showLiveSupport: presenceProps?.presenceId,
 								presenceId: (presenceProps?.presenceId && presenceProps?.presenceId + '-lid') || ''
 							}}
 							navigationPages={gridNavigationCount}
@@ -201,7 +225,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 
 	const handleMainWindowTabChange = (tabId: any) => {
 		handleMainWindowTab(tabId);
-		if(mainWindowTab !== tabId) {
+		if (mainWindowTab !== tabId) {
 			setMainWindowTab(tabId);
 			const currentTab = tabs?.find((item: any) => item?.tabId === tabId);
 			setTabDetailView(currentTab?.content?.detailView);
@@ -223,7 +247,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 			handleGridRowDoubleClick={handleGridRowDoubleClick}
 		>
 			<DynamicPage
-				showPinned={false}
+				showPinned={showPinned}
 				className='iqbase-window-body main-window'
 				bodyContent={
 					<IQGridWrapper>
@@ -253,7 +277,7 @@ const IQGridWindow = ({className, content = {}, companyInfo = false, lidConditio
 				setIframeEventData={props?.setIframeEventData}
 				presenceProps={{
 					showStreams: true,
-					showLiveSupport:  presenceProps?.presenceId,					
+					showLiveSupport: presenceProps?.presenceId,
 					presenceId: (presenceProps?.presenceId && presenceProps?.presenceId + '-lid') || ''
 				}}
 			/> : ''}

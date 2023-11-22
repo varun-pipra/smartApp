@@ -364,6 +364,7 @@ const Links = () => {
 						showGroups={false}
 						onSearchChange={(text: string) => { setSearchText(text) }}
 						onFilterChange={(filters: any) => { setFilterKeyValue(filters) }}
+						showSearchField={true}
 					/>
 				</div>
 			</div>

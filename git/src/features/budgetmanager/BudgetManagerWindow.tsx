@@ -267,7 +267,7 @@ const BudgetManagerWindow = (props: any) => {
 	const handleHelp = () => {
 		postMessage({
 			event: "help",
-			body: { iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager" }
+			body: { iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager", isFromHelpIcon: true }
 		});
 	};
 

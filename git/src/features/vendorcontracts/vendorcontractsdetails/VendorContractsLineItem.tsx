@@ -47,7 +47,7 @@ const VendorContractsLineItem = (props: headerprops) => {
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [collapsed, setCollapsed] = useState(false);
 	const [pinned, setPinned] = useState(true);
-	const [tabSelected, setTabSelected] = useState('contactdetails');
+	const [tabSelected, setTabSelected] = useState('contract-details');
 
 	const presenceRef = useRef(false);
 	const appInfo = useAppSelector(getServer);
@@ -60,7 +60,7 @@ const VendorContractsLineItem = (props: headerprops) => {
 	const { unLockedSov } = useAppSelector((state) => state.VCScheduleOfValues);
 	const { changeEventsCount } = useAppSelector((state) => state.changeEvents);
 	const filesCount = useAppSelector(getContractFilesCount);
-
+	const tabid = useRef('contract-details');
 	useEffect(() => { setTitle(vendorLineItem?.title); }, [vendorLineItem?.title]);
 
 	const presenceTools = <Fragment>{
@@ -72,8 +72,15 @@ const VendorContractsLineItem = (props: headerprops) => {
 	useEffect(() => { dispatch(getBudgetItemsByPackage({ appInfo: appInfo, contractId: vendorLineItem?.id })); }, [vendorLineItem?.id]);
 
 	const tabSelectedValue = (value: any) => {
+		tabid.current = value;
 		setTabSelected(value);
 	};
+
+	useEffect(() => {
+		if (tabSelected) {
+			help(false);
+		}
+	}, [tabSelected]);
 
 	const onScroll = (value: any) => {
 		if (pinned == false) {
@@ -136,6 +143,9 @@ const VendorContractsLineItem = (props: headerprops) => {
 					body: { iframeId: 'vendorContractsIframe', roomId: vendorLineItem?.id, appType: 'VendorContractsLineItem' },
 					data: participantCtrl.getParticipants()
 				});
+			});
+			participantCtrl.addEventListener('livesupportbtnclick', function (e: any) {
+				help(true);
 			});
 			participantCtrl.addEventListener('streambuttonclick', function (e: any) {
 				postMessage({
@@ -219,38 +229,47 @@ const VendorContractsLineItem = (props: headerprops) => {
 			addPresenceListener(presenceManager);
 		}, 1000);
 	};
+	const help = (isFromHelpIcon: any) => {
+		console.log('useref', tabid.current);
+		const body = { iframeId: "vendorContractsIframe", roomId: vendorLineItem?.id, appType: "VendorContractsLineItem", tabName: tabid.current, isFromHelpIcon: isFromHelpIcon }
+		console.log('help', body)
+		postMessage({
+			event: "help",
+			body: body
+		});
+	}
 
 	const tabConfig = [
 		{
-			tabId: 'contractdetails',
+			tabId: 'contract-details',
 			label: 'Contract Details',
 			showCount: false,
-			icon: (tabSelected === 'contractdetails' ? <span className='common-icon-contracts tabicon tabicon_orange' /> : <span className='common-icon-contracts tabicon' />),
+			icon: (tabSelected === 'contract-details' ? <span className='common-icon-contracts tabicon tabicon_orange' /> : <span className='common-icon-contracts tabicon' />),
 			content: <ContractDetails readOnly={isUserGC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(vendorLineItem?.status) ? false : true : true}></ContractDetails>
 		}, {
-			tabId: 'scheduleValues',
+			tabId: 'schedule-of-Values',
 			label: 'Schedule of Values',
-			icon: (tabSelected === 'scheduleValues' ? <span className='common-icon-schedule-values tabicon tabicon_orange' /> : <span className='common-icon-schedule-values tabicon' />),
+			icon: (tabSelected === 'schedule-of-Values' ? <span className='common-icon-schedule-values tabicon tabicon_orange' /> : <span className='common-icon-schedule-values tabicon' />),
 			content: <VendorContractsScheduleValues readOnly={isUserGC(appInfo) ? ['Draft', 'ReadyToSubmit']?.includes(vendorLineItem?.status) || unLockedSov ? false : true : true}></VendorContractsScheduleValues>
 		}, {
-			tabId: 'contractFiles',
+			tabId: 'contract-Files',
 			label: 'Contract Files',
 			showCount: (filesCount > 0),
 			count: filesCount,
-			icon: (tabSelected === 'contractFiles' ? <span className='common-icon-contract-files tabicon tabicon_orange' /> : <span className='common-icon-contract-files tabicon' />),
+			icon: (tabSelected === 'contract-Files' ? <span className='common-icon-contract-files tabicon tabicon_orange' /> : <span className='common-icon-contract-files tabicon' />),
 			content: <VendorContractFiles readOnly={isUserGC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(vendorLineItem?.status) ? false : true : true} />
 		}, {
-			tabId: 'changeEvent',
+			tabId: 'change-Events',
 			label: 'Change Events',
-			icon: (tabSelected === 'changeEvent' ? <span className='common-icon-change-events tabicon tabicon_orange' /> : <span className='common-icon-change-events tabicon' />),
+			icon: (tabSelected === 'change-Events' ? <span className='common-icon-change-events tabicon tabicon_orange' /> : <span className='common-icon-change-events tabicon' />),
 			content: <ChangeEvents />,
 			count: changeEventsCount,
 			showTab: ['Active', 'ActiveUnlocked', 'ActivePendingSOVUpdate', 'ActiveUnlockedPendingSOVUpdate']?.includes(vendorLineItem?.status) ? true : false,
 		}, {
-			tabId: 'paymentLedger',
+			tabId: 'payment-Ledger',
 			label: 'Payment Ledger',
 			count: paymetLedgerCount,
-			icon: (tabSelected === 'paymentLedger' ? <span className='common-icon-payment-ledger tabicon tabicon_orange' /> : <span className='common-icon-payment-ledger tabicon' />),
+			icon: (tabSelected === 'payment-Ledger' ? <span className='common-icon-payment-ledger tabicon tabicon_orange' /> : <span className='common-icon-payment-ledger tabicon' />),
 			content: <PaymentLedger />,
 			showTab: ['Active', 'ActiveUnlocked', 'ActivePendingSOVUpdate', 'ActiveUnlockedPendingSOVUpdate']?.includes(vendorLineItem?.status) ? true : false,
 		}, {

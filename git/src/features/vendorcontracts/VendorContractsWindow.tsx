@@ -257,6 +257,8 @@ const VendorContractsWindow = () => {
 				title='Vendor Contracts'
 				appInfo={appInfo}
 				appType={'VendorContracts'}
+				iFrameId={'vendorContractsIframe'}
+				isFromHelpIcon={true}
 				titleInfo={isUserGC(appInfo) ? null : {
 					text: appInfo?.currentUserInfo?.company,
 					imgSrc: appInfo?.currentUserInfo?.profile
@@ -315,7 +317,7 @@ const VendorContractsWindow = () => {
 					selectedFiles={standardFiles && standardFiles.length > 0 ? standardFiles : []}
 					onAdd={(list) => saveContractAttachments(list)}
 					onClose={() => dispatch(setShowContractAttachments(false))}
-					filterOptions = { contractAttachment_filterOptions }
+					filterOptions={contractAttachment_filterOptions}
 					Iframe={'vendorContractsIframe'}
 					modules={'VendorContracts'}
 				/> : ''}

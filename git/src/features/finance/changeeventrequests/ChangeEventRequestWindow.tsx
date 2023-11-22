@@ -494,6 +494,8 @@ const ChangeEventRequestsWindow = (props: any) => {
 		appType='ChangeEventRequests'
 		appInfo={server}
 		iFrameId='changeEventRequestIframe'
+		defaultTabId='change-Event-Details'
+		isFromHelpIcon={true}
 		zIndex={100}
 		gridRef={gridRef}
 		onClose={handleClose}

@@ -45,7 +45,7 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 	};
 
 	const openDrive = (folderType: string) => {
-		let params: any = {iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType};
+		let params: any = {iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType, multiSelect: true};
 		if(folderType) {
 			params.folderType = folderType;
 			setFileType(getTypeValue(folderType));

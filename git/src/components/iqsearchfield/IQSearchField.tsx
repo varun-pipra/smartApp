@@ -42,11 +42,12 @@ export interface IQSearchFieldProps {
 	isSearchPlaceHolder?: string;
 	showExtraColumns?: boolean;
 	onSelectionChange?: any;
+	showSearchField?:boolean;
 };
 
 const IQSearchField = (props: IQSearchFieldProps) => {
 	const { showGroups = true, showFilter = true, onFilterMenuClose = () => { }, defaultFilters, defaultSearchText = "", defaultGroups = "", headerStatusFilters,
-		isShowDropdown = false, dropDownListExtraColumns = [], dropdownValues, filterAllowSubMenu = true, isSearchPlaceHolder = 'Search', onSelectionChange = () => { }, showExtraColumns = true, ...rest
+		isShowDropdown = false, dropDownListExtraColumns = [], dropdownValues, filterAllowSubMenu = true, isSearchPlaceHolder = 'Search', onSelectionChange = () => { }, showExtraColumns = true, showSearchField = false,...rest
 	} = props;
 	const [filters, setFilters] = useState<any>({});
 	const [group, setGroup] = useState({ name: '' });
@@ -406,6 +407,7 @@ const IQSearchField = (props: IQSearchFieldProps) => {
 						onClose={onFilterMenuClose}
 						defaultFilters={defaultFilters}
 						headerStatusFilters={headerStatusFilters}
+						showSearchField={showSearchField}
 						menuProps={{
 							open: true,
 							header: props.filterHeader ? props.filterHeader : 'Filter By',

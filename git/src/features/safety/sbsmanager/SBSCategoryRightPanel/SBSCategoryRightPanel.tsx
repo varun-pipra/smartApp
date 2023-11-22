@@ -63,14 +63,14 @@ const SBSCategoryRightPanel = (props:any) => {
           <List className="generalSettings-list">
             <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('sbs')}>
 							<ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
-								<span className="common-icon-sketch"></span>
+								<span className="common-icon-SBS"></span>
 							</ListItemIcon>
               <ListItemText
                 primary="Categories for System Breakdown Structure"
                 className="generalsettingtext"
               />
             </ListItem>
-            <ListItem className="generalSettings-listitem">
+            <ListItem className="generalSettings-listitem dropdown">
             <SmartDropDown
             options={CategoriesOptions || []}
             outSideOfGrid={true}
@@ -84,7 +84,7 @@ const SBSCategoryRightPanel = (props:any) => {
           </ListItem>
             <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('managerSbs')}>
             <ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
-								<span className="common-icon-sketch"></span>
+								<span className="common-icon-manage-sbs-phase"></span>
 							</ListItemIcon>
               <ListItemText
                 primary="Manage SBS Phases"
@@ -93,7 +93,7 @@ const SBSCategoryRightPanel = (props:any) => {
             </ListItem>
             <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('supplemental')}>
             <ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
-								<span className="common-icon-sketch"></span>
+								<span className="common-icon-orgconsole-project-supplemental-info"></span>
 							</ListItemIcon>
               <ListItemText
                 primary="Associate Supplemental App"
@@ -102,7 +102,7 @@ const SBSCategoryRightPanel = (props:any) => {
             </ListItem>
             <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('dynamicHeatMap')}>
             <ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
-								<span className="common-icon-sketch"></span>
+								<span className="common-icon-dynamic-dates"></span>
 							</ListItemIcon>
               <ListItemText
                 primary="Set Dynamic Dates for Heatmap"

@@ -13,7 +13,7 @@ import {PhasesColors} from '../utils';
 
 const PhasesGridList = () => {
   const dispatch = useAppDispatch()
-  const { phaseDropDownOptions } = useAppSelector((state) => state.sbsManager);
+  const { phaseDropDownOptions, showPhaseModel,addPhaseText } = useAppSelector((state) => state.sbsManager);
   const [rowData, setRowData] = useState(phaseDropDownOptions || []);
   const gridRef = useRef<any>();
   const [selectedRows, setSelectedRows] = useState<any>([]);
@@ -234,7 +234,11 @@ const PhasesGridList = () => {
         console.log("Failed to add new phase", err);
       });
   };
-
+  useEffect(() => {
+    if (showPhaseModel && addPhaseText) {
+      setNewPhase(addPhaseText);
+    };
+  }, [addPhaseText]);
   return (
     <>
       <div className="phases-grid-wrapper ag-theme-alpine">

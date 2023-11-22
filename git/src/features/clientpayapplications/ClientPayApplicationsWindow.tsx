@@ -35,7 +35,7 @@ import { getClientPayAppsList, setSelectedRows } from './stores/GridSlice';
 import { isUserGCForCPA } from './utils';
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
-import {AgGridReact} from 'ag-grid-react';
+import { AgGridReact } from 'ag-grid-react';
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 
 var tinycolor = require('tinycolor2');
@@ -324,8 +324,8 @@ const ClientPayApplicationsWindow = (props: any) => {
 
 	const handleStatusColumnSort = (direction: any) => {
 		gridRef?.current?.columnApi?.applyColumnState({
-			state: [{colId: 'status', sort: direction}],
-			defaultState: {sort: null}
+			state: [{ colId: 'status', sort: direction }],
+			defaultState: { sort: null }
 		});
 	};
 
@@ -468,7 +468,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 			field: 'invoiceAmount',
 			sum: 'aggFunc',
 			type: 'rightAligned',
-			valueGetter: (params: any) =>params.data?.invoiceAmount && amountFormatWithSymbol(params.data?.invoiceAmount),
+			valueGetter: (params: any) => params.data?.invoiceAmount && amountFormatWithSymbol(params.data?.invoiceAmount),
 		},
 		{
 			headerName: 'Pay Application Amount',
@@ -577,11 +577,13 @@ const ClientPayApplicationsWindow = (props: any) => {
 			open={true}
 			iconCls='common-icon-pay-application'
 			title='Client Pay Applications'
+			defaultTabId='pay-Application-Details'
 			companyInfo={!isUserGCForCPA(appInfo)}
 			centerPiece={!isUserGCForCPA(appInfo) && `Below are all Pay Applications for your company '${appInfo?.currentUserInfo?.company}' for the Project '${appInfo?.currentProjectInfo?.name}'.`}
 			appType={appType}
 			appInfo={appInfo}
 			iFrameId={iframeId}
+			isFromHelpIcon={true}
 			zIndex={100}
 			gridRef={gridRef}
 			onClose={handleClose}

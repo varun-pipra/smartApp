@@ -82,9 +82,12 @@
                     .icon-cls {
                         width: inherit;
                         height: inherit;
-                        .common-icon-Links:before {
-                            color: #666;
-                        }
+                    }
+                    .common-icon-SBS:before {
+                        font-size: 22px;
+                    }
+                    .common-icon-orgconsole-project-supplemental-info:before {
+                        font-size: 20px;
                     }
                 }
                 .MuiAvatar-root {
@@ -104,9 +107,9 @@
     .iqobjectpage-content-outer {
         flex: auto;
         overflow: auto;
-		&.default-spacing {
-			padding: 1em 1.6em;
-		}
+        &.default-spacing {
+            padding: 1em 1.6em;
+        }
         .iqobjectpage-section {
             min-height: 100%;
             height: 100%;

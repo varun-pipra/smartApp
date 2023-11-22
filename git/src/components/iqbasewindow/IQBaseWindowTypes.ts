@@ -1,6 +1,6 @@
-import {ReactNode} from 'react';
-import {DialogProps} from '@mui/material';
-import {Nullable} from 'app/common/types';
+import { ReactNode } from 'react';
+import { DialogProps } from '@mui/material';
+import { Nullable } from 'app/common/types';
 
 export interface IQBaseWindowToolsProp {
 	closable?: boolean;
@@ -26,6 +26,8 @@ export type IQBaseWindowProps = DialogProps & {
 	appType?: string;
 	appInfo?: any;
 	iFrameId?: string;
+	isFromHelpIcon?: any;
+	tabName?:any;
 	className?: string;
 	isFullView?: boolean;
 	iconCls?: string;
@@ -44,6 +46,6 @@ export type IQBaseWindowProps = DialogProps & {
 	toastTimeout?: number;
 	actions?: ReactNode;
 	centerPiece?: ReactNode;
-	titleInfo?: Nullable<{imgSrc: string, text: string;}>;
-	isBrenaOpen?:boolean;
+	titleInfo?: Nullable<{ imgSrc: string, text: string; }>;
+	isBrenaOpen?: boolean;
 };

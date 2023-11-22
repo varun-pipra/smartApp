@@ -598,6 +598,8 @@ const VendorPayApplicationsWindow = (props: any) => {
 			appType='VendorPayApps'
 			appInfo={appInfo}
 			iFrameId='vendorPayAppIframe'
+			isFromHelpIcon = {true}
+			defaultTabId= 'pay-Application-Details'
 			zIndex={100}
 			gridRef={gridRef}
 			onClose={handleClose}

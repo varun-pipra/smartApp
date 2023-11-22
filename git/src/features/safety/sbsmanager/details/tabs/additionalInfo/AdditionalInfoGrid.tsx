@@ -7,12 +7,24 @@ import SUIGrid from 'sui-components/Grid/Grid';
 import { mappingExpressionsList } from "./mappingExpressionsList";
 
 export const AdditionalInfoGrid = (props:any) => {
+  console.log("gridData0", props?.gridData)
   const initialRecord = [{ rowId: Math.random(), dependentAppFields: "", mappingExpression: "" }];
-  const [tableData, setTableData] = React.useState<any>([...props?.gridData, initialRecord]);
+  const [tableData, setTableData] = React.useState<any>([...props?.gridData, ...initialRecord]);
   const [newRecord, setNewRecord] = React.useState<any>(initialRecord[0]);
   const [mappingExpression, setMappingExpression] = React.useState<any>();
   const [selectedRows, setSelectedRows] = React.useState<any>([]);
-  console.log("fieldsList", props?.fieldsList)
+  const [disableMappingFields, setDisableMappingFields] = React.useState<any>([]);
+  
+  React.useEffect(() => {setTableData([...props?.gridData, ...initialRecord])}, [props?.gridData])
+
+  React.useEffect(() => {
+    const fields = tableData?.map((row:any) => {
+      return row?.mappingExpression
+    })
+    console.log("fields", fields)
+    
+    setDisableMappingFields([...fields])
+  }, [tableData])
   
 
   const AIColumns = [
@@ -60,6 +72,7 @@ export const AdditionalInfoGrid = (props:any) => {
               //  checkboxSelection={true}
               isFullWidth
               Placeholder={"Select"}
+              disableOptionsList={disableMappingFields}
             />
           </div>
         );
@@ -122,10 +135,9 @@ export const AdditionalInfoGrid = (props:any) => {
       <div className="additional-info-header">
         <IQTooltip title="sketch" placement="bottom">
           <IconButton
-            className="common-icon-Add"
             disabled={props?.disabled}
             onClick={() => onGridRecordAdd()}
-          ></IconButton>
+          ><span className="common-icon-add"></span></IconButton>
         </IQTooltip>
         <IQTooltip title="Delete" placement="bottom">
           <IconButton className="ref-delete-btn" 

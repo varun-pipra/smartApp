@@ -1,19 +1,19 @@
 export const mappingExpressionsList = [
-    {
-      id: 1,
-      name: "SBS Fields",
-      color: "#F44336",
-      uniqueId: "e2ae03bd-f828-4da2-9d71-edfe9abd520b1",
-      value: "e2ae03bd-f828-4da2-9d71-edfe9abd520b1",
-      sequenceNo: 1,
-      label: "SBS Fields",
-    },
+    // {
+    //   id: 1,
+    //   name: "SBS Fields",
+    //   color: "#F44336",
+    //   uniqueId: "e2ae03bd-f828-4da2-9d71-edfe9abd520b1",
+    //   value: "SBSNameFieldId",
+    //   sequenceNo: 1,
+    //   label: "SBS Fields",
+    // },
     {
       id: 2,
       name: "SBS Name",
       color: "#E91E63",
       uniqueId: "fe20f93a-0b8b-40af-8980-d8b74922c407",
-      value: "fe20f93a-0b8b-40af-8980-d8b74922c407",
+      value: "SBSNameFieldId",
       sequenceNo: 2,
       label: "SBS Name",
     },
@@ -23,7 +23,7 @@ export const mappingExpressionsList = [
       label: "Category",
       color: "#9C27B0",
       uniqueId: "2b4b3571-d90e-4185-ad7d-7a2108488d232",
-      value: "2b4b3571-d90e-4185-ad7d-7a2108488d232",
+      value: "categoryFieldId",
       sequenceNo: 3,
       
     },{
@@ -32,7 +32,7 @@ export const mappingExpressionsList = [
       label: "Phase",      
       color: "#9C27B0",
       uniqueId: "2b4b3571-d90e-4185-ad7d-7a2108488d233",
-      value: "2b4b3571-d90e-4185-ad7d-7a2108488d233",
+      value: "phaseFieldId",
       sequenceNo: 3,
     },
   
@@ -42,7 +42,7 @@ export const mappingExpressionsList = [
       label: "Trade",      
       color: "#673AB7",
       uniqueId: "7fac0e31-cf2e-4a14-b09a-2c7b3d6833534",
-      value: "7fac0e31-cf2e-4a14-b09a-2c7b3d6833534",
+      value: "tradeFieldId",
       sequenceNo: 4,
     },{
       id: 6,
@@ -50,7 +50,7 @@ export const mappingExpressionsList = [
       label: "Est End Date",      
       color: "#E91E63",
       uniqueId: "fe20f93a-0b8b-40af-8980-d8b74922c40175",
-      value: "fe20f93a-0b8b-40af-8980-d8b74922c40175",
+      value: "estEndDateFieldId",
       sequenceNo: 2,
     },
     {
@@ -59,7 +59,7 @@ export const mappingExpressionsList = [
       label: "Est Start Date",      
       color: "#9C27B0",
       uniqueId: "2b4b3571-d90e-4185-ad7d-7a2108488d236",
-      value: "2b4b3571-d90e-4185-ad7d-7a2108488d236",
+      value: "estStartDateFieldId",
       sequenceNo: 3,
     },
   ]
