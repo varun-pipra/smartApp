@@ -531,7 +531,9 @@ const ProjectTeamApplicationsLID = ({ data, iframeEventData, ...props }: IQGridW
 	let [reloadSafetyCred, setReloadSafetyCred] = React.useState<any>(false);
 	const isOnlyCompanyManager = (gblConfig?.isCompanyManager || gblConfig?.isComplianceManager) && !(gblConfig?.isAdmin || gblConfig?.isProjectAdmin);
 	const [ptGridRowData, setPtGridRowData] = React.useState([]);
-
+	const iframeID = "projectTeamIframe";
+	const appType = "ProjectTeam";
+	const [isFromHelpIcon, setIsFromHelpIcon] = React.useState(false);
 	React.useEffect(() => {
 		if (showToastMessage) {
 			setTimeout(() => {
@@ -968,12 +970,25 @@ const ProjectTeamApplicationsLID = ({ data, iframeEventData, ...props }: IQGridW
 				showWarningMessage(true);
 			else
 				showWarningMessage(false);
-
-		}
-		// else {
-		// 	showWarningMessage(false);
-		// }
+		};
 	};
+	React.useEffect(() => {
+    if (activeTab === "safetyViolation") {
+      const body = {iframeId: iframeID,appType: appType,tabName: "SAFETY_VIOLATIONS",isFromHelpIcon: isFromHelpIcon};
+      postMessage({
+        	event: "help",
+        	body: body,
+      });
+    }
+  }, [activeTab]);
+  const handleHelp = (e: any) => {
+    setIsFromHelpIcon(true);
+    const body = {iframeId: iframeID,appType: appType,tabName: "SAFETY_VIOLATIONS",isFromHelpIcon: true};
+    postMessage({
+			event: "help",
+      		body: body,
+    });
+  };
 	const handleViolationActions = (e: any, type: string) => {
 		dispatch(setViolationActionsFired({ triggered: true, actionButton: type }));
 		setTimeout(function () {
@@ -1117,6 +1132,7 @@ const ProjectTeamApplicationsLID = ({ data, iframeEventData, ...props }: IQGridW
 		title: selectedUserData.firstName + ' ' + selectedUserData.lastName,
 		subtitle: <SubTitleContent headerData={selectedUserData} status={status} />,
 		showSubTitle: true,
+		showHepIcon: activeTab === 'safetyViolation',
 		draggableRightPanel: false,
 		defaultTabId: props.defaultTabId,
 		tabPadValue: 10,
@@ -1181,7 +1197,7 @@ const ProjectTeamApplicationsLID = ({ data, iframeEventData, ...props }: IQGridW
 	return (
 		<>
 			<div className='ProjectTeam-lineitem-detail-panel'>
-				<IQGridLID {...lidProps} {...props} handleActiveTab={handleActiveTab} />
+				<IQGridLID {...lidProps} {...props} handleActiveTab={handleActiveTab} handleHelp={handleHelp}/>
 
 			</div>
 			<SUIAlert

@@ -12,8 +12,10 @@ import { AdditionalInfo } from "./tabs/additionalInfo/AdditionalInfo";
 
 import {getSBSDetailsById, getSBSGridList, setEnableSaveButton, setSaveDetailsObj} from "../operations/sbsManagerSlice"
 import { saveRightPanelData } from "../operations/sbsManagerAPI";
+import { getServer } from "app/common/appInfoSlice";
 const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
-  const dispatch = useAppDispatch();
+	const dispatch = useAppDispatch();
+	const appInfo = useAppSelector(getServer);
   const { smEnableButton } = useAppSelector(
     (state) => state.specificationManager
   );
@@ -69,6 +71,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
 					dispatch(setEnableSaveButton(false));
 					dispatch(setSaveDetailsObj([]));
           			dispatch(getSBSGridList());
+					loadData(data.uniqueid);
 				}
 			})
 			.catch((err: any) => {
@@ -123,7 +126,20 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
         </>
       ),
       leftNode: <></>,
-    },
+		},
+		appInfo: appInfo,
+		iFrameId: "sbsManagerIFrame",
+		appType: "SBSManagerLineItem",
+		isFromHelpIcon: true,
+		presenceProps: {
+			presenceId: 'SBSManager-LineItem-presence',
+			showLiveSupport: true,
+			showLiveLink: false,
+			showStreams: true,
+			showComments: false,
+			showChat: false,
+			hideProfile: false
+		},
   };
 
 	return (

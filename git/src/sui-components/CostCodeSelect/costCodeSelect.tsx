@@ -21,10 +21,6 @@ import { makeStyles, createStyles } from '@mui/styles';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import SUIFilterInfiniteMenu from "sui-components/FilterInfiniteMenu/SUIFilterInfiniteMenu";
 
-
-
-
-
 export interface CostCodeSelectProps {
 	label?: string;
 	options?: any;
@@ -44,6 +40,8 @@ export interface CostCodeSelectProps {
 	filteringValue?: any;
 	showFilterInSearch?: boolean;
 	filteroptions?: any;
+	onFiltersUpdate?:any;
+	defaultFilters?:any;
 }
 const useStyles: any = makeStyles((theme: any) =>
 	createStyles({
@@ -63,9 +61,7 @@ const useStyles: any = makeStyles((theme: any) =>
 	})
 );
 
-export default function CostCodeSelect({ label, options, onChange, required, startIcon, selectedValue, checkedColor, showFilter, sx, isFullWidth = true, tooltipShow = true, variant = "standard", Placeholder = 'Select', displayEmpty = false, outSideOfGrid = true, filteringValue, showFilterInSearch = false, filteroptions }: CostCodeSelectProps) {
-
-
+export default function CostCodeSelect({ label, options, onChange, required, startIcon, selectedValue, checkedColor, showFilter, sx, isFullWidth = true, tooltipShow = true, variant = "standard", Placeholder = 'Select', displayEmpty = false, outSideOfGrid = true, filteringValue, showFilterInSearch = false, filteroptions, onFiltersUpdate, defaultFilters=[] }: CostCodeSelectProps) {
 	const classes = useStyles();
 	const [items, setItems] = useState(options);
 	const [value, setValue] = useState<any>(selectedValue);
@@ -78,11 +74,13 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 	const [selectedFilters, setSelectedFilters] = useState<any>([]);
 	const [filteredData, setFilteredData] = useState<any>([]);
 	// console.log("options in cost code select", options, filteroptions)
-	
 
+	React.useEffect(() => {
+		defaultFilters?.length && setSelectedFilters(defaultFilters);
+	}, [defaultFilters])
 
 	const handleChange = (event: any) => {
-		// console.log("eventtt", event)
+		console.log("eventtt", event.target.value)
 		const str = event.target.value.split("|");
 		setTooltip(str[1])
 		setValue(event.target.value);
@@ -93,7 +91,7 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 		setSearch(searchValue);
 
 		if (searchValue !== '') {
-			let searchData  = filteredData.length > 0 ?  filteredData : options;			
+			let searchData = filteredData.length > 0 ? filteredData : options;
 			const firstResult = searchData && searchData.filter((obj: any) => {
 				const data = JSON.stringify(obj).toLowerCase().includes(searchValue.toLowerCase());
 				return data;
@@ -117,7 +115,7 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 				setItems(firstResult ? firstResult : []);
 			}
 		} else {
-			if(selectedFilters?.length === 0) setItems(options ? options : []);
+			if (selectedFilters?.length === 0) setItems(options ? options : []);
 		}
 
 		// const firstResult = options.filter((obj: any) => {
@@ -129,12 +127,16 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 	};
 
 	useEffect(() => {
-		if(search!= '' && selectedFilters.length) handleSearch(search);		
+		if (search != '' && selectedFilters.length) handleSearch(search);
 	}, [search, selectedFilters]);
 
 	useEffect(() => {
 		setItems(options ? options : []);
 	}, [options]);
+
+	useEffect(() => {
+		selectedFilters?.length && onFilterChange(selectedFilters, {}, true)
+	}, [selectedFilters]);
 
 	const isEllipsisActive = (e: any) => {
 		if (e) return (e.clientWidth < e.scrollWidth);
@@ -186,41 +188,55 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 		return dataSet;
 	}
 
-	const onFilterChange = (data: any) => {
-		// console.log('data', data);
-		setSelectedFilters(data)
-		let filteredData: any = []
-		// const filteredIds = ["1239;1231;1232;1233", "1241;1355", "1239;1231;1232;1234","1239;1231;1232;1235", "1241;1337", "1241;1354", "1239;1231;1232;1236"]
-		// I need this format {"1239": ["1239"], "1241": ["1241;1337", "1241;1354"]}
-		const filterIds: any = changeFilterFormat(data);
-		Object.keys(filterIds).forEach((key: any) => {
-			const value = filterIds[key];
-			options.forEach((option: any) => {
-				let children: any = [];
-				if (value[0].toString().split(";").length > 1) {
-					option.children.forEach((childOption: any) => {
-						value.forEach((val: any) => {
-							if (childOption.hierarchy.includes(val)) children.push(childOption)
-						})
-					})
-				}
-				else {
-					if (option.id == key) children = [...option.children]
-				}
-				if (option.id == key) {
-					const obj = {
-						id: option?.id,
-						value: option?.value,
-						hierarchy: option?.hierarchy,
-						children: children
-					}
-					filteredData.push(obj)
-				}
-			})
-		})
-		// console.log("filteredDatafilteredData", filteredData);
-		if(filteredData.length) { setItems(filteredData); setFilteredData(filteredData) };
-	};
+	const onFilterChange = (data: any, updatedList: any, defaultFilters:boolean=false) => {
+		console.log("onFilkterChange", data)
+    if(!defaultFilters) {
+		setSelectedFilters(data);
+		onFiltersUpdate && onFiltersUpdate(data)
+	}
+    let filteredData: any = [];
+    // const filteredIds = ["1239;1231;1232;1233", "1241;1355", "1239;1231;1232;1234","1239;1231;1232;1235", "1241;1337", "1241;1354", "1239;1231;1232;1236"]
+    // I need this format {"1239": ["1239"], "1241": ["1241;1337", "1241;1354"]}
+    const filterIds: any = changeFilterFormat(data);
+    data.forEach((key: any) => {
+      // const value = filterIds[key];
+      console.log("key", key);
+      options.forEach((option: any) => {
+        let children: any = [];
+        console.log("option", option, option?.hierarchy?.includes(key));
+
+        if (option?.hierarchy?.includes(key?.replaceAll(";", ","))) {
+          console.log("iff");
+          filteredData?.push(option);
+        }
+        // if (value[0].toString().split(";").length > 1) {
+        // 	option.children.forEach((childOption: any) => {
+        // 		value.forEach((val: any) => {
+        // 			if (childOption.hierarchy.includes(val)) children.push(childOption)
+        // 		})
+        // 	})
+        // }
+        // else {
+        // 	if (option.id == key) children = [...option.children]
+        // }
+        // if (option.id == key) {
+        // 	const obj = {
+        // 		id: option?.id,
+        // 		value: option?.value,
+        // 		hierarchy: option?.hierarchy,
+        // 		children: children
+        // 	}
+        // 	filteredData.push(obj)
+        // }
+      });
+    });
+    // console.log("filteredDatafilteredData", filteredData);
+    if (filteredData?.length) {
+      setItems(filteredData);
+      setFilteredData(filteredData);
+    }
+    data?.length == 0 && setItems(options);
+  };
 
 	return (
 		<>
@@ -259,16 +275,17 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 						startAdornment={
 							<InputAdornment position="start">{startIcon}</InputAdornment>
 						}
-						endAdornment={
-							<>
-								{showFilter && <SUIFilterInfiniteMenu
-									menusData={filteroptions ? filteroptions : []}
-									onSelectionChange={onFilterChange}
-									identifier={'hierarchy'}
-									
-								></SUIFilterInfiniteMenu>}
-							</>
-						}
+						// endAdornment={
+						// 	<>
+						// 		{showFilter && <SUIFilterInfiniteMenu
+						// 			menusData={filteroptions ? filteroptions : []}
+						// 			onSelectionChange={onFilterChange}
+						// 			identifier={'hierarchy'}
+						// 			selectedFilterVals={selectedFilters}
+
+						// 		></SUIFilterInfiniteMenu>}
+						// 	</>
+						// }
 						sx={{
 							...sx,
 							'& .MuiSelect-select': {
@@ -303,30 +320,33 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 								InputProps={{
 									endAdornment: (
 										<InputAdornment position="end">
+
+											{search == '' ? <SearchIcon /> : <ClearIcon onClick={handleSearchClear} style={{ cursor: 'pointer' }} />}
 											{showFilterInSearch &&
 												<> <Button
 													sx={{
+														border: `solid 1px ${selectedFilters?.length > 0 ? "#0590cd" : "rgba(0,0,0,0.6)"} !important`,
 														borderRadius: 50,
+														color: `${selectedFilters?.length > 0 ? "#0590cd" : "rgba(0,0,0,0.6)"} !important`,
 														padding: "1px",
 														width: "24px",
 														minWidth: "24px",
 														height: "24px",
-														border: "1px solid #0590cd !important",
 													}}
-													onClick={(e) => { setToggleDropDown(!toggleDropDown); setFilterIconPos(e) }}
+													onClick={(e) => { setToggleDropDown(Date.now()); setFilterIconPos(e) }}
 												>
-													<div className="budget-Filter-blue"></div>
+													<div className={`common-icon-Filter ${selectedFilters?.length == 0 ? 'common-icon-Filter' : 'common-icon-Filter-blue'}`}></div>
 												</Button>
 													<SUIFilterInfiniteMenu
 														menusData={filteroptions ? filteroptions : []}
-														onSelectionChange={(ids: any) => {onFilterChange(ids); setToggleDropDown(false);}}
+														onSelectionChange={(ids: any, ops: any) => { onFilterChange(ids, ops); }}
 														identifier="hierarchy"
 														toggleDropDown={toggleDropDown}
 														filterIconPos={filterIconPos}
+														selectedFilterVals={selectedFilters}
 													></SUIFilterInfiniteMenu>
 												</>
 											}
-											{search == '' ? <SearchIcon /> : <ClearIcon onClick={handleSearchClear} style={{ cursor: 'pointer' }} />}
 										</InputAdornment>
 									),
 								}}
@@ -345,10 +365,10 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 										}}
 										disableSticky={true}
 									>
-										{item.value}
+										{item?.value}
 									</ListSubheader>,
 
-									item.children.map((option: any, i: number) => (
+									item?.children?.map((option: any, i: number) => (
 
 										<MenuItem
 											key={i}

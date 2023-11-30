@@ -6,7 +6,7 @@ import { AdditionalInfoGrid } from "./AdditionalInfoGrid";
 import React from "react";
 import { useAppSelector, useAppDispatch } from "app/hooks";
 import { getAppDependentFields, setDetailsData } from "features/safety/sbsmanager/operations/sbsManagerSlice";
-import { deleteSupplementalAppFields, updateAdditionalInfo } from "features/safety/sbsmanager/operations/sbsManagerAPI";
+import { updateAdditionalInfo } from "features/safety/sbsmanager/operations/sbsManagerAPI";
 
 export const AdditionalInfo = () => {
   const dispatch = useAppDispatch();

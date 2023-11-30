@@ -593,7 +593,12 @@ const getFilterMenuOptions = () => {
 			},
 			{
 				text: 'Non Compliant',
-				value: 'Non Compliant',
+				value: 'N/A',
+				key: 'complianceStatus',
+			},
+			{
+				text: 'Expired',
+				value: 'Expired',
 				key: 'complianceStatus',
 			}
 			]

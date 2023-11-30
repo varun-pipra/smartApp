@@ -67,7 +67,7 @@ const GeneralSettings = (props: any) => {
 			if (settingcostcodetypeData.values && settingcostcodetypeData.values.length > 0) {
 				const newOptions = settingcostcodetypeData.values.map((type: any) => {
 					type?.listCategories?.length && type?.listCategories.forEach((obj: any) => {
-						if (obj.id === 3) costCodeList.push({ label: type.name, value: type.id });
+						if (obj.id === 2) costCodeList.push({ label: type.name, value: type.id });
 						if (obj.id === 4) costTypeList.push({ label: type.name, value: type.id });
 
 					})
@@ -81,7 +81,7 @@ const GeneralSettings = (props: any) => {
 
 				const newOptions = CostCodeAndTypeData.values.map((type: any) => {
 					type?.listCategories?.length && type?.listCategories.forEach((obj: any) => {
-						if (obj.id === 3) costCodeList.push({ label: type.name, value: type.id });
+						if (obj.id === 2) costCodeList.push({ label: type.name, value: type.id });
 						if (obj.id === 4) costTypeList.push({ label: type.name, value: type.id });
 					})
 					return { label: type.name, value: type.id };

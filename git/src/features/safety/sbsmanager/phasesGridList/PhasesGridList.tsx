@@ -5,7 +5,7 @@ import PhasesColorPicker from "../phasesColorPicker/PhasesColorPicker";
 import { Button, IconButton } from "@mui/material";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import SUIAlert from "sui-components/Alert/Alert";
-import { getPhaseDropdownValues } from "../operations/sbsManagerSlice";
+import { getPhaseDropdownValues, getSBSGridList } from "../operations/sbsManagerSlice";
 import { useAppDispatch, showLoadMask, hideLoadMask, useAppSelector } from 'app/hooks';
 import { TextField } from "@mui/material";
 import { deletePhase, createNewPhase, updatePhases } from "../operations/sbsManagerAPI";
@@ -109,13 +109,14 @@ const PhasesGridList = () => {
   const onSaveBtnClick = () => {
     const updatedData: any = getUpdatedRowDataWithSequence();
     const payload = {
-      phases: updatedData,
+      phase: updatedData,
     };
     showLoadMask();
     updatePhases(payload)
       .then((res: any) => {
         hideLoadMask();
         onRefreshButtonClick();
+        dispatch(getSBSGridList());
       })
       .catch((err: any) => {
         hideLoadMask();
@@ -216,11 +217,11 @@ const PhasesGridList = () => {
    */
   const addNewRecord = (val: any) => {
     const payload = {
-      phase: {
+      phase: [{
         name: val?.trim(),
         color: getUniqueColor(),
         sequenceNo: rowData?.length + 1,
-      },
+      }],
     };
     showLoadMask();
     createNewPhase(payload)
@@ -239,6 +240,12 @@ const PhasesGridList = () => {
       setNewPhase(addPhaseText);
     };
   }, [addPhaseText]);
+  const onCellEditRequest = useCallback((event:any) => {
+      const data = event.data;
+      const newValue = event.newValue;
+      const updateData = {"id": data.id,"name": newValue,"color": data.color,"uniqueId": data.uniqueId,"value":newValue,"sequenceNo": data.sequenceNo,"label": newValue};
+      event.node.setData(updateData);
+    },[]);
   return (
     <>
       <div className="phases-grid-wrapper ag-theme-alpine">
@@ -288,6 +295,8 @@ const PhasesGridList = () => {
             onSelectionChanged={(e) => {
               onGridSelectionChanged(e);
             }}
+            readOnlyEdit={true}
+            onCellEditRequest={onCellEditRequest}
           ></AgGridReact>
         </div>
         <div className="phases-grid-wrapper_footer">

@@ -65,8 +65,8 @@ export const addTimeToDate = (date: string, time: string) => {
 };
 
 export const fromSecondsToHourMinutes = (seconds: number) => {
-	let hours = parseInt((seconds / 3600).toString()),
-		minutes = parseInt(((seconds % 3600) / 60).toString());
+	let hours = Math.floor((seconds / 3600)),
+		minutes = Math.ceil(((seconds % 3600) / 60));
 
 	return `${(hours < 10 ? '0' : '')}${hours} hrs ${(minutes < 10 ? '0' : '')}${minutes} mins`;
 };

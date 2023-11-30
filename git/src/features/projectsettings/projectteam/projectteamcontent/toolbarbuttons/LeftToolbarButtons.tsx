@@ -223,11 +223,13 @@ const LeftToolbarButtons = (props: any) => {
 		var complianceMgr: any = generalPermissions.find((obj:any) => { 
 			return obj.value == 'Compliance Manager'
 		});
-		complianceMgr.disable = (company?.isDiverseSupplier) ? false : true;
-		if(complianceMgr && zonePermission.includes('Compliance Manager')) {
+		if(complianceMgr ?? false) {
+			complianceMgr && (complianceMgr.disable = (company?.isDiverseSupplier) ? false : true);
+		};
+		if((complianceMgr ?? false) && zonePermission?.includes('Compliance Manager')) {
 			if(userPrivileges.includes('None')) userPrivileges.splice(0, 1);
 			userPrivileges.push(complianceMgr.value);
-		} else if(zonePermission.includes('Company Manager')) {
+		} else if(zonePermission?.includes('Company Manager')) {
 			if(userPrivileges.includes('None')) userPrivileges.splice(0, 1);
 			if(userPermissionType == 'None') userPrivileges.push('Company Manager');
 		}

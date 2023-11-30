@@ -22,7 +22,7 @@ export const createClientPayApp = async (appInfo: any, body: any, callback?: any
 export const fetchClientPayApps = async (appInfo: any) => {
 	
 	if (!isLocalhost) {
-		const response = await clientPayAppsRequest(appInfo, '?offset=0&limit=1000', {});
+		const response = await clientPayAppsRequest(appInfo, '?offset=0&limit=10000', {});
 		return response?.data
     }
     return ClientPayAppsData?.data

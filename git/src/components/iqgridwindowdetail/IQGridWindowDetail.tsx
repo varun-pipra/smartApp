@@ -16,6 +16,7 @@ import SUIDrawer from 'sui-components/Drawer/Drawer';
 import { renderPresence } from 'utilities/presence/Presence';
 import { Close } from '@mui/icons-material';
 import { Box, IconButton, InputAdornment, InputLabel, Stack, TextField } from '@mui/material';
+import { postMessage } from 'app/utils';
 
 interface IQGridWindowDetailFooterProps {
 	hideNavigation?: boolean;
@@ -51,10 +52,12 @@ export interface IQGridWindowDetailProps {
 	defaultSpacing?: boolean;
 	onPrevious?: any;
 	onNext?: any;
+	handleHelp?: any;
+	showHepIcon?: boolean;
 };
 
 const IQGridWindowDetail = ({
-	appType, appInfo, data, presenceProps, title, subtitle, showSubTitle = false,
+	appType, appInfo, data, presenceProps, title, subtitle, showSubTitle = false, handleHelp, showHepIcon = false,
 	iFrameId, isFromHelpIcon, onClose, headContent, defaultTabId, tabPadValue = 0, tabs, footer, onNavigation, handleActiveTab, hideNavigation = false,
 	navigationDisableFlag, defaultSpacing = false, onPrevious, onNext, ...props
 }: IQGridWindowDetailProps) => {
@@ -65,6 +68,7 @@ const IQGridWindowDetail = ({
 	const [pinned, setPinned] = useState(true);
 	const presenceRef = useRef(false);
 	const tabid = useRef(defaultTabId);
+
 	const tabSelectedValue = (value: any) => {
 		tabid.current = value;
 		setTabSelected(value);
@@ -73,21 +77,30 @@ const IQGridWindowDetail = ({
 
 	useEffect(() => {
 		if (tabSelected) {
-			console.log('tabSelected', tabSelected);
-			const body = { iframeId: iFrameId, roomId: data?.id, appType: appType, tabName: tabid.current, isFromHelpIcon: false }
-			console.log('help', body)
-			postMessage({
-				event: "help",
-				body: body
-			});
+			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, tabid.current, data?.id, data?.code);
+			help(false);
 		}
 	}, [tabSelected]);
 
+	const help = (isFromHelpIcon: any) => {
+		console.log('useref', tabid.current);
+		const body = { iframeId: iFrameId, roomId: data?.id, appType: appType, tabName: tabid.current, isFromHelpIcon: isFromHelpIcon }
+		console.log('help', body)
+		postMessage({
+			event: "help",
+			body: body
+		});
+	}
+
 	useEffect(() => {
 		if (appInfo) {
+			console.log('data', data);
 			if (presenceRef.current) return;
-			presenceRef.current = true;
-			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, defaultTabId, data?.id, data?.code);
+			else {
+				console.log('else')
+				presenceRef.current = true;
+				renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, tabid.current, data?.id, data?.code);
+			}
 		}
 	}, [data, appInfo]);
 
@@ -131,13 +144,24 @@ const IQGridWindowDetail = ({
 			{showSubTitle && (
 				<span>{subtitle || <></>}</span>
 			)}
-			<IconButton
-				className='close-btn'
-				aria-label='Close Right Pane'
-				onClick={onClose}
-			>
-				<Close />
-			</IconButton>
+			<Stack direction='row' style={{ gap: '4px' }}>
+				{showHepIcon && (
+					<IconButton
+						className="close-btn"
+						aria-label="Close Right Pane"
+						onClick={handleHelp}
+					>
+						<span className="common-icon-Live-Support-Help header_icon"></span>
+					</IconButton>
+				)}
+				<IconButton
+					className='close-btn'
+					aria-label='Close Right Pane'
+					onClick={onClose}
+				>
+					<Close />
+				</IconButton>
+			</Stack>
 		</Stack>
 		{presenceId && <Stack id={presenceId} className='presence-box'></Stack>}
 		<Stack className='body'>

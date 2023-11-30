@@ -43,6 +43,8 @@ import {getBidStatus, getBidStatusIdFromText, StatusColors, StatusIcons} from 'u
 import {formatDate} from 'utilities/datetime/DateTimeUtils';
 import {vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons} from 'utilities/vendorContracts/enums';
 import {budgetManagerMainGridRTListener} from '../BudgetManagerRT';
+import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
+import { getCostCodeDropdownList, getCostCodeFilterList } from '../operations/settingsSlice';
 // import {setInterval} from 'timers/promises';
 var tinycolor = require('tinycolor2');
 
@@ -87,7 +89,7 @@ const TableGrid = (props: TableGridProps) => {
 	const {selectedRowIndexData} = useAppSelector(
 		(state) => state.rightPanel
 	);
-	const {settingsData} = useAppSelector(state => state.settings);
+	const {settingsData, costCodeDropdownData, divisionCostCodeFilterData } = useAppSelector(state => state.settings);
 
 	const rightPannel = useAppSelector(showRightPannel);
 	const {viewData, viewBuilderData} = useAppSelector((state) => state.viewBuilder);
@@ -102,6 +104,8 @@ const TableGrid = (props: TableGridProps) => {
 	const [presencePrevState, setPresencePrevState] = useState<any>([]);
 	const selectedGroupKey = useAppSelector(state => state.gridData?.selectedGroupKey);
 	const [gridRef, setGridRef] = React.useState<any>();
+	const [multiLevelDefaultFilters, setMultiLevelDefaultFilters] = React.useState<any>([])
+	
 
 	const selectedRecord = useAppSelector((state) => state.rightPanel.selectedRow);
 	const RemoveDuplicates = (array: any, key: any) => {
@@ -288,21 +292,48 @@ const TableGrid = (props: TableGridProps) => {
 			},
 			cellRenderer: (params: any) => {
 				return params?.node?.level == 1 ? (
-					<CostCodeDropdown
-						label=''
+					// <CostCodeDropdown
+					// 	label=''
+					// 	options={getDivisionOptions()}
+					// 	required={false}
+					// 	selectedValue={
+					// 		params?.data
+					// 			? params?.data?.division + '|' + params?.data?.costCode
+					// 			: ''
+					// 	}
+					// 	checkedColor={'#0590cd'}
+					// 	onChange={(value) => handleOnChange(value, params)}
+					// 	showFilter={false}
+					// 	showFilterInSearch={true}
+					// 	isFullWidth={true}
+					// 	outSideOfGrid={false}
+					// 	sx={{
+					// 		fontSize: '13px',
+					// 		'&:before': {
+					// 			border: 'none',
+					// 		},
+					// 		'&:after': {
+					// 			border: 'none',
+					// 		},
+					// 		'.MuiSelect-icon': {
+					// 			display: 'none',
+					// 		},
+					// 	}}
+					// 	filteringValue={params?.data?.division}
+					// />
+					<CostCodeSelect
+						label=" "
 						options={getDivisionOptions()}
-						required={false}
-						selectedValue={
-							params?.data
-								? params?.data?.division + '|' + params?.data?.costCode
-								: ''
-						}
+						onChange={(value:any) => handleOnChange(value, params)}
+						// required={true}
+						// startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
 						checkedColor={'#0590cd'}
-						onChange={(value) => handleOnChange(value, params)}
 						showFilter={false}
-						showFilterInSearch={true}
-						isFullWidth={true}
+						selectedValue={params?.data?.division && params?.data?.costCode ? params?.data?.division + '|' + params?.data?.costCode : ''}
+						Placeholder={'Select'}
 						outSideOfGrid={false}
+						showFilterInSearch={true}
+						isFullWidth={true}	
 						sx={{
 							fontSize: '13px',
 							'&:before': {
@@ -314,9 +345,12 @@ const TableGrid = (props: TableGridProps) => {
 							'.MuiSelect-icon': {
 								display: 'none',
 							},
-						}}
+						}}					
+						filteroptions={getDivisionFilterOptions()}
 						filteringValue={params?.data?.division}
-					/>
+						onFiltersUpdate={(filters:any) => setMultiLevelDefaultFilters(filters)}
+						defaultFilters={multiLevelDefaultFilters}
+            />
 				) : null;
 			}
 		},
@@ -1050,7 +1084,14 @@ const TableGrid = (props: TableGridProps) => {
 	};
 
 	const getDivisionOptions = () => {
-		return useAppSelector(getCostCodeDivisionList);
+		// return useAppSelector(getCostCodeDivisionList);
+		return useAppSelector(getCostCodeDropdownList);
+	};
+
+	
+	const getDivisionFilterOptions = () => {
+		// return useAppSelector(getCostCodeDivisionList);
+		return useAppSelector(getCostCodeFilterList);
 	};
 
 	useEffect(() => {
@@ -1132,7 +1173,8 @@ const TableGrid = (props: TableGridProps) => {
 	};
 
 	const customCellRendererClass = (params: any) => {
-		if(!params.data) {
+		const {data} = params;
+		if(!data) {
 			const isFooter = params?.node?.footer;
 			const isRootLevel = params?.node?.level === -1;
 			if(isFooter) {
@@ -1144,6 +1186,15 @@ const TableGrid = (props: TableGridProps) => {
 				return `${params?.value}`;
 			}
 		}
+
+		let {name, costCodeGroup, costType} = data,
+			multiLevelList = costCodeGroup && costCodeGroup.length > 0 ? [...costCodeGroup] : [];
+
+		if(multiLevelList && multiLevelList.length > 0) {
+			multiLevelList.shift();
+		}
+
+		const multilevelString = multiLevelList.length > 0 ? multiLevelList?.join(' - ') : '';
 		return <><div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', position: 'absolute', left: 0}}>
 			<div className='presence-tools'>
 				{[generatePresenceToolIds(params?.data)].map((presenceTool: any) => presenceTool)}
@@ -1190,9 +1241,13 @@ const TableGrid = (props: TableGridProps) => {
 				</IQTooltip>
 			}
 		</div>
-			<span className='ag-costcodegroup' style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>{params?.data?.name + ' - ' + params.data.costCode + ' : ' + params.data.costType} </span>
+			<span className='ag-costcodegroup' style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>
+				{params?.data?.name + ' - ' + params.data.costCode + ' : ' + params.data.costType}
+				{/* {`${name ? `${name} - ` : ''}${multilevelString ? `${multilevelString} : ` : ''}${costType}`} */}
+			</span>
 		</>;
 	};
+
 	const customValueGetter = (params: any) => {
 		if(!params.data) {
 			return params.value;

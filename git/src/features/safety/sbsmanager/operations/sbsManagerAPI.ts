@@ -218,19 +218,6 @@ export const updateAdditionalInfo = async (payload: any, callback: any) => {
 	}
 };
 
-export const deleteSupplementalAppFields = async (payload: any, callback: any) => {
-	const server: any = getServerInfo();
-	const options = {
-		method: 'DELETE',
-		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify(payload),
-	};
-	if (!isLocalhost) {
-		const response = await sbsRequest(server, `/additionalInfo`, options, true);
-		callback && callback(response);
-	}
-};
-
 export const saveRightPanelData = async (body: any) => {
   const appInfo: any = getServerInfo();
   let response;
@@ -251,5 +238,35 @@ export const saveRightPanelData = async (body: any) => {
     return data;
   };
   return true;
+};
+
+
+export const AddFiles = async (sbsId: string, payload: any, callback: any) => {
+	const server: any = getServerInfo();
+	console.log("updateAdditionalInfo", payload);
+	const options = {
+		method: 'POST',
+		headers: { 'content-type': 'application/json' },
+		body: JSON.stringify(payload),
+	};
+	if (!isLocalhost) {
+		const response = await sbsRequest(server, `/reference?sbsID=${sbsId}`, options);
+		callback && callback(response);
+	}
+};
+
+
+export const deleteFiles = async (sbsId: string, payload: any, callback: any) => {
+	const server: any = getServerInfo();
+	console.log("delete files", payload);
+	const options = {
+		method: 'DELETE',
+		headers: { 'content-type': 'application/json' },
+		body: JSON.stringify(payload),
+	};
+	if (!isLocalhost) {
+		const response = await sbsRequest(server, `/reference?sbsID=${sbsId}`, options, true);
+		callback && callback(response);
+	}
 };
 

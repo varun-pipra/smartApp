@@ -270,10 +270,10 @@ const BidPackageLineItem = (props: any) => {
 			),
 		},
 		{
-			tabId: "award-bid",
+			tabId: "award-bids",
 			label: "Award Bids",
 			showCount: false,
-			icon: (tabSelected === "award-bid" ? <span className='common-icon-awarded-gray tabicon tabicon_orange' /> : <span className='common-icon-awarded-gray tabicon' />),
+			icon: (tabSelected === "award-bids" ? <span className='common-icon-awarded-gray tabicon tabicon_orange' /> : <span className='common-icon-awarded-gray tabicon' />),
 			content: <AwardBid />,
 			disabled: [3, 5, 6, 8].includes(bidLineItem?.status) ? false : true,
 		},

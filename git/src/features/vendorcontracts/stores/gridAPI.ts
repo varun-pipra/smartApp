@@ -27,7 +27,7 @@ export const createVendorContracts = async (appInfo: any, body: any) => {
 export const fetchVendorContractsList = async (appInfo: any) => {
 	let response;
 	if (!isLocalhost) {
-		response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/projects/${appInfo?.uniqueId}/finance/vendorcontracts?offset=0&limit=1000&sessionId=${appInfo?.sessionId}`);
+		response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/projects/${appInfo?.uniqueId}/finance/vendorcontracts?offset=0&limit=10000&sessionId=${appInfo?.sessionId}`);
 		if (!response.ok) {
 			const message = `API Request Error (${moduleName}): ${response.status}`;
 			throw new Error(message);

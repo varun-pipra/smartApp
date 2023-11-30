@@ -21,7 +21,7 @@ export const renderPresence = (presenceProps: any, appInfoData: any, iFrameId: s
 };
 
 export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId: string, appType: string, lineItemId: any, lineItemName: any, isFromHelpIcon: any, tabName: any) => {
-	console.log('addPresenceListener', { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType, isFromHelpIcon: isFromHelpIcon, tabName: tabName })
+	//console.log('addPresenceListener', { iframeId: iFrameId, roomId: lineItemId ? lineItemId : appInfo.presenceRoomId, appType: appType, isFromHelpIcon: isFromHelpIcon, tabName: tabName })
 	if (presenceManager && presenceManager.control) {
 		let participantCtrl = presenceManager.control;
 		participantCtrl.addEventListener('brenabtnclick', function (e: any) {
@@ -29,7 +29,7 @@ export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId
 		});
 
 		participantCtrl.addEventListener('livesupportbtnclick', function (e: any) {
-			const body = { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType, tabName: tabName, isFromHelpIcon: isFromHelpIcon };
+			const body = { iframeId: iFrameId, roomId: lineItemId ? lineItemId : appInfo.presenceRoomId, appType: appType, tabName: tabName, isFromHelpIcon: isFromHelpIcon };
 			console.log('helpbody', body)
 			postMessage({
 				event: 'help',

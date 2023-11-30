@@ -19,7 +19,7 @@ export const createClientContract = async (appInfo: any, body: any, callback?: a
 
 export const fetchClientContracts = async (appInfo: any) => {
 	if(!isLocalhost) {
-		const response = await clientRequest(appInfo, '?offset=0&limit=1000', {});
+		const response = await clientRequest(appInfo, '?offset=0&limit=10000', {});
 		return response?.data;
 	}
 	return ClientGridData?.data;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { Box, Button, IconButton, TextField, InputLabel, InputAdornment, Stack } from '@mui/material';
 import { Close} from '@mui/icons-material';
@@ -25,6 +25,7 @@ import SBSManagePhasesModal from "features/projectsettings/projectteam/projectte
 import PhasesGridList from './phasesGridList/PhasesGridList';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
+import { AddFiles } from './operations/sbsManagerAPI';
 
 const SBSManagerWindow = (props: any) => {  
   const filterOptions = useMemo(() => {
@@ -85,6 +86,7 @@ const SBSManagerWindow = (props: any) => {
   const [localhost] = React.useState(isLocalhost);
   const [appData] = React.useState(appInfoData);
   const appInfo = useAppSelector(getServer);
+	const { detailsData } = useAppSelector(state => state.sbsManager)	  
   const { currencySymbol } = useAppSelector((state) => state.appInfo);
   const { sbsGridData, showSbsPanel,showPhaseModel, toast } = useAppSelector((state) => state.sbsManager);
   const [gridSearchText, setGridSearchText] = useState("");
@@ -100,6 +102,9 @@ const SBSManagerWindow = (props: any) => {
   const [currentRowSelection, setCurrentRowSelection] = useState<any>(null);
   const [driveFileQueue, setDriveFileQueue] = useState<any>([]);
   const [toastMessage, setToastMessage] = useState<string>('');
+  const [isRightPanelOpened, setIsRightPanelOpened] = React.useState(false);
+  const isAppMaximized = useAppSelector((state)=> state.appInfo.isAppMaximized);
+  const gridApi = useRef<any>();
   useEffect(() => {
       setShowManagePhasesModal(showPhaseModel)
   },[showPhaseModel]);
@@ -197,21 +202,12 @@ const SBSManagerWindow = (props: any) => {
   }, [localhost, appData]);
   const saveFilesFromDrive = (appInfo: any, fileList: Array<any>) => {
 		const structuredFiles = fileList.map((file: any) => {
-			return {
-				type: 'Additional',
-				description: file.description,
-				stream: {
-					driveObjectId: file.id
-				}
-			};
+      return { name:file.name,"id":file.id,type:"drive"}
 		});
-    console.log('structuredFiles',structuredFiles)
-		// addContractFiles(appInfo, currentContract?.id, structuredFiles)
-		// 	.then((res: any) => {
-		// 		dispatch(setAdditionalFiles(res?.additional));
-		// 		dispatch(setContractFilesCount((res?.standard?.length || 0) + (res?.additional?.length || 0)));
-		// 		dispatch(getClientContractDetails({ appInfo: appInfo, contractId: currentContract.id }));
-		// 	});
+    console.log('structuredFiles drive',structuredFiles)
+    AddFiles(detailsData?.id, structuredFiles ,(response:any) => {
+      console.log("respone in drive", response)
+    })
 	};
   useEffect(() => {
 		if (driveFileQueue?.length > 0) {
@@ -461,6 +457,27 @@ const SBSManagerWindow = (props: any) => {
 			dispatch(setToast(''));
 		}, 3000);
 	}, [toast]);
+  React.useEffect(() => {
+      if(isRightPanelOpened && showSbsPanel) {
+        dispatch(setShowSbsPanel(false));
+      }
+  },[isRightPanelOpened]);
+  const onFirstDataRendered = useCallback((params: any) => {
+    gridApi.current = params;
+  }, []);
+  const leftToolBarHandler = (e: any) => {
+    debugger;
+    const action = e.currentTarget.getAttribute("data-action");
+    switch (action) {
+      case "exportCsv": {
+            // gridApi.current.api.exportDataAsCsv();
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  };
   return (
     <div className="sbs-manager-cls">
       <GridWindow
@@ -481,6 +498,7 @@ const SBSManagerWindow = (props: any) => {
         lidCondition={(rowData: any) => {
 					return true;
 				}}
+        getLIDOpen={(val:boolean) => setIsRightPanelOpened(val)}
         presenceProps={{
           presenceId: "sbs-manager-presence",
           showLiveSupport: true,
@@ -509,7 +527,7 @@ const SBSManagerWindow = (props: any) => {
           detailView: SbsManagerApplicationLID,
           gridContainer: {
             toolbar: {
-              leftItems: <SBSToolbarLeftButtons />,
+              leftItems: <SBSToolbarLeftButtons clickHandler={leftToolBarHandler}/>,
               rightItems: <SBSToolbarRightButtons />,
               searchComponent: {
                 show: true,
@@ -542,6 +560,7 @@ const SBSManagerWindow = (props: any) => {
               rowSelected: (e: any) => onRowSelection(e),
               nowRowsMsg:
                 "<div>Add new SBS item by clicking the + Add button above</div>",
+              onFirstDataRendered: onFirstDataRendered
             },
           },
         }}
@@ -552,8 +571,8 @@ const SBSManagerWindow = (props: any) => {
           style: {
             position: "fixed",
             marginTop: "9%",
-            marginRight: "2.5%",
-            height: "76%",
+            marginRight: isAppMaximized ? "0%" : "2.5%",
+            height: isAppMaximized ? "80%" : "76%",
             borderRadius: "4px",
             boxShadow: "-6px 0px 10px -10px",
             border: "1px solid rgba(0, 0, 0, 0.12) !important",

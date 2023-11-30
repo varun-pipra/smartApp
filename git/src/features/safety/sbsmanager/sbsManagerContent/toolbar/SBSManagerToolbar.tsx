@@ -14,7 +14,8 @@ import {
 import { deleteSBSGridRecs } from "../../operations/sbsManagerAPI";
 
 // Component definition
-export const SBSToolbarLeftButtons = memo(() => {
+export const SBSToolbarLeftButtons = memo((props:any) => {
+  const { clickHandler } = props;
   const dispatch = useAppDispatch();
   const appInfo = useAppSelector(getServer);
 
@@ -53,7 +54,7 @@ export const SBSToolbarLeftButtons = memo(() => {
         </IconButton>
       </IQTooltip>
       <IQTooltip title="Export CSV" placement="bottom">
-        <IconButton>
+        <IconButton data-action='exportCsv' onClick={clickHandler}>
           <span className="common-icon-Export" />
         </IconButton>
       </IQTooltip>

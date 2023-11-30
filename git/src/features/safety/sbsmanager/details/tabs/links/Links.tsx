@@ -18,92 +18,95 @@ const AddLinksData = [
 		"id": 1,
 		"type": "Custom",
 		iconCls: "common-icon-sketch",
-		"children": [{
-			"text": "Visitor",
-			"value": "Visitor",
-			"id": 1,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},
-		{
-			"text": "Safety Task Analysis Log",
-			"value": "Safety Task Analysis Log",
-			"id": 2,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},
-		{
-			"text": "Fire Alarm Inspection",
-			"value": "Fire Alarm Inspection",
-			"id": 3,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},
-		{
-			"text": "Constraints And Issue Log",
-			"value": "Constraints And Issue Log",
-			"id": 4,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},{
-			"text": "Sprinkler Inspection",
-			"value": "Sprinkler Inspection",
-			"id": 5,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},{
-			"text": "Fire Extinguisher",
-			"value": "Fire Extinguisher",
-			"id": 6,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		}]
+		children: [],
+		// "children": [
+		// 	{
+		// 	"text": "Visitor",
+		// 	"value": "Visitor",
+		// 	"id": 1,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },
+		// {
+		// 	"text": "Safety Task Analysis Log",
+		// 	"value": "Safety Task Analysis Log",
+		// 	"id": 2,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },
+		// {
+		// 	"text": "Fire Alarm Inspection",
+		// 	"value": "Fire Alarm Inspection",
+		// 	"id": 3,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },
+		// {
+		// 	"text": "Constraints And Issue Log",
+		// 	"value": "Constraints And Issue Log",
+		// 	"id": 4,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },{
+		// 	"text": "Sprinkler Inspection",
+		// 	"value": "Sprinkler Inspection",
+		// 	"id": 5,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },{
+		// 	"text": "Fire Extinguisher",
+		// 	"value": "Fire Extinguisher",
+		// 	"id": 6,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// }]
 	},
 	{
 		"text": "Existing Smart Items",
 		"value": "Existing Smart Items",
 		"id": 2,
 		"type": "Custom",
-		"children": [{
-			"text": "Submittals",
-			"value": "Submittals",
-			"id": 1,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},
-		{
-			"text": "Accident Report",
-			"value": "Accident Report",
-			"id": 2,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},
-		{
-			"text": "Fuse Tracker",
-			"value": "Fuse Tracker",
-			"id": 3,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},
-		{
-			"text": "RFI",
-			"value": "RFI",
-			"id": 1,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},{
-			"text": "Tasks",
-			"value": "Tasks",
-			"id": 4,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		},{
-			"text": "Worker In Logs",
-			"value": "Worker In Logs",
-			"id": 5,
-			iconCls: "common-icon-sketch",
-			"type": "custom"
-		}],
+		children: [],
+		// "children": [{
+		// 	"text": "Submittals",
+		// 	"value": "Submittals",
+		// 	"id": 1,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },
+		// {
+		// 	"text": "Accident Report",
+		// 	"value": "Accident Report",
+		// 	"id": 2,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },
+		// {
+		// 	"text": "Fuse Tracker",
+		// 	"value": "Fuse Tracker",
+		// 	"id": 3,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },
+		// {
+		// 	"text": "RFI",
+		// 	"value": "RFI",
+		// 	"id": 1,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },{
+		// 	"text": "Tasks",
+		// 	"value": "Tasks",
+		// 	"id": 4,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// },{
+		// 	"text": "Worker In Logs",
+		// 	"value": "Worker In Logs",
+		// 	"id": 5,
+		// 	iconCls: "common-icon-sketch",
+		// 	"type": "custom"
+		// }],
 		iconCls: "common-icon-sketch",
 	},
 	{
@@ -169,14 +172,33 @@ const filterOptions = [
 
 const Links = () => {
 	const appInfo = useAppSelector(getServer);
+	const { appsList  } = useAppSelector(state => state.sbsManager)	
 	const [disableDeleteBtn, setDisableDeleteBtn] = useState<boolean>(true);
 	const [selected, setSelected] = useState<any>();
 	const [searchText, setSearchText] = useState<any>();
 	const [filterKeyValue, setFilterKeyValue] = useState<any>([]);
 	const [filters, setFilters] = React.useState<any>(filterOptions);
+	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(AddLinksData)
 
 	var tinycolor = require('tinycolor2');
 	const [gridData, setGridData] = useState<any>(linksData);
+
+	useEffect(() => {
+		const addLinksOptionsCopy = [...addLinksOptions];
+		let newSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "New Smart Item");
+		let existingSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "Existing Smart Items");
+		
+		const apps = appsList?.map((obj:any) => {return {
+				"text": obj?.name,
+				"value":  obj?.name,
+				"id": obj?.id,
+				iconCls: obj?.thumbnailUrl,
+				"type": "custom" }
+		});
+		newSmartItem.children = apps
+		existingSmartItem.children = apps
+		setAddLinksOptions(addLinksOptionsCopy);
+	}, [appsList]);
 
 	useEffect(() => {
 		if (linksData?.length > 0) {
@@ -210,6 +232,7 @@ const Links = () => {
 			checkboxSelection: true,
 			headerCheckboxSelection: true,
 			width: 300,
+			suppressMenu: true,
 			valueGetter: (params: any) => params.data?.name,
 			comparator: (valueA: any, valueB: any) => valueA?.toLowerCase().localeCompare(valueB?.toLowerCase()),
 			cellRenderer: (params: any) => {
@@ -226,10 +249,12 @@ const Links = () => {
 			headerName: 'Description',
 			field: 'description',
 			minWidth: 170,
+			suppressMenu: true,
 		}, {
 			headerName: 'Stage',
 			field: 'stage',
 			minWidth: 150,
+			suppressMenu: true,
 			cellRenderer: (params: any) => {
 				return (
 					<Button
@@ -247,17 +272,19 @@ const Links = () => {
 
 		},
 		{
-			headerName: 'type',
+			headerName: 'Type',
 			field: 'type',
+			suppressMenu: true,
 		},
 		{
 			headerName: 'Created By',
 			field: 'createdby',
 			minWidth: 150,
-
+			suppressMenu: true,
 		}, {
 			headerName: 'Creation Date',
 			field: 'date',
+			suppressMenu: true,
 			valueGetter: (params: any) => params.data?.date ? formatDate(params.data?.date) : '',
 		},
 	], []);
@@ -336,7 +363,7 @@ const Links = () => {
 			<div className='toolbar'>
 				<div className='left-Section'>
 					<IQSubMenuButton 
-					menuOptions={AddLinksData || []}
+					menuOptions={addLinksOptions || []}
 					handleMenuChange={handleMenu}
 					handleSubMenuChange={handleSubMenu}
 					startIcon={<span className="common-icon-Add" />}

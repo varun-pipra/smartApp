@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SUIFilterInfiniteMenu from "sui-components/FilterInfiniteMenu/SUIFilterInfiniteMenu";
 import { MenuItem, Button, ListSubheader } from "@mui/material";
+import { hideLoadMask } from "app/hooks";
 const FilterMenuExample = (props: any) => {
 	const [toggleDropDown, setToggleDropDown] = useState<any>(false);
 	const [filterIconPos, setFilterIconPos] = useState<any>({clientX: 0, clientY: 0});
 
+	useEffect(()=>{
+		hideLoadMask();
+	}, [])
   const menusData = [
 	  {
 		"id": 23,

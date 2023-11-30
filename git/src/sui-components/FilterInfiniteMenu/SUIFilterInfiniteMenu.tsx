@@ -9,8 +9,8 @@ const SUIFilterInfiniteMenu = (props: any) => {
   const [toggleDropDown, setToggleDropDown] = useState<any>(false);
   const [menuItemsData, setMenuItemsData] = useState<any>(props.menusData || []);
   const [identifier, setIdentifier] = useState<any>(props.identifier || 'hierarchy');
+  const [isSelectionChanged, setIsSelectionChanged] = React.useState<any>(null);
   const menuRef = useRef<any>(null);
-//   console.log("filter menu", props.menusData);
   let selectedIdentifiers: any = [];
 
   /**
@@ -20,19 +20,61 @@ const SUIFilterInfiniteMenu = (props: any) => {
    */
   const addParentToChildRecords = (data: any) => {
     (data || []).forEach((rec: any) => {
-      if (rec.children?.length > 0) {
-        rec.children.forEach((child: any) => (child["parentRecord"] = rec));
+      if (rec?.children?.length > 0) {
+        rec?.children.forEach((child: any) => (child["parentRecord"] = rec)
+				);
         addParentToChildRecords(rec.children);
       }
     });
   };
 
 /**
+	 * Based on parent component selectedFilteredVals prop selecting the menu items
+	 * @param data 
+	 * @author Srinivas Nadendla
+	 */
+	const findAndUpdatedPreviouslyChecked = (data: any) => {
+		(data || []).forEach((rec: any) => {
+			if (props.selectedFilterVals.includes(rec[identifier])) {
+				rec.isChecked = true;
+				if (rec.children?.length > 0) {
+					markIsChecked(rec.children, true, rec.id);
+				}
+			}
+			if (rec?.children?.length > 0) {
+				rec?.children.forEach((child: any) => {
+					if (props.selectedFilterVals.includes(child[identifier])) {
+						child.isChecked = true;
+					}
+				}
+				);
+				findAndUpdatedPreviouslyChecked(rec.children);
+			}
+		});
+	}
+
+  const addIsAtLeastOneCheckedFlag = (data: any)=> {
+    (data || []).forEach((rec: any)=>{
+      if (rec.children?.length > 0) {
+        const allChecked = rec.children.every((item: any) => item.isChecked === true);
+        const noneChecked = rec.children.every((item: any) => item.isChecked === false);
+        const oneChecked = rec.children.some((item: any) => item.isChecked === true);
+       rec.isAtLeastOneChecked = allChecked ? false : (noneChecked ? false : oneChecked);
+       addIsAtLeastOneCheckedFlag(rec.children);
+      }
+    })
+  }
+
+/**
  * Formatting the menusData to required format and setting the updated data to state.
 */
     useEffect(() => {
       if (props?.menusData?.length > 0) {
-        let formattedData = [...(props.menusData || [])];
+        let formattedData = JSON.parse(JSON.stringify(props.menusData || []));
+			if (props.selectedFilterVals?.length > 0) {
+				findAndUpdatedPreviouslyChecked(formattedData);
+        addIsAtLeastOneCheckedFlag(formattedData);
+			}
         addParentToChildRecords(formattedData);
         setMenuItemsData(formattedData);
       }
@@ -45,7 +87,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
    */
   const markInActive = (data: any) => {
     (data || []).forEach((item: any) => {
-      item.isActive = false;
+      item = { ...item, isActive: false };
       if (item?.children?.length > 0) markInActive(item.children);
     });
   };
@@ -64,6 +106,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
   ) => {
     (currentChildren || []).forEach((item: any) => {
       item.isChecked = value;
+//item = {...item, isChecked: value };
       if (item?.children?.length > 0)
         markIsChecked(item.children, value, recordId);
     });
@@ -117,8 +160,8 @@ const SUIFilterInfiniteMenu = (props: any) => {
           isAllChecked = false;
         } 
       });
-      noneChecked = (parentRecord.children || []).every((item:any)=>item.isChecked === false);
-      isAtLeastOneChecked = isAllChecked ? false : (noneChecked ? false : (parentRecord.children || []).some((item:any)=>item.isChecked === true));
+      noneChecked = (parentRecord.children || []).every((item: any) => item.isChecked === false);
+      isAtLeastOneChecked = isAllChecked ? false : (noneChecked ? false : (parentRecord.children || []).some((item: any) => item.isChecked === true));
       findAndUpdateRecord(recordId, isAllChecked, isAtLeastOneChecked);
       if (parentRecord?.parentRecord?.id)
         markParent(
@@ -134,7 +177,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
    * @param data  array of parent/children data
    * @author Srinivas Nadendla
    */
-  const clearSelections = (data: any)=>{
+  const clearSelections = (data: any) => {
     (data || []).forEach((item: any) => {
         item.isChecked = false;
         if (item?.children?.length > 0)
@@ -146,14 +189,15 @@ const SUIFilterInfiniteMenu = (props: any) => {
    * Triggerrs on clear button click
    * @author Srinivas Nadendla
    */
-  const onClearBtnClick = ()=> {
-    const records = [... menuItemsData];
+  const onClearBtnClick = () => {
+    const records = [...menuItemsData];
     clearSelections(records);
     setMenuItemsData(records);
+    props.onSelectionChange([], menuItemsData);
   };
 
 
-  const getCheckBoxField = (rec: any)=> {
+  const getCheckBoxField = (rec: any) => {
     const [selectedMenuRec, setSelectedMenuRec] = useState<any>({});
     
         return (
@@ -165,6 +209,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
               e.stopPropagation();
               rec.isChecked = e.target.checked;
               markIsChecked(rec.children, e.target.checked, rec.id);
+console.log('rrr', rec)
               setSelectedMenuRec(rec);
               if (rec.parentRecord)
                 markParent(rec.parentRecord, e.target.checked, rec.parentRecord.id);
@@ -175,7 +220,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
         );
   };
 
-  const updateMenuPosition =(e: any)=> {
+  const updateMenuPosition = (e: any) => {
     setTimeout(() => {
       const bodyWidth = document.getElementsByTagName("body")[0].clientWidth;
       const targetOffsetWidth =
@@ -199,7 +244,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
   const getMenus = (data: any, isFirstTime: Boolean) => {
     const [activeMenuRec, setActiveMenuRec] = useState<any>({});
     const [selectedMenuRec, setSelectedMenuRec] = useState<any>({});
-
+    
     return (
      <ul className="sui-filter-dropdown-menu" >
      {isFirstTime && (
@@ -209,7 +254,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
              fontWeight: "600 !important",
                lineHeight: '1.8 !important',
                paddingLeft: "6px",
-               backgroundColor:'white !important',
+               backgroundColor: 'white !important',
                fontFamily: 'RobotoRegular !!important',
                fontSize: '0.875rem !important'
          }}
@@ -217,7 +262,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
            Filter By
          </ListSubheader>
          <MenuItem
-           sx={{ marginTop: 1, marginBottom: 1, paddingLeft: "6px" }} onClick={()=> onClearBtnClick()}
+           sx={{ marginTop: 1, marginBottom: 1, paddingLeft: "6px" }} onClick={() => onClearBtnClick()}
          >
            <em>Clear</em>
          </MenuItem>
@@ -231,24 +276,39 @@ const SUIFilterInfiniteMenu = (props: any) => {
              <li
                className={
                  "sui-filter-dropdown-submenu " +
-                 (activeMenuRec && rec.isActive ? "is-open " : "") + (rec.isAtLeastOneChecked ? 'partial-checked ': '')
+                 (activeMenuRec && rec?.isActive ? "is-open " : " ") + (rec.isAtLeastOneChecked ? 'partial-checked ' : '') + (selectedMenuRec && selectedMenuRec.dynamicId)
                }
                onMouseEnter={(e) => {
-                updateMenuPosition(e);
+                                updateMenuPosition(e);
                  //Mark isActive to false for current and all it's children.
                  markInActive(data);
                  rec.isActive = true;
+console.log("rec", rec)
                  setActiveMenuRec(rec);
                }}
-               onMouseLeave= {()=>{
-                 rec.isActive = false
+               onMouseLeave={() => {
+                 rec.isActive = false;
                  markInActive(data);
                  setActiveMenuRec({});
                }}
              >
                <div className="sui-filter-dropdown-menu_list-container">
                  <div className="sui-filter-dropdown-menu_list-check-text-wrapper">
-                   {getCheckBoxField(rec)}
+                 <input
+                  type="checkbox"
+                  checked={!!rec.isChecked || false}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    rec.isChecked = e.target.checked;
+                    markIsChecked(rec.children, e.target.checked, rec.id);
+                    setSelectedMenuRec({...rec, dynamicId: Date.now()});
+                    setActiveMenuRec({});
+                    setIsSelectionChanged(Date.now());
+                    if (rec.parentRecord) {
+                      markParent(rec.parentRecord, e.target.checked, rec.parentRecord.id);
+                    }
+                  }}
+                />
                    {rec.isAtLeastOneChecked && <span className="sui-filter-dropdown-menu_indeterminate-state"></span>}
                    <div className="sui-filter-dropdown-menu_list-text">
                      {rec.value}
@@ -258,25 +318,25 @@ const SUIFilterInfiniteMenu = (props: any) => {
                    <ArrowForwardIosIcon />
                  </div>
                </div>
-               {getMenus(rec.children, false)}
+               {rec.children && getMenus(rec.children, false)}
              </li>
            )}
            {(!rec?.children || rec?.children?.length === 0) && (
              <li
                className={
-                 rec.children?.length > 0
+                ( rec.children?.length > 0
                    ? "sui-filter-dropdown-submenu"
-                   : ""
+                   : "") + (selectedMenuRec && selectedMenuRec.dynamicId)
                }
                onMouseEnter={() => {
-                 //Mark isActive to false for current and all it's children.
+                                 //Mark isActive to false for current and all it's children.
                  markInActive(data);
-                 rec.isActive = true;
+                 rec = { ...rec, isActive: true };
                  setActiveMenuRec(rec);
                }}
 
-               onMouseLeave= {()=>{
-                 rec.isActive = false
+               onMouseLeave={() => {
+										rec = { ...rec, isActive: false };
                  markInActive(data);
                  setActiveMenuRec({});
                }}
@@ -285,7 +345,22 @@ const SUIFilterInfiniteMenu = (props: any) => {
              >
                <div className="sui-filter-dropdown-menu_list-container">
                  <div className="sui-filter-dropdown-menu_list-check-text-wrapper">
-                  {getCheckBoxField(rec)}
+                 <input
+                  type="checkbox"
+                  checked={!!rec.isChecked || false}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    rec.isChecked = e.target.checked;
+                    markIsChecked(rec.children, e.target.checked, rec.id);
+                    setSelectedMenuRec({...rec, dynamicId: Date.now()});
+                    setActiveMenuRec({});
+                    setIsSelectionChanged(Date.now())
+                    if (rec.parentRecord) {
+                      markParent(rec.parentRecord, e.target.checked, rec.parentRecord.id);
+                    }
+                    
+                  }}
+                />
                    <div className="sui-filter-dropdown-menu_list-text">
                      {rec.value}
                    </div>
@@ -305,8 +380,8 @@ const SUIFilterInfiniteMenu = (props: any) => {
    * @param data Array of objects
    * @author Srinivas Nadendla
    */
-  const getSelectedIdentifiersList = (data: any)=> {
-    (data || []).forEach((rec: any)=> {
+  const getSelectedIdentifiersList = (data: any) => {
+    (data || []).forEach((rec: any) => {
       if (rec.isChecked) {
         if (rec[identifier]) {
           selectedIdentifiers.push(rec[identifier]);
@@ -319,17 +394,33 @@ const SUIFilterInfiniteMenu = (props: any) => {
     })
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setToggleDropDown(props.toggleDropDown);
-  },[props.toggleDropDown])
+  }, [props.toggleDropDown])
 
-  useEffect(()=>{
-    if (!toggleDropDown) {
+	/**
+	 * Deleting the parentRecord copy from all children records.
+	 * @param data 
+	 * @author Srinivas Nadendla
+	 */
+	const removeParentFromChildRecords = (data: any) => {
+		(data || []).forEach((rec: any) => {
+			if (rec?.children?.length > 0) {
+				rec?.children.forEach((child: any) => delete child.parentRecord
+				);
+				removeParentFromChildRecords(rec.children);
+			}
+		});
+	};
+
+  useEffect(() => {
+    if (isSelectionChanged) {
       selectedIdentifiers = [];
       getSelectedIdentifiersList(menuItemsData);
-      props.onSelectionChange(selectedIdentifiers);
+      // removeParentFromChildRecords(menuItemsData);
+			props.onSelectionChange(selectedIdentifiers, menuItemsData);
     }
-  },[toggleDropDown]);
+  }, [isSelectionChanged]);
 
   // const handleOutsideClick = (e: any)=> {
   //     if (!menuRef.current.contains(e.target)) setToggleDropDown(false);
@@ -341,8 +432,8 @@ const SUIFilterInfiniteMenu = (props: any) => {
   //   return ()=> document.removeEventListener("click", handleOutsideClick);
   // },[]);
 
-  const MenuTmpl = ()=>{
-    return <div style={{top: props.filterIconPos?.clientY + 'px', left: props.filterIconPos?.clientX +  'px'}} ref={menuRef} className={"sui-filter-dropdown " + (toggleDropDown ? "open" : "")}>
+  const MenuTmpl = () => {
+    return <div style={{ top: 0 + 'px', left: props.filterIconPos?.clientX + 'px' }} ref={menuRef} className={"sui-filter-dropdown " + (toggleDropDown ? "open" : "")}>
    {menuItemsData && getMenus(menuItemsData, true)}
   </div>
   };
@@ -350,7 +441,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
   const el = useRef(document.createElement('div'));
     useEffect(() => {
       
-        const portal:any = document.body;
+        const portal: any = document.body;
         portal.appendChild(el.current);
 
         return () => {
@@ -360,7 +451,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
     }, [props.children]);
 
   const Backdrop = (props: any) => {
-    return <div className="filter-menu-backdrop" onClick={()=>setToggleDropDown(false)}></div>;
+    return <div className="filter-menu-backdrop" onClick={() => setToggleDropDown(false)}></div>;
   };
 
   const Modal = (props: any) => {
@@ -371,7 +462,7 @@ const SUIFilterInfiniteMenu = (props: any) => {
           el.current
         )}
         {ReactDom.createPortal(
-         <MenuTmpl /> ,
+         <MenuTmpl />,
           el.current
         )}
         

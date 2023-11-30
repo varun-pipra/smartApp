@@ -1,4 +1,5 @@
 import { isLocalhost } from 'app/utils';
+import { CostCodeFilterData, DivisionCostCodeDropdownData } from 'data/MultiLevelFilterData';
 import { triggerEvent } from 'utilities/commonFunctions';
 
 /**
@@ -55,7 +56,7 @@ export const fetchDivisionCostCodeFilterData = async (appInfo: any, costCodeName
 	}
 	const responseData = await response.json();
 
-	return isLocalhost ? [] : responseData;
+	return isLocalhost ? CostCodeFilterData : responseData;
 };
 export const fetchCostCodeAndTypeDropdownData = async (appInfo: any, name: string) => {
 	// This is the ,mock api which contains same data of original api. 
@@ -76,5 +77,4 @@ export const fetchCostCodeAndTypeDropdownData = async (appInfo: any, name: strin
 	}
 	const responseData = await response.json();
 
-	return responseData;
-};
+	return isLocalhost ? DivisionCostCodeDropdownData : responseData;};

@@ -2,13 +2,14 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import './ReferenceFiles.scss';
 import UploadMenu from "sui-components/DocUploader/UploadMenu/UploadMenu";
-import { useDriveFileBrowser, useAppSelector,useLocalFileUpload } from 'app/hooks';
+import { useDriveFileBrowser, useAppSelector,useLocalFileUpload, fileDownload } from 'app/hooks';
 import { getServer } from 'app/common/appInfoSlice';
 import { IconButton, Button } from "@mui/material";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import IQSearch from 'components/iqsearchfield/IQSearchField';
 import SUIGrid from 'sui-components/Grid/Grid';
 import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import { AddFiles, deleteFiles } from 'features/safety/sbsmanager/operations/sbsManagerAPI';
 
 const referenceData = [
 	{
@@ -100,6 +101,7 @@ const UploadFileMethod = (props: any) => {
 
 const ReferenceFiles = () => {
 	const appInfo = useAppSelector(getServer);
+	const { detailsData } = useAppSelector(state => state.sbsManager)	
 	const [showDownloadButton, setShowDownloadButton] = useState<boolean>(true);
 	const [disableDownloadBtn, setDisableDownloadBtn] = useState<boolean>(true);
 	const [disableDeleteBtn, setDisableDeleteBtn] = useState<boolean>(true);
@@ -109,23 +111,25 @@ const ReferenceFiles = () => {
 	const [filters, setFilters] = React.useState<any>(filterOptions);
 
 	var tinycolor = require('tinycolor2');
-	const [gridData, setGridData] = useState<any>(referenceData);
+	const [gridData, setGridData] = useState<any>([]);
+
+	React.useEffect(() => {setGridData(detailsData?.referencefiles??[])}, [detailsData?.referencefiles])
 
 	useEffect(() => {
-		if (referenceData?.length > 0) {
+		if (gridData?.length > 0) {
 			const filtersCopy = [...filters];
 			let phaseItem = filtersCopy.find((rec: any) => rec?.value === "phase");
 			let typeItem = filtersCopy.find((rec: any) => rec?.value === "type");
 			const uniqueTypes = new Set();
 			const uniqueTypes2 = new Set();
-			const newArray = referenceData?.reduce((acc: any, item: any) => {
+			const newArray = gridData?.reduce((acc: any, item: any) => {
 				if (!uniqueTypes.has(item.phase)) {
 					uniqueTypes.add(item.phase);
 					acc.push({ text: item.phase, id: item.phase, key: item.phase, value: item.phase, });
 				}
 				return acc;
 			}, []);
-			const newArray2 = referenceData?.reduce((acc: any, item: any) => {
+			const newArray2 = gridData?.reduce((acc: any, item: any) => {
 				if (!uniqueTypes2.has(item.type)) {
 					uniqueTypes2.add(item.type);
 					acc.push({ text: item.type, id: item.type, key: item.type, value: item.type, });
@@ -136,11 +140,12 @@ const ReferenceFiles = () => {
 			typeItem.children.items = newArray2;
 			setFilters(filtersCopy);
 		}
-	}, [referenceData]);
+	}, [gridData]);
 
 	const headers = useMemo(() => [
 		{
 			headerName: 'Name',
+			suppressMenu: true,
 			pinned: 'left',
 			field: 'name',
 			sort: 'asc',
@@ -161,25 +166,28 @@ const ReferenceFiles = () => {
 			headerName: 'Description',
 			field: 'description',
 			minWidth: 180,
+			suppressMenu: true,
 		}, {
 			headerName: 'Created By',
-			field: 'createdby',
+			field: 'createdBy',
 			minWidth: 150,
+			suppressMenu: true,
 
 		}, {
 			headerName: 'Creation Date',
-			field: 'date',
-			valueGetter: (params: any) => params.data?.date ? formatDate(params.data?.date) : '',
+			field: 'createdDate',
+			valueGetter: (params: any) => params.data?.createdDate ? formatDate(params.data?.createdDate) : '',
 		},
 		{
-			headerName: 'type',
+			headerName: 'Type',
 			maxWidth: 120,
-			field: 'type',
+			field: 'folderType',
 		},
 		{
 			headerName: 'Phases',
-			field: 'phase',
+			field: 'phase.name',
 			minWidth: 250,
+			suppressMenu: true,
 			cellRenderer: (params: any) => {
 				return (
 					<Button disabled
@@ -204,32 +212,32 @@ const ReferenceFiles = () => {
 	};
 	
 	const localFileUpload = (data: any) => {
-		console.log('data', data)
+		console.log('localFileUpload', data)
 		useLocalFileUpload(appInfo, data).then((fileList: any) => {
 			const structuredFiles = fileList?.map((file: any) => {
-				return {
-					type: 'Additional',
-					name: file.name,
-					description: file.description,
-					stream: {
-						fileId: file.id
-					}
-				};
+				return {name:file.name,"id":file.id,type:"local"}
 			});
+			console.log("structuredFiles", structuredFiles)
 
-			// addContractFiles(appInfo, currentContract?.id, structuredFiles)
-			// 	.then((res: any) => {
-			// 		dispatch(setAdditionalFiles(res?.additional));
-			// 		dispatch(setContractFilesCount((res?.standard?.length || 0) + (res?.additional?.length || 0)));
-			// 		dispatch(getClientContractDetails({ appInfo: appInfo, contractId: currentContract.id }));
-			// 	});
+			AddFiles(detailsData?.id, structuredFiles ,(response:any) => {
+
+			})
+				// .then((res: any) => {
+				// 	dispatch(setAdditionalFiles(res?.additional));
+				// 	dispatch(setContractFilesCount((res?.standard?.length || 0) + (res?.additional?.length || 0)));
+				// 	dispatch(getClientContractDetails({ appInfo: appInfo, contractId: currentContract.id }));
+				// });
 		});
 	}
 	const onSelectedFilesDownload = () => {
 		console.log('onSelectedFilesDownload', selected)
+		const ids = selected?.map((item: any) => item.id);
+		const filename = detailsData?.name + ' - ' + 'files';
+		fileDownload(ids, filename)
 	}
 	const onSelectedFilesDelete = () => {
 		console.log('onSelectedFilesDelete', selected)
+		deleteFiles(detailsData?.id, selected?.map((file:any) => file.id), (response:any) => {})
 	}
 	const rowSelected = (sltdRows: any) => {
 		const selectedRowData = sltdRows.api.getSelectedRows();
@@ -245,7 +253,7 @@ const ReferenceFiles = () => {
 	}
 
 	useEffect(() => {
-		const gridDataCopy = [...referenceData];
+		const gridDataCopy = [...gridData];
 		let value: any;
 		if (filterKeyValue && Object.keys(filterKeyValue)?.length > 0) {
 			value = FilterBy(gridDataCopy, filterKeyValue);
@@ -261,7 +269,7 @@ const ReferenceFiles = () => {
 		} else {
 			setGridData([...gridDataCopy]);
 		};
-	}, [filterKeyValue, searchText, referenceData]);
+	}, [filterKeyValue, searchText, gridData]);
 
 	const SearchBy = (gridData: any) => {
 		const filteredIds = gridData?.map((obj: any) => obj?.id);
@@ -278,7 +286,7 @@ const ReferenceFiles = () => {
 		const lastvalue = keys.slice(-1).pop();
 
 		if (lastvalue == 'all') {
-			filteredData = referenceData
+			filteredData = gridData
 		}
 		if (filterValue?.type?.length > 0) {
 			filteredData = filteredData.filter((item: any) => filterValue?.type?.includes(item?.type));

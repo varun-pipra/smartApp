@@ -76,6 +76,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 	const [clearOriginalBudgetFields, setClearOriginalBudgetFields] = React.useState<boolean>(false);
 	const appInfo = useAppSelector(getServer);
 	const [localhost] = React.useState(isLocalhost);
+	const [defaultFilters, setDefaultFilters] = React.useState<any>([])
 
 	React.useEffect(() => {
 		let costTypeTimeList: any = [];
@@ -175,7 +176,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 	return (
 		<MuiGrid container spacing={2} className="headerContent" >
 			<MuiGrid item xl={3} lg={3} md={3} sm={6} xs={6}>
-				<CostCodeDropdown
+				{/* <CostCodeDropdown
 					outSideOfGrid={true}
 					label="Division/Cost Code"
 					options={costCodeDivisionOpts?.length > 0 ? costCodeDivisionOpts : []}
@@ -195,8 +196,8 @@ const HeaderPage = (props: HeaderPageProps) => {
 					}}
 					displayEmpty={true}
 					Placeholder={'Select'}
-				/>
-				{/* <CostCodeSelect
+				/> */}
+				<CostCodeSelect
 					label="Division/Cost Code"
 					options={costCodeDropdownData?.length > 0 ? costCodeDropdownData : []}
 					onChange={(value:any) => handleOnChange(value, 'costCode')}
@@ -209,7 +210,9 @@ const HeaderPage = (props: HeaderPageProps) => {
 					outSideOfGrid={true}
 					showFilterInSearch={true}
 					filteroptions={divisionCostCodeFilterData.length > 0 ? divisionCostCodeFilterData : []}
-				/> */}
+					onFiltersUpdate={(filters:any) => setDefaultFilters(filters)}
+					defaultFilters={defaultFilters}
+				/>
 
 			</MuiGrid>
 			<MuiGrid item xl={2} lg={2} md={2} sm={6} xs={6}>

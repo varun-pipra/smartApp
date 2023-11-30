@@ -29,7 +29,6 @@ const SBSDetailsTab = (props: any) => {
   const [payloadState,setPayloadState] = React.useState<any>({});  
   React.useEffect(()=>{
     setSelectedRecData(detailsData);
-    console.log("detailsData",detailsData)
     const ids = detailsData?.trades?.map((a:any) => a?.id);
     setSelectedTradeIds(ids);
   },[detailsData])

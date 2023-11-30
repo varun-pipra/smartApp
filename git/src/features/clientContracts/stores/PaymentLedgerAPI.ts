@@ -11,7 +11,7 @@ export const fetchPaymentLedgerList = async (appInfo: any, contractId: any) => {
 	if (!isLocalhost) {
 		if (contractId) {
 
-			response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/projects/${appInfo?.uniqueId}/finance/clientpayapps?clientcontractid=${contractId}&sessionId=${appInfo?.sessionId}`);
+			response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/projects/${appInfo?.uniqueId}/finance/clientpayapps?clientcontractid=${contractId}&offset=0&limit=10000&sessionId=${appInfo?.sessionId}`);
 			if (!response?.ok) {
 				const message = `API Request Error (${moduleName}): ${response?.status}`;
 				throw new Error(message);
@@ -28,7 +28,7 @@ export const fetchClientContractChangeEvents = async (appInfo: any, contractId:s
 	if (!isLocalhost) {
 		if (contractId) {
 		
-			response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/projects/${appInfo.uniqueId}/finance/clientcontracts/${contractId}/changeevents?sessionId=${appInfo?.sessionId}`);
+			response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/projects/${appInfo.uniqueId}/finance/clientcontracts/${contractId}/changeevents?offset=0&limit=10000&sessionId=${appInfo?.sessionId}`);
 			if (!response?.ok) {
 				const message = `API Request Error (${moduleName}): ${response?.status}`;
 				// return response							

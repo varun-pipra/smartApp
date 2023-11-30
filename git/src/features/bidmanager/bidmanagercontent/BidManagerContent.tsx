@@ -115,11 +115,11 @@ const BidManagerContent = (props: any) => {
 	}, [gridData, selectedNode, originalGridData]);
 
 	useEffect(() => {
-		setPostBid({ ...postBid, show: selectedTabName !== 'award-bid' && [0, 1, 2].includes(selectedRecord?.status) ? true : false, disable: selectedRecord?.status == 1 ? false : true })
-		setDeclineBid({ ...declineBid, show: [0, 1, 2].includes(selectedRecord?.status) ? false : selectedTabName !== 'award-bid' ? true : false })
+		setPostBid({ ...postBid, show: selectedTabName !== 'award-bids' && [0, 1, 2].includes(selectedRecord?.status) ? true : false, disable: selectedRecord?.status == 1 ? false : true })
+		setDeclineBid({ ...declineBid, show: [0, 1, 2].includes(selectedRecord?.status) ? false : selectedTabName !== 'award-bids' ? true : false })
 		setAwardBid({
 			...awardBid,
-			show: selectedTabName == 'award-bid' && selectedRecord?.status == 3 ? true : false,
+			show: selectedTabName == 'award-bids' && selectedRecord?.status == 3 ? true : false,
 			award: { ...awardBid?.award, disable: awardBidSelectedRecord?.length > 0 && awardBidSelectedRecord[0]?.submissionStatus == 3 && awardBidDetailData?.bidAmount == awardBidDetailData?.totalBudget ? false : true }
 		})
 	}, [selectedRecord, selectedTabName, awardBidSelectedRecord, awardBidDetailData]);
@@ -237,7 +237,7 @@ const BidManagerContent = (props: any) => {
 				</Stack>
 				<Stack direction='row' className='rightpanel-footer' >
 					{
-						/*selectedTabName !== 'award-bid' && */
+						/*selectedTabName !== 'award-bids' && */
 						<Stack direction='row' spacing={3}>
 							<IQTooltip title='Previous Record' placement={'top'} arrow>
 								<IconButton

@@ -80,3 +80,12 @@ export const getPackageStatusColor = (value: any) => {
 	};
 	return types[value];
 };
+export const getTabId = (value: any) => {
+	const types: any = {
+		'bid-details': "BID_DETAILS",
+		'reference-files': "REFERENCE_FILES",
+		'bid-queries': "BID_QUERIES",
+		'bidResponse': "BID_RESPONSE"
+	};
+	return types[value];
+};

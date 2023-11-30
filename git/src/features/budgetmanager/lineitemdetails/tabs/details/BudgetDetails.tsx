@@ -50,6 +50,7 @@ import { isLocalhost } from 'app/utils';
 
 var tinycolor = require('tinycolor2');
 import { postMessage } from "../../../../../app/utils";
+import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
 
 interface BudgetDetailsProps {
 	onFormSubmit?: (data: any) => void;
@@ -72,7 +73,8 @@ const useStyles: any = makeStyles((theme: any) =>
 const BudgetDetails = (props: BudgetDetailsProps) => {
 	const classes = useStyles();
 	const dispatch = useAppDispatch();
-	const { selectedRow } = useAppSelector(state => state.rightPanel);
+  const { selectedRow } = useAppSelector(state => state.rightPanel);
+	const { settingsData, costCodeDropdownData, divisionCostCodeFilterData, CostCodeAndTypeData } = useAppSelector(state => state.settings);  
 
 	const { tabSelectedValue = 'budget-details', toast } = props;
 	const costCodeDivisionOpts = useAppSelector(getCostCodeDivisionList);
@@ -94,7 +96,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const [alert, setAlert] = useState<any>({ show: false, msg: '' });
 	const [levelValue, setLevelValue] = useState<any>('')
 	const [catalogLocalData, setCatalogLocalData] = useState<any>(catalogData);
-	const companyDataRef= useRef<any>([]);
+  const companyDataRef= useRef<any>([]);
+  const [divisionDefaultFilters, setDivisionDefaultFilters] = React.useState<any>([])
 
 	// const [wbsAddButton, setWbsAddButton] = useState<any>(false);
 	// const [wbsSearchText, setWbsSearchText] = useState<any>('');
@@ -484,7 +487,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
             ) : null}
           </div>
           <div className="budget-info-data-box">
-            <CostCodeDropdown
+            {/* <CostCodeDropdown
               label=""
               required={true}
               startIcon={gridIcon}
@@ -503,6 +506,22 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
                 },
               }}
               filteringValue={formData.division}
+            /> */}
+            <CostCodeSelect
+              label=" "
+              options={costCodeDropdownData?.length > 0 ? costCodeDropdownData : []}
+              onChange={(value:any) => handleDropdownChange(value, 'costCode')}
+              // required={true}
+              startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
+              checkedColor={'#0590cd'}
+              showFilter={false}
+              selectedValue={formData?.division && formData?.costCode ? formData?.division + '|' + formData?.costCode : ''}
+              Placeholder={'Select'}
+              outSideOfGrid={true}
+              showFilterInSearch={true}
+              filteroptions={divisionCostCodeFilterData.length > 0 ? divisionCostCodeFilterData : []}
+              onFiltersUpdate={(filters:any) => setDivisionDefaultFilters(filters)}
+						  defaultFilters={divisionDefaultFilters}
             />
           </div>
         </span>

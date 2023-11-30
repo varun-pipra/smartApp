@@ -29,9 +29,10 @@ type IQGridWindowProps = IQBaseWindowProps & {
 	detailGridNavigation?: boolean;
 	currentRowSelectionData?: any;
 	showPinned?: boolean;
+	getLIDOpen?:any;
 };
 
-const IQGridWindow = ({ className, content = {}, companyInfo = false, lidCondition, manualLIDOpen, onDetailClose, showPinned = false,
+const IQGridWindow = ({ className, content = {}, companyInfo = false, lidCondition, manualLIDOpen, onDetailClose, showPinned = false, getLIDOpen = () => { },
 	titleMessage, presenceProps, gridRef = useRef<AgGridReact>(), handleMainWindowTab = () => { }, detailGridNavigation = false, currentRowSelectionData = null, ...props }: IQGridWindowProps) => {
 	const [openLID, setOpenLID] = useState(false);
 	const [details, setDetails] = useState(undefined);
@@ -99,6 +100,9 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 		if ((!lidCondition || result === true) && !row?.node?.group) {
 			setOpenLID(true);
 			setDetails(row.data);
+			if(getLIDOpen ?? false) {
+				getLIDOpen(true);
+			}
 		}
 	};
 
@@ -106,6 +110,9 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 		setOpenLID(false);
 		onDetailClose && onDetailClose();
 		setDetails(undefined);
+		if(getLIDOpen ?? false) {
+			getLIDOpen(false);
+		}
 	};
 
 	const handleNavigation = (direction?: string) => {

@@ -6,52 +6,36 @@ import {gridData} from 'data/Budgetmanger/griddata';
 const moduleName = "Budget Manager: Grid Data";
 
 export const fetchGridDataList = async (appInfo: any) => {
-	// This is the ,mock api which contains same data of original api. 
-	// Once if we can read the project id and session token you can replace this with original api
-	let response;
-	if(!isLocalhost) response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/budgets/${appInfo?.uniqueId}/lineitems?sessionId=${appInfo?.sessionId}`);
-	else {
-		// response = await fetch('data.json', {
-		response = await fetch('https://be2c996c-6425-48aa-9e0e-218203724691.mock.pstmn.io/budget/api/lineitems', {
-			headers: {
-				"x-api-key": "PMAK-62cdcdcdc696447f8ebe5958-4e1696b00ae09e46fde6936f46ab906da6"
-			},
+	let data: Array<any> = [];
+	if(!isLocalhost) {
+		let response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/budgets/${appInfo?.uniqueId}/lineitems?sessionId=${appInfo?.sessionId}`);
+		if(!response.ok) {
+			const message = `API Request Error (${moduleName}): ${response.status}`;
+			throw new Error(message);
 		}
-		);
+		const result = await response.json();
+		data = result.data;
+	} else {
+		data = gridData.data;
 	}
-	if(!response.ok) {
-		const message = `API Request Error (${moduleName}): ${response.status}`;
-		throw new Error(message);
-	}
-	const responseData = await response.json();
 
-	return isLocalhost ? gridData?.data : (responseData?.data || []);
+	return data;
 };
 
 export const fetchLineItem = async (appInfo: any, lineItemId: any) => {
-	// This is the ,mock api which contains same data of original api. 
-	// Once if we can read the project id and session token you can replace this with original api
-	let response: any;
+	let data: any = {};
 	if(!isLocalhost) {
-		if(lineItemId) {
-			response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/budgets/${appInfo?.uniqueId}/lineitems/${lineItemId}?sessionId=${appInfo?.sessionId}`);
+		let response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/budgets/${appInfo?.uniqueId}/lineitems/${lineItemId}?sessionId=${appInfo?.sessionId}`);
+		if(!response.ok) {
+			const message = `API Request Error (${moduleName}): ${response.status}`;
+			throw new Error(message);
 		}
+		data = await response.json();
+	} else {
+		data = gridData.data?.find((item: any) => item.id === lineItemId);
 	}
-	else {
-		response = await fetch('https://be2c996c-6425-48aa-9e0e-218203724691.mock.pstmn.io/budget/api/lineitems', {
-			headers: {
-				"x-api-key": "PMAK-62cdcdcdc696447f8ebe5958-4e1696b00ae09e46fde6936f46ab906da6"
-			},
-		}
-		);
-	}
-	if(!response.ok) {
-		const message = `API Request Error (${moduleName}): ${response.status}`;
-		throw new Error(message);
-	}
-	const responseData = await response.json();
 
-	return isLocalhost ? responseData : (responseData || {});
+	return data || {};
 };
 
 export const addBudgetLineItem = async (appInfo: any, body: any, callback?: any) => {
@@ -75,6 +59,10 @@ export const addBudgetLineItem = async (appInfo: any, body: any, callback?: any)
 		throw new Error(message);
 	}
 	const data = await response.json();
+
+	// setTimeout(() => {
+	// 	triggerEvent('setlivetransactions', {add: [data]});
+	// }, 5000);
 
 	callback && callback(data);
 };
@@ -104,6 +92,10 @@ export const deleteBudgetLineItem = async (appInfo: any, lineItemIds: any, callb
 		throw new Error(message);
 	}
 
+	// setTimeout(() => {
+	// 	triggerEvent('setlivetransactions', {remove: lineItemIds.map((el: any) => {return {id: el};})});
+	// }, 5000);
+
 	callback && callback(response);
 };
 
@@ -132,5 +124,10 @@ export const updateBudgetLineItem = async (appInfo: any, lineItemId: any, body: 
 	}
 
 	const data = await response.json();
+
+	// setTimeout(() => {
+	// 	triggerEvent('setlivetransactions', {update: [data]});
+	// }, 5000);
+
 	callback && callback(data);
 };
