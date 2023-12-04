@@ -83,9 +83,7 @@ const IQGridWindowDetail = ({
 	}, [tabSelected]);
 
 	const help = (isFromHelpIcon: any) => {
-		console.log('useref', tabid.current);
 		const body = { iframeId: iFrameId, roomId: data?.id, appType: appType, tabName: tabid.current, isFromHelpIcon: isFromHelpIcon }
-		console.log('help', body)
 		postMessage({
 			event: "help",
 			body: body
@@ -130,7 +128,14 @@ const IQGridWindowDetail = ({
 			defaultSpacing={defaultSpacing}
 		/>
 	};
-
+	const rigthpanelClose = () =>{
+		onClose();
+		const body = { iframeId: iFrameId, roomId: data?.id, appType: appType, isFromHelpIcon: false }
+		postMessage({
+			event: "help",
+			body: body
+		});
+	}
 	return <SUIDrawer
 		className='iqgrid-window-details-root'
 		PaperProps={{ style: { position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a' } }}
@@ -157,7 +162,7 @@ const IQGridWindowDetail = ({
 				<IconButton
 					className='close-btn'
 					aria-label='Close Right Pane'
-					onClick={onClose}
+					onClick={()=>{rigthpanelClose()} }
 				>
 					<Close />
 				</IconButton>

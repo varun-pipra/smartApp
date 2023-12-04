@@ -1,12 +1,12 @@
-import {useEffect, useState} from 'react';
-import {Stack, IconButton, Button} from '@mui/material';
-import {EastOutlined, KeyboardArrowLeft, KeyboardArrowRight, Gavel} from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { Stack, IconButton, Button } from '@mui/material';
+import { EastOutlined, KeyboardArrowLeft, KeyboardArrowRight, Gavel } from '@mui/icons-material';
 
-import {useAppSelector, useAppDispatch} from 'app/hooks';
+import { useAppSelector, useAppDispatch } from 'app/hooks';
 
 import './BidResponseManagerToolbar.scss';
 
-import {getServer} from 'app/common/appInfoSlice';
+import { getServer } from 'app/common/appInfoSlice';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
@@ -14,33 +14,34 @@ import {
 	setShowLineItemDetails, getShowLineItemDetails, setToastMessage, setSelectedNode, setSelectedRecord, fetchBidResponseDetailsData
 } from 'features/bidresponsemanager/stores/BidResponseManagerSlice';
 import BidResponsePackageLineItem from '../bidResponsepackageDetails/BidResponsePackageLineItem';
-import {fetchBidResponseGridData, setActiveMainGridFilters, setActiveMainGridGroupKey, setMainGridSearchText, setSelectedRows} from '../stores/gridSlice';
+import { fetchBidResponseGridData, setActiveMainGridFilters, setActiveMainGridGroupKey, setMainGridSearchText, setSelectedRows } from '../stores/gridSlice';
 import IQButton from 'components/iqbutton/IQButton';
-import {patchDeclineAndIntendToBid} from '../stores/BidResponseManagerAPI';
-import {setSubmitResponseClick} from '../stores/BidResponseSlice';
-import {UpdateBidResponse} from '../stores/BidResponseAPI';
+import { patchDeclineAndIntendToBid } from '../stores/BidResponseManagerAPI';
+import { setSubmitResponseClick } from '../stores/BidResponseSlice';
+import { UpdateBidResponse } from '../stores/BidResponseAPI';
 import SUIAlert from 'sui-components/Alert/Alert';
-import {deleteBidResponcePackages} from '../stores/gridAPI';
-import {ResponseStatusFilterOptions} from 'utilities/bidResponse/enums';
+import { deleteBidResponcePackages } from '../stores/gridAPI';
+import { ResponseStatusFilterOptions } from 'utilities/bidResponse/enums';
 import React from 'react';
-import {statusFilterOptions} from 'utilities/bid/enums';
+import { statusFilterOptions } from 'utilities/bid/enums';
 import _ from "lodash";
+import { postMessage } from 'app/utils';
 
 const BidResponseManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const showRightPanel = useAppSelector(getShowLineItemDetails);
 	const [api, setApi] = useState<any>(props?.gridRef?.current?.api);
-	const {selectedRecord, selectedTabName, selectedNode} = useAppSelector((state) => state.bidResponseManager);
-	const {bidResponseData, selectedRows, activeMainGridDefaultFilters, activeMainGridFilters} = useAppSelector((state) => state.bidResponseManagerGrid);
-	const {submitWait} = useAppSelector((state) => state.bidResponse);
+	const { selectedRecord, selectedTabName, selectedNode } = useAppSelector((state) => state.bidResponseManager);
+	const { bidResponseData, selectedRows, activeMainGridDefaultFilters, activeMainGridFilters } = useAppSelector((state) => state.bidResponseManagerGrid);
+	const { submitWait } = useAppSelector((state) => state.bidResponse);
 
 	const [showLeftButton, setShowLeftButton] = useState<boolean>(false);
 	const [showRightButton, setShowRightButton] = useState<boolean>(false);
 
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
-	const [declineBid, setDeclineBid] = useState<any>({show: true, disable: false});
-	const [submitBid, setSubmitBid] = useState<any>({show: false, disable: true});
+	const [declineBid, setDeclineBid] = useState<any>({ show: true, disable: false });
+	const [submitBid, setSubmitBid] = useState<any>({ show: false, disable: true });
 	const [alert, setAlert] = useState<any>({
 		open: false,
 		contentText: '',
@@ -48,10 +49,10 @@ const BidResponseManagerToolbar = (props: any) => {
 		method: ''
 	});
 	const groupOptions = [
-		{text: "Bid Response Status", value: "responseStatus"},
-		{text: "Bid Package Status", value: "packageStatus"},
-		{text: "Intend To Bid", value: "intendToBid"},
-		{text: "Bid Process", value: "processType"},
+		{ text: "Bid Response Status", value: "responseStatus" },
+		{ text: "Bid Package Status", value: "packageStatus" },
+		{ text: "Intend To Bid", value: "intendToBid" },
+		{ text: "Bid Process", value: "processType" },
 	];
 
 	const filterOptions = [
@@ -83,10 +84,10 @@ const BidResponseManagerToolbar = (props: any) => {
 			children: {
 				type: "checkbox",
 				items: [
-					{text: 'Undecided', id: '0', key: '0', value: '0', },
-					{text: 'Yes', id: '2', key: '2', value: '2', },
-					{text: 'No', id: '1', key: '1', value: '1', },
-					{text: 'Expired', id: '3', key: '3', value: '3', },
+					{ text: 'Undecided', id: '0', key: '0', value: '0', },
+					{ text: 'Yes', id: '2', key: '2', value: '2', },
+					{ text: 'No', id: '1', key: '1', value: '1', },
+					{ text: 'Expired', id: '3', key: '3', value: '3', },
 				],
 			},
 		},
@@ -98,8 +99,8 @@ const BidResponseManagerToolbar = (props: any) => {
 			children: {
 				type: "checkbox",
 				items: [
-					{text: 'Open', id: '0', key: '0', value: '0', },
-					{text: 'Closed', id: '1', key: '1', value: '1', },
+					{ text: 'Open', id: '0', key: '0', value: '0', },
+					{ text: 'Closed', id: '1', key: '1', value: '1', },
 				],
 			},
 		},
@@ -120,13 +121,17 @@ const BidResponseManagerToolbar = (props: any) => {
 	}, [bidResponseData, selectedNode]);
 
 	useEffect(() => {
-		setDeclineBid({...declineBid, show: selectedRecord?.responseStatus == 0 && selectedRecord?.packageStatus == 3 ? true : false});
-		setSubmitBid({...submitBid, show: [2, 3].includes(selectedRecord?.responseStatus) && selectedTabName == 'bidResponse' ? true : false, disable: selectedRecord?.responseStatus == 3 || selectedRows[0]?.responseStatus == 3 ? false : true});
+		setDeclineBid({ ...declineBid, show: selectedRecord?.responseStatus == 0 && selectedRecord?.packageStatus == 3 ? true : false });
+		setSubmitBid({ ...submitBid, show: [2, 3].includes(selectedRecord?.responseStatus) && selectedTabName == 'bidResponse' ? true : false, disable: selectedRecord?.responseStatus == 3 || selectedRows[0]?.responseStatus == 3 ? false : true });
 		selectedRows.length > 0 ? setDisableDelete(false) : setDisableDelete(true);
 	}, [bidResponseData, selectedRecord, selectedTabName, selectedRows]);
 
 	const onRightPanelClose = () => {
 		dispatch(setShowLineItemDetails(false));
+		postMessage({
+			event: "help",
+			body: { iframeId: "bidResponseManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BidResponseManager", isFromHelpIcon: false }
+		});
 	};
 
 	const handleDeclineAndIntendToBid = (payload: any) => {
@@ -135,17 +140,17 @@ const BidResponseManagerToolbar = (props: any) => {
 				const record = response?.payload?.find((item: any) => item?.id === selectedRecord?.id);
 				dispatch(setSelectedRecord(record));
 			});
-			dispatch(fetchBidResponseDetailsData({appInfo: appInfo, responseId: selectedRecord?.id}));
+			dispatch(fetchBidResponseDetailsData({ appInfo: appInfo, responseId: selectedRecord?.id }));
 		});
 	};
 
 	const updateBidResponse = (id: any, source: string) => {
-		UpdateBidResponse(appInfo, id, {status: 5}).then(() => {
+		UpdateBidResponse(appInfo, id, { status: 5 }).then(() => {
 			dispatch(fetchBidResponseGridData(appInfo)).then((response: any) => {
 				const record = response?.payload?.find((item: any) => item?.id === selectedRecord?.id);
 				dispatch(setSelectedRecord(record));
 			});
-			dispatch(fetchBidResponseDetailsData({appInfo: appInfo, responseId: selectedRecord?.id}));
+			dispatch(fetchBidResponseDetailsData({ appInfo: appInfo, responseId: selectedRecord?.id }));
 		});
 	};
 
@@ -158,7 +163,7 @@ const BidResponseManagerToolbar = (props: any) => {
 
 	const handleSubmitBidFormToolbar = () => {
 		updateBidResponse(selectedRows[0]?.bidderUID, 'toolbar');
-		dispatch(setToastMessage({displayToast: true, message: 'Bid Submitted Successfully'}));
+		dispatch(setToastMessage({ displayToast: true, message: 'Bid Submitted Successfully' }));
 	};
 
 	const handleDelete = () => {
@@ -184,9 +189,9 @@ const BidResponseManagerToolbar = (props: any) => {
 
 	const handleLeftArrow = () => {
 		api.forEachNode(function (node: any) {
-			if(selectedNode?.rowIndex - 1 === node.rowIndex && node?.data !== undefined) {
+			if (selectedNode?.rowIndex - 1 === node.rowIndex && node?.data !== undefined) {
 				node.setSelected(true, true);
-				dispatch(fetchBidResponseDetailsData({appInfo: appInfo, responseId: node?.data?.id}));
+				dispatch(fetchBidResponseDetailsData({ appInfo: appInfo, responseId: node?.data?.id }));
 				dispatch(setSelectedNode(node));
 				dispatch(setSelectedRecord(node?.data));
 			}
@@ -194,9 +199,9 @@ const BidResponseManagerToolbar = (props: any) => {
 	};
 	const handleRightArrow = () => {
 		api.forEachNode(function (node: any) {
-			if(selectedNode?.rowIndex + 1 === node?.rowIndex) {
+			if (selectedNode?.rowIndex + 1 === node?.rowIndex) {
 				node.setSelected(true, true);
-				dispatch(fetchBidResponseDetailsData({appInfo: appInfo, responseId: node?.data?.id}));
+				dispatch(fetchBidResponseDetailsData({ appInfo: appInfo, responseId: node?.data?.id }));
 				dispatch(setSelectedNode(node));
 				dispatch(setSelectedRecord(node?.data));
 			}
@@ -204,16 +209,16 @@ const BidResponseManagerToolbar = (props: any) => {
 	};
 
 	const handleListChanges = (val: string, method: any) => {
-		if(val == 'yes') {
-			if(method == 'Delete') {
+		if (val == 'yes') {
+			if (method == 'Delete') {
 				deleteBidResponcePackages(appInfo, selectedRows[0]['bidderUID']).then(() => {
 					dispatch(fetchBidResponseGridData(appInfo));
-					dispatch(setToastMessage({displayToast: true, message: `Selected Record Deleted Successfully`}));
+					dispatch(setToastMessage({ displayToast: true, message: `Selected Record Deleted Successfully` }));
 					setDisableDelete(true);
 				});
 			}
 		}
-		setAlert({open: false});
+		setAlert({ open: false });
 	};
 
 	return (
@@ -264,17 +269,17 @@ const BidResponseManagerToolbar = (props: any) => {
 					defaultFilters={activeMainGridDefaultFilters}
 					// onSettingsChange={handleSettings}
 					// onViewFilterChange={handleViewFilter}
-					onGroupChange={(selectedVal: any) => {dispatch(setActiveMainGridGroupKey(selectedVal));}}
+					onGroupChange={(selectedVal: any) => { dispatch(setActiveMainGridGroupKey(selectedVal)); }}
 					// onSearchChange={searchHandler}
 					onFilterChange={(filters: any) => {
-						if(filters) {
+						if (filters) {
 							let filterObj = filters;
 							Object.keys(filterObj).filter((item) => {
-								if(filterObj[item]?.length === 0) {
+								if (filterObj[item]?.length === 0) {
 									delete filterObj[item];
 								};
 							});
-							if(!_.isEqual(activeMainGridFilters, filterObj)) {
+							if (!_.isEqual(activeMainGridFilters, filterObj)) {
 								dispatch(setActiveMainGridFilters(filterObj));
 							};
 						};
@@ -286,7 +291,7 @@ const BidResponseManagerToolbar = (props: any) => {
 			</div> */}
 			{showRightPanel && (
 				<SUIDrawer
-					PaperProps={{style: {position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a'}}}
+					PaperProps={{ style: { position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a' } }}
 					anchor='right'
 					variant='permanent'
 					elevation={8}
@@ -329,7 +334,7 @@ const BidResponseManagerToolbar = (props: any) => {
 									disabled={declineBid?.disable}
 									className='btn-decline-bid'
 									// color='secondary'
-									onClick={() => handleDeclineAndIntendToBid({intendToBid: 1})}>
+									onClick={() => handleDeclineAndIntendToBid({ intendToBid: 1 })}>
 									DECLINE BID
 								</IQButton>
 								<IQButton
@@ -337,7 +342,7 @@ const BidResponseManagerToolbar = (props: any) => {
 									className='btn-acknowledge-bid'
 									color='warning'
 									startIcon={<EastOutlined />}
-									onClick={() => handleDeclineAndIntendToBid({intendToBid: 2})}>
+									onClick={() => handleDeclineAndIntendToBid({ intendToBid: 2 })}>
 									I ACKNOWLEDGE MY INTENT TO BID
 								</IQButton>
 							</Stack>

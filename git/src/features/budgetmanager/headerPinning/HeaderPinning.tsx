@@ -14,7 +14,7 @@ import {fetchSettings, fetchSettingsCostCodeAndType, fetchdefaultdrodown, fetchS
 import {fetchGridData} from '../operations/gridSlice';
 
 import {fetchVendorData} from '../operations/vendorInfoSlice';
-import {isLocalhost} from 'app/utils';
+import {isLocalhost,postMessage} from 'app/utils';
 import {setOpenBudgetTransferForm, setOpenCostForm} from 'features/budgetmanager/operations/rightPanelSlice';
 import {
 	showRightPannel, setRightPannel, setLineItemDescription, setShowSettingPopup2, getShowSettingPopup2
@@ -357,6 +357,10 @@ const HeaderPinning = (props: any) => {
 							close={() => {
 								dispatch(setRightPannel(false));
 								dispatch(setLineItemDescription(""));
+								postMessage({
+									event: "help",
+									body: { iframeId: "budgetManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BudgetManager", isFromHelpIcon: false }
+								});
 							}}
 						/>
 					</Stack>

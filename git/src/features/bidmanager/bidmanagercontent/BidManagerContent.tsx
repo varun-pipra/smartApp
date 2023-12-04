@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks';
 import IQButton from 'components/iqbutton/IQButton';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import Toast from 'components/toast/Toast';
-import {SUIToast} from 'sui-components/Toast/Suitoast';
+import { SUIToast } from 'sui-components/Toast/Suitoast';
 import {
 	fetchBidPackageDetails, fetchBudgetLineItems, fetchCompanyList, fetchContactPersonsList,
 	fetchTeammembersByProject, getCompanyFilters, getSelectedRecord, getShowLineItemDetails,
@@ -18,7 +18,7 @@ import SUIAlert from 'sui-components/Alert/Alert';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 // Realtime imports
 import { initRTDocument } from 'utilities/realtime/Realtime';
-
+import { postMessage } from 'app/utils';
 import {
 	ExpandLess, ExpandMore, Gavel, KeyboardArrowLeft, KeyboardArrowRight, PushPinOutlined as PushPin
 } from '@mui/icons-material';
@@ -128,6 +128,10 @@ const BidManagerContent = (props: any) => {
 	const onRightPanelClose = () => {
 		dispatch(setShowLineItemDetails(false));
 		dispatch(setSelectedRecord({}));
+		postMessage({
+			event: "help",
+			body: { iframeId: "bidManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BidManager", isFromHelpIcon: false }
+		});
 	};
 
 	const handleRef = (ref: any) => {
@@ -202,7 +206,7 @@ const BidManagerContent = (props: any) => {
 				</div>
 			</div>
 			<div className='bid-manager-grid-box check-box-customize'>
-				<BidToolbar/>
+				<BidToolbar />
 				<BidManagerGrid onRefChange={(ref: any) => handleRef(ref)} />
 				{toastMessage.displayToast ? <Toast message={toastMessage.message} interval={3000} /> : null}
 				{/* {exampletoast && <SUIToast

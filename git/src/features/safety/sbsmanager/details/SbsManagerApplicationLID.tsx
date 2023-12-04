@@ -54,7 +54,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
       label: "Reference Files",
       showCount: false,
 	  iconCls: "common-icon-referance",
-	  content:(<ReferenceFiles/>)
+	  content:(<ReferenceFiles selectedRec={data}/>)
     },
     {
       tabId: "SBSLink",

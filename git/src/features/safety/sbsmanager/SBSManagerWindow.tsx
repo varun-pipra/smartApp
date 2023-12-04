@@ -1,35 +1,74 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { Box, Button, IconButton, TextField, InputLabel, InputAdornment, Stack } from '@mui/material';
-import { Close} from '@mui/icons-material';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { useAppSelector, useAppDispatch } from "app/hooks";
+import {
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  InputLabel,
+  InputAdornment,
+  Stack,
+} from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 // import './SBSManagerWindow.scss';
 
-import { appInfoData } from 'data/appInfo';
-import convertDateToDisplayFormat, { triggerEvent, stringToUSDateTime } from 'utilities/commonFunctions';
-import GridWindow from 'components/iqgridwindow/IQGridWindow';
-import { postMessage, isLocalhost, currency } from 'app/utils';
-import { getServer, setServer, setFullView, setCurrencySymbol, setAppWindowMaximize, setCostUnitList } from 'app/common/appInfoSlice';
-import './SBSManagerWindow.scss';
-import SBSManagerForm from './sbsManagerContent/sbsManagerForm/SBSManagerForm';
-import { SBSToolbarLeftButtons, SBSToolbarRightButtons } from './sbsManagerContent/toolbar/SBSManagerToolbar';
-import SBSCategoryRightPanel from './SBSCategoryRightPanel/SBSCategoryRightPanel';
-import SUIDrawer from 'sui-components/Drawer/Drawer';
+import { appInfoData } from "data/appInfo";
+import convertDateToDisplayFormat, {
+  triggerEvent,
+  stringToUSDateTime,
+} from "utilities/commonFunctions";
+import GridWindow from "components/iqgridwindow/IQGridWindow";
+import { postMessage, isLocalhost, currency } from "app/utils";
+import {
+  getServer,
+  setServer,
+  setFullView,
+  setCurrencySymbol,
+  setAppWindowMaximize,
+  setCostUnitList,
+} from "app/common/appInfoSlice";
+import "./SBSManagerWindow.scss";
+import SBSManagerForm from "./sbsManagerContent/sbsManagerForm/SBSManagerForm";
+import {
+  SBSToolbarLeftButtons,
+  SBSToolbarRightButtons,
+} from "./sbsManagerContent/toolbar/SBSManagerToolbar";
+import SBSCategoryRightPanel from "./SBSCategoryRightPanel/SBSCategoryRightPanel";
+import SUIDrawer from "sui-components/Drawer/Drawer";
 import { getTrades } from "./enums";
-import { getAppsList, getCategoryDropDownOptions, getPhaseDropdownValues, getSBSGridList, setShowSbsPanel, setSelectedNodes, setShowPhaseModel, setToast } from "./operations/sbsManagerSlice";
+import {
+  getAppsList,
+  getCategoryDropDownOptions,
+  getPhaseDropdownValues,
+  getSBSGridList,
+  setShowSbsPanel,
+  setSelectedNodes,
+  setShowPhaseModel,
+  setToast,
+} from "./operations/sbsManagerSlice";
 import { formatDate } from "utilities/datetime/DateTimeUtils";
-import _ from 'lodash';
-import { fetchTradesData, getTradeData } from 'features/projectsettings/projectteam/operations/ptDataSlice';
+import _ from "lodash";
+import {
+  fetchTradesData,
+  getTradeData,
+} from "features/projectsettings/projectteam/operations/ptDataSlice";
 import SbsManagerApplicationLID from "./details/SbsManagerApplicationLID";
 import SBSManagePhasesModal from "features/projectsettings/projectteam/projectteamapplicationsdetails/tabs/safetyViolation/SafetyViolationDialog";
-import PhasesGridList from './phasesGridList/PhasesGridList';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { AddFiles } from './operations/sbsManagerAPI';
+import PhasesGridList from "./phasesGridList/PhasesGridList";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import IQTooltip from "components/iqtooltip/IQTooltip";
+import { AddFiles } from "./operations/sbsManagerAPI";
 
-const SBSManagerWindow = (props: any) => {  
+const SBSManagerWindow = (props: any) => {
   const filterOptions = useMemo(() => {
-		var filterMenu =  [
+    var filterMenu = [
       {
         text: "Category",
         value: "category",
@@ -49,71 +88,81 @@ const SBSManagerWindow = (props: any) => {
         children: { type: "checkbox", items: [] },
       },
     ];
-		return filterMenu;
-	}, []);
+    return filterMenu;
+  }, []);
   const GetUniqueList = (data: any, key?: any) => {
-		let unique: any = [];
-		data?.map((x: any) =>
-			unique?.filter((a: any) => a?.[key] === x?.[key])?.length > 0
-				? null
-				: unique.push(x)
-		);
-		unique?.sort((a: any, b: any) =>
-			a?.[key]?.localeCompare(b?.[key], undefined, {numeric: true})
-		);
-		return unique;
-	};
-  const findAndUpdateFiltersData = (data: any,key: string,nested?: boolean,nestedKey?: any) => {
-		const formattedData = data?.map((rec: any) => {
-		if(nested)
-				return {
-					text: rec?.[key]?.[nestedKey],
-					value: rec?.[key]?.[nestedKey],
-					id: rec?.[key]?.id,
-				};
-			else
-				return {
-					text: rec?.[key] === "" ? "NA" : rec?.[key] ?? rec?.['name'],
-					value: rec?.[key] === "" ? "NA" : rec?.[key]?? rec?.['name'],
-					id: rec?.id,
-				};
-		});
-		const filtersCopy: any = [...filterOptions];
-		let currentItem: any = filtersCopy.find((rec: any) => rec?.value === key);
-		currentItem.children.items = GetUniqueList(formattedData, "text");
-	};
+    let unique: any = [];
+    data?.map((x: any) =>
+      unique?.filter((a: any) => a?.[key] === x?.[key])?.length > 0
+        ? null
+        : unique.push(x)
+    );
+    unique?.sort((a: any, b: any) =>
+      a?.[key]?.localeCompare(b?.[key], undefined, { numeric: true })
+    );
+    return unique;
+  };
+  const findAndUpdateFiltersData = (
+    data: any,
+    key: string,
+    nested?: boolean,
+    nestedKey?: any
+  ) => {
+    const formattedData = data?.map((rec: any) => {
+      if (nested)
+        return {
+          text: rec?.[key]?.[nestedKey],
+          value: rec?.[key]?.[nestedKey],
+          id: rec?.[key]?.id,
+        };
+      else
+        return {
+          text: rec?.[key] === "" ? "NA" : rec?.[key] ?? rec?.["name"],
+          value: rec?.[key] === "" ? "NA" : rec?.[key] ?? rec?.["name"],
+          id: rec?.id,
+        };
+    });
+    const filtersCopy: any = [...filterOptions];
+    let currentItem: any = filtersCopy.find((rec: any) => rec?.value === key);
+    currentItem.children.items = GetUniqueList(formattedData, "text");
+  };
   const dispatch = useAppDispatch();
   const [localhost] = React.useState(isLocalhost);
   const [appData] = React.useState(appInfoData);
   const appInfo = useAppSelector(getServer);
-	const { detailsData } = useAppSelector(state => state.sbsManager)	  
+  const { detailsData } = useAppSelector((state) => state.sbsManager);
   const { currencySymbol } = useAppSelector((state) => state.appInfo);
-  const { sbsGridData, showSbsPanel,showPhaseModel, toast } = useAppSelector((state) => state.sbsManager);
+  const { sbsGridData, showSbsPanel, showPhaseModel, toast } = useAppSelector(
+    (state) => state.sbsManager
+  );
   const [gridSearchText, setGridSearchText] = useState("");
-	const [selectedFilters, setSelectedFilters] = useState<any>();
+  const [selectedFilters, setSelectedFilters] = useState<any>();
   const [rowData, setRowData] = useState([]);
   const [modifiedList, setModifiedList] = useState<Array<any>>([]);
   const tradesData: any = useAppSelector(getTradeData);
   const iframeID = "sbsManagerIFrame";
   const appType = "SBSManager";
-  const [showManagePhasesModal, setShowManagePhasesModal] = useState<any>(false);
-  const [defaultTabId, setDefaultTabId] = useState<any>('');
+  const [showManagePhasesModal, setShowManagePhasesModal] =
+    useState<any>(false);
+  const [defaultTabId, setDefaultTabId] = useState<any>("");
   const [openRightPanel, setOpenRightPanel] = useState(false);
   const [currentRowSelection, setCurrentRowSelection] = useState<any>(null);
   const [driveFileQueue, setDriveFileQueue] = useState<any>([]);
-  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastMessage, setToastMessage] = useState<string>("");
   const [isRightPanelOpened, setIsRightPanelOpened] = React.useState(false);
-  const isAppMaximized = useAppSelector((state)=> state.appInfo.isAppMaximized);
+  const isAppMaximized = useAppSelector(
+    (state) => state.appInfo.isAppMaximized
+  );
   const gridApi = useRef<any>();
   useEffect(() => {
-      setShowManagePhasesModal(showPhaseModel)
-  },[showPhaseModel]);
+    setShowManagePhasesModal(showPhaseModel);
+  }, [showPhaseModel]);
   useEffect(() => {
-		if (tradesData?.length && filterOptions?.length) {
-			findAndUpdateFiltersData(tradesData, 'trade');
-		}
-	}, [tradesData]);
-  
+    if (tradesData?.length && filterOptions?.length) {
+      findAndUpdateFiltersData(tradesData, "trade");
+    }
+  }, [tradesData]);
+
   useEffect(() => {
     if (appInfo) {
       dispatch(getSBSGridList());
@@ -121,26 +170,25 @@ const SBSManagerWindow = (props: any) => {
       dispatch(getPhaseDropdownValues());
       dispatch(getCategoryDropDownOptions());
       dispatch(getAppsList());
-      
     }
   }, [appInfo]);
-  
+
   React.useEffect(() => {
-      if(sbsGridData.length > 0) {
-        setModifiedList(sbsGridData);
-        setRowData(sbsGridData);
-        findAndUpdateFiltersData(sbsGridData, 'phase',true, 'name');
-        findAndUpdateFiltersData(sbsGridData, 'category',true,  'name');
-      } else if(sbsGridData.length === 0){
-        setModifiedList([]);
-        setRowData([]);
-        findAndUpdateFiltersData(sbsGridData, 'phase', true, 'name');
-        findAndUpdateFiltersData(sbsGridData, 'category',true,  'name');
-      }
-  },[sbsGridData]);
+    if (sbsGridData.length > 0) {
+      setModifiedList(sbsGridData);
+      setRowData(sbsGridData);
+      findAndUpdateFiltersData(sbsGridData, "phase", true, "name");
+      findAndUpdateFiltersData(sbsGridData, "category", true, "name");
+    } else if (sbsGridData.length === 0) {
+      setModifiedList([]);
+      setRowData([]);
+      findAndUpdateFiltersData(sbsGridData, "phase", true, "name");
+      findAndUpdateFiltersData(sbsGridData, "category", true, "name");
+    }
+  }, [sbsGridData]);
   useEffect(() => {
     if (localhost) {
-      dispatch(setServer(_.omit(appData, ['DivisionCost'])));
+      dispatch(setServer(_.omit(appData, ["DivisionCost"])));
       dispatch(setCurrencySymbol(currency["USD"]));
       dispatch(setCostUnitList(appData?.DivisionCost?.CostUnit));
     } else {
@@ -167,13 +215,16 @@ const SBSManagerWindow = (props: any) => {
                 const localUploadedFiles = data.data;
                 // dispatch(setUploadedFilesFromLocal(localUploadedFiles));
                 break;
-                case 'getdrivefiles':
-                  try {
-                    setDriveFileQueue(data.data);
-                  } catch (error) {
-                    console.log('Error in adding Bid Reference file from Drive', error);
-                  }
-								break;
+              case "getdrivefiles":
+                try {
+                  setDriveFileQueue(data.data);
+                } catch (error) {
+                  console.log(
+                    "Error in adding Bid Reference file from Drive",
+                    error
+                  );
+                }
+                break;
               case "updateparticipants":
                 triggerEvent("updateparticipants", {
                   data: data.data,
@@ -201,22 +252,25 @@ const SBSManagerWindow = (props: any) => {
     }
   }, [localhost, appData]);
   const saveFilesFromDrive = (appInfo: any, fileList: Array<any>) => {
-		const structuredFiles = fileList.map((file: any) => {
-      return { name:file.name,"id":file.id,type:"drive"}
-		});
-    console.log('structuredFiles drive',structuredFiles)
-    AddFiles(detailsData?.id, structuredFiles ,(response:any) => {
-      console.log("respone in drive", response)
-    })
-	};
+    const structuredFiles = fileList.map((file: any) => {
+      return {
+        type: "drive",
+        name: file.name,
+        id: file.id,
+      };
+    });
+    console.log("structuredFiles drive", structuredFiles);
+    AddFiles(detailsData?.id, structuredFiles, (response: any) => {
+      console.log("respone in drive", response);
+    });
+  };
   useEffect(() => {
-		if (driveFileQueue?.length > 0) {
-      console.log('driveFileQueue',driveFileQueue);
-			saveFilesFromDrive(appInfo, [...driveFileQueue]);
-			setDriveFileQueue([]);
-		}
-	}, [appInfo, driveFileQueue]);
-
+    if (driveFileQueue?.length > 0) {
+      console.log("driveFileQueue", driveFileQueue);
+      saveFilesFromDrive(appInfo, [...driveFileQueue]);
+      setDriveFileQueue([]);
+    }
+  }, [appInfo, driveFileQueue]);
 
   const columns = [
     {
@@ -232,7 +286,7 @@ const SBSManagerWindow = (props: any) => {
       cellRenderer: (params: any) => {
         return (
           <div className="sbs-category-cell">
-            {(
+            {
               <IQTooltip
                 title={
                   <Stack direction="row" className="tooltipcontent">
@@ -244,12 +298,9 @@ const SBSManagerWindow = (props: any) => {
                 placement={"bottom"}
                 arrow={true}
               >
-                <WarningAmberIcon
-                  fontSize={"small"}
-                  style={{ color: "red" }}
-                />
+                <WarningAmberIcon fontSize={"small"} style={{ color: "red" }} />
               </IQTooltip>
-            )}
+            }
             {params.data?.name || "N/A"}
           </div>
         );
@@ -341,7 +392,7 @@ const SBSManagerWindow = (props: any) => {
         );
       },
     },
-  ];  
+  ];
   const [colDefs, setColDefs] = React.useState(columns);
 
   const handleClose = () => {
@@ -372,96 +423,92 @@ const SBSManagerWindow = (props: any) => {
       suppressGroupRowsSticky: true,
     };
   }, []);
-  const handleSelectedCategory = (type:string) => {
+  const handleSelectedCategory = (type: string) => {
     switch (type) {
-			case 'sbs': {
-				
-				break;
-			}
-			case 'managerSbs': {
-				setShowManagePhasesModal(true);
-				break;
-			}
-			case 'supplemental': {
-				
-				break;
-			}
-			case 'dynamicHeatMap': {
-				break;
-			}
-			default: {
-				break;
-			}
-    };
-      console.log('type', type);
+      case "sbs": {
+        break;
+      }
+      case "managerSbs": {
+        setShowManagePhasesModal(true);
+        break;
+      }
+      case "supplemental": {
+        break;
+      }
+      case "dynamicHeatMap": {
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    console.log("type", type);
   };
-  const handleSbsCategoryChange = (val:string) => {
-    console.log('Category val', val);
+  const handleSbsCategoryChange = (val: string) => {
+    console.log("Category val", val);
   };
   const onFilterChange = useCallback((filterValues: any) => {
-		    setSelectedFilters(filterValues);
-	}, []);
+    setSelectedFilters(filterValues);
+  }, []);
   const onGridSearch = (searchTxt: string) => {
-		    setGridSearchText(searchTxt);
-	};
+    setGridSearchText(searchTxt);
+  };
   const onRowSelection = (e: any) => {
     const SelectionService = e.api.getSelectedRows();
-    dispatch(setSelectedNodes(SelectionService))
-  }
+    dispatch(setSelectedNodes(SelectionService));
+  };
   const searchAndFilter = (list: any) => {
-		return list.filter((item: any) => {
+    return list.filter((item: any) => {
       const tradeNames = item.trades?.map((x: any) => x?.name?.toString());
-			const regex = new RegExp(gridSearchText, "gi");
-			const searchVal = Object.keys(item).some((field) => {
+      const regex = new RegExp(gridSearchText, "gi");
+      const searchVal = Object.keys(item).some((field) => {
         if (Array.isArray(item[field])) {
-            if(item[field]?.length > 0) {
-              for (let i = 0; i < item[field].length; i++) {
-                return Object.keys(item?.[field]?.[i])?.some((objField) => {
-                  return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
-                });
-              }
-            } else return false;
-        } else if((item[field] ?? false) && typeof item[field] === "object") {
-					  return Object.keys(item?.[field])?.some((objField) => {
-						  return item?.[field]?.[objField]?.toString()?.match(regex);
-					});
-				} else return item?.[field]?.toString()?.match(regex);
-			});
-			const filterVal =
-				_.isEmpty(selectedFilters) ||
-				(!_.isEmpty(selectedFilters) &&
-					(_.isEmpty(selectedFilters.category) ||
-						selectedFilters.category?.length === 0 ||
-						selectedFilters.category?.indexOf(item.category.name) > -1) &&
-					(_.isEmpty(selectedFilters.phase) ||
-						selectedFilters.phase?.length === 0 ||
-						selectedFilters.phase?.indexOf(item.phase.name) > -1) 
-            &&
-            (_.isEmpty(selectedFilters.trade) ||
+          if (item[field]?.length > 0) {
+            for (let i = 0; i < item[field].length; i++) {
+              return Object.keys(item?.[field]?.[i])?.some((objField) => {
+                return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
+              });
+            }
+          } else return false;
+        } else if ((item[field] ?? false) && typeof item[field] === "object") {
+          return Object.keys(item?.[field])?.some((objField) => {
+            return item?.[field]?.[objField]?.toString()?.match(regex);
+          });
+        } else return item?.[field]?.toString()?.match(regex);
+      });
+      const filterVal =
+        _.isEmpty(selectedFilters) ||
+        (!_.isEmpty(selectedFilters) &&
+          (_.isEmpty(selectedFilters.category) ||
+            selectedFilters.category?.length === 0 ||
+            selectedFilters.category?.indexOf(item.category.name) > -1) &&
+          (_.isEmpty(selectedFilters.phase) ||
+            selectedFilters.phase?.length === 0 ||
+            selectedFilters.phase?.indexOf(item.phase.name) > -1) &&
+          (_.isEmpty(selectedFilters.trade) ||
             selectedFilters.trade?.length === 0 ||
-            _.intersection(selectedFilters.trade, tradeNames).length > 0)
-        );
-			return searchVal && filterVal;
-		});
-	};
+            _.intersection(selectedFilters.trade, tradeNames).length > 0));
+      return searchVal && filterVal;
+    });
+  };
   useEffect(() => {
-		if(gridSearchText || selectedFilters) {
-			const data = searchAndFilter([...modifiedList]);
-			setRowData(data);
-		}
-	}, [gridSearchText, selectedFilters]);
+    if (gridSearchText || selectedFilters) {
+      const data = searchAndFilter([...modifiedList]);
+      setRowData(data);
+    }
+  }, [gridSearchText, selectedFilters]);
   useEffect(() => {
-		setToastMessage(toast);
-		setTimeout(() => {
-			setToastMessage('');
-			dispatch(setToast(''));
-		}, 3000);
-	}, [toast]);
+    setToastMessage(toast);
+    setTimeout(() => {
+      setToastMessage("");
+      dispatch(setToast(""));
+    }, 3000);
+  }, [toast]);
   React.useEffect(() => {
-      if(isRightPanelOpened && showSbsPanel) {
-        dispatch(setShowSbsPanel(false));
-      }
-  },[isRightPanelOpened]);
+    if (isRightPanelOpened && showSbsPanel) {
+      dispatch(setShowSbsPanel(false));
+    }
+  }, [isRightPanelOpened]);
   const onFirstDataRendered = useCallback((params: any) => {
     gridApi.current = params;
   }, []);
@@ -470,7 +517,7 @@ const SBSManagerWindow = (props: any) => {
     const action = e.currentTarget.getAttribute("data-action");
     switch (action) {
       case "exportCsv": {
-            // gridApi.current.api.exportDataAsCsv();
+        // gridApi.current.api.exportDataAsCsv();
         break;
       }
       default: {
@@ -483,8 +530,8 @@ const SBSManagerWindow = (props: any) => {
       <GridWindow
         open={true}
         title="System Breakdown Structure (SBS) Manager"
-        iconCls='common-icon-SBS'
-        className={'SBS-window-cls'}
+        iconCls="common-icon-SBS"
+        className={"SBS-window-cls"}
         appType={appType}
         appInfo={appInfoData}
         iFrameId={iframeID}
@@ -496,9 +543,9 @@ const SBSManagerWindow = (props: any) => {
         showPinned={true}
         // isFullView={true}
         lidCondition={(rowData: any) => {
-					return true;
-				}}
-        getLIDOpen={(val:boolean) => setIsRightPanelOpened(val)}
+          return true;
+        }}
+        getLIDOpen={(val: boolean) => setIsRightPanelOpened(val)}
         presenceProps={{
           presenceId: "sbs-manager-presence",
           showLiveSupport: true,
@@ -527,7 +574,9 @@ const SBSManagerWindow = (props: any) => {
           detailView: SbsManagerApplicationLID,
           gridContainer: {
             toolbar: {
-              leftItems: <SBSToolbarLeftButtons clickHandler={leftToolBarHandler}/>,
+              leftItems: (
+                <SBSToolbarLeftButtons clickHandler={leftToolBarHandler} />
+              ),
               rightItems: <SBSToolbarRightButtons />,
               searchComponent: {
                 show: true,
@@ -560,67 +609,79 @@ const SBSManagerWindow = (props: any) => {
               rowSelected: (e: any) => onRowSelection(e),
               nowRowsMsg:
                 "<div>Add new SBS item by clicking the + Add button above</div>",
-              onFirstDataRendered: onFirstDataRendered
+              onFirstDataRendered: onFirstDataRendered,
             },
           },
         }}
       />
       {showSbsPanel && (
         <SUIDrawer
-        PaperProps={{
-          style: {
-            position: "fixed",
-            marginTop: "9%",
-            marginRight: isAppMaximized ? "0%" : "2.5%",
-            height: isAppMaximized ? "80%" : "76%",
-            borderRadius: "4px",
-            boxShadow: "-6px 0px 10px -10px",
-            border: "1px solid rgba(0, 0, 0, 0.12) !important",
-          },
-        }}
-        anchor="right"
-        variant="permanent"
-        elevation={2}
-        open={false}
-      >
-        <Box sx={{ width: "20.5vw", height: "100%" }} role="presentation" className="general-window-cls">
-          <Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
-            <IconButton className="Close-btn"
-              aria-label="Close Right Pane"
-              onClick={() => dispatch(setShowSbsPanel(false))}
-            ><span className="common-icon-Declined"></span>
-            </IconButton>
-          </Stack>
-          <div style={{ height: "calc(100% - 5em)" }}>
-            <SBSCategoryRightPanel
-              handleSelectedCategory={(val: any) => handleSelectedCategory(val)}
-              handleSbsCategoryChange={(val: any) => handleSbsCategoryChange(val)
-              }
-            />
-          </div>
-        </Box>
-      </SUIDrawer>
-      )}
-        <SBSManagePhasesModal 
-          open={showManagePhasesModal}
-          className={'sbs-manage-phases-dialog'}
-          contentText={<PhasesGridList></PhasesGridList>}
-          title={""}
-          showActions={false}
-          dialogClose={true}
-          helpIcon={true}
-          iconTitleContent={
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <div>Manage Phases</div>
-            </div>
-          }
-          onAction={() => {
-            setShowManagePhasesModal(false);
-            if(showPhaseModel) dispatch(setShowPhaseModel(false));
+          PaperProps={{
+            style: {
+              position: "fixed",
+              marginTop: "9%",
+              marginRight: isAppMaximized ? "0%" : "2.5%",
+              height: isAppMaximized ? "80%" : "76%",
+              borderRadius: "4px",
+              boxShadow: "-6px 0px 10px -10px",
+              border: "1px solid rgba(0, 0, 0, 0.12) !important",
+            },
           }}
-          customButtons={true}
-          customButtonsContent={<></>}
-        />
+          anchor="right"
+          variant="permanent"
+          elevation={2}
+          open={false}
+        >
+          <Box
+            sx={{ width: "20.5vw", height: "100%" }}
+            role="presentation"
+            className="general-window-cls"
+          >
+            <Stack
+              direction="row"
+              sx={{ justifyContent: "end", height: "5em" }}
+            >
+              <IconButton
+                className="Close-btn"
+                aria-label="Close Right Pane"
+                onClick={() => dispatch(setShowSbsPanel(false))}
+              >
+                <span className="common-icon-Declined"></span>
+              </IconButton>
+            </Stack>
+            <div style={{ height: "calc(100% - 5em)" }}>
+              <SBSCategoryRightPanel
+                handleSelectedCategory={(val: any) =>
+                  handleSelectedCategory(val)
+                }
+                handleSbsCategoryChange={(val: any) =>
+                  handleSbsCategoryChange(val)
+                }
+              />
+            </div>
+          </Box>
+        </SUIDrawer>
+      )}
+      <SBSManagePhasesModal
+        open={showManagePhasesModal}
+        className={"sbs-manage-phases-dialog"}
+        contentText={<PhasesGridList></PhasesGridList>}
+        title={""}
+        showActions={false}
+        dialogClose={true}
+        helpIcon={true}
+        iconTitleContent={
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div>Manage Phases</div>
+          </div>
+        }
+        onAction={() => {
+          setShowManagePhasesModal(false);
+          if (showPhaseModel) dispatch(setShowPhaseModel(false));
+        }}
+        customButtons={true}
+        customButtonsContent={<></>}
+      />
     </div>
   );
 };

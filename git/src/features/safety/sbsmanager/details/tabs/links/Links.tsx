@@ -109,20 +109,20 @@ const AddLinksData = [
 		// }],
 		iconCls: "common-icon-sketch",
 	},
-	{
-		"text": "Rule Based linking",
-		"value": "Rule Based linking",
-		"id": 3,
-		"children": [],
-		iconCls: "common-icon-sketch",
-	},
-	{
-		"text": "Add External URL",
-		"value": "Add External URL",
-		"id": 4,
-		iconCls: "common-icon-sketch",
-		"children": []
-	}
+	// {
+	// 	"text": "Rule Based linking",
+	// 	"value": "Rule Based linking",
+	// 	"id": 3,
+	// 	"children": [],
+	// 	iconCls: "common-icon-sketch",
+	// },
+	// {
+	// 	"text": "Add External URL",
+	// 	"value": "Add External URL",
+	// 	"id": 4,
+	// 	iconCls: "common-icon-sketch",
+	// 	"children": []
+	// }
 ];
 const linksData = [
 	{

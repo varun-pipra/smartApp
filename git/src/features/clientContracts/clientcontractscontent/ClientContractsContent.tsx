@@ -3,14 +3,11 @@ import { Box, Stack, IconButton, Alert } from '@mui/material';
 import { ExpandMore, ExpandLess, PushPinOutlined as PushPin, KeyboardArrowLeft, KeyboardArrowRight, Gavel } from '@mui/icons-material';
 import EastOutlinedIcon from '@mui/icons-material/EastOutlined';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-
 import './ClientContractsContent.scss';
-
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import Award from 'resources/images/bidManager/Awarded.svg'
-
-
+import {postMessage} from 'app/utils';
 import { getServer } from 'app/common/appInfoSlice';
 import { fetchVendorData } from '../../budgetmanager/operations/vendorInfoSlice';
 import IQButton from 'components/iqbutton/IQButton';
@@ -267,7 +264,13 @@ const ClientContractsContent = (props: any) => {
 		}
 
 	}
-
+	const rightPanelClose = () => {
+		dispatch(setShowLineItemDetails(false));
+		postMessage({
+			event: "help",
+			body: { iframeId: "clientContractsIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "ClientContracts", isFromHelpIcon: false }
+		});
+	}
 	return <>
 		<Box className='bid-manager-content'>
 			{isUserGCForCC(appInfo) ?
@@ -303,7 +306,7 @@ const ClientContractsContent = (props: any) => {
 				open={false}
 			>
 				<Stack className='rightpanel-content-section'>
-					<ClientContractsLineItem close={() => { dispatch(setShowLineItemDetails(false)); }} />
+					<ClientContractsLineItem close={() => { rightPanelClose() }} />
 				</Stack>
 				{selectedRecord?.status == 'ActivePendingSOVUpdate' && isUserGCForCC(appInfo) && <SUIToast
 					message={

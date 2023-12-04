@@ -3,7 +3,7 @@ import { Box, Stack, IconButton, Alert } from '@mui/material';
 import { ExpandMore, ExpandLess, PushPinOutlined as PushPin, KeyboardArrowLeft, KeyboardArrowRight, Gavel } from '@mui/icons-material';
 import EastOutlinedIcon from '@mui/icons-material/EastOutlined';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-
+import { postMessage } from 'app/utils';
 import './VendorContractsContent.scss';
 
 import IQTooltip from 'components/iqtooltip/IQTooltip';
@@ -71,8 +71,8 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 	const gridRT = useRef<boolean>(false);
 	const [toast2, setToast2] = React.useState<any>({ changeeventid: '', orginalAmount: '', changeOrderAmount: '' });
 	const { changeEventsList } = useAppSelector((state) => state?.changeEvents);
-	const [showLockSuccessMsg, setShowLockSuccessMsg] = React.useState<any>({show: false, msg1: '', msg2: ''});
-	const [showAlertForPendingCompliance, setShowAlertForPendingCompliance] = React.useState<any>({show: false, message: '', type: '' })
+	const [showLockSuccessMsg, setShowLockSuccessMsg] = React.useState<any>({ show: false, msg1: '', msg2: '' });
+	const [showAlertForPendingCompliance, setShowAlertForPendingCompliance] = React.useState<any>({ show: false, message: '', type: '' })
 
 	// Effect definitions
 	React.useEffect(() => {
@@ -107,7 +107,7 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 		}
 	}, [toast])
 
-	React.useEffect(() => { setTimeout(() => { setShowLockSuccessMsg({show: false, msg1: '', msg2: ''}) }, 5000) }, [showLockSuccessMsg])
+	React.useEffect(() => { setTimeout(() => { setShowLockSuccessMsg({ show: false, msg1: '', msg2: '' }) }, 5000) }, [showLockSuccessMsg])
 
 	const minimizeIcon = useMemo<React.ReactElement>(() => {
 		return <div className='common-icon-minimize' style={{ fontSize: '1.25rem' }}></div>
@@ -131,7 +131,7 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 					// setSaveChanges({ show: false, disable: false });
 					setPostChangeAndLock({ show: false, disable: false });
 				}
-				['Draft', 'ReadyToSubmit', 'ActiveUnlocked', 'AwaitingAcceptanceUnlocked', 'ActiveUnlockedPendingSOVUpdate'].includes(selectedRecord?.status) ? setLockAndPostContract({ show: true, disable: selectedRecord?.status == 'Draft' ? true : selectedRecord?.budgetLineItemsWithValidSOV != budgetItems?.length ? true : false }) : setLockAndPostContract({ show: false, disable: false });				
+				['Draft', 'ReadyToSubmit', 'ActiveUnlocked', 'AwaitingAcceptanceUnlocked', 'ActiveUnlockedPendingSOVUpdate'].includes(selectedRecord?.status) ? setLockAndPostContract({ show: true, disable: selectedRecord?.status == 'Draft' ? true : selectedRecord?.budgetLineItemsWithValidSOV != budgetItems?.length ? true : false }) : setLockAndPostContract({ show: false, disable: false });
 			}
 			else {
 				if (['AwaitingAcceptance'].includes(selectedRecord?.status)) { setSCActions({ ...SCActions, show: true }); setContractorResponse({ ...contractorResponse, show: false }); }
@@ -194,32 +194,32 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 
 	// Start of action button handlers
 
-	const handleLockAndPostContractAction = (lock:boolean) => {
+	const handleLockAndPostContractAction = (lock: boolean) => {
 		// dispatch(setLockAndPostContractResponseClick(true))
-		selectedRecord?.vendor?.pendingCompliances?.length && selectedRecord?.status === "ReadyToSubmit" && !lock ? setShowAlertForPendingCompliance({show: true, type: 'lockPendingCompliance', message: <span>The Vendor You are trying to make a Contract has pending company compliance's verification.<br /><br /> Would you still want to go ahead and post the Contract to the vendor?</span>})
-		: 	["AwaitingAcceptanceUnlocked", "ActiveUnlocked", "ActiveUnlockedPendingSOVUpdate"]?.includes(selectedRecord?.status) ? handlePostChangeAndLockAction('lock') : setShowAlert({
-			show: true, type: 'lock', message:
-				<div>
-					<span>Are you sure you want to Lock & Post the Contract?</span> <br /><br /><br />
-					<span>By doing so, the contract will become Active immediately and the other party will be able to see the contract Active.</span>
-				</div>		
+		selectedRecord?.vendor?.pendingCompliances?.length && selectedRecord?.status === "ReadyToSubmit" && !lock ? setShowAlertForPendingCompliance({ show: true, type: 'lockPendingCompliance', message: <span>The Vendor You are trying to make a Contract has pending company compliance's verification.<br /><br /> Would you still want to go ahead and post the Contract to the vendor?</span> })
+			: ["AwaitingAcceptanceUnlocked", "ActiveUnlocked", "ActiveUnlockedPendingSOVUpdate"]?.includes(selectedRecord?.status) ? handlePostChangeAndLockAction('lock') : setShowAlert({
+				show: true, type: 'lock', message:
+					<div>
+						<span>Are you sure you want to Lock & Post the Contract?</span> <br /><br /><br />
+						<span>By doing so, the contract will become Active immediately and the other party will be able to see the contract Active.</span>
+					</div>
 			})
 		// : lockAndPostContract(appInfo, selectedRecord?.id, afterItemAction);
 	};
 
-	const handleRouteForApproval = (lock:boolean) => {
-		selectedRecord?.vendor?.pendingCompliances?.length && selectedRecord?.status === "ReadyToSubmit" && !lock ? setShowAlertForPendingCompliance({show: true, type: 'routePendingCompliance', message: <span>The Vendor You are trying to make a Contract has pending company compliance's verification.<br /><br /> Would you still want to go ahead and post the Contract to the vendor?</span>})
-		: ["AwaitingAcceptanceUnlocked", "ActiveUnlocked", "ActiveUnlockedPendingSOVUpdate"]?.includes(selectedRecord?.status) ? handlePostChangeAndLockAction('route') 
-		: setShowAlert({
-			show: true, type: 'route', message:
-				<div>
-					<span>Are you sure you want to Route & Post the contract?</span> <br /><br /><br />
-					<span>By doing so, the contract will be Routed to the other party and has to be signed & acknowledged.</span>
-				</div>		
-		})
+	const handleRouteForApproval = (lock: boolean) => {
+		selectedRecord?.vendor?.pendingCompliances?.length && selectedRecord?.status === "ReadyToSubmit" && !lock ? setShowAlertForPendingCompliance({ show: true, type: 'routePendingCompliance', message: <span>The Vendor You are trying to make a Contract has pending company compliance's verification.<br /><br /> Would you still want to go ahead and post the Contract to the vendor?</span> })
+			: ["AwaitingAcceptanceUnlocked", "ActiveUnlocked", "ActiveUnlockedPendingSOVUpdate"]?.includes(selectedRecord?.status) ? handlePostChangeAndLockAction('route')
+				: setShowAlert({
+					show: true, type: 'route', message:
+						<div>
+							<span>Are you sure you want to Route & Post the contract?</span> <br /><br /><br />
+							<span>By doing so, the contract will be Routed to the other party and has to be signed & acknowledged.</span>
+						</div>
+				})
 	}
 
-	const handlePostChangeAndLockAction = (type:any) => {
+	const handlePostChangeAndLockAction = (type: any) => {
 		setShowAlert({
 			show: true, type: type, message:
 				<span>The changes made to the contract will be posted as a new change event and notified to the vendor.<br /><br /> Would you like to go ahead and re post the contract?</span>
@@ -264,14 +264,14 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 	const handleAlert = (type: string) => {
 		if (type == 'yes') {
 			showAlert?.type == 'cancel' && cancelAndLockContract(appInfo, selectedRecord?.id, afterItemAction);
-			if(showAlert?.type == 'route') { 
+			if (showAlert?.type == 'route') {
 				lockAndPostContract(appInfo, selectedRecord?.id, afterItemAction);
-				setShowLockSuccessMsg({show: true, msg1: 'Contract Routed, Posted and Locked.', msg2: 'Notified the response to the Vendor.'});
-			}				
-			if(showAlert?.type == 'lock') {
+				setShowLockSuccessMsg({ show: true, msg1: 'Contract Routed, Posted and Locked.', msg2: 'Notified the response to the Vendor.' });
+			}
+			if (showAlert?.type == 'lock') {
 				activateContract(appInfo, selectedRecord?.id, afterItemAction);
-				setShowLockSuccessMsg({show: true, msg1: 'Posted Contract and Locked.', msg2: 'Notified the response to the Vendor.'});				
-			}				
+				setShowLockSuccessMsg({ show: true, msg1: 'Posted Contract and Locked.', msg2: 'Notified the response to the Vendor.' });
+			}
 			// if(showAlert?.type == 'lockPendingCompliance') {
 			// 	console.log("lockPendingCompliance")
 			// 	// setShowAlert({show: false, msg1: '', msg2: ''})
@@ -303,16 +303,23 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 		}
 
 	}
-	const handlePendingCompliance =(type: string) => {
+	const handlePendingCompliance = (type: string) => {
 		if (type == 'yes') {
 			showAlertForPendingCompliance?.type == 'lockPendingCompliance' && handleLockAndPostContractAction(true);
 			showAlertForPendingCompliance?.type == 'routePendingCompliance' && handleRouteForApproval(true);
-			setShowAlertForPendingCompliance({ show: false, message: '', type: '' })		
+			setShowAlertForPendingCompliance({ show: false, message: '', type: '' })
 		}
 		else setShowAlertForPendingCompliance({ show: false, message: '', type: '' });
 	}
 	// End of action button handlers
-
+	const rightPanelClose = () => {
+		dispatch(setShowLineItemDetails(false));
+		postMessage({
+			event: "help",
+			body: { iframeId: "vendorContractsIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "VendorContracts", isFromHelpIcon: false }
+		});
+	}
+	
 	return <>
 		<Box className='bid-manager-content'>
 			{isUserGC(appInfo) ?
@@ -346,7 +353,7 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 				open={false}
 			>
 				<Stack className='rightpanel-content-section'>
-					<VendorContractsLineItem close={() => { dispatch(setShowLineItemDetails(false)); }} />
+					<VendorContractsLineItem close={() => { rightPanelClose() }} />
 				</Stack>
 				{selectedRecord?.status == 'ActivePendingSOVUpdate' && isUserGC(appInfo) && <SUIToast
 					message={
@@ -392,7 +399,7 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 					{
 						contractorResponse?.show && selectedRecord?.responses &&
 						< ContractorResponse
-							text={selectedRecord?.responses?.[selectedRecord?.responses?.length - 1]?.type == 'LockedAndPosted' ? 'Contract Locked & Posted By' : null}						
+							text={selectedRecord?.responses?.[selectedRecord?.responses?.length - 1]?.type == 'LockedAndPosted' ? 'Contract Locked & Posted By' : null}
 							contractorName={selectedRecord?.responses?.[selectedRecord?.responses?.length - 1]?.by?.displayName}
 							respondedOn={selectedRecord?.responses?.[selectedRecord?.responses?.length - 1]?.date}
 							responseType={contractorResponse?.type}
@@ -402,7 +409,7 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 						/>
 					}
 					<div className='footer-button-container'>
-											
+
 						{
 							cancelAndLock?.show && <IQButton
 								disabled={cancelAndLock?.disable}
@@ -527,7 +534,7 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 				{
 					showAlert?.show && <SUIAlert
 						open={showAlert?.show}
-						DailogClose={true}						
+						DailogClose={true}
 						onClose={() => {
 							setShowAlert({ show: false, message: '' });
 						}}
@@ -543,7 +550,7 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 				{
 					showAlertForPendingCompliance?.show && <SUIAlert
 						open={showAlertForPendingCompliance?.show}
-						DailogClose={true}						
+						DailogClose={true}
 						onClose={() => {
 							setShowAlertForPendingCompliance({ show: false, message: '' });
 						}}
@@ -557,11 +564,11 @@ const VendorContractsContent = ({ gridRef, ...props }: any) => {
 					/>
 				}
 				{
-					showLockSuccessMsg?.show && <Alert severity="success" className='floating-toast-cls' onClose={() => { setShowLockSuccessMsg({show: false, msg1: '', msg: 2}) }}>
-					<span className="toast-text-cls toast-line-cls">
-						<b>1</b>{showLockSuccessMsg?.msg1}</span>
-					<span className="toast-text-cls toast-line-cls">
-						<b>2</b>{showLockSuccessMsg?.msg2}</span>
+					showLockSuccessMsg?.show && <Alert severity="success" className='floating-toast-cls' onClose={() => { setShowLockSuccessMsg({ show: false, msg1: '', msg: 2 }) }}>
+						<span className="toast-text-cls toast-line-cls">
+							<b>1</b>{showLockSuccessMsg?.msg1}</span>
+						<span className="toast-text-cls toast-line-cls">
+							<b>2</b>{showLockSuccessMsg?.msg2}</span>
 					</Alert>
 				}
 				{

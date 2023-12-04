@@ -23,6 +23,15 @@
                         }
                     }
                 }
+                .dynamic-page {
+                    width: 100%;
+                    .dynamic-page-body {
+                        height: 100%;
+                        .dynamic-loading-container {
+                            display: none;
+                        }
+                    }
+                }
             }
         }
     }
