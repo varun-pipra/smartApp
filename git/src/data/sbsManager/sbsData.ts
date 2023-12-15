@@ -831,5 +831,19 @@ export const getGridDataById ={
   },
   "modifiedDate": null,
   "referencefiles": [],
-  "links": []
+  "links": [
+    {
+        "sbsId": 16,
+        "name": "New",
+        "stagename": "Draft",
+        "stageColor": "E40808",
+        "type": 0,
+        "description": "",
+        "createdBy": {
+            "id": null,
+            "name": "MK, Sudeep"
+        },
+        "createdDate": "2023-11-28T04:52:25.2"
+    }
+  ]
 }

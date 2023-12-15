@@ -1,15 +1,15 @@
 import './ChangeEventDetails.scss';
 import React from 'react';
 import SUINote from 'sui-components/Note/Note';
-import convertDateToDisplayFormat, {formatPhoneNumber} from 'utilities/commonFunctions';
+import {formatPhoneNumber} from 'utilities/commonFunctions';
 
 import {
-	FormControlLabel, InputAdornment, InputLabel, Radio, RadioGroup, TextField, Alert
+	FormControlLabel, InputLabel, Radio, RadioGroup, Alert
 } from '@mui/material';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
+import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
 import {updateChangeEventDetails} from 'features/finance/changeeventrequests/stores/ChangeEventAPI';
 import {setChangeRequestDetails} from 'features/finance/changeeventrequests/stores/ChangeEventSlice';
-import {isChangeEventGC, isChangeEventClient, isChangeEventSC} from 'app/common/userLoginUtils';
+import {isChangeEventClient, isChangeEventSC} from 'app/common/userLoginUtils';
 
 
 const ChangeEventsDetails = (props: any) => {
@@ -48,7 +48,7 @@ const ChangeEventsDetails = (props: any) => {
 						<div className='eventrequest-info-data-box'>
 							<span className="common-icon-contract-details iconmodify"></span>
 							<span className='eventrequest-info-data'
-								onClick={() => window.open(`${server?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/client-contracts/home?id=${changeRequestDetails?.clientContract?.id}#react`, '_blank')}
+								onClick={() => window.open(useHotLink(`client-contracts/home?id=${changeRequestDetails?.clientContract?.id}`), '_blank')}
 								style={{color: '#059CDF'}}>{changeRequestDetails?.clientContract?.title ? changeRequestDetails?.clientContract?.title : ''}</span>
 						</div>
 					</span>

@@ -10,7 +10,7 @@ import {
 import _ from 'lodash';
 // import {getAmountAlignmentNew} from 'utilities/commonutills';
 import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
+import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
 import {postMessage} from 'app/utils';
 import CostCodeDropdown from 'components/costcodedropdown/CostCodeDropdown';
 import DatePickerComponent from 'components/datepicker/DatePicker';
@@ -44,7 +44,7 @@ import {formatDate} from 'utilities/datetime/DateTimeUtils';
 import {vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons} from 'utilities/vendorContracts/enums';
 import {budgetManagerMainGridRTListener} from '../BudgetManagerRT';
 import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
-import { getCostCodeDropdownList, getCostCodeFilterList } from '../operations/settingsSlice';
+import {getCostCodeDropdownList, getCostCodeFilterList} from '../operations/settingsSlice';
 // import {setInterval} from 'timers/promises';
 var tinycolor = require('tinycolor2');
 
@@ -89,7 +89,7 @@ const TableGrid = (props: TableGridProps) => {
 	const {selectedRowIndexData} = useAppSelector(
 		(state) => state.rightPanel
 	);
-	const {settingsData, costCodeDropdownData, divisionCostCodeFilterData } = useAppSelector(state => state.settings);
+	const {settingsData, costCodeDropdownData, divisionCostCodeFilterData} = useAppSelector(state => state.settings);
 
 	const rightPannel = useAppSelector(showRightPannel);
 	const {viewData, viewBuilderData} = useAppSelector((state) => state.viewBuilder);
@@ -104,8 +104,8 @@ const TableGrid = (props: TableGridProps) => {
 	const [presencePrevState, setPresencePrevState] = useState<any>([]);
 	const selectedGroupKey = useAppSelector(state => state.gridData?.selectedGroupKey);
 	const [gridRef, setGridRef] = React.useState<any>();
-	const [multiLevelDefaultFilters, setMultiLevelDefaultFilters] = React.useState<any>([])
-	
+	const [multiLevelDefaultFilters, setMultiLevelDefaultFilters] = React.useState<any>([]);
+
 
 	const selectedRecord = useAppSelector((state) => state.rightPanel.selectedRow);
 	const RemoveDuplicates = (array: any, key: any) => {
@@ -236,7 +236,7 @@ const TableGrid = (props: TableGridProps) => {
 			width: 550,
 			minWidth: 550,
 			sort: 'asc',
-			suppressMenu: true,
+			suppressMenu: false,
 			checkboxSelection: true,
 			headerCheckboxSelection: true,
 			cellRenderer: 'agGroupCellRenderer',
@@ -266,7 +266,7 @@ const TableGrid = (props: TableGridProps) => {
 						title={<>
 							<div>{context.value}</div>
 							<div>Change Event ID: <a style={{cursor: 'pointer', color: '#059cdf'}}
-								onClick={() => window.open(`${appInfo?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/change-event-requests?inlineModule=true&id=${context.data?.changeEvent?.id}#react`, '_blank')}
+								onClick={() => window.open(useHotLink(`change-event-requests?inlineModule=true&id=${context.data?.changeEvent?.id}`), '_blank')}
 							>{context.data?.changeEvent?.code}</a>
 							</div>
 						</>}
@@ -291,7 +291,17 @@ const TableGrid = (props: TableGridProps) => {
 					: null;
 			},
 			cellRenderer: (params: any) => {
-				return params?.node?.level == 1 ? (
+				let inLinefilter: any = [];
+				getDivisionFilterOptions()?.map((option: any) => {
+					if(option?.value == params?.data?.division) {
+						setMultiLevelDefaultFilters([option?.hierarchy]);
+						inLinefilter = [option?.hierarchy];
+					}
+				});
+				if(params?.node?.level == 1)console.log("inline", inLinefilter, selectedGroupKey, params)
+				if(params?.node?.level == -1)console.log("outline", params)
+				
+				// return params?.node?.level == 1 ? (
 					// <CostCodeDropdown
 					// 	label=''
 					// 	options={getDivisionOptions()}
@@ -321,10 +331,10 @@ const TableGrid = (props: TableGridProps) => {
 					// 	}}
 					// 	filteringValue={params?.data?.division}
 					// />
-					<CostCodeSelect
+					return params?.data && <CostCodeSelect
 						label=" "
 						options={getDivisionOptions()}
-						onChange={(value:any) => handleOnChange(value, params)}
+						onChange={(value: any) => handleOnChange(value, params)}
 						// required={true}
 						// startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
 						checkedColor={'#0590cd'}
@@ -333,7 +343,7 @@ const TableGrid = (props: TableGridProps) => {
 						Placeholder={'Select'}
 						outSideOfGrid={false}
 						showFilterInSearch={true}
-						isFullWidth={true}	
+						isFullWidth={true}
 						sx={{
 							fontSize: '13px',
 							'&:before': {
@@ -345,13 +355,13 @@ const TableGrid = (props: TableGridProps) => {
 							'.MuiSelect-icon': {
 								display: 'none',
 							},
-						}}					
+						}}
 						filteroptions={getDivisionFilterOptions()}
 						filteringValue={params?.data?.division}
-						onFiltersUpdate={(filters:any) => setMultiLevelDefaultFilters(filters)}
-						defaultFilters={multiLevelDefaultFilters}
-            />
-				) : null;
+						onFiltersUpdate={(filters: any) => setMultiLevelDefaultFilters(filters)}
+						defaultFilters={multiLevelDefaultFilters?.length ? multiLevelDefaultFilters?.length : inLinefilter}
+					/>
+				// ) : null;
 			}
 		},
 		{
@@ -361,8 +371,8 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			keyCreator: (params: any) => params.data.costType || 'None',
 			cellRenderer: (params: any) => {
-				return params?.node?.level == 1 ? (
-					<SmartDropDown
+				// return params?.node?.level == 1 ? (
+					return params?.data && <SmartDropDown
 						options={getCostTypeOptions()}
 						dropDownLabel=''
 						isSearchField={false}
@@ -384,7 +394,7 @@ const TableGrid = (props: TableGridProps) => {
 						}}
 						menuProps={classes.menuPaper}
 					/>
-				) : null;
+				// ) : null;
 			}
 		}, {
 			headerName: 'Associated Location/System',
@@ -468,10 +478,10 @@ const TableGrid = (props: TableGridProps) => {
 				if(params?.value && params?.node?.footer) {
 					return currencySymbol + ' ' + params?.value?.toLocaleString("en-US");
 				}
-				else if(params?.node?.level == 1 && params?.value && params?.data?.markupFeePercentage) {
+				else if(params?.data && params?.value && params?.data?.markupFeePercentage) {
 					return currencySymbol + ' ' + params?.value?.toLocaleString("en-US") + `(${params?.data?.markupFeePercentage}%)`;
 				}
-				else if(params?.node?.level == 1 && params?.value && params?.data?.markupFeePercentage == null) {
+				else if(params?.data && params?.value && params?.data?.markupFeePercentage == null) {
 					return params?.value == 'N/A' ? 'N/A' : currencySymbol + ' ' + params?.value?.toLocaleString("en-US");
 				}
 			}
@@ -579,7 +589,7 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data ? getCurveText(params?.data?.curve) : '',
 			cellRenderer: (params: any) => {
-				return params?.node?.level == 1 ? (
+				return params?.data ? (
 					<SmartDropDown
 						options={curveList}
 						dropDownLabel=''
@@ -619,7 +629,7 @@ const TableGrid = (props: TableGridProps) => {
 				return params?.value && params?.value.length > 25 ? params?.value : null;
 			},
 			cellRenderer: (params: any) => {
-				return params && params?.node?.level == 1 ? (
+				return params && params?.data ? (
 					params?.data?.bidPackage?.status == 'Awarded' ?
 						params?.data?.Vendors?.map((data: any, i: any) => {
 							return (
@@ -659,7 +669,7 @@ const TableGrid = (props: TableGridProps) => {
 			},
 			cellRenderer: (params: any) => {
 				return (
-					params && params?.node?.level == 1 && params?.data ?
+					params && params?.data ?
 						<DatePickerComponent
 							defaultValue={convertDateToDisplayFormat(params?.data?.estimatedStart)}
 							onChange={(val: any) => handleOnChange(val, params)}
@@ -694,7 +704,7 @@ const TableGrid = (props: TableGridProps) => {
 			},
 			cellRenderer: (params: any) => {
 				return (
-					params && params?.node?.level == 1 && params?.data ?
+					params && params?.data ?
 						<DatePickerComponent
 							defaultValue={convertDateToDisplayFormat(params?.data?.estimatedEnd)}
 							onChange={(val: any) => handleOnChange(val, params)}
@@ -895,7 +905,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return <span className='hot-link'
-						onClick={() => {window.open(`${appInfo?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/bid-manager/home?id=${params?.data?.bidPackage?.id}#react`, '_blank');}}
+						onClick={() => {window.open(useHotLink(`bid-manager/home?id=${params?.data?.bidPackage?.id}`), '_blank');}}
 					>
 						{params?.data?.bidPackage?.name && params?.data?.bidPackage?.name}
 					</span>;
@@ -948,7 +958,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return <span className='hot-link'
-						onClick={() => window.open(`${appInfo.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/vendor-contracts/home?id=${params?.data?.vendorContract?.id}#react`, '_blank')}					>
+						onClick={() => window.open(useHotLink(`vendor-contracts/home?id=${params?.data?.vendorContract?.id}`), '_blank')}					>
 						{params?.data?.vendorContract?.name && params?.data?.vendorContract?.name}
 					</span>;
 				}
@@ -1004,7 +1014,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return <span className='hot-link'
-						onClick={() => window.open(`${appInfo.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/client-contracts/home?id=${params?.data?.clientContract?.id}#react`, '_blank')}
+						onClick={() => window.open(useHotLink(`client-contracts/home?id=${params?.data?.clientContract?.id}`), '_blank')}
 					>
 						{params?.data?.clientContract?.name && params?.data?.clientContract?.name}
 					</span>;
@@ -1088,7 +1098,7 @@ const TableGrid = (props: TableGridProps) => {
 		return useAppSelector(getCostCodeDropdownList);
 	};
 
-	
+
 	const getDivisionFilterOptions = () => {
 		// return useAppSelector(getCostCodeDivisionList);
 		return useAppSelector(getCostCodeFilterList);

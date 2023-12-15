@@ -171,7 +171,7 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 	// Changing the FilterIDs to required format
 	const changeFilterFormat = (filteredIds: any) => {
 		let dataSet = {};
-		filteredIds.forEach((ele: any) => {
+		filteredIds?.forEach((ele: any) => {
 			const ids = ele.toString().split(';');
 			if (ids.length > 1) {
 				const values: any = []

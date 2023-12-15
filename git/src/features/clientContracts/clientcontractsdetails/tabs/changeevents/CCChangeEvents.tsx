@@ -1,30 +1,26 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import _ from 'lodash';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { styled, alpha, Box, Button, Paper, Stack, IconButton, Menu, MenuItem, Divider, MenuProps } from '@mui/material';
-import { Add, Close, KeyboardArrowDown } from '@mui/icons-material';
-import { ColDef } from 'ag-grid-enterprise';
+import React, {useState, useMemo} from 'react';
+import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
+import {Box} from '@mui/material';
+import {ColDef} from 'ag-grid-enterprise';
 import './CCChangeEvents.scss';
 
 import SUIGrid from 'sui-components/Grid/Grid';
-import { getTransactionTypeText } from 'utilities/commonFunctions';
-import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { getServer } from 'app/common/appInfoSlice';
-import { getCCChangeEventsList } from 'features/clientContracts/stores/CCChangeEventsSlice';
-import { formatDate } from 'utilities/datetime/DateTimeUtils';
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {getServer} from 'app/common/appInfoSlice';
+import {getCCChangeEventsList} from 'features/clientContracts/stores/CCChangeEventsSlice';
+import {formatDate} from 'utilities/datetime/DateTimeUtils';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 
 const CCChangeEvents = (props: any) => {
 	const dispatch = useAppDispatch();
 	const [rowData, setRowData] = useState<Array<any>>([]);
 	const appInfo = useAppSelector(getServer);
-	const { selectedRecord } = useAppSelector((state) => state.clientContracts);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
-	const { changeEventsList } = useAppSelector((state) => state?.ccChangeEvents);
+	const {selectedRecord} = useAppSelector((state) => state.clientContracts);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
+	const {changeEventsList} = useAppSelector((state) => state?.ccChangeEvents);
 
 
 	React.useEffect(() => {
-		dispatch(getCCChangeEventsList({ appInfo: appInfo, id: selectedRecord?.id }));
+		dispatch(getCCChangeEventsList({appInfo: appInfo, id: selectedRecord?.id}));
 	}, [selectedRecord]);
 
 	React.useEffect(() => {
@@ -56,7 +52,7 @@ const CCChangeEvents = (props: any) => {
 		aggFunc: 'sum',
 		type: 'rightAligned',
 		cellRenderer: (params: any) => {
-			if (params.value && (params.node.footer || params.node.level > 0 || !params.node.expanded))
+			if(params.value && (params.node.footer || params.node.level > 0 || !params.node.expanded))
 				return <div className='right-align'>
 					{amountFormatWithSymbol(params.value)}
 				</div>;
@@ -69,7 +65,7 @@ const CCChangeEvents = (props: any) => {
 		minWidth: 220,
 		type: 'rightAligned',
 		cellRenderer: (params: any) => {
-			if (params.value && (params.node.footer || params.node.level > 0 || !params.node.expanded))
+			if(params.value && (params.node.footer || params.node.level > 0 || !params.node.expanded))
 				return <div className='right-align'>
 					{amountFormatWithSymbol(params.value)}
 				</div>;
@@ -81,7 +77,7 @@ const CCChangeEvents = (props: any) => {
 		aggFunc: 'sum',
 		type: 'rightAligned',
 		cellRenderer: (params: any) => {
-			if (params.value && (params.node.footer || params.node.level > 0 || !params.node.expanded))
+			if(params.value && (params.node.footer || params.node.level > 0 || !params.node.expanded))
 				return <div className='right-align'>
 					{amountFormatWithSymbol(params.value)}
 				</div>;
@@ -104,46 +100,46 @@ const CCChangeEvents = (props: any) => {
 			suppressRowClickSelection: true,
 			cellRenderer: 'agGroupCellRenderer',
 			onCellClicked: (cell: any) => {
-				const { smartapp, id } = cell.data;
-				if (id) {
-					postMessage({ event: 'openitem', body: { smartItemId: id } });
+				const {smartapp, id} = cell.data;
+				if(id) {
+					postMessage({event: 'openitem', body: {smartItemId: id}});
 				}
 			},
 			cellRendererParams: {
 				innerRenderer: (cell: any) => {
-					if (!cell.data) {
+					if(!cell.data) {
 						const isFooter = cell?.node?.footer;
 						const isRootLevel = cell?.node?.level === -1;
-						if (isFooter) {
-							if (isRootLevel) {
+						if(isFooter) {
+							if(isRootLevel) {
 								return 'Summary';
 							}
 							return `Subtotal`;
 						} else {
 							return <div className='hot-link' onClick={() => {
 								window.open(
-									`${appInfo?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/change-event-requests/home?id=${cell?.data?.id}#react`,
+									useHotLink(`change-event-requests/home?id=${cell?.data?.id}`),
 									"_blank"
 								);
 							}}>{cell.value}</div>;;
 						}
 					}
-					if (cell.node.group) {
+					if(cell.node.group) {
 						return <div className='hot-link' onClick={() => {
 							window.open(
-								`${appInfo?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/change-event-requests/home?id=${cell?.data?.id}#react`,
+								useHotLink(`change-event-requests/home?id=${cell?.data?.id}`),
 								"_blank"
 							);
 						}}>{cell.value}</div>;
 					}
 					else {
-						const { name, board, smartapp } = cell.data;
+						const {name, board, smartapp} = cell.data;
 
 						return <div className='blue-color mouse-pointer vertical-center-align1'>
 							<span className="hot-link1" >
 								{`${cell?.data?.name} - ${cell?.data?.division} - ${cell?.data?.costCode} - ${cell?.data?.costType}`}
 							</span>
-						</div>
+						</div>;
 					}
 				}
 			},
@@ -164,7 +160,7 @@ const CCChangeEvents = (props: any) => {
 				<span className='kpi-item-tile'>
 					<div className='kpi-label'>No. of Change Events</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
+						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
 						<span className='kpi-value'>
 							{/* {`1`} */}
 							{` ${changeEventsList?.noofEvents ? changeEventsList?.noofEvents?.toLocaleString('en-US') : 0}`}
@@ -174,7 +170,7 @@ const CCChangeEvents = (props: any) => {
 				<span className='kpi-item-tile'>
 					<div className='kpi-label'>Total Change Event Amount</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
+						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
 						<span className='kpi-value'>
 							{amountFormatWithSymbol(changeEventsList?.totalChangeEventAmount)}
 						</span>

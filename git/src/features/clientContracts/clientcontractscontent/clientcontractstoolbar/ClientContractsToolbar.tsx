@@ -303,7 +303,7 @@ const ClientContractsToolbar = (props: any) => {
 			{/* <Box component='img' alt='New View' src={GridIcon} className='preview-button' sx={{ color: 'rgb(108 108 108)', marginLeft: '10px' }}/> */}
 		</div>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
-			{/* <ReportAndAnalyticsToggle/> */}
+			<ReportAndAnalyticsToggle/>
 			<ToggleButtonGroup
 				exclusive
 				value={tableViewType}

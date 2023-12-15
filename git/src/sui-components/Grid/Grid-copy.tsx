@@ -79,6 +79,7 @@ export interface TableGridProps extends AgGridReactProps {
 	isMainGrid?:boolean;
 	selectedRecord?: any;
 	componentPropsChanged?:any;
+	activeTab?: any;
 }
 
 const SUIGrid = (props: TableGridProps) => {
@@ -89,7 +90,7 @@ const SUIGrid = (props: TableGridProps) => {
 		cacheBlockSize, infiniteInitialRowCount, serverSideInitialRowCount = 50, serverSideInfiniteScroll = true, isServerSideGroupOpenByDefault = () => {}, serverSideStoreType = "partial",
 		tooltipShowDelay = 0, tooltipHideDelay, emptyMsg = "No items are available", suppressDragLeaveHidesColumns = false, groupSelectsChildren = true,
 		animateRows = true, rowGroupPanelSuppressSort = false, suppressScrollOnNewData = false, suppressMultiSort = true, getRowHeight,
-		onSortChanged, openLID = false,isMainGrid=false, selectedRecord={}, componentPropsChanged= () => {}, ...rest} = props;
+		onSortChanged, openLID = false,isMainGrid=false, selectedRecord={}, componentPropsChanged= () => {}, activeTab = null, ...rest} = props;
 
 	const {gridData, selectedRows, originalGridApiData} = useAppSelector((state) => state.gridData);
 	const {selectedRow} = useAppSelector(state => state.rightPanel);
@@ -130,10 +131,18 @@ const SUIGrid = (props: TableGridProps) => {
   const onRowSelected = (e: any) => {
 	if (isMainGrid && !openLID) {
 		const selRows = gridRef?.current?.api?.getSelectedRows() || [];
+		if (activeTab) {
+			postMessage({
+				event: "ctx-change",
+				body: { iframeId: "", data: selRows, tabName: activeTab },
+			});
+		} else {
 		postMessage({
-		event: "ctx-change",
-		body: { iframeId: "", data: selRows },
+			event: "ctx-change",
+			body: { iframeId: "", data: selRows },
 		});
+		}
+		
 		console.log("rows", selRows);
 		rowSelected(e);
   }
@@ -141,13 +150,26 @@ const SUIGrid = (props: TableGridProps) => {
 
   useEffect(()=> {
 	if	(openLID && selectedRecord && Object.keys(selectedRecord)?.length) {
+		if (activeTab) {
+			postMessage({
+				event: "ctx-change",
+				body: { iframeId: "", data: [selectedRecord], tabName: activeTab },
+				});
+		} else {
+			postMessage({
+				event: "ctx-change",
+				body: { iframeId: "", data: [selectedRecord] },
+				});
+		}
+		
+			console.log('rows', selectedRecord);
+	} else if(activeTab) {
 		postMessage({
 			event: "ctx-change",
-			body: { iframeId: "", data: [selectedRecord] },
+			body: { iframeId: "", data: [], tabName: activeTab },
 			});
-			console.log('rows', selectedRecord);
 	}
-  }, [openLID, selectedRecord]);
+  }, [openLID, selectedRecord, activeTab]);
 
 	useEffect(() => {
 		if(props.updatedObj) {

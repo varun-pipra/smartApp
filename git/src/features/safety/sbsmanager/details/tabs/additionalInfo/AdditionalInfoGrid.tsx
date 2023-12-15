@@ -5,16 +5,25 @@ import { IconButton } from "@mui/material";
 import SmartDropDown from "components/smartDropdown";
 import SUIGrid from 'sui-components/Grid/Grid';
 import { mappingExpressionsList } from "./mappingExpressionsList";
-
+import { makeStyles, createStyles } from '@mui/styles';
+import FolderIcon from '@mui/icons-material/Folder';
+const useStyles: any = makeStyles((theme: any) =>
+	createStyles({
+		menuPaper: {
+			maxHeight: 48 * 5.2 + 8, //ITEM_HEIGHT = 48 ,ITEM_PADDING_TOP = 8;
+			maxWidth: '160px !important',
+		},
+	})
+);
 export const AdditionalInfoGrid = (props:any) => {
   console.log("gridData0", props?.gridData)
+  const classes = useStyles();
   const initialRecord = [{ rowId: Math.random(), dependentAppFields: "", mappingExpression: "" }];
   const [tableData, setTableData] = React.useState<any>([...props?.gridData, ...initialRecord]);
   const [newRecord, setNewRecord] = React.useState<any>(initialRecord[0]);
   const [mappingExpression, setMappingExpression] = React.useState<any>();
   const [selectedRows, setSelectedRows] = React.useState<any>([]);
   const [disableMappingFields, setDisableMappingFields] = React.useState<any>([]);
-  
   React.useEffect(() => {setTableData([...props?.gridData, ...initialRecord])}, [props?.gridData])
 
   React.useEffect(() => {
@@ -24,10 +33,9 @@ export const AdditionalInfoGrid = (props:any) => {
     console.log("fields", fields)
     
     setDisableMappingFields([...fields])
-  }, [tableData])
-  
-
+  }, [tableData]);
   const AIColumns = [
+    { headerName: '', field: 'dependentAppFieldsIds', hide:true },
     {
       headerName: "Dependent App Fields",
       field: "dependentAppFields",
@@ -41,13 +49,22 @@ export const AdditionalInfoGrid = (props:any) => {
             <SmartDropDown
               disabled={props?.disabled}            
               // LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
-              options={props?.fieldsList}
-              selectedValue={[params?.data?.dependentAppFields]}
-              handleChange={(val:any) => handleOnUpdate(params, val, 'dependentAppFields')}              
+              // options={props?.fieldsList}
+              selectedValue={params?.data?.dependentAppFields}
+              handleChange={(val:any, nodeIds?:any) => handleOnUpdate(params, val, 'dependentAppFields', nodeIds)}
+              handleChipDelete={(val:any) => handleOnUpdate(params, val, 'dependentAppFields')} 
               outSideOfGrid={true}
               isSearchField={false}
               isFullWidth
               Placeholder={"Select"}
+              isTreeView={true}
+              treeDataOptions={props?.fieldsList  || []}
+              isTreeMultiSelect={false}
+              showCustomTreeIcon={true}
+              isMultiple={false}
+              menuProps={classes.menuPaper}
+              selectedNodes={params?.data?.dependentAppFieldsIds || []}
+              TreeIcon={<FolderIcon />}
             />
           </div>
         );
@@ -88,17 +105,22 @@ export const AdditionalInfoGrid = (props:any) => {
     setTableData(data);
   };
 
-  const handleOnUpdate = (params:any, value: any, key: string) => {
+  const handleOnUpdate = (params:any, value: any, key: string, nodeIds?:any) => {
     console.log("va", params, value)
     let updatedRow:any;
     const updatedData = tableData?.map((row:any) => {
       if(row?.id && row?.id == params?.data?.id) {
-        updatedRow = {...row, [key]: value[0]};        
-        return {...row, [key]: value[0]}
-      } 
-      else if (row?.rowId == params?.data?.rowId)  { 
-        updatedRow = {...row, [key]: value[0]};
-        return {...row, [key]: value[0]} 
+          updatedRow = {...row, [key]: value};      
+          if(nodeIds) {
+            updatedRow = {...updatedRow, ['dependentAppFieldsIds']: nodeIds}; 
+          };
+          return updatedRow;
+      } else if (row?.rowId == params?.data?.rowId)  { 
+          updatedRow = {...row, [key]: value};
+          if(nodeIds) {
+            updatedRow = {...updatedRow, ['dependentAppFieldsIds']: nodeIds}; 
+          };
+          return updatedRow;
       }
       return {...row};
     })

@@ -172,17 +172,21 @@ const filterOptions = [
 
 const Links = () => {
 	const appInfo = useAppSelector(getServer);
-	const { appsList  } = useAppSelector(state => state.sbsManager)	
+	const { appsList , detailsData } = useAppSelector(state => state.sbsManager)	
 	const [disableDeleteBtn, setDisableDeleteBtn] = useState<boolean>(true);
 	const [selected, setSelected] = useState<any>();
 	const [searchText, setSearchText] = useState<any>();
 	const [filterKeyValue, setFilterKeyValue] = useState<any>([]);
 	const [filters, setFilters] = React.useState<any>(filterOptions);
 	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(AddLinksData)
-
+	const [linksData,setLinksData] = useState<any>([])
 	var tinycolor = require('tinycolor2');
-	const [gridData, setGridData] = useState<any>(linksData);
+	const [gridData, setGridData] = useState<any>([]);
 
+	useEffect(()=>{
+		setLinksData(detailsData?.links)
+		setGridData(detailsData?.links)
+	},[detailsData])
 	useEffect(() => {
 		const addLinksOptionsCopy = [...addLinksOptions];
 		let newSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "New Smart Item");
@@ -252,7 +256,7 @@ const Links = () => {
 			suppressMenu: true,
 		}, {
 			headerName: 'Stage',
-			field: 'stage',
+			field: 'stagename',
 			minWidth: 150,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
@@ -260,8 +264,8 @@ const Links = () => {
 					<Button
 						variant='contained'
 						style={{
-							backgroundColor: params?.data?.color,
-							color: tinycolor(params?.data?.color).isDark() ? 'white' : 'black',
+							backgroundColor: params?.data?.stageColor,
+							color: tinycolor(params?.data?.stageColor).isDark() ? 'white' : 'black',
 						}}
 						className='phaseButton'
 					>
@@ -278,14 +282,16 @@ const Links = () => {
 		},
 		{
 			headerName: 'Created By',
-			field: 'createdby',
+			field: 'createdBy',
 			minWidth: 150,
 			suppressMenu: true,
+			valueGetter: (params: any) =>  params?.data?.createdBy?.name || '',
+			keyCreator: (params: any) => params.data?.createdBy?.name || 'None'
 		}, {
 			headerName: 'Creation Date',
-			field: 'date',
+			field: 'createdDate',
 			suppressMenu: true,
-			valueGetter: (params: any) => params.data?.date ? formatDate(params.data?.date) : '',
+			valueGetter: (params: any) => params.data?.createdDate ? formatDate(params.data?.createdDate) : '',
 		},
 	], []);
 

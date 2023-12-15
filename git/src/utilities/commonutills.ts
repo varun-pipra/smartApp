@@ -43,7 +43,7 @@ export const getFormattedAmount = (amount: any, code: any) => {
 };
 
 export const isUserGC = (appInfo: any) => {
-	if(appInfo?.gblConfig?.isAdmin || appInfo?.gblConfig?.isProjectAdmin) return true;
+	if(appInfo?.gblConfig?.isAdmin) return true;
 	if(Object.values(appInfo?.gblConfig?.user?.projectZonePermissions)?.includes('Vendor Contract Manager')) return true;
 	if(Object.values(appInfo?.gblConfig?.user?.projectZonePermissions)?.includes('Sub Contract Manager')) return false;
 	return 'Not Authorized';

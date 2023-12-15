@@ -20,7 +20,7 @@ export const clientRequest = async (appInfo:any, endPoint:string, opts:any, dele
 }
 
 export const isUserGCForCC = (appInfo:any) => {
-    if(appInfo?.gblConfig?.isAdmin || appInfo?.gblConfig?.isProjectAdmin) return true;
+    if(appInfo?.gblConfig?.isAdmin) return true;
     if(Object.values(appInfo?.gblConfig?.user?.projectZonePermissions)?.includes('Vendor Contract Manager')) return true;
     if(Object.values(appInfo?.gblConfig?.user?.projectZonePermissions)?.includes('Client Contract Manager')) return false;
     return 'Not Authorized';

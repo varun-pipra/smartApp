@@ -49,10 +49,10 @@ const VendorContractsWindow = () => {
 	const currentContract = useAppSelector(getSelectedRecord);
 
 	const tabEnum: any = {
-		sov: 'scheduleValues',
-		files: 'contractFiles',
-		changeEvent: 'changeEvent',
-		paymentLedger: 'paymentLedger',
+		sov: 'schedule-of-Values',
+		files: 'contract-Files',
+		changeEvent: 'change-Events',
+		paymentLedger: 'payment-Ledger',
 		transactions: 'transactions',
 		forecast: 'forecast'
 	};

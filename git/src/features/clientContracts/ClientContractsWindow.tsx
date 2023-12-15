@@ -44,10 +44,10 @@ const ClientContractsWindow = () => {
 	const presenceId = 'client-contracts-presence';
 
 	const tabEnum: any = {
-		sov: 'scheduleValues',
-		files: 'contractFiles',
-		changeEvent: 'changeEvent',
-		paymentLedger: 'paymentLedger',
+		sov: 'schedule-of-Values',
+		files: 'contract-Files',
+		changeEvent: 'change-Event',
+		paymentLedger: 'payment-Ledger',
 		transactions: 'transactions',
 		forecast: 'forecast'
 	};

@@ -999,6 +999,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 					masterDetail: true,
 					componentPropsChanged: componentPropsChanged,
 					onFirstDataRendered: onFirstDataRendered,
+					activeTab: activeTab
 				}}
 			/>
 			<div

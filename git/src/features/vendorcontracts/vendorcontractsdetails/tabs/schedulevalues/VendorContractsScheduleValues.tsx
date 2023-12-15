@@ -1153,7 +1153,7 @@ const VendorContractsScheduleValues = (props: any) => {
 				</div>
 				<SUISelectionTiles
 					tilesData={tilesData}
-					readOnly={['Draft', 'ReadyToSubmit',].includes(selectedRecord?.status) ? false : true}
+					readOnly={['Draft', 'ReadyToSubmit',].includes(selectedRecord?.status) || (['ActiveUnlockedPendingSOVUpdate']?.includes(selectedRecord?.status) && selectedBudgetItem?.hasChangeOrder) ? false : true}
 					selectedTile={(tile: any) => onSelectedTileChange(tile)}
 				></SUISelectionTiles>
 				<div className="vc-schedule-values_buttons-wrapper">

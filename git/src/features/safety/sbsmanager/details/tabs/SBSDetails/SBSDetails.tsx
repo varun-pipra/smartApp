@@ -1,7 +1,7 @@
 import React from "react";
 import "./SBSDetails.scss";
 import SmartDropDown from "components/smartDropdown";
-import { InputLabel, TextField } from "@mui/material";
+import { InputLabel, Stack, TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import DatePickerComponent from "components/datepicker/DatePicker";
 import InputIcon from "react-multi-date-picker/components/input_icon";
@@ -15,6 +15,8 @@ import { useEffect } from "react";
 
 import { getTradeData } from "features/projectsettings/projectteam/operations/ptDataSlice";
 import { setSaveDetailsObj, setEnableSaveButton } from "features/safety/sbsmanager/operations/sbsManagerSlice";
+import IQTooltip from "components/iqtooltip/IQTooltip";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
 const SBSDetailsTab = (props: any) => {
   const { selectedRec, ...rest } = props;
@@ -135,17 +137,34 @@ const SBSDetailsTab = (props: any) => {
         <div className="eventrequest-details-content">
           <span className="eventrequest-info-tile">
             <div className="type-field">
-              <InputLabel
-                required
-                className="inputlabel"
-                sx={{
-                  "& .MuiFormLabel-asterisk": {
-                    color: "red",
-                  },
-                }}
-              >
-                Category
-              </InputLabel>
+              <div style={{display:'flex', alignItems: 'center'}}>
+                <InputLabel
+                  required
+                  className="inputlabel"
+                  sx={{
+                    "& .MuiFormLabel-asterisk": {
+                      color: "red",
+                    },
+                  }}
+                >
+                  Category
+                </InputLabel>
+                {selectedRec?.hasDifferentCategory && (
+                  <IQTooltip
+                    title={
+                      <Stack direction="row" className="tooltipcontent">
+                        <p className="tooltiptext">
+                          Category name needs to be updated.
+                        </p>
+                      </Stack>
+                    }
+                    placement={"bottom"}
+                    arrow={true}
+                  >
+                    <WarningAmberIcon fontSize={"small"} style={{ color: "red" }} />
+                  </IQTooltip>
+                )}
+              </div>
               <SmartDropDown
                 LeftIcon={<div className="common-icon-Budgetcalculator"></div>}
                 options={categoryDropDownOptions || []}

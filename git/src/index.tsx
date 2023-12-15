@@ -1,11 +1,11 @@
-import React, { Suspense } from "react";
-import { createRoot } from "react-dom/client";
-import { Provider } from "react-redux";
-import { store } from "./app/store";
+import React, {Suspense} from "react";
+import {createRoot} from "react-dom/client";
+import {Provider} from "react-redux";
+import {store} from "./app/store";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
-import { ThemeProvider } from "@ui5/webcomponents-react";
+import {BrowserRouter} from "react-router-dom";
+import {ThemeProvider} from "@ui5/webcomponents-react";
 import './css/webfont/common-webfont/style.css';
 //import './css/webfont/common/style.css';
 import './css/fonts/Roboto-Regular.ttf';
@@ -13,7 +13,6 @@ import {
 	createTheme,
 	ThemeProvider as MaterialThemeProvider,
 } from "@mui/material";
-import { orange } from "@mui/material/colors";
 import "./index.scss";
 import "./i18n.js";
 
@@ -33,7 +32,7 @@ root.render(
 	<React.StrictMode>
 		<Suspense fallback={<></>}>
 			<Provider store={store}>
-				<BrowserRouter>
+				<BrowserRouter basename={'/EnterpriseDesktop/React'}>
 					<ThemeProvider>
 						<MaterialThemeProvider theme={theme}>
 							<App />

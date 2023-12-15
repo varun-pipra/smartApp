@@ -270,3 +270,49 @@ export const deleteFiles = async (sbsId: string, payload: any, callback: any) =>
 	}
 };
 
+export const UpdateSettings  = async (payload: any) => {
+  let response;
+  const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/category?sessionId=${appInfo?.sessionId}`,
+      {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
+    const responseData = await response.json();
+    return responseData || {};
+  } else return { success: true };
+};
+export const fetchSettingsCategoriesList = async () => {
+  let response;
+  const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/category?sessionId=${appInfo?.sessionId}`
+    );
+    if (!response.ok) {
+      const message = `API Request Error (${moduleName}): ${response.status}`;
+      throw new Error(message);
+    }
+    const responseData = await response.json();
+    return responseData?.data || [];
+  } else return { success: true };
+};
+export const fetchSbsSettings = async () => {
+  let response;
+  const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/category?sessionId=${appInfo?.sessionId}`
+    );
+    if (!response.ok) {
+      const message = `API Request Error (${moduleName}): ${response.status}`;
+      throw new Error(message);
+    }
+    const responseData = await response.json();
+    return responseData?.data || [];
+  } else return { success: true };
+};

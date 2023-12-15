@@ -7,6 +7,8 @@ import {
   fetchGridDetailsDataByID,
   fetchAppsList,
   fetchDependentAppFields,
+  fetchSbsSettings,
+  fetchSettingsCategoriesList,
 } from "./sbsManagerAPI";
 export interface SBSManagerState {
   loading: boolean;
@@ -24,6 +26,8 @@ export interface SBSManagerState {
   sbsSaveEnableBtn?:boolean;
   sbsDetailsPayload?:any;
   toast: string;
+  sbsSettings: any;
+  settingsCategoryList:any;
 }
 
 const initialState: SBSManagerState = {
@@ -41,7 +45,9 @@ const initialState: SBSManagerState = {
   addPhaseText:'',
   sbsSaveEnableBtn:false,
   sbsDetailsPayload:[],
-  toast: ''
+  toast: '',
+  sbsSettings: {},
+  settingsCategoryList : []
 };
 
 export const getSBSGridList = createAsyncThunk<any>(
@@ -87,6 +93,22 @@ export const getAppDependentFields = createAsyncThunk<any, any>(
   "getAppDependentFields",
   async (appId:any) => {
     const response = await fetchDependentAppFields(appId);
+    return response;
+  }
+);
+
+export const getSettingsCategoriesList = createAsyncThunk<any>(
+  "getSettingsCategoriesList",
+  async () => {
+    const response = await fetchSettingsCategoriesList();
+    return response;
+  }
+);
+
+export const getSbsSettings = createAsyncThunk<any>(
+  "getSbsSettings",
+  async () => {
+    const response = await fetchSbsSettings();
     return response;
   }
 );
@@ -192,13 +214,34 @@ export const SBSManagerSlice = createSlice({
       })
       .addCase(getAppDependentFields.fulfilled, (state, action) => {
         state.loading = false;
-        state.appDependentFields = action.payload?.MainItemCollections?.[0]?.Fields?.map((obj:any) => {
-          return {id: obj?.Name, value: obj?.Name, label: obj?.Label}
-        });
+        state.appDependentFields = action.payload?.MainItemCollections;
+        // ?.[0]?.Fields?.map((obj:any) => {
+        //   return {id: obj?.Name, value: obj?.Name, label: obj?.Label}
+        // });
       })
       .addCase(getAppDependentFields.rejected, (state) => {
         state.loading = false;
-      });
+      })
+      .addCase(getSbsSettings.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getSbsSettings.fulfilled, (state, action) => {
+        state.loading = false;
+        state.sbsSettings = action.payload;
+      })
+      .addCase(getSbsSettings.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(getSettingsCategoriesList.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getSettingsCategoriesList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.settingsCategoryList = action.payload;
+      })
+      .addCase(getSettingsCategoriesList.rejected, (state) => {
+        state.loading = false;
+      })
   },
 });
 

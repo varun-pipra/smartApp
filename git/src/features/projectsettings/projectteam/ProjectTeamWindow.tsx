@@ -180,10 +180,10 @@ const ProjectTeamWindow = (props: any) => {
 	const customSortingDateFields = ['safetyVerifiedOn', 'createdDate', 'modifiedDate', 'modifiedBy', 'createdBy']; //-->
 	const customSortingStatusForFields = ['certificateStatus', 'policyStatus', 'safetyStatus']; //-->
 	const customSortingObjFields = ['company', 'tradeName', 'shift'];
-	const customSortingArrFields = ['skills', 'roles'];
+	const customSortingArrFields = ['skills', 'roles','regions'];
 	const customSortingFields = ['lastName', 'email', 'phone']; //-->
 	const customFilterFields = ['permissions', 'onlineStatus', 'companyManagerAttestation', 'status'];
-	const hideRtlsColumns = ['company','roles',"tradeName","skills","workCategoryName","safetyStatus","policyStatus","certificateStatus",'projectZonePermissions'];
+	const hideRtlsColumns = ['company', 'roles', "tradeName", "skills", "workCategoryName", "safetyStatus", "policyStatus", "certificateStatus", 'projectZonePermissions'];
 	const isMTA = localhost ? true : (appInfo?.gblConfig?.project?.isProjectCentralZone) || false;
 	const [groupKey, setGroupKey] = React.useState<any>('');
 	const [filteredValues, setFilteredValues] = React.useState<any>({});
@@ -292,30 +292,30 @@ const ProjectTeamWindow = (props: any) => {
 			],
 		},
 	}];
-	const GetPermissionList = (data:any, key?:boolean) => {
+	const GetPermissionList = (data: any, key?: boolean) => {
 		let list = [],
-					isMTA = appInfo?.isMTA,
-					zonePermission = data?.projectZonePermissions || [],
-					adminValues: any = {
-						'Admin': isMTA ? 'Super Admin' : 'Admin',
-						'ProjectAdmin': 'Admin',
-						'AdminWithBilling': 'Admin with Billing',
-						'ProjectTeamManager': 'Project Team Manager',
-						'CompanyManager': 'Company Manager'
-					};
+			isMTA = appInfo?.isMTA,
+			zonePermission = data?.projectZonePermissions || [],
+			adminValues: any = {
+				'Admin': isMTA ? 'Super Admin' : 'Admin',
+				'ProjectAdmin': 'Admin',
+				'AdminWithBilling': 'Admin with Billing',
+				'ProjectTeamManager': 'Project Team Manager',
+				'CompanyManager': 'Company Manager'
+			};
 
-				if (adminValues[data?.userPermissionType])
-					list.push(adminValues[data?.userPermissionType]);
-				for (var indx in zonePermission) {
-					var record = assignUnassignData2.find((obj:any) => zonePermission[indx] == obj.value);
-					if(record) {
-						list.push(record.text);
-					} else {
-						list.push(zonePermission[indx].name);
-					}
-				};
-				if(key) return list.length === 0 ? null : list.join(", ");
-				else return list.length === 0 ? 'None' : list.join(", ");
+		if (adminValues[data?.userPermissionType])
+			list.push(adminValues[data?.userPermissionType]);
+		for (var indx in zonePermission) {
+			var record = assignUnassignData2.find((obj: any) => zonePermission[indx] == obj.value);
+			if (record) {
+				list.push(record.text);
+			} else {
+				list.push(zonePermission[indx].name);
+			}
+		};
+		if (key) return list.length === 0 ? null : list.join(", ");
+		else return list.length === 0 ? 'None' : list.join(", ");
 	};
 	const CompanyCardTooltip = styled(({ className, ...props }: TooltipProps) => (
 		<Tooltip
@@ -362,32 +362,32 @@ const ProjectTeamWindow = (props: any) => {
 			maxWidth: "none",
 		},
 	});
-	const handleOnlineStatusChange = (val:any) => {
+	const handleOnlineStatusChange = (val: any) => {
 		radioRef.current = val;
-		if(val !== '' && val !== 'custom') {
+		if (val !== '' && val !== 'custom') {
 			let onlineStatus = { ...filteredValues, ['onlineStatus']: val };
 			setFilteredValues(onlineStatus);
 			setGridFilters(onlineStatus);
 		};
 	};
-	const handleApply = (customDates:any) => {
-		const {startDate, endDate} = customDates;
+	const handleApply = (customDates: any) => {
+		const { startDate, endDate } = customDates;
 		if (startDate !== '' && endDate !== '') {
 			let onlineStatusFilter = { ...filteredRef.current, ['onlineStatus']: [customDates] };
 			onFilterChange(onlineStatusFilter);
 		}
 	};
-	const handleOnlineStatusClear = (setSelectedStatus:any, setCustomDates:any) => {
+	const handleOnlineStatusClear = (setSelectedStatus: any, setCustomDates: any) => {
 		radioRef.current = '';
 		datesRef.current = '';
 		let onlineStatusFilter = filteredRef.current;
-		if(onlineStatusFilter.hasOwnProperty('onlineStatus')) {
+		if (onlineStatusFilter.hasOwnProperty('onlineStatus')) {
 			delete onlineStatusFilter.onlineStatus;
 		};
 		filteredRef.current = onlineStatusFilter;
 		onFilterChange(onlineStatusFilter, true);
 		setSelectedStatus('');
-		setCustomDates({startDate: "",endDate: ""});
+		setCustomDates({ startDate: "", endDate: "" });
 		setReAssignState(true);
 		setOnlineStatusAssignState(true);
 	};
@@ -430,10 +430,10 @@ const ProjectTeamWindow = (props: any) => {
 			endDate: datesRef.current.endDate ?? ""
 		});
 		React.useEffect(() => {
-			 datesRef.current = customDates;
-		},[customDates]);
+			datesRef.current = customDates;
+		}, [customDates]);
 		return (
-			<div style={{ padding: 10, marginLeft:15 }}>
+			<div style={{ padding: 10, marginLeft: 15 }}>
 				<RadioGroup
 					defaultValue={radioRef.current ?? ''}
 					aria-labelledby="online-status-group-label"
@@ -449,10 +449,10 @@ const ProjectTeamWindow = (props: any) => {
 						control={<Radio />}
 						label="Beaconing Now"
 					/>
-					<FormControlLabel 
-					value="Today" 
-					control={<Radio />} 
-					label="Today" 
+					<FormControlLabel
+						value="Today"
+						control={<Radio />}
+						label="Today"
 					/>
 					<FormControlLabel
 						value="Yesterday"
@@ -475,7 +475,7 @@ const ProjectTeamWindow = (props: any) => {
 								defaultValue={customDates?.startDate}
 								containerClassName={"iq-customdate-cont"}
 								maxDate={new Date()}
-								onChange={(val: any) => setCustomDates({...customDates, ['startDate'] : val})}
+								onChange={(val: any) => setCustomDates({ ...customDates, ['startDate']: val })}
 								render={
 									<InputIcon
 										placeholder={"MM/DD/YYYY"}
@@ -490,7 +490,7 @@ const ProjectTeamWindow = (props: any) => {
 								defaultValue={customDates?.endDate}
 								containerClassName={"iq-customdate-cont"}
 								maxDate={new Date()}
-								onChange={(val: any) => setCustomDates({...customDates, ['endDate'] : val})}
+								onChange={(val: any) => setCustomDates({ ...customDates, ['endDate']: val })}
 								render={
 									<InputIcon
 										placeholder={"MM/DD/YYYY"}
@@ -542,21 +542,21 @@ const ProjectTeamWindow = (props: any) => {
 	});
 	const groupOptions = useMemo(() => {
 		var groupingMenu = [{ text: "Name", value: "firstName", iconCls: 'common-icon-name-id' },
-				{ text: "Companies", value: "company", iconCls: 'common-icon-company-new' },
-				{ text: "Work Team", value: "workTeams", iconCls: 'common-icon-work-team' },
-				{ text: "Trades", value: "tradeName", iconCls: 'common-icon-trade' },
-				{ text: "Skills", value: "skills", iconCls: 'common-icon-orgconsole-skills-certs' },
-				{ text: "Permissions", value: "projectZonePermissions", iconCls: 'common-icon-none' },
-				{ text: "Roles", value: "roles", iconCls: 'common-icon-Approval-Role' }];
+		{ text: "Companies", value: "company", iconCls: 'common-icon-company-new' },
+		{ text: "Work Team", value: "workTeams", iconCls: 'common-icon-work-team' },
+		{ text: "Trades", value: "tradeName", iconCls: 'common-icon-trade' },
+		{ text: "Skills", value: "skills", iconCls: 'common-icon-orgconsole-skills-certs' },
+		{ text: "Permissions", value: "projectZonePermissions", iconCls: 'common-icon-none' },
+		{ text: "Roles", value: "roles", iconCls: 'common-icon-Approval-Role' }];
 		var lastSeenMenu = [{ text: "Last Seen", hidden: true, value: "lastSeen", iconCls: 'common-icon-connecting' }];
-		
+
 		// if (appInfo?.gblConfig?.currentProjectInfo?.safetyTracking){
 		groupingMenu = [...groupingMenu, ...safetyGroupOptions, ...lastSeenMenu];
 		// }
 		return groupingMenu;
 	}, [appInfo, isLocalhost]);
 	const [groups, setGroups] = React.useState(groupOptions);
-	const financePermissions = assignUnassignData2.filter((obj:any) => obj.value != '');
+	const financePermissions = assignUnassignData2.filter((obj: any) => obj.value != '');
 	const filterOptions = useMemo(() => {
 		var filterMenu = [{
 			text: "Companies",
@@ -633,23 +633,23 @@ const ProjectTeamWindow = (props: any) => {
 				items: [],
 			},
 		}],
-		onlineStatusFilter = [{
-			text: "Online Status",
-			value: "onlineStatus",
-			iconCls: 'common-icon-connecting',
-			key: "onlineStatus",
-			hidden: true,
-			children: {
-				type: "radio",
-				component: <OnlineStatusFilterComp />,
-				items: []
-			},
-		}];
-		
+			onlineStatusFilter = [{
+				text: "Online Status",
+				value: "onlineStatus",
+				iconCls: 'common-icon-connecting',
+				key: "onlineStatus",
+				hidden: true,
+				children: {
+					type: "radio",
+					component: <OnlineStatusFilterComp />,
+					items: []
+				},
+			}];
+
 		filterMenu = [...filterMenu, ...safetyFilterOptions, ...attestmentMenu, ...onlineStatusFilter];
 		return filterMenu;
 	}, [appInfo, isLocalhost]);
-	
+
 	const getIds = (array: any, key: any) => {
 		let idsArray: any = [];
 		let filtersCopy = [...filters];
@@ -727,7 +727,7 @@ const ProjectTeamWindow = (props: any) => {
 		if (sorting) {
 			try {
 				return JSON.parse(sorting);
-				
+
 			} catch (e) {
 				console.error(e);
 			}
@@ -751,7 +751,7 @@ const ProjectTeamWindow = (props: any) => {
 			if (filterObj[item]?.length === 0) {
 				delete filterObj[item]
 			};
-			if(filterObj[item] === "" || filterObj[item] === undefined || filterObj[item] === null) {
+			if (filterObj[item] === "" || filterObj[item] === undefined || filterObj[item] === null) {
 				delete filterObj[item]
 			};
 		});
@@ -772,26 +772,26 @@ const ProjectTeamWindow = (props: any) => {
 						find?.[0].hasOwnProperty('endDate') && find?.[0]?.endDate !== ''
 						&& key === 'onlineStatus') {
 						const sDate = new Date(find?.[0]?.startDate).getTime();
-						let eDate:any = new Date(find?.[0]?.endDate);
+						let eDate: any = new Date(find?.[0]?.endDate);
 						eDate?.setHours(new Date().getHours());
 						eDate?.setMinutes(new Date().getMinutes());
 						eDate?.setSeconds(new Date().getSeconds());
 						eDate = eDate.getTime();
-							if ((obj?.lastSeen ?? false) && obj.lastSeen !== "") {
-								let time = new Date(obj.lastSeen).getTime();
-								return (sDate <= time && time <= eDate);
-							} else {
-								return false;
+						if ((obj?.lastSeen ?? false) && obj.lastSeen !== "") {
+							let time = new Date(obj.lastSeen).getTime();
+							return (sDate <= time && time <= eDate);
+						} else {
+							return false;
 						};
-					} else if (filterBy[key]?.type === "String" && obj[filterBy[key].searchBy] !== null && obj[filterBy[key].searchBy] !== undefined && key === 'onlineStatus'){
+					} else if (filterBy[key]?.type === "String" && obj[filterBy[key].searchBy] !== null && obj[filterBy[key].searchBy] !== undefined && key === 'onlineStatus') {
 						return obj[filterBy[key].searchBy] && obj[filterBy[key].searchBy].includes(find);
 					} else if (filterBy[key]?.type === "String" && obj[filterBy[key].searchBy] !== null && obj[filterBy[key].searchBy] !== undefined && key !== 'permissions')
 						return find.includes(obj[filterBy[key].searchBy]);
-					else if(filterBy[key]?.type === "String" && obj[filterBy[key].searchBy] !== null && key === 'permissions') {
-						let keyText:any = obj[filterBy[key].searchBy]?.split(', ');
-							return find.some((item:any) => {
-								return keyText.includes(item);
-							});
+					else if (filterBy[key]?.type === "String" && obj[filterBy[key].searchBy] !== null && key === 'permissions') {
+						let keyText: any = obj[filterBy[key].searchBy]?.split(', ');
+						return find.some((item: any) => {
+							return keyText.includes(item);
+						});
 					}
 					else if (obj[key] !== null && !customFilterFields.includes(key)) return find?.includes(obj?.[key]);
 				});
@@ -801,11 +801,11 @@ const ProjectTeamWindow = (props: any) => {
 			return unique;
 		} else return data;
 	};
-	const onFilterChange = (filterValues: any, val?:any) => {
-		if(filterValues.hasOwnProperty('onlineStatus') && radioRef.current === '') {
+	const onFilterChange = (filterValues: any, val?: any) => {
+		if (filterValues.hasOwnProperty('onlineStatus') && radioRef.current === '') {
 			delete filterValues.onlineStatus;
 		};
-		if((val ?? false) && radioRef.current !== '') {
+		if ((val ?? false) && radioRef.current !== '') {
 			radioRef.current = ''
 			setOnlineStatusAssignState(true);
 		};
@@ -815,8 +815,8 @@ const ProjectTeamWindow = (props: any) => {
 				if (filterObj[item]?.length === 0) {
 					delete filterObj[item]
 				};
-				if(filterObj[item] === "" || filterObj[item] === undefined || filterObj[item] === null) {
-					if(item === 'onlineStatus') {
+				if (filterObj[item] === "" || filterObj[item] === undefined || filterObj[item] === null) {
+					if (item === 'onlineStatus') {
 						radioRef.current = '';
 					};
 					delete filterObj[item];
@@ -824,7 +824,7 @@ const ProjectTeamWindow = (props: any) => {
 			});
 			if (!_.isEqual(filteredValues, filterObj) && Object.keys(filterObj).length > 0) {
 				setFilteredValues(filterObj);
-				if(filterObj?.onlineStatus?.[0]?.hasOwnProperty('startDate') && filterObj?.onlineStatus?.[0]?.hasOwnProperty('endDate')) {
+				if (filterObj?.onlineStatus?.[0]?.hasOwnProperty('startDate') && filterObj?.onlineStatus?.[0]?.hasOwnProperty('endDate')) {
 					setGridFilters(filterObj);
 				};
 				if (filterObj?.safetyStatus?.length > 0 ?? false) {
@@ -933,7 +933,7 @@ const ProjectTeamWindow = (props: any) => {
 		let currentItem = filtersCopy.find((rec: any) => rec.value === key);
 		currentItem.children.items = formattedData;
 		if (key === 'companies' && !isCompMountedOnce?.current) {
-			isCompMountedOnce.current= true;
+			isCompMountedOnce.current = true;
 			let getCompanyFilters = checkCompaniesFilters(formattedData);
 			setGridFilters(getCompanyFilters);
 			setFilteredValues(getCompanyFilters);
@@ -941,7 +941,7 @@ const ProjectTeamWindow = (props: any) => {
 		setFilters(filtersCopy);
 	};
 	const checkSafetyStatusFilters = () => {
-		let safetyStatusFilter:any = localhost ? getCookie(`safetyStatusFilter_-1_${CookieTitle}`) :  getCookie(`safetyStatusFilter_${appInfo.projectId}_${CookieTitle}`);
+		let safetyStatusFilter: any = localhost ? getCookie(`safetyStatusFilter_-1_${CookieTitle}`) : getCookie(`safetyStatusFilter_${appInfo.projectId}_${CookieTitle}`);
 		if (safetyStatusFilter?.length > 0) {
 			let values = safetyStatusFilter;
 			let safetyStatusObj = [...filters].find((x) => x.text === 'Safety Status');
@@ -984,13 +984,13 @@ const ProjectTeamWindow = (props: any) => {
 			};
 		};
 	};
-	const checkCompaniesFilters = (array?:any) => {
-		let filter:any = localhost ? getCookie(`filters_-1_${CookieTitle}`) :  getCookie(`filters_${appInfo.projectId}_${CookieTitle}`);
+	const checkCompaniesFilters = (array?: any) => {
+		let filter: any = localhost ? getCookie(`filters_-1_${CookieTitle}`) : getCookie(`filters_${appInfo.projectId}_${CookieTitle}`);
 		if (filter) {
 			let CookieFilter;
 			try {
 				CookieFilter = JSON.parse(filter);
-				let companiesList = array.map((item:any) => { return item.name });
+				let companiesList = array.map((item: any) => { return item.name });
 				let filterMenuOptions: any = CookieFilter;
 				const companyName = appInfo?.gblConfig?.currentUserCompany?.name;
 				const isOnlyCompanyManager = (appInfo?.gblConfig?.isCompanyManager || appInfo?.gblConfig?.isComplianceManager) && !(appInfo?.gblConfig?.isAdmin || appInfo?.gblConfig?.isProjectAdmin);
@@ -1008,8 +1008,8 @@ const ProjectTeamWindow = (props: any) => {
 			} catch (e) {
 				return console.error(e);
 			}
-		} else if(appInfo && (array?.length > 0 ?? false)){
-			let companiesList = array.map((item:any) => { return item.name });
+		} else if (appInfo && (array?.length > 0 ?? false)) {
+			let companiesList = array.map((item: any) => { return item.name });
 			const companyName = appInfo?.gblConfig?.currentUserCompany?.name;
 			let filterMenuOptions: any = {};
 			const isOnlyCompanyManager = (appInfo?.gblConfig?.isCompanyManager || appInfo?.gblConfig?.isComplianceManager) && !(appInfo?.gblConfig?.isAdmin || appInfo?.gblConfig?.isProjectAdmin);
@@ -1028,18 +1028,18 @@ const ProjectTeamWindow = (props: any) => {
 	};
 	useEffect(() => {
 		if (appInfo) {
-			let search:any = getCookie(`searchText_${appInfo.projectId}_${CookieTitle}`);
-			let group:any = getCookie(`groupKey_${appInfo.projectId}_${CookieTitle}`);
-			let filter:any = getCookie(`filters_${appInfo.projectId}_${CookieTitle}`);
-			let toggle:any = getCookie(`activeToggle_${appInfo.projectId}_${CookieTitle}`);
+			let search: any = getCookie(`searchText_${appInfo.projectId}_${CookieTitle}`);
+			let group: any = getCookie(`groupKey_${appInfo.projectId}_${CookieTitle}`);
+			let filter: any = getCookie(`filters_${appInfo.projectId}_${CookieTitle}`);
+			let toggle: any = getCookie(`activeToggle_${appInfo.projectId}_${CookieTitle}`);
 			console.log("project-team-appInfo", search, group, filter, toggle);
 			if (filter) {
 				let CookieFilter;
 				try {
 					CookieFilter = JSON.parse(filter);
-					if(CookieFilter.hasOwnProperty('onlineStatus')) {
-						if(CookieFilter?.onlineStatus
-							&& CookieFilter?.onlineStatus?.[0]?.hasOwnProperty('startDate') 
+					if (CookieFilter.hasOwnProperty('onlineStatus')) {
+						if (CookieFilter?.onlineStatus
+							&& CookieFilter?.onlineStatus?.[0]?.hasOwnProperty('startDate')
 							&& CookieFilter?.onlineStatus?.[0]?.hasOwnProperty('endDate')) {
 							delete CookieFilter?.onlineStatus;
 							// handleOnlineStatusChange('custom');
@@ -1051,7 +1051,7 @@ const ProjectTeamWindow = (props: any) => {
 						} else {
 							radioRef.current = CookieFilter.onlineStatus;
 							let today = new Date().setHours(0, 0, 0, 0),
-							fromDate = `${new Date(today).toISOString().split('.')[0]}Z`;
+								fromDate = `${new Date(today).toISOString().split('.')[0]}Z`;
 							dispatch(fetchRTLSUsers({ appInfo: appInfo, fromDate: fromDate }));
 						};
 					};
@@ -1079,7 +1079,7 @@ const ProjectTeamWindow = (props: any) => {
 			groupKeyValue.current = group ?? "";
 			setGroupKey(group ?? "");
 			setGridSearchText(search ?? "");
-			if(toggle === 'safety') {
+			if (toggle === 'safety') {
 				setActiveToggle(appInfo?.gblConfig?.currentProjectInfo?.safetyTracking ? 'safety' : 'member');
 			} else if (toggle === 'rtls') {
 				setActiveToggle(appInfo?.rtlsConnectorType == 1 || appInfo?.rtlsConnectorType == 3 ? 'rtls' : 'member');
@@ -1137,18 +1137,18 @@ const ProjectTeamWindow = (props: any) => {
 
 	useEffect(() => {
 		if (localhost) {
-			let filter:any = getCookie(`filters_123_teamOrientaion`);
-			let search:any = getCookie(`searchText_123_teamOrientaion`);
-			let group:any = getCookie(`groupKey_123_teamOrientaion`);
-			let toggle:any = getCookie(`activeToggle_123_teamOrientaion`);
+			let filter: any = getCookie(`filters_123_teamOrientaion`);
+			let search: any = getCookie(`searchText_123_teamOrientaion`);
+			let group: any = getCookie(`groupKey_123_teamOrientaion`);
+			let toggle: any = getCookie(`activeToggle_123_teamOrientaion`);
 			setGridGroupValue(group);
 			if (filter) {
 				let CookieFilter;
 				try {
 					CookieFilter = JSON.parse(filter);
-					if(CookieFilter.hasOwnProperty('onlineStatus')) {
-						if(CookieFilter?.onlineStatus 
-							&& CookieFilter?.onlineStatus?.[0]?.hasOwnProperty('startDate') 
+					if (CookieFilter.hasOwnProperty('onlineStatus')) {
+						if (CookieFilter?.onlineStatus
+							&& CookieFilter?.onlineStatus?.[0]?.hasOwnProperty('startDate')
 							&& CookieFilter?.onlineStatus?.[0]?.hasOwnProperty('endDate')) {
 							delete CookieFilter?.onlineStatus;
 							// handleOnlineStatusChange('custom');
@@ -1160,7 +1160,7 @@ const ProjectTeamWindow = (props: any) => {
 						} else {
 							radioRef.current = CookieFilter.onlineStatus;
 							let today = new Date().setHours(0, 0, 0, 0),
-							fromDate = `${new Date(today).toISOString().split('.')[0]}Z`;
+								fromDate = `${new Date(today).toISOString().split('.')[0]}Z`;
 							dispatch(fetchRTLSUsers({ appInfo: appInfo, fromDate: fromDate }));
 						};
 					};
@@ -1315,9 +1315,9 @@ const ProjectTeamWindow = (props: any) => {
 								break;
 							default:
 								// Sending to individual widgets
-								if(iframeEvent === 'refreshskills') {
+								if (iframeEvent === 'refreshskills') {
 									setSkillsAdded(true);
-								} else if(iframeEvent === 'refreshcompanies') {
+								} else if (iframeEvent === 'refreshcompanies') {
 									setCompaniesAdded(true);
 								};
 								console.log('Setting setIframeEventData', data, new Date());
@@ -1539,12 +1539,14 @@ const ProjectTeamWindow = (props: any) => {
 		});
 	};
 	const handleHelp = () => {
+		console.log('help');
 		postMessage({
 			event: "help",
 			body: {
 				iframeId: iframeID,
 				roomId: appInfo && appInfo.presenceRoomId,
-				appType: appType
+				appType: appType,
+				isFromHelpIcon: true
 			}
 		});
 	}
@@ -1939,7 +1941,7 @@ const ProjectTeamWindow = (props: any) => {
 	const handleOnSkillsChange = (selectedValues: any = [], params: any) => {
 		const selectedValuesStr = selectedValues.sort().toString();
 		let skillsFromParams: any = [];
-		(params.data.skills || []).forEach((skill: any)=>{
+		(params.data.skills || []).forEach((skill: any) => {
 			skillsFromParams.push(skill.objectId);
 		});
 		const skillIdsStr = skillsFromParams.sort().toString();
@@ -1959,7 +1961,7 @@ const ProjectTeamWindow = (props: any) => {
 	const handleOnRolesChange = (selectedValues: any = [], params: any) => {
 		const selectedValuesStr = selectedValues.sort().toString();
 		let roleIdsFromParams: any = [];
-		(params.data.roles || []).forEach((role: any)=>{
+		(params.data.roles || []).forEach((role: any) => {
 			roleIdsFromParams.push(role.objectId);
 		});
 		const rolesIdsStr = roleIdsFromParams.sort().toString();
@@ -1982,7 +1984,7 @@ const ProjectTeamWindow = (props: any) => {
 			const oldCompanyObj: any = companyOptions.find((rec: any) => rec.id == params.data.company?.objectId) || {};
 			if (selectedVal[0].id === oldCompanyObj.id) return;//Exiting from func if there's no change in selection
 			const companyObj: any = companyOptions.find((rec: any) => rec.id == selectedVal?.[0]?.id) || {};
-			
+
 			validateAndPreparePayload('company', params, { ...params.node.data, company: { ...companyObj, objectId: companyObj?.id } });
 		}
 	}
@@ -2002,8 +2004,8 @@ const ProjectTeamWindow = (props: any) => {
 				return a?.localeCompare(b);
 			} else if (type === "date") {
 				return new Date(a)?.getTime() - new Date(b)?.getTime();
-			} else if(type === "time") {
-				
+			} else if (type === "time") {
+
 			}
 
 		}
@@ -2100,7 +2102,7 @@ const ProjectTeamWindow = (props: any) => {
 			keyCreator: firstCharKeyCreator,
 			//editable: isCellEditable,
 			sortable: true,
-			comparator : (valueA: any, valueB: any, nodeA: any, nodeB: any, isDescending: any) => {
+			comparator: (valueA: any, valueB: any, nodeA: any, nodeB: any, isDescending: any) => {
 				return (valueA?.name ?? valueA)?.localeCompare((valueB?.name ?? valueB), 'en', { numeric: true })
 			},
 			tooltipComponent: CustomTooltip,
@@ -2119,8 +2121,8 @@ const ProjectTeamWindow = (props: any) => {
 					hasRTLSIcon = true;
 				};
 				const StrLength = params.data.firstName.length;
-				if(params?.data?.firstName ?? false) {
-					if((hasSafetyIcon || hasRTLSIcon)) {
+				if (params?.data?.firstName ?? false) {
+					if ((hasSafetyIcon || hasRTLSIcon)) {
 						return StrLength > 11 ? params.data.firstName : null;
 					} else {
 						return StrLength > 14 ? params.data.firstName : null;
@@ -2249,7 +2251,7 @@ const ProjectTeamWindow = (props: any) => {
 			cellRenderer: (params: any) => {
 				return (
 					<span className="projectteam_gridColumn"
-					style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
+						style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
 						onClick={(event: any) => {
 							if (event.detail == 2) {
 								const currentRec = params?.data,
@@ -2294,7 +2296,7 @@ const ProjectTeamWindow = (props: any) => {
 							}}
 							enterDelay={1000}
 							disableFocusListener
-							disableTouchListener 
+							disableTouchListener
 						>
 							<div>
 								{canEdit && (
@@ -2390,7 +2392,8 @@ const ProjectTeamWindow = (props: any) => {
 								setOpenRightPanel(true);
 							}
 						}
-					}}>{params?.data?.regions}</span>; // class name is fieldname
+					}}>
+						{params?.data?.regions?.map((obj: any) => obj.name)?.join(", ")}{" "}</span>;// class name is fieldname
 			},
 		},
 		{
@@ -2463,9 +2466,9 @@ const ProjectTeamWindow = (props: any) => {
 				if (adminValues[params?.data?.userPermissionType])
 					list.push(adminValues[params?.data?.userPermissionType]);
 				for (var indx in zonePermission) {
-					var record = assignUnassignData2.find((obj:any) => zonePermission[indx].name == obj.value);
-					if(record) {
-						if(appInfo?.gblConfig?.projectPlanSettings?.Modes?.financeMode == true)
+					var record = assignUnassignData2.find((obj: any) => zonePermission[indx].name == obj.value);
+					if (record) {
+						if (appInfo?.gblConfig?.projectPlanSettings?.Modes?.financeMode == true)
 							list.push(record.text);
 					} else {
 						list.push(adminValues[zonePermission[indx].name]);
@@ -2485,13 +2488,13 @@ const ProjectTeamWindow = (props: any) => {
 						'Company Manager': 'Can Add and Manage my Company Workers and Attestation (Company Manager)',
 						'Compliance Manager': 'Manage my Company’s Certificate of Insurance and Diversity Information (Compliance Manager)'
 					};
-				
+
 				if (adminValues[params?.data?.userPermissionType])
 					list.push(adminValues[params?.data?.userPermissionType]);
 				for (var indx in zonePermission) {
-					var record = assignUnassignData2.find((obj:any) => zonePermission[indx].name == obj.value);
-					if(record) {
-						if(appInfo?.gblConfig?.projectPlanSettings?.Modes?.financeMode == true)
+					var record = assignUnassignData2.find((obj: any) => zonePermission[indx].name == obj.value);
+					if (record) {
+						if (appInfo?.gblConfig?.projectPlanSettings?.Modes?.financeMode == true)
 							list.push(record.text);
 					} else {
 						list.push(adminValues[zonePermission[indx].name]);
@@ -2521,78 +2524,34 @@ const ProjectTeamWindow = (props: any) => {
 			field: "roles",
 			cellRenderer: (params: any) => {
 				const canEdit = isCellEditable(params);
-				
+
 				return (
 					<>
-					{params.data?.roles?.length > 0 ?
-						(<AutoWidthTooltip
-							className={"pt-RolesTooltip-main"}
-							title={
-								<ProjectTeamRolesTooltip
-									params={params}
-									appInfo={appInfo}
-									rolesVal={
-										params?.data?.roles && getRoles(params?.data?.roles)
-									}
-								></ProjectTeamRolesTooltip>
-							}
-							placement={"right"}
-							arrow
-							sx={{
-								".MuiTooltip-tooltip ": {
-									padding: "0px",
-								},
-							}}
-							enterDelay={1500}
-							disableFocusListener
-							disableTouchListener
-						>
-							<div className="pt-role-column">
-								{canEdit && (
-										<SmartDropDown
-											options={getRoleOptions()}
-											dropDownLabel=""
-											isSearchField={true}
-											isMultiple={true}
-											selectedValue={
-												params.data
-													? params?.data?.roles?.map(
-														(data: any) => data.objectId || data
-													)
-													: []
-											}
-											isFullWidth
-											outSideOfGrid={true}
-											// handleChange={(value: any) =>
-											// 	handleOnRolesChange(value, params)
-											// }
-											menuProps={classes.menuPaper}
-											sx={{ fontSize: "18px" }}
-											Placeholder={""}
-											showCheckboxes={true}
-											reduceMenuHeight={true}
-											isCustomSearchField={false}
-											insideGridCellEditor={true}
-											doTextSearch={true}
-											dynamicClose={dynamicClose}
-											handleListOpen={() => {
-												const toolpTipEle: any = document.getElementsByClassName(
-													"pt-RolesTooltip-main"
-												)[0];
-												if (toolpTipEle) {
-													toolpTipEle.style.display = "none";
-												}
-											}}
-											handleListClose={(value: any) => {
-												handleOnRolesChange(value, params);
-											}}
-										/>
-								)}
-								{!canEdit && 
-										getRoles(params?.data?.roles)
+						{params.data?.roles?.length > 0 ?
+							(<AutoWidthTooltip
+								className={"pt-RolesTooltip-main"}
+								title={
+									<ProjectTeamRolesTooltip
+										params={params}
+										appInfo={appInfo}
+										rolesVal={
+											params?.data?.roles && getRoles(params?.data?.roles)
+										}
+									></ProjectTeamRolesTooltip>
 								}
-							</div>
-						</AutoWidthTooltip>) : (<div className="pt-role-column">{canEdit && (
+								placement={"right"}
+								arrow
+								sx={{
+									".MuiTooltip-tooltip ": {
+										padding: "0px",
+									},
+								}}
+								enterDelay={1500}
+								disableFocusListener
+								disableTouchListener
+							>
+								<div className="pt-role-column">
+									{canEdit && (
 										<SmartDropDown
 											options={getRoleOptions()}
 											dropDownLabel=""
@@ -2615,9 +2574,9 @@ const ProjectTeamWindow = (props: any) => {
 											Placeholder={""}
 											showCheckboxes={true}
 											reduceMenuHeight={true}
-											doTextSearch={true}
 											isCustomSearchField={false}
 											insideGridCellEditor={true}
+											doTextSearch={true}
 											dynamicClose={dynamicClose}
 											handleListOpen={() => {
 												const toolpTipEle: any = document.getElementsByClassName(
@@ -2631,8 +2590,52 @@ const ProjectTeamWindow = (props: any) => {
 												handleOnRolesChange(value, params);
 											}}
 										/>
-								)}</div>)
-					}
+									)}
+									{!canEdit &&
+										getRoles(params?.data?.roles)
+									}
+								</div>
+							</AutoWidthTooltip>) : (<div className="pt-role-column">{canEdit && (
+								<SmartDropDown
+									options={getRoleOptions()}
+									dropDownLabel=""
+									isSearchField={true}
+									isMultiple={true}
+									selectedValue={
+										params.data
+											? params?.data?.roles?.map(
+												(data: any) => data.objectId || data
+											)
+											: []
+									}
+									isFullWidth
+									outSideOfGrid={true}
+									// handleChange={(value: any) =>
+									// 	handleOnRolesChange(value, params)
+									// }
+									menuProps={classes.menuPaper}
+									sx={{ fontSize: "18px" }}
+									Placeholder={""}
+									showCheckboxes={true}
+									reduceMenuHeight={true}
+									doTextSearch={true}
+									isCustomSearchField={false}
+									insideGridCellEditor={true}
+									dynamicClose={dynamicClose}
+									handleListOpen={() => {
+										const toolpTipEle: any = document.getElementsByClassName(
+											"pt-RolesTooltip-main"
+										)[0];
+										if (toolpTipEle) {
+											toolpTipEle.style.display = "none";
+										}
+									}}
+									handleListClose={(value: any) => {
+										handleOnRolesChange(value, params);
+									}}
+								/>
+							)}</div>)
+						}
 					</>
 				);
 			}
@@ -2668,33 +2671,33 @@ const ProjectTeamWindow = (props: any) => {
 				return (
 					<>
 						{canEdit &&
-						<div  className={`pt-${params?.column?.colId}`}>
-							<SmartDropDown
-								options={getSkillsOptions()}
-								//LeftIcon={<span className='common-icon-orgconsole-skills-certs userdetails_icons userdetails_icon_Color' />}
-								dropDownLabel=""
-								isSearchField={true}
-								isMultiple={true}
-								selectedValue={params.data ? params?.data?.skills?.map((data: any) => data.objectId || data) : []}
-								isFullWidth
-								outSideOfGrid={true}
-								//handleChange={(value: any) => handleOnSkillsChange(value, params)}
-								menuProps={classes.menuPaper}
-								sx={{ fontSize: '18px' }}
-								Placeholder={''}
-								showCheckboxes={true}
-								reduceMenuHeight={true}
-								showAddButton={true}
-								noDataFoundMsg={<div className="no-rows-msg"><span className="common-icon-No-Item-Available"></span><div className="empty-rows-mark">No match found</div><div>You can add it by clicking + button</div></div>}
-								doTextSearch={true}
-								isCustomSearchField={false}
-								handleAddCategory={(sVal: any) => handleAdd('', sVal, 'skill')}
-								dynamicClose={dynamicClose}
-								insideGridCellEditor={true}
-								handleListClose={(value: any) => {
-									handleOnSkillsChange(value, params);
-								}}
-							/>
+							<div className={`pt-${params?.column?.colId}`}>
+								<SmartDropDown
+									options={getSkillsOptions()}
+									//LeftIcon={<span className='common-icon-orgconsole-skills-certs userdetails_icons userdetails_icon_Color' />}
+									dropDownLabel=""
+									isSearchField={true}
+									isMultiple={true}
+									selectedValue={(params.data && params?.data?.skills?.length) ? params?.data?.skills?.map((data: any) => data.objectId || data) : []}
+									isFullWidth
+									outSideOfGrid={true}
+									//handleChange={(value: any) => handleOnSkillsChange(value, params)}
+									menuProps={classes.menuPaper}
+									sx={{ fontSize: '18px' }}
+									Placeholder={''}
+									showCheckboxes={true}
+									reduceMenuHeight={true}
+									showAddButton={true}
+									noDataFoundMsg={<div className="no-rows-msg"><span className="common-icon-No-Item-Available"></span><div className="empty-rows-mark">No match found</div><div>You can add it by clicking + button</div></div>}
+									doTextSearch={true}
+									isCustomSearchField={false}
+									handleAddCategory={(sVal: any) => handleAdd('', sVal, 'skill')}
+									dynamicClose={dynamicClose}
+									insideGridCellEditor={true}
+									handleListClose={(value: any) => {
+										handleOnSkillsChange(value, params);
+									}}
+								/>
 							</div>
 						}
 						{!canEdit && <span className={`pt-${params?.column?.colId}`}>
@@ -2709,9 +2712,9 @@ const ProjectTeamWindow = (props: any) => {
 			headerName: "Work Teams",
 			field: "workTeams",
 			minWidth: 170,
-			hide : true,
-			keyCreator: (params: any) => {return AddNoneToEmptyRec(params?.data?.teams)},
-			valueGetter: (params: any) => {return AddNoneToEmptyRec(params?.data?.teams)}
+			hide: true,
+			keyCreator: (params: any) => { return AddNoneToEmptyRec(params?.data?.teams) },
+			valueGetter: (params: any) => { return AddNoneToEmptyRec(params?.data?.teams) }
 		},
 		{
 			headerName: "Work Category",
@@ -2969,20 +2972,20 @@ const ProjectTeamWindow = (props: any) => {
 				return rtlsSortComparator(a, b, isInverted, 'string');
 			},
 			cellRenderer: (params: any) => {
-				return <span 
-				className={`pt-${params?.column?.colId}`} 
-				style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
-				onClick={(event: any) => {
-					if (event.detail == 2) {
-						const currentRec = params?.data,
-							canEdit = canEditProjectTeamRec(currentRec, appInfo?.gblConfig, true);
-						if (canEdit) {
-							dispatch(setCurrentSelection(params?.data));
-							setDefaultTabId("userDetails");
-							setOpenRightPanel(true);
+				return <span
+					className={`pt-${params?.column?.colId}`}
+					style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
+					onClick={(event: any) => {
+						if (event.detail == 2) {
+							const currentRec = params?.data,
+								canEdit = canEditProjectTeamRec(currentRec, appInfo?.gblConfig, true);
+							if (canEdit) {
+								dispatch(setCurrentSelection(params?.data));
+								setDefaultTabId("userDetails");
+								setOpenRightPanel(true);
+							}
 						}
-					}
-				}}>{params?.data?.lastLocation}</span>; // class name is fieldname
+					}}>{params?.data?.lastLocation}</span>; // class name is fieldname
 			},
 		},
 		{
@@ -3181,9 +3184,9 @@ const ProjectTeamWindow = (props: any) => {
 				};
 			};
 			if (['certificateStatus', 'policyStatus']?.includes(item?.field)) {
-				let colName = item.field === 'policyStatus' ? 'policyStatusText' : item.field === 'certificateStatus' ? 'certificateStatusText': item.field;
+				let colName = item.field === 'policyStatus' ? 'policyStatusText' : item.field === 'certificateStatus' ? 'certificateStatusText' : item.field;
 				item.comparator = (valueA: any, valueB: any, nodeA: any, nodeB: any, isDescending: any) => {
-					if((nodeA?.data?.[colName]?? false) &&  (nodeB?.data?.[colName] ?? false)) {
+					if ((nodeA?.data?.[colName] ?? false) && (nodeB?.data?.[colName] ?? false)) {
 						return rtlsSortComparator(nodeA?.data?.[colName], nodeB?.data?.[colName], isDescending, 'string');
 					};
 				}
@@ -3256,8 +3259,8 @@ const ProjectTeamWindow = (props: any) => {
 		"firstSeenEver",
 		"timeSpentEver",
 		"sourceText",
-		'company','roles',"tradeName","skills","workCategoryName",
-		"safetyStatus","policyStatus","certificateStatus",'projectZonePermissions',
+		'company', 'roles', "tradeName", "skills", "workCategoryName",
+		"safetyStatus", "policyStatus", "certificateStatus", 'projectZonePermissions',
 		"workTeams"
 	];
 
@@ -3304,9 +3307,9 @@ const ProjectTeamWindow = (props: any) => {
 			if (appInfo?.isFromORG) {
 				orderToFollow.splice(6, 0, 'regions');
 			}
-			if(appInfo?.gblConfig?.currentProjectInfo?.safetyTracking || isLocalhost) {
+			if (appInfo?.gblConfig?.currentProjectInfo?.safetyTracking || isLocalhost) {
 				var isRegion = orderToFollow.findIndex((x: any) => x === "regions") > -1,
-					safetyindex = isRegion? 14: 13;
+					safetyindex = isRegion ? 14 : 13;
 
 				orderToFollow.splice(safetyindex, 0, 'safetyStatus');
 				orderToFollow.splice(safetyindex + 1, 0, 'policyStatus');
@@ -3339,17 +3342,17 @@ const ProjectTeamWindow = (props: any) => {
 		orderToFollow.forEach((fieldId: any) => {
 			let colConfig = allColumns.find((col: any) => col.field === fieldId);
 			colConfig.menuTabs = [];
-			if(activeToggle === 'rtls' && hideRtlsColumns?.includes(fieldId)) {
+			if (activeToggle === 'rtls' && hideRtlsColumns?.includes(fieldId)) {
 				colConfig.hide = true;
 			};
-			if((activeToggle === 'safety' || activeToggle === 'member') && fieldId === "lastSeen") {
+			if ((activeToggle === 'safety' || activeToggle === 'member') && fieldId === "lastSeen") {
 				colConfig.hide = true;
-			} else if(activeToggle === 'rtls' && fieldId === "lastSeen") {
+			} else if (activeToggle === 'rtls' && fieldId === "lastSeen") {
 				colConfig.hide = false;
-			} else if(activeToggle === 'safety' || activeToggle === 'member') {
+			} else if (activeToggle === 'safety' || activeToggle === 'member') {
 				colConfig.hide = false;
 			};
-			if(fieldId === 'workTeams') {
+			if (fieldId === 'workTeams') {
 				colConfig.hide = true;
 			};
 			orderedCols.push(colConfig);
@@ -3361,14 +3364,14 @@ const ProjectTeamWindow = (props: any) => {
 		if (hasSupplementalInfo) {
 			orderedCols.push(supplimentCol);
 		};
-		
+
 		//Removing the last seen and online status in groups and filter
 		if (groupOptions?.length > 0 && groups?.length > 0) {
 			let canShow = appInfo?.gblConfig?.currentProjectInfo?.safetyTracking || isLocalhost;
 			groups.map((x: any) => {
-				if (x.text === "Safety Status" || x.text === "Policy Status" || x.text === "Certification Status"){
+				if (x.text === "Safety Status" || x.text === "Policy Status" || x.text === "Certification Status") {
 					x.hidden = !canShow;
-				} else if (x.text === "Last Seen"){
+				} else if (x.text === "Last Seen") {
 					x.hidden = (activeToggle === 'safety' || activeToggle === 'member' || activeToggle === "usergroups");
 				}
 			})
@@ -3378,16 +3381,16 @@ const ProjectTeamWindow = (props: any) => {
 			let canShow1 = appInfo?.gblConfig?.currentProjectInfo?.safetyTracking || isLocalhost,
 				canShow2 = canShow1 && (appInfo?.gblConfig?.currentProjectInfo?.isWorkerAttestmentOn || isLocalhost);
 			filters.map((x: any) => {
-				if (x.text === "Safety Status" || x.text === "Policy Status" || x.text === "Certification Status"){
+				if (x.text === "Safety Status" || x.text === "Policy Status" || x.text === "Certification Status") {
 					x.hidden = !canShow1;
-				} else if (x.text === "Company Manager Attestation"){
+				} else if (x.text === "Company Manager Attestation") {
 					x.hidden = !canShow2;
 				} else if (x.text === "Online Status") {
 					x.hidden = !(activeToggle === 'rtls');
 				} else if (x.text === "Permissions" && x?.children?.items?.length > 0) {
 					const isMTA = appInfo?.isMTA;
 					x.children.items.map((pi: any) => {
-						if(pi.isMTA === true){
+						if (pi.isMTA === true) {
 							pi.hidden = !isMTA;
 						} else if (pi.isMTA === false) {
 							pi.hidden = isMTA;
@@ -3409,11 +3412,11 @@ const ProjectTeamWindow = (props: any) => {
 		};
 		if ((orderedCols ?? false) && (appInfo ?? false) && (gridApi ?? false)) {
 			const SortingCol = GetSortingCookie();
-			orderedCols.forEach((element:any) => {
-				if((SortingCol === undefined || SortingCol === null) && element.field === 'lastName') {
+			orderedCols.forEach((element: any) => {
+				if ((SortingCol === undefined || SortingCol === null) && element.field === 'lastName') {
 					element.sort = 'asc';
 					element.sortIndex = 0;
-				} else if((SortingCol ?? false) && SortingCol?.[0]?.colId === element.field) {
+				} else if ((SortingCol ?? false) && SortingCol?.[0]?.colId === element.field) {
 					element.sort = SortingCol[0].sort;
 					element.sortIndex = SortingCol[0].sortIndex;
 				} else {
@@ -3426,7 +3429,7 @@ const ProjectTeamWindow = (props: any) => {
 	};
 	useEffect(() => {
 		getColumnsBasedOnOrder();
-		if(activeToggle && appInfo) {
+		if (activeToggle && appInfo) {
 			addCookie(`activeToggle_${appInfo?.projectId}_${CookieTitle}`, activeToggle);
 		};
 	}, [activeToggle, rolesData, rowData, formattedSafetyColumns, appInfo]);
@@ -3460,7 +3463,7 @@ const ProjectTeamWindow = (props: any) => {
 					setRowData(data);
 				};
 			} else if ((searchKey.current !== "" ?? searchText) && localRowData?.length > 0) {
-				
+
 				let searchData = SearchBy((searchKey.current ?? searchText), [...localRowData]);
 				setRowData(searchData);
 			} else {
@@ -3469,23 +3472,23 @@ const ProjectTeamWindow = (props: any) => {
 			addCookie(`groupKey_${appInfo?.projectId}_${CookieTitle}`, groupKeyValue?.current ?? groupKey);
 			addCookie(`filters_${appInfo?.projectId}_${CookieTitle}`, JSON.stringify(filteredValues || ''));
 			addCookie(`searchText_${appInfo?.projectId}_${CookieTitle}`, searchText);
-			if(Object.keys(filteredValues).length === 0) {
+			if (Object.keys(filteredValues).length === 0) {
 				setGridFilters(filteredValues);
 			};
 			setReAssignState(false);
 		};
 	}, [reAssignState, filteredValues, localRowData, searchText, groupKey]);
 	useEffect(() => {
-		if(onlineStatusAssignState && radioRef.current === '') {
-			let filterState = {...filteredValues};
-			if(filterState.hasOwnProperty('onlineStatus')) {
+		if (onlineStatusAssignState && radioRef.current === '') {
+			let filterState = { ...filteredValues };
+			if (filterState.hasOwnProperty('onlineStatus')) {
 				delete filterState.onlineStatus;
 			};
 			setFilteredValues(filterState);
 			setGridFilters(filterState);
 			setOnlineStatusAssignState(false);
 		};
-	},[onlineStatusAssignState])
+	}, [onlineStatusAssignState])
 	/**
 	 * Triggers when there's any change in the selection and all selected records can be fetched using 
 	 * event?.api?.getSelectedRows() or event?.api?.getSelectedNodes()
@@ -3496,17 +3499,17 @@ const ProjectTeamWindow = (props: any) => {
 		const selectedRowItems = event?.api?.getSelectedRows() || [];
 		const selectedNodes = event?.api?.getSelectedNodes();
 		// console.log('onSelectionChanged', event);
-		const selectedRowIds = selectedNodes.map((n:any) => n.id).filter(Boolean) as string[];
-	  	setGridSelectedRowIds(selectedRowIds);
-		if(selectedNodes.length === 0 && openRightPanel && gridSelectedRowIds.length > 0) {
+		const selectedRowIds = selectedNodes.map((n: any) => n.id).filter(Boolean) as string[];
+		setGridSelectedRowIds(selectedRowIds);
+		if (selectedNodes.length === 0 && openRightPanel && gridSelectedRowIds.length > 0) {
 			gridSelectedRowIds?.forEach((id) => {
 				const node = gridApi?.getRowNode(id)?.selected;
-				if(!node) {
+				if (!node) {
 					gridApi?.getRowNode(id)?.setSelected(true);
 				}
-			  })
-		} else if(selectedNodes.length === 0 && openRightPanel) {
-			setOpenRightPanel(!openRightPanel);			
+			})
+		} else if (selectedNodes.length === 0 && openRightPanel) {
+			setOpenRightPanel(!openRightPanel);
 			dispatch(setSelectedMembers([]));
 			dispatch(setCurrentSelection(null));
 		} else {
@@ -3533,8 +3536,8 @@ const ProjectTeamWindow = (props: any) => {
 	 * @author Srinivas Nadendla
 	 */
 	const SearchBy = (val: any, array: any) => {
-		const searchFields = ['firstName','phone','email','lastName', 'trade', 'company', 'skills', 'roles', 'barcode', 'rtlsId', 'gpsTagId', 'safetyStatusText', 'policyStatusText', 'certificateStatusText', 'source'];
-		const CustomFileds = ['firstName','phone','email','lastName'];
+		const searchFields = ['firstName', 'phone', 'email', 'lastName', 'trade', 'company', 'skills', 'roles', 'barcode', 'rtlsId', 'gpsTagId', 'safetyStatusText', 'policyStatusText', 'certificateStatusText', 'source'];
+		const CustomFileds = ['firstName', 'phone', 'email', 'lastName'];
 		const lowerSearchTxt: string = val?.toLowerCase() || "";
 		let searchData: any = array;
 		const searchRegex = new RegExp(escapeRegExp(lowerSearchTxt), "i");
@@ -3552,13 +3555,13 @@ const ProjectTeamWindow = (props: any) => {
 							return false;
 						};
 					} else if (isNaN(row[field]) && typeof row[field] === 'object' && field == 'company') {
-						return searchRegex ?.test(row[field]['name'] ?.toString());
+						return searchRegex?.test(row[field]['name']?.toString());
 					} else if (isNaN(row[field]) && typeof row[field] === 'object') {
 						return Object.keys(row[field]).some((objField) => {
-							return searchRegex ?.test(row[field][objField] ?.toString());
+							return searchRegex?.test(row[field][objField]?.toString());
 						})
 					} else {
-						if((lowerSearchTxt?.includes('+') ?? false) && CustomFileds.includes(field)) return row[field]?.includes(lowerSearchTxt);
+						if ((lowerSearchTxt?.includes('+') ?? false) && CustomFileds.includes(field)) return row[field]?.includes(lowerSearchTxt);
 						else return searchRegex?.test(row?.[field]?.toString());
 					}
 				};
@@ -3592,21 +3595,21 @@ const ProjectTeamWindow = (props: any) => {
 		if (((selectedVal ?? false) && selectedVal !== "")) {
 			setGroupKey(selectedVal);
 			groupKeyValue.current = selectedVal;
-				columnsCopy.forEach((col: any) => {
-					if (col.rowGroup = selectedVal === col.field) {
-						col.rowGroup = selectedVal === col.field;
-					};
-					if((SortingCol === undefined || SortingCol === null) && col.field === 'lastName') {
-						col.sort = 'asc';
-						col.sortIndex = 0;
-					} else if((SortingCol ?? false) && SortingCol?.[0]?.colId === col.field) {
-						col.sort = SortingCol[0].sort;
-						col.sortIndex = SortingCol[0].sortIndex;
-					} else {
-						col.sort = null;
-						col.sortIndex = null;
-					};
-				});
+			columnsCopy.forEach((col: any) => {
+				if (col.rowGroup = selectedVal === col.field) {
+					col.rowGroup = selectedVal === col.field;
+				};
+				if ((SortingCol === undefined || SortingCol === null) && col.field === 'lastName') {
+					col.sort = 'asc';
+					col.sortIndex = 0;
+				} else if ((SortingCol ?? false) && SortingCol?.[0]?.colId === col.field) {
+					col.sort = SortingCol[0].sort;
+					col.sortIndex = SortingCol[0].sortIndex;
+				} else {
+					col.sort = null;
+					col.sortIndex = null;
+				};
+			});
 			setColumns(columnsCopy);
 			setReAssignState(true);
 		} else if (selectedVal === undefined) {
@@ -3616,10 +3619,10 @@ const ProjectTeamWindow = (props: any) => {
 				if (col.rowGroup) {
 					col.rowGroup = false;
 				};
-				if((SortingCol === undefined || SortingCol === null) && col.field === 'lastName') {
+				if ((SortingCol === undefined || SortingCol === null) && col.field === 'lastName') {
 					col.sort = 'asc';
 					col.sortIndex = 0;
-				} else if((SortingCol ?? false) && SortingCol?.[0]?.colId === col.field) {
+				} else if ((SortingCol ?? false) && SortingCol?.[0]?.colId === col.field) {
 					col.sort = SortingCol[0].sort;
 					col.sortIndex = SortingCol[0].sortIndex;
 				} else {
@@ -3757,7 +3760,7 @@ const ProjectTeamWindow = (props: any) => {
 			let today = new Date().setHours(0, 0, 0, 0),
 				fromDate = `${new Date(today).toISOString().split('.')[0]}Z`;
 			dispatch(fetchRTLSUsers({ appInfo: appInfo, fromDate: fromDate }));
-		}else if(activeToggle === 'usergroups'){			
+		} else if (activeToggle === 'usergroups') {
 			postMessage({
 				event: 'projectteam',
 				body: { evt: 'openusergroups', data: {} }
@@ -3809,20 +3812,20 @@ const ProjectTeamWindow = (props: any) => {
 				obj = { ...obj, isOwner };
 				array.push(obj);
 			});
-			if(!_.isEqual(array, rowData)) {
+			if (!_.isEqual(array, rowData)) {
 				setRowData([...array]);
 			};
-			if(!_.isEqual(array, localRowData)) {
+			if (!_.isEqual(array, localRowData)) {
 				setLocalRowData([...array]); //TO be used for filter/search..etc
 			}
 			setReAssignState(true);
 			localRowDataRef.current = [...array];
-			if(((currentSelection ?? false) && Object.keys(currentSelection)?.length > 0) || selectedMembers?.length > 0) {
-				if(((currentSelection ?? false) && Object.keys(currentSelection)?.length > 0)) {
+			if (((currentSelection ?? false) && Object.keys(currentSelection)?.length > 0) || selectedMembers?.length > 0) {
+				if (((currentSelection ?? false) && Object.keys(currentSelection)?.length > 0)) {
 					let a = [...array].find((item: any) => item?.id === currentSelection?.id);
 					dispatch(setCurrentSelection(a));
 				};
-				if(selectedMembers?.length > 0) {
+				if (selectedMembers?.length > 0) {
 					let b = [...array].filter((item: any) => item?.id === selectedMembers?.[0]?.id);
 					dispatch(setSelectedMembers(b));
 				};
@@ -3944,59 +3947,59 @@ const ProjectTeamWindow = (props: any) => {
 		return 55;
 	}, [groupKey]);
 	const onSortChanged = () => {
-		if((gridApi ?? false) && (appInfo ?? false)) {
+		if ((gridApi ?? false) && (appInfo ?? false)) {
 			const colState = gridApi?.columnModel?.getColumnState();
-			const sortState = colState?.filter((s:any) => {return s.sort != null}).map((s:any) => {return { colId: s.colId, sort: s.sort, sortIndex: s.sortIndex }});
+			const sortState = colState?.filter((s: any) => { return s.sort != null }).map((s: any) => { return { colId: s.colId, sort: s.sort, sortIndex: s.sortIndex } });
 			const SortCol = GetSortingCookie();
-			if(groupKey !== '') {
-				if(sortState.length > 0) {
-					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`,  JSON.stringify(sortState || ''));
+			if (groupKey !== '') {
+				if (sortState.length > 0) {
+					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`, JSON.stringify(sortState || ''));
 				} else {
-					const defaultSort = [{ colId: 'lastName', sort: 'asc',sortIndex: 0 }];
-					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`,  JSON.stringify(defaultSort || ''));
+					const defaultSort = [{ colId: 'lastName', sort: 'asc', sortIndex: 0 }];
+					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`, JSON.stringify(defaultSort || ''));
 				}
 			} else {
-				if((SortCol ?? false) && (SortCol?.length !== 0) && sortState.length === 0) {
-					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`,  JSON.stringify(SortCol || ''));
-				} else if(sortState.length > 0) {
-					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`,  JSON.stringify(sortState || ''));
+				if ((SortCol ?? false) && (SortCol?.length !== 0) && sortState.length === 0) {
+					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`, JSON.stringify(SortCol || ''));
+				} else if (sortState.length > 0) {
+					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`, JSON.stringify(sortState || ''));
 				} else {
-					const defaultSort = [{ colId: 'lastName', sort: 'asc',sortIndex: 0 }];
-					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`,  JSON.stringify(defaultSort || ''));
+					const defaultSort = [{ colId: 'lastName', sort: 'asc', sortIndex: 0 }];
+					addCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`, JSON.stringify(defaultSort || ''));
 				}
 			};
 		};
 	};
 	const colDefs = useMemo(() => {
-    	return columns
-  	}, [columns]);
-	  const onFirstDataRendered = () => {
-		if (selectedWorker &&  (gridApi ?? false)) {
-		const workerRec = [...rowData].filter((x:any) => {
-			if(x.objectId == selectedWorker) return true;
-			else if(x.id == selectedWorker) return true;
-		});
+		return columns
+	}, [columns]);
+	const onFirstDataRendered = () => {
+		if (selectedWorker && (gridApi ?? false)) {
+			const workerRec = [...rowData].filter((x: any) => {
+				if (x.objectId == selectedWorker) return true;
+				else if (x.id == selectedWorker) return true;
+			});
 			console.log("Selected Worker Id", workerRec, selectedWorker)
-			if((workerRec?.length > 0 ?? false)) {
-				gridApi.forEachNode((node:any) => {
+			if ((workerRec?.length > 0 ?? false)) {
+				gridApi.forEachNode((node: any) => {
 					if (node?.data?.objectId == selectedWorker || node?.data?.id == selectedWorker) {
 						gridApi.ensureIndexVisible(node.rowIndex, 'top');
 						node.setSelected(true);
 						dispatch(setSelectedMembers(workerRec));
 						setOpenRightPanel(true);
-					  }
+					}
 				})
-			};	
+			};
 		};
 	};
-	const componentPropsChanged = (params:any) => {
+	const componentPropsChanged = (params: any) => {
 		if (openRightPanel && currentSelection && gridApi && params) {
 			gridSelectedRowIds?.forEach((id) => {
 				const node = gridApi?.getRowNode(id)?.selected;
-				if(!node) {
+				if (!node) {
 					gridApi?.getRowNode(id)?.setSelected(true);
 				}
-			  })
+			})
 		};
 	};
 	return (
@@ -4022,16 +4025,28 @@ const ProjectTeamWindow = (props: any) => {
 					resizable: !fullScreen,
 					openInNewTab: false,
 					customTools: fullScreen ? (
-						<IQTooltip title="Home" placement={"bottom"}>
-							<IconButton
-								key={"navigate-to-home"}
-								className="navigate-to-home"
-								aria-label="Home"
-								onClick={navigateHome}
-							>
-								<span className="common-icon-home header_icon"></span>
-							</IconButton>
-						</IQTooltip>
+						<>
+							<IQTooltip title="Home" placement={"bottom"}>
+								<IconButton
+									key={"navigate-to-home"}
+									className="navigate-to-home"
+									aria-label="Home"
+									onClick={navigateHome}
+								>
+									<span className="common-icon-home header_icon"></span>
+								</IconButton>
+							</IQTooltip>
+							<IQTooltip title="Help" placement={"bottom"}>
+								<IconButton
+									key={"open-in-new-tab"}
+									className='projectteam-help'
+									aria-label="help"
+									onClick={handleHelp}
+								>
+									<span className="common-icon-Live-Support-Help header_icon"></span>
+								</IconButton>
+							</IQTooltip>
+						</>
 					) : (
 						<IQTooltip title="Help" placement={"bottom"}>
 							<IconButton
@@ -4057,7 +4072,7 @@ const ProjectTeamWindow = (props: any) => {
 						? (status = true)
 						: (status = false); */
 					let canEdit = canEditProjectTeamRec(rowData, appInfo?.gblConfig, true);
-					if(canEdit){
+					if (canEdit) {
 						setOpenRightPanel(true);
 						setDefaultTabId("userDetails");
 					}
@@ -4154,9 +4169,9 @@ const ProjectTeamWindow = (props: any) => {
 							groupDisplayType: 'groupRows',
 							groupRowRendererParams: groupRowRendererParams,
 							suppressScrollOnNewData: true,
-							onSortChanged:onSortChanged,
-							onFirstDataRendered:onFirstDataRendered,
-							componentPropsChanged:componentPropsChanged
+							onSortChanged: onSortChanged,
+							onFirstDataRendered: onFirstDataRendered,
+							componentPropsChanged: componentPropsChanged
 						}
 					}
 				}}

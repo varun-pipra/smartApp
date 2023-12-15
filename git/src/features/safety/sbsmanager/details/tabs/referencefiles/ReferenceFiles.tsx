@@ -206,6 +206,8 @@ const ReferenceFiles =(props: any) => {
         field: "createdBy",
         minWidth: 150,
         suppressMenu: true,
+        valueGetter: (params: any) =>  params?.data?.createdBy?.name || "",
+        keyCreator: (params: any) => params.data?.createdBy?.name || 'None'
       },
       {
         headerName: "Creation Date",

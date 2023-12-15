@@ -42,36 +42,36 @@ export const amountFormatWithOutSymbol = (amount: any) => {
 export const isBudgetManager = () => {
 	const server = getServerInfo(),
 		permissions = server?.gblConfig?.user?.projectZonePermissions,
-		isSuperAdmin = server?.gblConfig?.isAdmin,
-		isAdmin = server?.gblConfig?.isProjectAdmin;
-	if(isSuperAdmin || isAdmin || (permissions && Object?.values(permissions)?.includes('Budget Manager'))) return true;
+		isSuperAdmin = server?.gblConfig?.isAdmin
+		// isAdmin = server?.gblConfig?.isProjectAdmin;
+	if(isSuperAdmin || (permissions && Object?.values(permissions)?.includes('Budget Manager'))) return true;
 	return false;
 };
 
 export const isBidManager = () => {
 	const server = getServerInfo(),
 		permissions = server?.gblConfig?.user?.projectZonePermissions,
-		isSuperAdmin = server?.gblConfig?.isAdmin,
-		isAdmin = server?.gblConfig?.isProjectAdmin;
-	if(isSuperAdmin || isAdmin || (permissions && Object?.values(permissions)?.includes('Bid Manager'))) return true;
+		isSuperAdmin = server?.gblConfig?.isAdmin
+		// isAdmin = server?.gblConfig?.isProjectAdmin;
+	if(isSuperAdmin || (permissions && Object?.values(permissions)?.includes('Bid Manager'))) return true;
 	return false;
 };
 
 export const isBidResponseManager = () => {
 	const server = getServerInfo(),
 		permissions = server?.gblConfig?.user?.projectZonePermissions,
-		isSuperAdmin = server?.gblConfig?.isAdmin,
-		isAdmin = server?.gblConfig?.isProjectAdmin;
-	if(isSuperAdmin || isAdmin || (permissions && Object?.values(permissions)?.includes('Bid Response Manager'))) return true;
+		isSuperAdmin = server?.gblConfig?.isAdmin
+		// isAdmin = server?.gblConfig?.isProjectAdmin;
+	if(isSuperAdmin || (permissions && Object?.values(permissions)?.includes('Bid Response Manager'))) return true;
 	return false;
 };
 
 export const isChangeEventGC = () => {
 	const server = getServerInfo(),
 		permissions = server?.gblConfig?.user?.projectZonePermissions,
-		isSuperAdmin = server?.gblConfig?.isAdmin,
-		isAdmin = server?.gblConfig?.isProjectAdmin;
-	if(isSuperAdmin || isAdmin || (permissions && Object?.values(permissions)?.includes('Vendor Change Event Manager'))) return true;
+		isSuperAdmin = server?.gblConfig?.isAdmin
+		// isAdmin = server?.gblConfig?.isProjectAdmin;
+	if(isSuperAdmin || (permissions && Object?.values(permissions)?.includes('Vendor Change Event Manager'))) return true;
 	return false;
 };
 

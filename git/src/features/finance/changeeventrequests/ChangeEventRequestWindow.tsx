@@ -22,6 +22,7 @@ import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { AgGridReact } from 'ag-grid-react';
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import SUIAlert from 'sui-components/Alert/Alert';
 
 let defaultCERStatusFilter: any = [];
 
@@ -64,9 +65,9 @@ const ChangeEventRequestsWindow = (props: any) => {
 	];
 
 	const tabEnum: any = {
-		details: 'changeEventsDetails',
-		lineItems: 'budgetlineitems',
-		referencefiles: 'referencefiles',
+		details: 'change-Event-Details',
+		lineItems: 'budget-line-items',
+		referencefiles: 'reference-files',
 		links: 'links'
 	};
 
@@ -481,92 +482,114 @@ const ChangeEventRequestsWindow = (props: any) => {
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
-	return <GridWindow
-		open={true}
-		title='Change Event Requests'
-		companyInfo={isChangeEventClient() || isChangeEventSC()}
-		centerPiece={
-			(isChangeEventClient() && <>{`Below are all Change Order Requests for your company '${server?.currentUserInfo?.company}' for the Project '${server?.currentProjectInfo?.name}'`}</>)
-			|| (isChangeEventSC() && <>{`Below are Quote Requests for your Trade '${server?.gblConfig?.currentUserSkillTrade?.tradeName ? server?.gblConfig?.currentUserSkillTrade?.tradeName : ''}' for the Project '${server?.currentProjectInfo?.name}'`}</>)
-		}
-		className='change-event-request-window'
-		iconCls='common-icon-change-event-details'
-		appType='ChangeEventRequests'
-		appInfo={server}
-		iFrameId='changeEventRequestIframe'
-		defaultTabId='change-Event-Details'
-		isFromHelpIcon={true}
-		zIndex={100}
-		gridRef={gridRef}
-		onClose={handleClose}
-		manualLIDOpen={manualLIDOpen}
-		moduleColor='#00e5b0'
-		inlineModule={isInline}
-		isFullView={isFullView}
-		maxByDefault={isMaxByDefault}
-		showBrena={server?.showBrena}
-		onIconClick={handleIconClick}
-		presenceProps={{
-			presenceId: 'changeeventrequest-presence',
-			showBrena: false,
-			showLiveSupport: true,
-			showLiveLink: true,
-			showStreams: true,
-			showComments: true,
-			showChat: false,
-			hideProfile: false,
-		}}
-		tools={{
-			closable: true,
-			resizable: true,
-			openInNewTab: true
-		}}
-		PaperProps={{
-			sx: maxSize ? {
-				height: '100%',
-				minWidth: '100vw',
-				minHeight: '100vh',
-				borderRadius: 0
-			} : {
-				width: '95%',
-				height: '90%'
-			}
-		}}
-		toast={toastMessage}
-		content={{
-			headContent: isChangeEventGC() ? { regularContent: <ChangeEventRequestsForm /> } : {},
-			detailView: ChangeEventRequestsLID,
-			gridContainer: {
-				toolbar: {
-					leftItems: <CERLeftButtons />,
-					rightItems: <CERRightButtons />,
-					searchComponent: {
-						show: true,
-						type: 'regular',
-						defaultFilters: defaultFilters,
-						groupOptions: isChangeEventSC() ? scGroupOptions : gcGroupOptions,
-						filterOptions: filterOptions,
-						onGroupChange: onGroupingChange,
-						onSearchChange: onGridSearch,
-						onFilterChange: onFilterChange
-					}
-				},
-				grid: {
-					headers: columns,
-					data: modifiedList,
-					getRowId: (params: any) => params.data?.id,
-					grouped: true,
-					groupIncludeTotalFooter: false,
-					rowSelection: 'single',
-					groupIncludeFooter: false,
-					rowSelected: (e: any) => rowSelected(e),
-					groupDisplayType: 'groupRows',
-					nowRowsMsg: '<div>Create New Change Event Request by Clicking the + Add button above</div>',
-					groupRowRendererParams: groupRowRendererParams,
+	return (
+		server && ( isChangeEventGC() || isChangeEventSC() || isChangeEventClient() ? <GridWindow
+				open={true}
+				title='Change Event Requests'
+				companyInfo={isChangeEventClient() || isChangeEventSC()}
+				centerPiece={
+					(isChangeEventClient() && <>{`Below are all Change Order Requests for your company '${server?.currentUserInfo?.company}' for the Project '${server?.currentProjectInfo?.name}'`}</>)
+					|| (isChangeEventSC() && <>{`Below are Quote Requests for your Trade '${server?.gblConfig?.currentUserSkillTrade?.tradeName ? server?.gblConfig?.currentUserSkillTrade?.tradeName : ''}' for the Project '${server?.currentProjectInfo?.name}'`}</>)
 				}
-			}
-		}}
-	/>;
+				className='change-event-request-window'
+				iconCls='common-icon-change-event-details'
+				appType='ChangeEventRequests'
+				appInfo={server}
+				iFrameId='changeEventRequestIframe'
+				defaultTabId='change-Event-Details'
+				isFromHelpIcon={true}
+				zIndex={100}
+				gridRef={gridRef}
+				onClose={handleClose}
+				manualLIDOpen={manualLIDOpen}
+				moduleColor='#00e5b0'
+				inlineModule={isInline}
+				isFullView={isFullView}
+				maxByDefault={isMaxByDefault}
+				showBrena={server?.showBrena}
+				onIconClick={handleIconClick}
+				presenceProps={{
+					presenceId: 'changeeventrequest-presence',
+					showBrena: false,
+					showLiveSupport: true,
+					showLiveLink: true,
+					showStreams: true,
+					showComments: true,
+					showChat: false,
+					hideProfile: false,
+				}}
+				tools={{
+					closable: true,
+					resizable: true,
+					openInNewTab: true
+				}}
+				PaperProps={{
+					sx: maxSize ? {
+						height: '100%',
+						minWidth: '100vw',
+						minHeight: '100vh',
+						borderRadius: 0
+					} : {
+						width: '95%',
+						height: '90%'
+					}
+				}}
+				toast={toastMessage}
+				content={{
+					headContent: isChangeEventGC() ? { regularContent: <ChangeEventRequestsForm /> } : {},
+					detailView: ChangeEventRequestsLID,
+					gridContainer: {
+						toolbar: {
+							leftItems: <CERLeftButtons />,
+							rightItems: <CERRightButtons />,
+							searchComponent: {
+								show: true,
+								type: 'regular',
+								defaultFilters: defaultFilters,
+								groupOptions: isChangeEventSC() ? scGroupOptions : gcGroupOptions,
+								filterOptions: filterOptions,
+								onGroupChange: onGroupingChange,
+								onSearchChange: onGridSearch,
+								onFilterChange: onFilterChange
+							}
+						},
+						grid: {
+							headers: columns,
+							data: modifiedList,
+							getRowId: (params: any) => params.data?.id,
+							grouped: true,
+							groupIncludeTotalFooter: false,
+							rowSelection: 'single',
+							groupIncludeFooter: false,
+							rowSelected: (e: any) => rowSelected(e),
+							groupDisplayType: 'groupRows',
+							nowRowsMsg: '<div>Create New Change Event Request by Clicking the + Add button above</div>',
+							groupRowRendererParams: groupRowRendererParams,
+						}
+					}
+				}}
+			/>
+			: <SUIAlert
+				open={true}
+				DailogClose={true}
+				onClose={() => {
+					postMessage({
+						event: 'closeiframe',
+						body: { iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests' }
+					});
+				}}
+				contentText={'You Are Not Authorized'}
+				title={'Warning'}
+				onAction={(e: any, type: string) => {
+					type == 'close' && postMessage({
+						event: 'closeiframe',
+						body: { iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests' }
+					});
+				}}
+				showActions={false}
+			/>
+		)
+	);
 };
 
 export default memo(ChangeEventRequestsWindow);

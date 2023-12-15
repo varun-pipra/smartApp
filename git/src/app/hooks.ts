@@ -18,7 +18,7 @@ interface DriveFileParams extends PostMessageParams {
 
 let server: any;
 export const getServerInfo = () => {
-	if (!server) {
+	if(!server) {
 		const rootState = store.getState();
 		server = rootState?.appInfo?.server;
 	}
@@ -28,14 +28,14 @@ export const getServerInfo = () => {
 
 export const hideLoadMask = () => {
 	const loader = document.getElementById('smartapp-react-loader');
-	if (loader) {
+	if(loader) {
 		loader.style.display = 'none';
 	}
 };
 
 export const showLoadMask = () => {
 	const loader = document.getElementById('smartapp-react-loader');
-	if (loader) {
+	if(loader) {
 		loader.style.display = 'flex';
 	}
 };
@@ -59,7 +59,7 @@ export const useHomeNavigation = (frameId: string, appType: string) => {
 
 export const useFilePreview = (iframe: string, appInfo: any, appType: string, files: Array<any>, index: number) => {
 	const formattedList = files?.map((file: any) => {
-		let { fileType, ...fileObj } = file;
+		let {fileType, ...fileObj} = file;
 		fileObj.fileType = null;
 		return fileObj;
 	});
@@ -77,7 +77,7 @@ export const useFilePreview = (iframe: string, appInfo: any, appType: string, fi
 
 export const useLocalFileUpload = async (appInfo: any, files: any, moduleName?: string) => {
 	let fileObject = new FormData();
-	for (let i = 0; i < files?.length; i++) {
+	for(let i = 0;i < files?.length;i++) {
 		fileObject.append(`file${i}`, files[i]);
 	}
 
@@ -86,7 +86,7 @@ export const useLocalFileUpload = async (appInfo: any, files: any, moduleName?: 
 		body: fileObject
 	});
 
-	if (!response.ok) {
+	if(!response.ok) {
 		const message = `API Request Error (File Upload ${moduleName}): ${response.status}`;
 		throw new Error(message);
 	}
@@ -105,4 +105,14 @@ export const fileDownload = (selectedids: any, filename: any) => {
 			FileName: filename
 		}
 	});
+};
+
+export const useHotLink = (path: string) => {
+	if(!server) getServerInfo();
+
+	const reactRoute = `${server.hostUrl}/EnterpriseDesktop/React/${path}`;
+	const appHolderUrl = `${server.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=${reactRoute}#react`;
+
+	console.log('appHolderUrl========>', appHolderUrl);
+	return appHolderUrl;
 };

@@ -1,19 +1,12 @@
-import React, { useRef, useEffect, useCallback, memo } from 'react';
-import { makeStyles, createStyles } from '@mui/styles';
-import { useAppDispatch, useAppSelector, useFilePreview } from 'app/hooks';
+import React, {memo} from 'react';
+import {useAppDispatch, useAppSelector, useFilePreview, useHotLink} from 'app/hooks';
 import './VendorPayDetails.scss';
-import Grid from '@mui/material/Grid';
-import InputLabel from '@mui/material/InputLabel';
-import convertDateToDisplayFormat, { formatPhoneNumber } from 'utilities/commonFunctions';
-import { getServer } from 'app/common/appInfoSlice';
-import DatePickerComponent from 'components/datepicker/DatePicker';
-import InputIcon from 'react-multi-date-picker/components/input_icon';
-import SUINote from 'sui-components/Note/Note';
-import { getAmountAlignment } from 'utilities/commonutills';
+import convertDateToDisplayFormat, {formatPhoneNumber} from 'utilities/commonFunctions';
+import {getServer} from 'app/common/appInfoSlice';
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
-import { amountFormatWithSymbol} from 'app/common/userLoginUtils';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 
 interface VendorPayDetailsProps {
 
@@ -23,12 +16,12 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 	const iFrameId = 'vendorPayAppIframe';
 	const appType = 'VendorPayApp';
 	const dispatch = useAppDispatch();
-	const { selectedRecord } = useAppSelector(state => state.vendorPayApps);
+	const {selectedRecord} = useAppSelector(state => state.vendorPayApps);
 	const [formData, setFormData] = React.useState<any>({
 		...selectedRecord,
 	});
 	const appInfo = useAppSelector(getServer);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 	const [paymentSentAttachments, setPaymentSentAttachments] = React.useState<any>([]);
 	const [paymentRecivedAttachments, setPaymentRecivedAttachments] = React.useState<any>([]);
 
@@ -49,16 +42,16 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 	};
 
 	React.useEffect(() => {
-		if (formData?.paymentSent != null) {
-			if (formData?.paymentSent?.attachments?.length > 0) {
+		if(formData?.paymentSent != null) {
+			if(formData?.paymentSent?.attachments?.length > 0) {
 				const result = formatAdditionalFileList(formData?.paymentSent?.attachments);
-				setPaymentSentAttachments(result)
+				setPaymentSentAttachments(result);
 			}
 		}
-		if (formData?.paymentReceived != null) {
-			if (formData?.paymentReceived?.attachments?.length > 0) {
+		if(formData?.paymentReceived != null) {
+			if(formData?.paymentReceived?.attachments?.length > 0) {
 				const result = formatAdditionalFileList(formData?.paymentReceived?.attachments);
-				setPaymentRecivedAttachments(result)
+				setPaymentRecivedAttachments(result);
 			}
 		}
 	}, [formData]);
@@ -68,7 +61,7 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 	};
 
 	const gridIcon = React.useMemo<React.ReactElement>(() => {
-		return <div className='common-icon-info-icon common-icon-Budgetcalculator'></div>
+		return <div className='common-icon-info-icon common-icon-Budgetcalculator'></div>;
 	}, []);
 
 	return (
@@ -86,7 +79,7 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 						{formData?.vendor?.image?.downloadUrl && (
 							<>
 								<span className="contract-info-company-icon">
-									<img src={formData?.vendor?.image?.downloadUrl} style={{ height: '28px', width: '28px', borderRadius: "50%" }} />
+									<img src={formData?.vendor?.image?.downloadUrl} style={{height: '28px', width: '28px', borderRadius: "50%"}} />
 								</span>
 							</>
 						)}
@@ -130,7 +123,7 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 							{row?.image?.downloadUrl && (
 								<>
 									<span className="contract-info-company-icon">
-										<img src={row?.image?.downloadUrl} style={{ height: '100%', width: '100%', borderRadius: "50%" }} />
+										<img src={row?.image?.downloadUrl} style={{height: '100%', width: '100%', borderRadius: "50%"}} />
 									</span>
 								</>
 							)
@@ -225,7 +218,7 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 					<div className='vendorpay-contract-info-label'>Contract Name</div>
 					<div className='vendorpay-contract-info-data-box'>
 						<span className="common-icon-contracts"></span>
-						<span className='contract-info-data hotlink' onClick={() => window.open(`${appInfo.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/vendor-contracts/home?id=${formData?.contract?.id}#react`, '_blank')}>{formData?.contract?.title}</span>
+						<span className='contract-info-data hotlink' onClick={() => window.open(useHotLink(`vendor-contracts/home?id=${formData?.contract?.id}`), '_blank')}>{formData?.contract?.title}</span>
 					</div>
 				</span>
 
@@ -298,7 +291,7 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 							{paymentSentAttachments?.map((item: any, index: number) => {
 								return <ImageListItem
 									key={index}
-									style={{ width: '110px', height: '110px', margin: '2px' }}
+									style={{width: '110px', height: '110px', margin: '2px'}}
 									className="doc-img-item"
 									onClick={() => openPreview(paymentSentAttachments, index)}
 								>
@@ -308,7 +301,7 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 										loading="lazy"
 									/>
 									<ImageListItemBar title={item.fileName} position="below" />
-								</ImageListItem>
+								</ImageListItem>;
 							})}
 						</ImageList>
 					</div>
@@ -378,14 +371,14 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 					<div className='vendorpay-contract-attachment'>
 						<div className='vendorpay-contract-attachment-label'>Attachments</div>
 						<ImageList
-							sx={{ width: '100%' }}
+							sx={{width: '100%'}}
 							className="doc-img-item-contt"
 							cols={10}
 						>
 							{paymentRecivedAttachments?.map((item: any, index: number) => {
 								return <ImageListItem
 									key={index}
-									style={{ width: '110px', height: '110px', margin: '2px' }}
+									style={{width: '110px', height: '110px', margin: '2px'}}
 									className="doc-img-item"
 									onClick={() => openPreview(paymentRecivedAttachments, index)}
 								>
@@ -395,7 +388,7 @@ const VendorPayDetails = (props: VendorPayDetailsProps) => {
 										loading="lazy"
 									/>
 									<ImageListItemBar title={item.fileName} position="below" />
-								</ImageListItem>
+								</ImageListItem>;
 							})}
 						</ImageList>
 					</div>

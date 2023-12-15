@@ -1,29 +1,29 @@
 import ErrorIcon from '@mui/icons-material/Error';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { Alert, Button, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, TextField } from '@mui/material';
+import {Button, FormControlLabel, Grid, InputAdornment, Radio, RadioGroup, TextField} from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
-import { getServer } from 'app/common/appInfoSlice';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
+import {getServer} from 'app/common/appInfoSlice';
+import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
 import DatePickerComponent from 'components/datepicker/DatePicker';
 import IQButton from 'components/iqbutton/IQButton';
-import { lockAndPostContract } from 'features/vendorcontracts/stores/VCButtonActionsAPI';
-import { setLockAndPostContractResponseClick, setSelectedRecord } from 'features/vendorcontracts/stores/VendorContractsSlice';
-import { updateContractDetails } from 'features/vendorcontracts/stores/gridAPI';
-import { getVendorContractsList } from 'features/vendorcontracts/stores/gridSlice';
-import React, { memo } from 'react';
+import {lockAndPostContract} from 'features/vendorcontracts/stores/VCButtonActionsAPI';
+import {setLockAndPostContractResponseClick, setSelectedRecord} from 'features/vendorcontracts/stores/VendorContractsSlice';
+import {updateContractDetails} from 'features/vendorcontracts/stores/gridAPI';
+import {getVendorContractsList} from 'features/vendorcontracts/stores/gridSlice';
+import React, {memo} from 'react';
 import InputIcon from 'react-multi-date-picker/components/input_icon';
 import SUIAlert from 'sui-components/Alert/Alert';
 import DynamicTooltip from "sui-components/DynamicTooltip/DynamicTooltip";
 import SUIGrid from "sui-components/Grid/Grid";
 import SUINote from 'sui-components/Note/Note';
-import convertDateToDisplayFormat, { formatPhoneNumber } from 'utilities/commonFunctions';
-import { errorMsg, errorStatus, getAmountAlignment, isUserGC } from 'utilities/commonutills';
-import { primaryIconSize } from "../../../../budgetmanager/BudgetManagerGlobalStyles";
+import convertDateToDisplayFormat, {formatPhoneNumber} from 'utilities/commonFunctions';
+import {errorMsg, errorStatus, getAmountAlignment, isUserGC} from 'utilities/commonutills';
+import {primaryIconSize} from "../../../../budgetmanager/BudgetManagerGlobalStyles";
 import './ContractDetails.scss';
 // import { lockAndPostContract } from 'features/vendorcontracts/stores/VendorContractsAPI';
-import { postMessage } from 'app/utils';
+import {postMessage} from 'app/utils';
 import Toast from 'components/toast/Toast';
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 
 interface ContractDetailsProps {
 	readOnly: boolean;
@@ -31,30 +31,30 @@ interface ContractDetailsProps {
 
 const ContractDetails = (props: ContractDetailsProps) => {
 	const dispatch = useAppDispatch();
-	const { selectedRecord } = useAppSelector(state => state.vendorContracts);
-	const { budgetItems } = useAppSelector((state) => state.vendorContractsGrid);
+	const {selectedRecord} = useAppSelector(state => state.vendorContracts);
+	const {budgetItems} = useAppSelector((state) => state.vendorContractsGrid);
 	const [formData, setFormData] = React.useState<any>({});
-	const [alert, setAlert] = React.useState<any>({ show: false, alertMsg: '' });
+	const [alert, setAlert] = React.useState<any>({show: false, alertMsg: ''});
 	const [showLockAlert, setShowLockAlert] = React.useState<boolean>(false);
 	const [showLockSuccessMsg, setShowLockSuccessMsg] = React.useState<boolean>(false);
-	const [toast, setToast] = React.useState<any>({ show: false, message: '' });
+	const [toast, setToast] = React.useState<any>({show: false, message: ''});
 	const [upfrontPaymentType, setUpfrontPaymentType] = React.useState<any>('');
 
 	const appInfo = useAppSelector(getServer);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 	const submitContractDetailsResponseClick = useAppSelector((state) => state?.vendorContracts?.submitContractDetailsResponseClick);
 
 	React.useEffect(() => {
-		console.log("selec", selectedRecord, formData, { ...selectedRecord, upfrontPaymentAmount: selectedRecord?.upfrontPaymentAmount?.toLocaleString('en-US'), makeUpfrontPayment: formData?.makeUpfrontPayment ? formData?.makeUpfrontPayment : selectedRecord?.makeUpfrontPayment, hasPaymentRetainage: formData?.hasPaymentRetainage ? formData?.hasPaymentRetainage : selectedRecord?.hasPaymentRetainage   })
-		setFormData({ ...selectedRecord, upfrontPaymentAmount: selectedRecord?.upfrontPaymentAmount?.toLocaleString('en-US'),  makeUpfrontPayment: formData?.makeUpfrontPayment ? formData?.makeUpfrontPayment : selectedRecord?.makeUpfrontPayment, hasPaymentRetainage: formData?.hasPaymentRetainage ? formData?.hasPaymentRetainage : selectedRecord?.hasPaymentRetainage });
+		console.log("selec", selectedRecord, formData, {...selectedRecord, upfrontPaymentAmount: selectedRecord?.upfrontPaymentAmount?.toLocaleString('en-US'), makeUpfrontPayment: formData?.makeUpfrontPayment ? formData?.makeUpfrontPayment : selectedRecord?.makeUpfrontPayment, hasPaymentRetainage: formData?.hasPaymentRetainage ? formData?.hasPaymentRetainage : selectedRecord?.hasPaymentRetainage});
+		setFormData({...selectedRecord, upfrontPaymentAmount: selectedRecord?.upfrontPaymentAmount?.toLocaleString('en-US'), makeUpfrontPayment: formData?.makeUpfrontPayment ? formData?.makeUpfrontPayment : selectedRecord?.makeUpfrontPayment, hasPaymentRetainage: formData?.hasPaymentRetainage ? formData?.hasPaymentRetainage : selectedRecord?.hasPaymentRetainage});
 	}, [selectedRecord]);
 
-	React.useEffect(() => { submitContractDetailsResponseClick && setShowLockAlert(true); }, [submitContractDetailsResponseClick]);
-	React.useEffect(() => { setTimeout(() => { setShowLockSuccessMsg(false); }, 5000); }, [showLockSuccessMsg]);
+	React.useEffect(() => {submitContractDetailsResponseClick && setShowLockAlert(true);}, [submitContractDetailsResponseClick]);
+	React.useEffect(() => {setTimeout(() => {setShowLockSuccessMsg(false);}, 5000);}, [showLockSuccessMsg]);
 
 	React.useEffect(() => {
 		toast?.show && setTimeout(() => {
-			setToast({ show: false, message: '' });
+			setToast({show: false, message: ''});
 		}, 5000);
 	}, [toast?.show]);
 
@@ -66,7 +66,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 		return (
 			<div className='bidPackage_tooltip_content'>
 				<label className='bidPackage_tooltip_label'>Bid Package Details</label>
-				<div className='bidPackage_tooltip_grid' style={{ height: 200, width: 600 }}>
+				<div className='bidPackage_tooltip_grid' style={{height: 200, width: 600}}>
 					<SUIGrid
 						headers={[
 							{
@@ -75,7 +75,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 								minWidth: 270,
 								menuTabs: [],
 								cellRenderer: (params: any) => {
-									if (params?.node?.rowPinned == "bottom") {
+									if(params?.node?.rowPinned == "bottom") {
 										return (
 											'Grand Total'
 										);
@@ -93,7 +93,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 								minWidth: 120,
 								menuTabs: [],
 								cellRenderer: (params: any) => {
-									if (params?.node?.rowPinned == "bottom") {
+									if(params?.node?.rowPinned == "bottom") {
 										return '';
 									}
 									else {
@@ -109,7 +109,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 								minWidth: 85,
 								menuTabs: [],
 								cellRenderer: (params: any) => {
-									if (params?.node?.rowPinned == "bottom") {
+									if(params?.node?.rowPinned == "bottom") {
 										return '';
 									}
 									else {
@@ -146,7 +146,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 				<div className='bidPackage_tooltip_footer'>
 					<IQButton className='contract-details-tooltip-button'
 						endIcon={<span className='common-icon-external' />}
-						onClick={() => { window.open(`${appInfo?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/bid-manager/home?id=${formData?.bidPackage?.id}#react`, "_blank"); }}
+						onClick={() => {window.open(useHotLink(`bid-manager/home?id=${formData?.bidPackage?.id}`), "_blank");}}
 					>
 						OPEN BID PACKAGE
 					</IQButton>
@@ -156,63 +156,63 @@ const ContractDetails = (props: ContractDetailsProps) => {
 	};
 
 	const handleDropdownChange = (value: any, name: any) => {
-		setFormData({ ...formData, [name]: value });
+		setFormData({...formData, [name]: value});
 	};
 	const handleChange = (key: string, value: any) => {
 		// console.log("keyyyyy", key, value);
 		let formDataClone: any = {};
-		if (key == 'upfrontPaymentAmount' && Number(value?.replaceAll(',', '')) > formData?.amount) {
-			setAlert({ show: true, alertMsg: 'Upfornt Payment should not be more than the Original Contract Amount.' });
-		} else if (key == 'retainagePercentage' && Number(value) > 100) {
-			setAlert({ show: true, alertMsg: 'Retainage Percentage Should not be more than the 100' });
-		} else if (['makeUpfrontPayment', 'hasPaymentRetainage'].includes(key)) {
+		if(key == 'upfrontPaymentAmount' && Number(value?.replaceAll(',', '')) > formData?.amount) {
+			setAlert({show: true, alertMsg: 'Upfornt Payment should not be more than the Original Contract Amount.'});
+		} else if(key == 'retainagePercentage' && Number(value) > 100) {
+			setAlert({show: true, alertMsg: 'Retainage Percentage Should not be more than the 100'});
+		} else if(['makeUpfrontPayment', 'hasPaymentRetainage'].includes(key)) {
 			const amountKey = key == 'makeUpfrontPayment' ? 'upfrontPaymentAmount' : 'retainagePercentage';
-			!value ? setFormData({ ...formData, [key]: value, [amountKey]: 0 }) : setFormData({ ...formData, [key]: value });
-			!value && updateContractDetails(appInfo, { [key]: value, [amountKey]: 0 }, selectedRecord?.id).then((data: any) => {
+			!value ? setFormData({...formData, [key]: value, [amountKey]: 0}) : setFormData({...formData, [key]: value});
+			!value && updateContractDetails(appInfo, {[key]: value, [amountKey]: 0}, selectedRecord?.id).then((data: any) => {
 				// console.log("updateContractDetails dataaa", data);
-				if (errorStatus?.includes(data?.status)) setToast({ show: true, message: errorMsg });
+				if(errorStatus?.includes(data?.status)) setToast({show: true, message: errorMsg});
 				else {
-					dispatch(setSelectedRecord(data)); 
+					dispatch(setSelectedRecord(data));
 					dispatch(getVendorContractsList(appInfo));
 				};
 				// else ['ActiveUnlocked', 'AwaitingAcceptanceUnlocked']?.includes(selectedRecord?.status) && dispatch(setEnablePostAndLockBtn(true));
 			});
-		} else if (['startDate', 'endDate'].includes(key)) {
-			setFormData({ ...formData, [key]: value });
-			formDataClone = { ...formData, [key]: value };
-			const payload = { startDate: new Date(formDataClone?.startDate)?.toISOString(), endDate: new Date(formDataClone?.endDate)?.toISOString() };
+		} else if(['startDate', 'endDate'].includes(key)) {
+			setFormData({...formData, [key]: value});
+			formDataClone = {...formData, [key]: value};
+			const payload = {startDate: new Date(formDataClone?.startDate)?.toISOString(), endDate: new Date(formDataClone?.endDate)?.toISOString()};
 			formDataClone?.startDate && formDataClone?.endDate && updateContractDetails(appInfo, payload, selectedRecord?.id).then((data: any) => {
 				// console.log("updateContractDetails dataaa date", data);
-				if (errorStatus?.includes(data?.status)) setToast({ show: true, message: errorMsg });
+				if(errorStatus?.includes(data?.status)) setToast({show: true, message: errorMsg});
 				else {
 					dispatch(setSelectedRecord(data));
 					dispatch(getVendorContractsList(appInfo));
 				};
 				// ['ActiveUnlocked', 'AwaitingAcceptanceUnlocked']?.includes(selectedRecord?.status) && dispatch(setEnablePostAndLockBtn(true));				
 			});
-		} else if (key == 'upfrontPaymentOption') {
-			setFormData({ ...formData, [key]: value });
-			updateContractDetails(appInfo, { [key]: value }, selectedRecord?.id).then((data: any) => {
-				if (errorStatus?.includes(data?.status)) setToast({ show: true, message: errorMsg });
+		} else if(key == 'upfrontPaymentOption') {
+			setFormData({...formData, [key]: value});
+			updateContractDetails(appInfo, {[key]: value}, selectedRecord?.id).then((data: any) => {
+				if(errorStatus?.includes(data?.status)) setToast({show: true, message: errorMsg});
 				else {
 					dispatch(setSelectedRecord(data));
 				};
 			});
 		} else {
-			setFormData({ ...formData, [key]: value });
+			setFormData({...formData, [key]: value});
 		}
 	};
 
 	const handleOnBlur = (key: string, value: any) => {
-		setFormData({ ...formData, [key]: value });
+		setFormData({...formData, [key]: value});
 		// console.log("handleOnBlur", key, value, selectedRecord?.[ key ]);
 		let callUpdatApi = ['upfrontPaymentAmount', 'retainagePercentage']?.includes(key) ? selectedRecord?.[key] != Number(value?.replaceAll(',', '')) ? true : false : true;
 		const payload = key == 'upfrontPaymentAmount' ?
-			{ 'makeUpfrontPayment': true, [key]: value == '' ? 0 : value }
-			: key == 'retainagePercentage' ? { 'hasPaymentRetainage': true, [key]: value == '' ? 0 : value }
-				: { [key]: value };
+			{'makeUpfrontPayment': true, [key]: value == '' ? 0 : value}
+			: key == 'retainagePercentage' ? {'hasPaymentRetainage': true, [key]: value == '' ? 0 : value}
+				: {[key]: value};
 		callUpdatApi && updateContractDetails(appInfo, payload, selectedRecord?.id).then((data: any) => {
-			if (errorStatus?.includes(data?.status)) setToast({ show: true, message: errorMsg });
+			if(errorStatus?.includes(data?.status)) setToast({show: true, message: errorMsg});
 			else {
 				// dispatch(setSelectedRecord(data));	
 				dispatch(getVendorContractsList(appInfo));
@@ -222,7 +222,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 	};
 
 	const preventMinus = (e: any) => {
-		if (e.code === 'Minus') {
+		if(e.code === 'Minus') {
 			e.preventDefault();
 		}
 	};
@@ -230,15 +230,15 @@ const ContractDetails = (props: ContractDetailsProps) => {
 	const preventPasteNegative = (e: any) => {
 		const clipboardData = e.clipboardData;
 		const pastedData = parseFloat(clipboardData.getData('text'));
-		if (pastedData < 0) {
+		if(pastedData < 0) {
 			e.preventDefault();
 		}
 	};
 
 	const handleLockAndPostConfirmation = (type: any) => {
-		if (type == 'yes') {
+		if(type == 'yes') {
 			lockAndPostContract(appInfo, selectedRecord?.id, (response: any) => {
-				if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
+				if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 				else {
 					console.log("lock response", response);
 					dispatch(setSelectedRecord(response));
@@ -267,22 +267,22 @@ const ContractDetails = (props: ContractDetailsProps) => {
 
 	const tooltipData = formData?.vendor?.pendingCompliances?.map((cert: any) => cert?.name);
 	const CompanyComplianceTooltip = (props: any) => {
-		const { data, label, ...others } = props;
+		const {data, label, ...others} = props;
 		return (
-			<div className='bidPackage_tooltip_content' style={{ margin: '0.5em' }}>
+			<div className='bidPackage_tooltip_content' style={{margin: '0.5em'}}>
 				<label className='bidPackage_tooltip_label'>{label}</label>
-				<div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '1em' }}>
+				<div style={{width: '100%', display: 'flex', alignItems: 'center', gap: '1em'}}>
 					<div>
 						<ErrorIcon className="contract_details_errorIcon" />
 					</div>
-					<div style={{ display: 'grid', gap: '5px' }}>
+					<div style={{display: 'grid', gap: '5px'}}>
 						{data.map((item: any, index: any) => {
 							return <div key={index}>{item}</div>;
 						})}
 					</div>
 
 				</div>
-				<div className='bidPackage_tooltip_footer' style={{ marginTop: '10px' }}>
+				<div className='bidPackage_tooltip_footer' style={{marginTop: '10px'}}>
 					<IQButton className='contract-details-tooltip-button'
 						endIcon={<span className='common-icon-external' />}
 						onClick={() => openCompanyRecordModel(data)}
@@ -295,7 +295,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 	};
 
 	return (
-		<div className='contract-details-box' style={{ height: 'fit-content !important' }}>
+		<div className='contract-details-box' style={{height: 'fit-content !important'}}>
 			<div className='contract-details-header'>
 				<div className='title-action'>
 					<span className='title'>Vendor Details</span>
@@ -315,7 +315,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 										}
 									}}
 								>
-									<WarningAmberIcon fontSize={primaryIconSize} style={{ color: 'red' }} />
+									<WarningAmberIcon fontSize={primaryIconSize} style={{color: 'red'}} />
 								</DynamicTooltip>
 							) : ''}
 					</div>
@@ -324,7 +324,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 						{formData?.vendor?.image?.downloadUrl && (
 							<>
 								<span className="contract-info-company-icon">
-									<img src={formData?.vendor?.image?.downloadUrl} style={{ height: '100%', width: '100%', borderRadius: "50%" }} />
+									<img src={formData?.vendor?.image?.downloadUrl} style={{height: '100%', width: '100%', borderRadius: "50%"}} />
 								</span>
 							</>
 						)}
@@ -368,7 +368,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 							{row?.image?.downloadUrl && (
 								<>
 									<span className="contract-info-company-icon">
-										<img src={row?.image?.downloadUrl} style={{ height: '100%', width: '100%', borderRadius: "50%" }} />
+										<img src={row?.image?.downloadUrl} style={{height: '100%', width: '100%', borderRadius: "50%"}} />
 									</span>
 								</>
 							)
@@ -429,7 +429,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 					<InputLabel
 						required
 						className="contract-info-label"
-						style={{ fontSize: '15px' }}
+						style={{fontSize: '15px'}}
 						sx={{
 							"& .MuiFormLabel-asterisk": {
 								color: "red",
@@ -439,8 +439,8 @@ const ContractDetails = (props: ContractDetailsProps) => {
 						Contract Start Date
 					</InputLabel>
 					{props?.readOnly ? <div>
-						<span style={{ verticalAlign: 'sub' }} className='common-icon-DateCalendar contract-info-data'></span>
-						<span style={{ marginLeft: '10px' }}>{convertDateToDisplayFormat(formData?.startDate)}</span>
+						<span style={{verticalAlign: 'sub'}} className='common-icon-DateCalendar contract-info-data'></span>
+						<span style={{marginLeft: '10px'}}>{convertDateToDisplayFormat(formData?.startDate)}</span>
 					</div>
 						: <div className='contract-info-data-box'>
 							<span className='contract-info-data'>
@@ -466,7 +466,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 					<InputLabel
 						required
 						className="contract-info-label"
-						style={{ fontSize: '15px' }}
+						style={{fontSize: '15px'}}
 						sx={{
 							"& .MuiFormLabel-asterisk": {
 								color: "red",
@@ -476,8 +476,8 @@ const ContractDetails = (props: ContractDetailsProps) => {
 						Contract End Date
 					</InputLabel>
 					{props?.readOnly ? <div>
-						<span style={{ verticalAlign: 'sub' }} className='common-icon-DateCalendar'></span>
-						<span style={{ marginLeft: '10px' }}>{convertDateToDisplayFormat(formData?.endDate)}</span>
+						<span style={{verticalAlign: 'sub'}} className='common-icon-DateCalendar'></span>
+						<span style={{marginLeft: '10px'}}>{convertDateToDisplayFormat(formData?.endDate)}</span>
 					</div>
 						: <div className='contract-info-data-box'>
 							<span className='contract-info-data'>
@@ -502,7 +502,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 					<div className='contract-info-label'>PO Number</div>
 					{props?.readOnly ? <div>
 						<span className='common-icon-post-contract'></span>
-						<span style={{ marginTop: '-10px', marginLeft: '10px' }}>{formData?.poNumber}</span>
+						<span style={{marginTop: '-10px', marginLeft: '10px'}}>{formData?.poNumber}</span>
 					</div>
 						: <div className='contract-info-data-box'>
 							<span className="common-icon-post-contract"></span>
@@ -534,7 +534,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 				</span>
 
 				<span className='contract-info-tile'>
-					<div className='contract-info-label' style={{ textAlign: "left" }}>Would you like to make Upfront Payment?</div>
+					<div className='contract-info-label' style={{textAlign: "left"}}>Would you like to make Upfront Payment?</div>
 				</span>
 
 				<span className='contract-info-tile span-2 division-cost-code-field'>
@@ -562,17 +562,17 @@ const ContractDetails = (props: ContractDetailsProps) => {
 										// type='number'
 										disabled={props?.readOnly}
 										InputProps={{
-											inputProps: { min: 0, max: selectedRecord?.amount },
+											inputProps: {min: 0, max: selectedRecord?.amount},
 											startAdornment: (
 												<InputAdornment position="start">
-													<span style={{ color: '#333333', marginTop: '6px' }}>{currencySymbol}</span>
+													<span style={{color: '#333333', marginTop: '6px'}}>{currencySymbol}</span>
 												</InputAdornment>
 											),
 
 											onKeyPress: (event) => {
 												// Allowing only numeric input
 												const charCode = event.which ? event.which : event.keyCode;
-												if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+												if(charCode > 31 && (charCode < 48 || charCode > 57)) {
 													event.preventDefault();
 												}
 											},
@@ -600,7 +600,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 				</span>
 
 				<span className='contract-info-tile'>
-					<div className='contract-info-label' style={{ textAlign: "left" }}>Upfront Payment Settings</div>
+					<div className='contract-info-label' style={{textAlign: "left"}}>Upfront Payment Settings</div>
 				</span>
 
 				<span className='contract-info-tile span-2 division-cost-code-field'>
@@ -615,7 +615,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 				</span>
 
 				<span className='contract-info-tile'>
-					<div className='contract-info-label' style={{ textAlign: "left" }}>Is there Payment Retainage?</div>
+					<div className='contract-info-label' style={{textAlign: "left"}}>Is there Payment Retainage?</div>
 				</span>
 
 				<span className='contract-info-tile span-2 division-cost-code-field'>
@@ -627,7 +627,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 								{(formData?.hasPaymentRetainage) && (
 									<>
 										<span
-											style={{ marginRight: '4.25em' }}
+											style={{marginRight: '4.25em'}}
 										>Enter Retainage Percentage</span>
 										<TextField
 											sx={{
@@ -651,10 +651,10 @@ const ContractDetails = (props: ContractDetailsProps) => {
 											onPaste={preventPasteNegative}
 											InputProps={{
 												// min: 0,												
-												inputProps: { min: 0, max: 100 },
+												inputProps: {min: 0, max: 100},
 												endAdornment: (
 													<InputAdornment position="end">
-														<span style={{ color: '#333333', marginTop: '6px' }}>{'%'}</span>
+														<span style={{color: '#333333', marginTop: '6px'}}>{'%'}</span>
 													</InputAdornment>
 												),
 											}}
@@ -677,12 +677,12 @@ const ContractDetails = (props: ContractDetailsProps) => {
 						alert?.show && <SUIAlert
 							open={alert}
 							onClose={() => {
-								setAlert({ ...alert, show: false });
+								setAlert({...alert, show: false});
 							}}
 							contentText={
 								<div>
 									<span>{alert?.alertMsg}</span><br />
-									<div style={{ textAlign: 'right', marginTop: '10px' }}>
+									<div style={{textAlign: 'right', marginTop: '10px'}}>
 										<Button
 											className="cancel-cls"
 											style={{
@@ -695,7 +695,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 												boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
 												display: 'initial'
 											}}
-											onClick={(e: any) => setAlert({ ...alert, show: false })}>OK</Button>
+											onClick={(e: any) => setAlert({...alert, show: false})}>OK</Button>
 									</div>
 								</div>
 							}
@@ -707,8 +707,8 @@ const ContractDetails = (props: ContractDetailsProps) => {
 			</div>
 
 			<Grid item sm={11.9} className="conttract-notes">
-				<InputLabel className='inputlabel' style={{ marginBottom: '5px', textAlign: "left" }}>
-					<span className='common-icon-adminNote' style={{ fontSize: '1.25rem' }}></span>
+				<InputLabel className='inputlabel' style={{marginBottom: '5px', textAlign: "left"}}>
+					<span className='common-icon-adminNote' style={{fontSize: '1.25rem'}}></span>
 					Contract Cover Letter
 				</InputLabel>
 				{props?.readOnly ?
@@ -719,12 +719,12 @@ const ContractDetails = (props: ContractDetailsProps) => {
 					></span>
 					: <SUINote
 						notes={formData?.coveringLetter}
-						onNotesChange={(value: any) => { handleOnBlur("coveringLetter", value); }}
+						onNotesChange={(value: any) => {handleOnBlur("coveringLetter", value);}}
 					/>}
 			</Grid>
 			<Grid item sm={11.9} className="conttract-notes">
-				<InputLabel className='inputlabel' style={{ marginBottom: '5px', textAlign: "left" }}>
-					<span className='common-icon-adminNote' style={{ fontSize: '1.25rem' }}></span>
+				<InputLabel className='inputlabel' style={{marginBottom: '5px', textAlign: "left"}}>
+					<span className='common-icon-adminNote' style={{fontSize: '1.25rem'}}></span>
 					Inclusions
 				</InputLabel>
 				{props?.readOnly ?
@@ -741,8 +741,8 @@ const ContractDetails = (props: ContractDetailsProps) => {
 					/>}
 			</Grid>
 			<Grid item sm={11.9} className="conttract-notes">
-				<InputLabel className='inputlabel' style={{ marginBottom: '5px', textAlign: "left" }}>
-					<span className='common-icon-adminNote' style={{ fontSize: '1.25rem' }}></span>
+				<InputLabel className='inputlabel' style={{marginBottom: '5px', textAlign: "left"}}>
+					<span className='common-icon-adminNote' style={{fontSize: '1.25rem'}}></span>
 					Exclusions
 				</InputLabel>
 				{props?.readOnly ?
@@ -753,7 +753,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 					></span>
 					: <SUINote
 						notes={formData?.exclusions}
-						onNotesChange={(value: any) => { handleOnBlur("exclusions", value); }}
+						onNotesChange={(value: any) => {handleOnBlur("exclusions", value);}}
 					/>}
 			</Grid>
 			{

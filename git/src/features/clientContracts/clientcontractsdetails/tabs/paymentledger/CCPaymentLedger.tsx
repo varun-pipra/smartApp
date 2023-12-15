@@ -1,29 +1,28 @@
-import React, { useState, useMemo } from 'react';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { Box, Button } from '@mui/material';
-import { ColDef } from 'ag-grid-community';
+import React, {useState, useMemo} from 'react';
+import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
+import {Box, Button} from '@mui/material';
+import {ColDef} from 'ag-grid-community';
 import './CCPaymentLedger.scss';
-import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import {formatDate} from 'utilities/datetime/DateTimeUtils';
 import SUIGrid from 'sui-components/Grid/Grid';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { getCCPaymentLedgerList } from 'features/clientContracts/stores/PaymentLedgerSlice';
-import { getServer } from "app/common/appInfoSlice";
-import { getMinMaxDrawerStatus, setMinMaxDrawerStatus } from 'features/clientContracts/stores/ClientContractsSlice';
-import { vendorPayAppsPaymentStatus, vendorPayAppsPaymentStatusFilterOptions, vendorPayStatus } from 'utilities/vendorPayApps/enums';
-import IQButton from 'components/iqbutton/IQButton';
+import {getCCPaymentLedgerList} from 'features/clientContracts/stores/PaymentLedgerSlice';
+import {getServer} from "app/common/appInfoSlice";
+import {getMinMaxDrawerStatus, setMinMaxDrawerStatus} from 'features/clientContracts/stores/ClientContractsSlice';
+import {vendorPayAppsPaymentStatus, vendorPayAppsPaymentStatusFilterOptions, vendorPayStatus} from 'utilities/vendorPayApps/enums';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
-import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
-import { isUserGCForCC } from 'features/clientContracts/utils';
+import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
+import {amountFormatWithSymbol, amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
+import {isUserGCForCC} from 'features/clientContracts/utils';
 var tinycolor = require('tinycolor2');
 
 const CCPaymentLedger = (props: any) => {
 	const dispatch = useAppDispatch();
 	const [data, setData] = useState<Array<any>>([]);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
-	const { selectedRecord } = useAppSelector(state => state.clientContracts);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
+	const {selectedRecord} = useAppSelector(state => state.clientContracts);
 	const appInfo = useAppSelector(getServer);
-	const { paymentLedgerList } = useAppSelector((state) => state.cCPaymentLedger);
+	const {paymentLedgerList} = useAppSelector((state) => state.cCPaymentLedger);
 	const [rowdata, setRowData] = useState([]);
 	const minMaxStatus: any = useAppSelector(getMinMaxDrawerStatus);
 	const [filteredRecords, setFilteredRecords] = React.useState<any>([]);
@@ -33,7 +32,7 @@ const CCPaymentLedger = (props: any) => {
 	const groupKeyValue = React.useRef<any>(null);
 
 	const groupOptions = [
-		{ text: "Payment Status", value: "status" },
+		{text: "Payment Status", value: "status"},
 	];
 
 	const filterOptions = [
@@ -52,7 +51,7 @@ const CCPaymentLedger = (props: any) => {
 	const [filters, setFilters] = React.useState<any>(filterOptions);
 
 	React.useEffect(() => {
-		dispatch(getCCPaymentLedgerList({ appInfo: appInfo, id: selectedRecord?.id }));
+		dispatch(getCCPaymentLedgerList({appInfo: appInfo, id: selectedRecord?.id}));
 	}, [selectedRecord]);
 
 	React.useEffect(() => {
@@ -67,31 +66,31 @@ const CCPaymentLedger = (props: any) => {
 			pinned: 'left',
 			cellRenderer: (params: any) => {
 				return (
-				  <>
-					<span
-					  className="ag-costcodegroup"
-					  style={{
-						textOverflow: "ellipsis",
-						whiteSpace: "nowrap",
-						overflow: "hidden",
-						color: "#059CDF",
-					  }}
-					>
-					  <span
-						className="hot-link"
-						onClick={() => {
-						  window.open(
-							`${appInfo?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/client-pay-applications/home?id=${params?.data?.id}#react`,
-							"_blank"
-						  );
-						}}
-					  >
-						{params.data?.code}
-					  </span>
-					</span>
-				  </>
+					<>
+						<span
+							className="ag-costcodegroup"
+							style={{
+								textOverflow: "ellipsis",
+								whiteSpace: "nowrap",
+								overflow: "hidden",
+								color: "#059CDF",
+							}}
+						>
+							<span
+								className="hot-link"
+								onClick={() => {
+									window.open(
+										useHotLink(`client-pay-applications/home?id=${params?.data?.id}`),
+										"_blank"
+									);
+								}}
+							>
+								{params.data?.code}
+							</span>
+						</span>
+					</>
 				);
-			  },
+			},
 		},
 		{
 			headerName: 'Status',
@@ -119,12 +118,12 @@ const CCPaymentLedger = (props: any) => {
 			maxWidth: 140,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if (!params.node.footer) {
+				if(!params.node.footer) {
 					return (
 						<div className='right-align'>
 							{amountFormatWithSymbol(params?.value)}
 						</div>
-					)
+					);
 				}
 			},
 			// valueGetter: (params: any) => {
@@ -145,10 +144,10 @@ const CCPaymentLedger = (props: any) => {
 			maxWidth: 145,
 			aggFunc: 'sum',
 			cellRenderer: (params: any) => {
-				if (params.node.footer || params.node.level > 0 || !params.node.expanded) {
+				if(params.node.footer || params.node.level > 0 || !params.node.expanded) {
 					return <div className='right-align'>
 						{amountFormatWithSymbol(params?.value)}
-					</div>
+					</div>;
 				}
 			}
 		}, {
@@ -158,10 +157,10 @@ const CCPaymentLedger = (props: any) => {
 			minWidth: 200,
 			aggFunc: 'sum',
 			cellRenderer: (params: any) => {
-				if (params.node.footer || params.node.level > 0 || !params.node.expanded) {
+				if(params.node.footer || params.node.level > 0 || !params.node.expanded) {
 					return <div className='right-align'>
 						{amountFormatWithSymbol(params?.value)}
-					</div>
+					</div>;
 				}
 			}
 		}, {
@@ -170,10 +169,10 @@ const CCPaymentLedger = (props: any) => {
 			suppressMenu: true,
 			maxWidth: 145,
 			cellRenderer: (params: any) => {
-				if (params.node.footer || params.node.level > 0 || !params.node.expanded)
+				if(params.node.footer || params.node.level > 0 || !params.node.expanded)
 					return <div className='right-align'>
 						{amountFormatWithSymbol(params?.value)}
-					</div>
+					</div>;
 			}
 		}, {
 			headerName: 'Invoice Date',
@@ -181,7 +180,7 @@ const CCPaymentLedger = (props: any) => {
 			suppressMenu: true,
 			maxWidth: 150,
 			cellRenderer: (params: any) => {
-				return params.value ? formatDate(params.value, { year: 'numeric', month: '2-digit', day: '2-digit' }) : '';
+				return params.value ? formatDate(params.value, {year: 'numeric', month: '2-digit', day: '2-digit'}) : '';
 			}
 		}, {
 			headerName: 'PO Number',
@@ -228,11 +227,11 @@ const CCPaymentLedger = (props: any) => {
 			suppressMenu: true,
 			cellRendererParams: {
 				innerRenderer: (cell: any) => {
-					if (!cell.data) {
+					if(!cell.data) {
 						const isFooter = cell?.node?.footer;
 						const isRootLevel = cell?.node?.level === -1;
-						if (isFooter) {
-							if (isRootLevel) {
+						if(isFooter) {
+							if(isRootLevel) {
 								return 'Summary';
 							}
 							return `Subtotal`;
@@ -240,10 +239,10 @@ const CCPaymentLedger = (props: any) => {
 							return `${cell?.value}`;
 						}
 					}
-					if (cell.node.group) {
+					if(cell.node.group) {
 						return <div className='bold-font'>{cell.value}</div>;
 					} else {
-						const { status } = cell.data;
+						const {status} = cell.data;
 						const stateConstant = vendorPayStatus[(status)];
 						const stageIndicator = <IQTooltip title={status.length > 11 ? status : ''}>
 							<Button disabled
@@ -252,16 +251,16 @@ const CCPaymentLedger = (props: any) => {
 								style={{
 									backgroundColor: stateConstant?.color,
 									color: tinycolor(cell.data?.stageColor).isDark() ? 'white' : 'black',
-								}}><span style={{ marginRight: '5px' }} className={`payment-status-icon ${stateConstant?.icon}`}></span>{stateConstant?.text}</Button>
+								}}><span style={{marginRight: '5px'}} className={`payment-status-icon ${stateConstant?.icon}`}></span>{stateConstant?.text}</Button>
 						</IQTooltip>;
 						return <div className='vertical-center-align'>
-							<span style={{ paddingRight: '5em' }}>{cell.value}</span>{stageIndicator}
+							<span style={{paddingRight: '5em'}}>{cell.value}</span>{stageIndicator}
 						</div>;
 					}
 				}
 			},
 			valueGetter: (cell: any) => {
-				if (cell.node.group) {
+				if(cell.node.group) {
 					return cell.data?.budgetLineItem || '';
 				} else return cell.data?.code || '';
 			}
@@ -269,24 +268,24 @@ const CCPaymentLedger = (props: any) => {
 	}, []);
 
 	const maximizeIcon = useMemo<React.ReactElement>(() => {
-		return <div className='common-icon-maximise' style={{ fontSize: '1.25rem' }}></div>;
+		return <div className='common-icon-maximise' style={{fontSize: '1.25rem'}}></div>;
 	}, []);
 	const onMaximizeTransactions = () => {
-		dispatch(setMinMaxDrawerStatus({ minMax: true, forecast: false, transactions: false, paymentLedger: true }));
+		dispatch(setMinMaxDrawerStatus({minMax: true, forecast: false, transactions: false, paymentLedger: true}));
 	};
 
 
 	const handleGroupChange = (groupKey: any) => {
 		const columnsCopy = [...columns];
 		console.log("activeMainGridGroupKey", groupKey, columnsCopy);
-		if (((groupKey ?? false) && groupKey !== "")) {
+		if(((groupKey ?? false) && groupKey !== "")) {
 			// setGroupKey(activeMainGridGroupKey);
 			groupKeyValue.current = groupKey;
 			columnsCopy.forEach((col: any) => {
 				col.rowGroup = groupKey ? groupKey === col.field : false;
 				setColumns(columnsCopy);
 			});
-		} else if (groupKey ?? true) {
+		} else if(groupKey ?? true) {
 			groupKeyValue.current = null;
 			columnsCopy.forEach((col: any) => {
 				console.log("status", col?.rowGroup);
@@ -298,7 +297,7 @@ const CCPaymentLedger = (props: any) => {
 	};
 
 	const handleOnSearchChange = (text: any) => {
-		if (paymentLedgerList?.length && text && text !== ' ') {
+		if(paymentLedgerList?.length && text && text !== ' ') {
 			setSearchText(text);
 			const filteredIds = filteredRecords?.map((obj: any) => obj?.id);
 			const firstResult = paymentLedgerList.filter((obj: any) => {
@@ -312,7 +311,7 @@ const CCPaymentLedger = (props: any) => {
 	const handleFilterChange = (filters: any) => {
 		let filteredData: any = [...paymentLedgerList];
 		console.log("handleFilterChange", filters, filteredData);
-		if (filters?.status?.length > 0) {
+		if(filters?.status?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return filters?.status?.includes(rec?.status);
 			});
@@ -323,13 +322,13 @@ const CCPaymentLedger = (props: any) => {
 
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props.node;
-		if (node.group) {
+		if(node.group) {
 			const colName = groupKeyValue?.current;
 			console.log("cellerender", colName, node?.group);
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if (colName === "status") {
+			if(colName === "status") {
 				return (
-					<div style={{ display: 'flex' }}>
+					<div style={{display: 'flex'}}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={vendorPayAppsPaymentStatus[data?.status]} colName={colName}
 						/>
@@ -350,20 +349,20 @@ const CCPaymentLedger = (props: any) => {
 	}, []);
 
 	const getContingencies = () => {
-		if (selectedRecord?.contingencyPercentage && selectedRecord?.contingencyPercentage > 0) return selectedRecord?.contingencyPercentage + '%';
-		if (selectedRecord?.contingencyAmount && selectedRecord?.contingencyAmount > 0) return amountFormatWithOutSymbol(selectedRecord?.contingencyAmount);
+		if(selectedRecord?.contingencyPercentage && selectedRecord?.contingencyPercentage > 0) return selectedRecord?.contingencyPercentage + '%';
+		if(selectedRecord?.contingencyAmount && selectedRecord?.contingencyAmount > 0) return amountFormatWithOutSymbol(selectedRecord?.contingencyAmount);
 	};
 
 	const getFee = () => {
-		if (selectedRecord?.feePercentage && selectedRecord?.feePercentage > 0) return selectedRecord?.feePercentage + '%';
-		if (selectedRecord?.feeAmount && selectedRecord?.feeAmount > 0) return amountFormatWithOutSymbol(selectedRecord?.feeAmount);
+		if(selectedRecord?.feePercentage && selectedRecord?.feePercentage > 0) return selectedRecord?.feePercentage + '%';
+		if(selectedRecord?.feeAmount && selectedRecord?.feeAmount > 0) return amountFormatWithOutSymbol(selectedRecord?.feeAmount);
 	};
 
 	return <Box className='cc-payment-ledger'>
 		<div className='header'>
 			<div className='title-action'>
 				<span className='title'>Payment Ledger</span>
-				{!minMaxStatus.minMax && (<span style={{ cursor: 'pointer' }} onClick={onMaximizeTransactions}> {maximizeIcon}</span>)}
+				{!minMaxStatus.minMax && (<span style={{cursor: 'pointer'}} onClick={onMaximizeTransactions}> {maximizeIcon}</span>)}
 			</div>
 			<div className='kpi-fields'>
 				<span className='kpi-item-tile'>
@@ -374,7 +373,7 @@ const CCPaymentLedger = (props: any) => {
 						</IQTooltip>
 					</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
+						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
 						<span className='kpi-value'>
 							{currencySymbol} {selectedRecord?.addContingencies ? getContingencies() : 0.00}
 						</span>
@@ -388,13 +387,13 @@ const CCPaymentLedger = (props: any) => {
 						</IQTooltip>
 					</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
+						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
 						<span className='kpi-value'>
 							{/* {`${selectedRecord?.feePercentage ? selectedRecord?.feePercentage : ''} %`} */}
 							{currencySymbol} {selectedRecord?.addFee ? getFee() : 0.00}
 						</span>
 					</div>
-				</span> }
+				</span>}
 				<span className='kpi-item-tile'>
 					<div className='kpi-label'>Down Payment
 						<IQTooltip title={'This is the down payment for the contract..'} arrow={true}>
@@ -402,7 +401,7 @@ const CCPaymentLedger = (props: any) => {
 						</IQTooltip>
 					</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
+						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
 						<span className='kpi-value'>
 							{amountFormatWithSymbol(selectedRecord?.downPaymentAmount)}
 						</span>
@@ -413,7 +412,7 @@ const CCPaymentLedger = (props: any) => {
 						<span className='common-icon-infoicon'></span>
 					</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
+						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
 						<span className='kpi-value'>
 							{amountFormatWithSymbol(selectedRecord?.totalPaidToDate)}
 						</span>
@@ -426,7 +425,7 @@ const CCPaymentLedger = (props: any) => {
 			{/* <IQButton color='blue'>
 				+ Create Pay Application
 			</IQButton> */}
-			<IQSearch sx={{ height: '2em', width: '16rem' }}
+			<IQSearch sx={{height: '2em', width: '16rem'}}
 				groups={groupOptions}
 				filters={filters}
 				onSearchChange={(text: string) => handleOnSearchChange(text)}

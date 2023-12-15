@@ -38,7 +38,7 @@ export const changeEvents = {
 					"code": "C10144"
 				  }
 			],
-			"status": "SentBackForRevision",
+			"status": "QuoteSent",
 			"estimatedAmount": 1000.00,
 			"submitted": {
 				"signature": "data:image/png;base64,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",
@@ -131,6 +131,125 @@ export const changeEvents = {
 					"unitOfMeasure": ""
 				}
 			]
+		},
+		{
+			"createdOn": "2023-11-27T08:54:39.943Z",
+			"modifiedOn": "2023-11-27T08:54:39.943Z",
+			"createdBy": {
+				"id": "fb9fe865-986e-4991-91e5-656aa7b7fe14",
+				"email": "mksudeep@smartapp.com",
+				"globalId": "4cac5fc1-62d5-4676-9f1f-be5323b7a29b",
+				"lastName": "MK",
+				"firstName": "Sudeep",
+				"displayName": "MK, Sudeep"
+			},
+			"modifiedBy": {
+				"id": "fb9fe865-986e-4991-91e5-656aa7b7fe14",
+				"email": "mksudeep@smartapp.com",
+				"globalId": "4cac5fc1-62d5-4676-9f1f-be5323b7a29b",
+				"lastName": "MK",
+				"firstName": "Sudeep",
+				"displayName": "MK, Sudeep"
+			},
+			"status": "Draft",
+			"estimatedAmount": null,
+			"submitted": null,
+			"fundingSource": "ChangeOrder",
+			"clientContract": {
+				"client": {
+					"vendorId": "IQ Client VID",
+					"pointOfContacts": [
+						{
+							"id": "a33967e9-b07a-42dc-88f7-c24633d38a6f",
+							"name": "Client, Sudeep",
+							"email": "mksudeep+client@smartapp.com",
+							"phone": "",
+							"image": {
+								"downloadUrl": "https://central.smartappbeta.com/skins/base/img/s_200dp.png",
+								"cloudStorageKey": null
+							}
+						},
+						{
+							"id": "f76fa13b-d79c-4630-b66b-55345626a6df",
+							"name": "PRATAP, BHANU",
+							"email": "bhanupratap@smartapp.com",
+							"phone": "111111111111111",
+							"image": {
+								"downloadUrl": "https://central.smartappbeta.com/skins/base/img/B_200dp.png",
+								"cloudStorageKey": null
+							}
+						}
+					],
+					"id": "1d34e18a-0020-4c12-a9c1-9e0541a671a2",
+					"name": "IQ Client",
+					"email": "bhanupratap@smartapp.com",
+					"phone": "457895456",
+					"image": {
+						"downloadUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2308/mka35l3k/check.png",
+						"cloudStorageKey": null
+					}
+				},
+				"title": "Air Distribution",
+				"id": "2e1e728d-cbaa-413d-9968-f8a81db43663",
+				"poNumber": "P345678",
+				"code": "C0113"
+			},
+			"contractOption": "CreateNew",
+			"responses": null,
+			"budgetItems": [
+				{
+					"submitBy": null,
+					"quote": null,
+					"estimateSource": "EstimatedChangeAmount",
+					"status": "Active",
+					"submitted": null,
+					"estimate": null,
+					"response": null,
+					"vendorContract": {
+						"title": "Air Distribution",
+						"id": "88683a09-d53e-4eeb-a3c5-3c6ba9954601",
+						"vendor": {
+							"pendingCompliances": null,
+							"pointOfContacts": [
+								{
+									"id": "92085c9e-33e5-4465-b73a-16b9fb3a4e4b",
+									"name": "Subcontractor, Swetha",
+									"email": "swetha+sc@smartapp.com",
+									"phone": "",
+									"image": {
+										"downloadUrl": "https://central.smartappbeta.com/skins/base/img/s_200dp.png",
+										"cloudStorageKey": null
+									}
+								}
+							],
+							"id": "4dec6c09-da4b-4cd4-9f45-cb054418b362",
+							"name": "IQ Vendor",
+							"email": "iqvendor@gmail.com",
+							"phone": "",
+							"image": {
+								"downloadUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2308/kcx3i14q/cross.png",
+								"cloudStorageKey": null
+							}
+						}
+					},
+					"contractAmount": 30000.00,
+					"name": "00280",
+					"id": "559405e1-7d0f-407a-802c-9f1948663811",
+					"quantity": null,
+					"costType": "M - Materials",
+					"costCode": "15400 Plumbing Fixtures and Equipment",
+					"division": "15 - Mechanical/Plumbing",
+					"unitCost": 150.00,
+					"description": null,
+					"unitOfMeasure": "ea",
+					"estimatedEndDate": null,
+					"estimatedStartDate": null
+				}
+			],
+			"name": "001 Test",
+			"id": "74ac9e0d-7287-4435-99b5-35e0c7b01298",
+			"description": "",
+			"code": "CE0099"
 		},
 		{
 			"createdOn": "2023-09-26T09:30:08.303Z",

@@ -176,6 +176,7 @@ const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 			tabId: 'links',
 			label: 'Links',
 			showCount: false,
+			showTab: !['Draft', 'QuoteReceived', 'AwaitingTradeQuote', 'AwaitingQuote', 'QuoteSent']?.includes(changeRequestDetails?.status),
 			count: linksGridData?.length,
 			iconCls: 'common-icon-Links',
 			disabled: false,

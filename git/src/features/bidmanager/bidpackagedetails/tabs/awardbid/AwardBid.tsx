@@ -1,22 +1,17 @@
 import './AwardBid.scss';
 
-import { getCurrencySymbol, getServer } from 'app/common/appInfoSlice';
-import { useAppDispatch, useAppSelector, useFilePreview } from 'app/hooks';
+import {getCurrencySymbol, getServer} from 'app/common/appInfoSlice';
+import {useAppDispatch, useAppSelector, useFilePreview, useHotLink} from 'app/hooks';
 import AwardBidCompareBarChart from 'charts/barcharts/AwardBidCompareBarChart';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
-import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { AwardBidList } from 'data/bids/awardBidList';
-import { awardBid } from 'features/bidmanager/stores/awardBidAPI';
+import {awardBid} from 'features/bidmanager/stores/awardBidAPI';
 import {
-	fetchAwardBidDetailsData, setActiveAwardBidFilters, setAwardBidClick, setAwardBidSelectedRecord, setOpenUpdateBudgetDialog
+	fetchAwardBidDetailsData, setActiveAwardBidFilters, setAwardBidClick, setAwardBidSelectedRecord
 } from 'features/bidmanager/stores/awardBidSlice';
-import { fetchBiddersGriddata } from 'features/bidmanager/stores/BiddersSlice';
-import { fetchBidPackageDetails, setSelectedRecord } from 'features/bidmanager/stores/BidManagerSlice';
-import { fetchGridData } from 'features/bidmanager/stores/gridSlice';
-import globalStyles, { primaryIconSize } from 'features/budgetmanager/BudgetManagerGlobalStyles';
-import { setShowSettingPopup2 } from 'features/budgetmanager/operations/tableColumnsSlice';
-import { createVendorContracts } from 'features/vendorcontracts/stores/gridAPI';
-import React, { useEffect, useRef } from 'react';
+import {fetchBidPackageDetails} from 'features/bidmanager/stores/BidManagerSlice';
+import {fetchGridData} from 'features/bidmanager/stores/gridSlice';
+import {createVendorContracts} from 'features/vendorcontracts/stores/gridAPI';
+import React, {useEffect, useRef} from 'react';
 import ReferenceFiles from 'resources/images/bidManager/ReferenceFiles.svg';
 import SubmittedBy from 'resources/images/bidManager/SubmittedBy.svg';
 import SubmittedOn from 'resources/images/bidManager/SubmittedOn.svg';
@@ -24,28 +19,25 @@ import SUIAlert from 'sui-components/Alert/Alert';
 import SUICard from 'sui-components/Card/Card';
 import DocUploader from 'sui-components/DocUploader/DocUploader';
 import SUIGrid from 'sui-components/Grid/Grid';
-import { convertISOToDispalyFormat, stringToUSDateTime2 } from 'utilities/commonFunctions';
-import { formatDate } from 'utilities/datetime/DateTimeUtils';
-import { fileDownload } from 'app/hooks';
-import { GridOn, TableRows } from '@mui/icons-material';
-import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import {formatDate} from 'utilities/datetime/DateTimeUtils';
+import {fileDownload} from 'app/hooks';
+import {GridOn} from '@mui/icons-material';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import {
-	Alert, Avatar, Box, Button, Card, Grid, IconButton, InputLabel, ToggleButton, ToggleButtonGroup
+	Alert, Box, Button, Card, Grid, InputLabel, ToggleButton, ToggleButtonGroup
 } from '@mui/material';
-import { getAmountAlignment } from 'utilities/commonutills';
+import {getAmountAlignment} from 'utilities/commonutills';
 
 const AwardBid = () => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const currency = useAppSelector(getCurrencySymbol);
-	const { selectedRecord } = useAppSelector((state) => state.bidManager);
-	const { BiddersGridData } = useAppSelector((state) => state.bidders);
-	const { expandedRows, activeAwardBidFilters } = useAppSelector((state) => state.awardBid)
-	const { awardBidSelectedRecord, awardBidClick, awardBidDetailData, openUpdateBudgetDialog, files } = useAppSelector((state) => state.awardBid);
-	const containerStyle = React.useMemo(() => ({ width: '100%', height: '300px' }), []);
+	const {selectedRecord} = useAppSelector((state) => state.bidManager);
+	const {BiddersGridData} = useAppSelector((state) => state.bidders);
+	const {expandedRows, activeAwardBidFilters} = useAppSelector((state) => state.awardBid);
+	const {awardBidSelectedRecord, awardBidClick, awardBidDetailData, openUpdateBudgetDialog, files} = useAppSelector((state) => state.awardBid);
+	const containerStyle = React.useMemo(() => ({width: '100%', height: '300px'}), []);
 	const [data, setData] = React.useState<any>(BiddersGridData);
 	const [selectedItem, setSelectedItem] = React.useState<any>(null);
 	const [showConfirmationDlg, setShowConfirmationDlg] = React.useState<boolean>(false);
@@ -66,10 +58,10 @@ const AwardBid = () => {
 			children: {
 				type: "checkbox",
 				items: [
-					{ text: 'Not Applicable', id: '0', key: '0', value: '0', },
-					{ text: 'Not Submitted', id: '1', key: '1', value: '1', },
-					{ text: 'Pending', id: '2', key: '2', value: '2', },
-					{ text: 'Submitted', id: '3', key: '3', value: '3', },
+					{text: 'Not Applicable', id: '0', key: '0', value: '0', },
+					{text: 'Not Submitted', id: '1', key: '1', value: '1', },
+					{text: 'Pending', id: '2', key: '2', value: '2', },
+					{text: 'Submitted', id: '3', key: '3', value: '3', },
 				],
 			},
 		},
@@ -81,10 +73,10 @@ const AwardBid = () => {
 			children: {
 				type: "checkbox",
 				items: [
-					{ text: 'Undecided', id: '0', key: '0', value: '0', },
-					{ text: 'No', id: '1', key: '1', value: '1', },
-					{ text: 'Yes', id: '2', key: '2', value: '2', },
-					{ text: 'Expired', id: '3', key: '3', value: '3', },
+					{text: 'Undecided', id: '0', key: '0', value: '0', },
+					{text: 'No', id: '1', key: '1', value: '1', },
+					{text: 'Yes', id: '2', key: '2', value: '2', },
+					{text: 'Expired', id: '3', key: '3', value: '3', },
 				],
 			},
 		},
@@ -96,8 +88,8 @@ const AwardBid = () => {
 			children: {
 				type: "checkbox",
 				items: [
-					{ text: 'Yes', id: 'true', key: 'true', value: 'true', },
-					{ text: 'No', id: 'false', key: 'false', value: 'false', },
+					{text: 'Yes', id: 'true', key: 'true', value: 'true', },
+					{text: 'No', id: 'false', key: 'false', value: 'false', },
 				],
 			},
 		},
@@ -109,9 +101,9 @@ const AwardBid = () => {
 			children: {
 				type: "checkbox",
 				items: [
-					{ text: 'Compliant', id: 'Compliant', key: 'Compliant', value: 'Compliant', },
-					{ text: 'Not Verified', id: 'Not Verified', key: 'Not Verified', value: 'Not Verified', },
-					{ text: 'N/A', id: 'N/A', key: 'N/A', value: 'N/A' },
+					{text: 'Compliant', id: 'Compliant', key: 'Compliant', value: 'Compliant', },
+					{text: 'Not Verified', id: 'Not Verified', key: 'Not Verified', value: 'Not Verified', },
+					{text: 'N/A', id: 'N/A', key: 'N/A', value: 'N/A'},
 				],
 			},
 		},
@@ -122,23 +114,23 @@ const AwardBid = () => {
 	useEffect(() => {
 		const gridDataCopy = [...BiddersGridData];
 		let filteredData = gridDataCopy;
-		console.log("activeAwardBidFilters", activeAwardBidFilters)
-		if (activeAwardBidFilters?.submissionStatus?.length > 0) {
+		console.log("activeAwardBidFilters", activeAwardBidFilters);
+		if(activeAwardBidFilters?.submissionStatus?.length > 0) {
 			filteredData = gridDataCopy.filter((rec: any) => {
 				return activeAwardBidFilters?.submissionStatus?.includes(rec?.submissionStatus?.toString());
 			});
 		}
-		if (activeAwardBidFilters?.intendToBid?.length > 0) {
+		if(activeAwardBidFilters?.intendToBid?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return activeAwardBidFilters?.intendToBid?.includes(rec?.intendToBid?.toString());
 			});
 		}
-		if (activeAwardBidFilters?.isDiverseSupplier?.length > 0) {
+		if(activeAwardBidFilters?.isDiverseSupplier?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return activeAwardBidFilters?.isDiverseSupplier?.includes(rec?.company?.isDiverseSupplier?.toString());
 			});
 		}
-		if (activeAwardBidFilters?.complianceStatus?.length > 0) {
+		if(activeAwardBidFilters?.complianceStatus?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return activeAwardBidFilters?.complianceStatus?.includes(rec?.company?.complianceStatus);
 			});
@@ -148,7 +140,7 @@ const AwardBid = () => {
 
 
 	useEffect(() => {
-		if (leftContentRef?.current) {
+		if(leftContentRef?.current) {
 			leftContentRef.current.querySelectorAll('.Mui-selected').forEach((element: any) => {
 				element.classList.remove('Mui-selected');
 			});
@@ -162,23 +154,23 @@ const AwardBid = () => {
 
 	}, [tableViewType]);
 
-	useEffect(() => { setTimeout(() => { setShowAwardToastMsg(false) }, 5000) }, [showAwardToastMsg]);
+	useEffect(() => {setTimeout(() => {setShowAwardToastMsg(false);}, 5000);}, [showAwardToastMsg]);
 
 	const handleClickItem = (data: any, e: any) => {
-		if (tableViewType === 'grid') {
+		if(tableViewType === 'grid') {
 			setSelectedItem(data);
 			dispatch(setAwardBidSelectedRecord([data]));
-			dispatch(fetchAwardBidDetailsData({ appInfo: appInfo, packageId: selectedRecord?.id, bidderUniqueId: data?.id, }));
+			dispatch(fetchAwardBidDetailsData({appInfo: appInfo, packageId: selectedRecord?.id, bidderUniqueId: data?.id, }));
 		} else {
 			const isAlreadySelected = e.currentTarget.className.includes('card-selected-cls');
 			e.currentTarget.classList.remove('Mui-selected');
-			if (!isAlreadySelected) {
+			if(!isAlreadySelected) {
 				e.currentTarget.classList.add('card-selected-cls');
 				setSelectedCardsData([...selectedCardsData, data]);
 			} else {
-				if (data?.id) {
+				if(data?.id) {
 					const index = selectedCardsData.findIndex((rec: any) => rec.id === data.id);
-					if (index > -1) {
+					if(index > -1) {
 						let selectedCards = [...selectedCardsData];
 						selectedCards.splice(index, 1);
 						setSelectedCardsData(selectedCards);
@@ -205,8 +197,8 @@ const AwardBid = () => {
 	const download = (imgData: any, fileType: any) => {
 		const objectIds = imgData?.map((item: any) => item.objectId);
 		const filename = selectedRecord?.name + ' - ' + fileType;;
-		fileDownload(objectIds, filename)
-	}
+		fileDownload(objectIds, filename);
+	};
 
 	return (
 		<div className='award-bid'>
@@ -237,7 +229,7 @@ const AwardBid = () => {
 			<div className='award-bid-main'>
 				<div className='left-content' ref={leftContentRef}>
 					<IQSearch
-						sx={{ height: '2em', marginBottom: '10px' }}
+						sx={{height: '2em', marginBottom: '10px'}}
 						// groups={getGroupMenuOptions()}
 						showGroups={false}
 						filters={filters}
@@ -246,7 +238,7 @@ const AwardBid = () => {
 					// onSearchChange={searchHandler}
 					// onFilterChange={filterHandler}
 					/>
-					<div style={{ overflow: 'auto', height: '910px', cursor: 'pointer' }}>
+					<div style={{overflow: 'auto', height: '910px', cursor: 'pointer'}}>
 						{data.map((obj: any, index: number) => (
 							<>
 								<SUICard
@@ -288,11 +280,11 @@ const AwardBid = () => {
 													borderRadius: '50%',
 												}}
 											/>
-											<div style={{ marginLeft: '8px' }}>
-												<h4 style={{ marginTop: '4px', marginBottom: '0px' }}>
+											<div style={{marginLeft: '8px'}}>
+												<h4 style={{marginTop: '4px', marginBottom: '0px'}}>
 													{awardBidDetailData?.company?.name}
 												</h4>
-												<InputLabel className='inputLabel' style={{ color: '#999', }}>
+												<InputLabel className='inputLabel' style={{color: '#999', }}>
 													{'Prime Contractor'}
 												</InputLabel>
 											</div>
@@ -368,14 +360,14 @@ const AwardBid = () => {
 											<b className='inputlabel1'>Bid Package Details</b>
 										</InputLabel>
 										<Button
-											sx={{ color: 'black', border: '1px solid blue' }}
+											sx={{color: 'black', border: '1px solid blue'}}
 											variant='outlined'
 											id='attachments-btn'
 											startIcon={
 												<Box
 													component='img'
 													src={ReferenceFiles}
-													style={{ height: '30px', width: '30px' }}
+													style={{height: '30px', width: '30px'}}
 												/>
 											}
 										>Attachments{files ? '(' + files?.length + ')' : '(' + 0 + ')'}</Button>
@@ -426,8 +418,8 @@ const AwardBid = () => {
 															)}`
 															: '',
 													cellRenderer: (params: any) => {
-														if (params.value) {
-															if (params?.node?.rowPinned == 'bottom')
+														if(params.value) {
+															if(params?.node?.rowPinned == 'bottom')
 																return (
 																	<div
 																		style={{
@@ -559,7 +551,7 @@ const AwardBid = () => {
 											imgData={files}
 											readOnly={true}
 											showDownloadButton={true}
-											fileDownload={(data: any) => { download(data, 'Files') }}
+											fileDownload={(data: any) => {download(data, 'Files');}}
 										></DocUploader>
 									</div>
 								</div>
@@ -573,7 +565,7 @@ const AwardBid = () => {
 					<div className='right-content'>
 						<Card className='rigth-content-card'>
 							{showChartView && selectedCardsData?.length >= 2 ? (
-								<div style={{ display: 'flex', justifyContent: 'center' }}>
+								<div style={{display: 'flex', justifyContent: 'center'}}>
 									<AwardBidCompareBarChart
 										chartData={selectedCardsData}
 									></AwardBidCompareBarChart>
@@ -626,44 +618,44 @@ const AwardBid = () => {
 							<div className='process-txt'>Do you want to proceed?</div>
 							<div className='award-bid-buttons'>
 								<Button
-									sx={{ color: 'orange' }}
+									sx={{color: 'orange'}}
 									variant='outlined'
 									id='attachments-btn'
 									className='contract-later'
 									onClick={() => {
 										setAwardBidType('contract-later');
 										dispatch(setAwardBidClick(false));
-										setSelectedItem({ ...selectedItem, awarded: true });
+										setSelectedItem({...selectedItem, awarded: true});
 										awardBid(appInfo, selectedRecord?.id, selectedItem?.id).then(() => {
 											setShowAwardToastMsg(true);
 											dispatch(fetchGridData(appInfo));
-											dispatch(fetchBidPackageDetails({ appInfo: appInfo, packageId: selectedRecord?.id }));
-											dispatch(fetchAwardBidDetailsData({ appInfo: appInfo, packageId: selectedRecord?.id, bidderUniqueId: selectedItem?.id, }));
+											dispatch(fetchBidPackageDetails({appInfo: appInfo, packageId: selectedRecord?.id}));
+											dispatch(fetchAwardBidDetailsData({appInfo: appInfo, packageId: selectedRecord?.id, bidderUniqueId: selectedItem?.id, }));
 										});
 									}}
 								>
 									AWARD BID & CREATE CONTRACT LATER
 								</Button>
 								<Button
-									sx={{ color: 'white', backgroundColor: 'orange' }}
+									sx={{color: 'white', backgroundColor: 'orange'}}
 									variant='outlined'
 									id='attachments-btn'
 									className='contract-now'
 									onClick={() => {
 										setAwardBidType('contract-now');
 										dispatch(setAwardBidClick(false));
-										setSelectedItem({ ...selectedItem, awarded: true });
+										setSelectedItem({...selectedItem, awarded: true});
 										awardBid(appInfo, selectedRecord?.id, selectedItem?.id).then(() => {
 											setShowAwardToastMsg(true);
 											dispatch(fetchGridData(appInfo));
-											dispatch(fetchBidPackageDetails({ appInfo: appInfo, packageId: selectedRecord?.id }));
-											dispatch(fetchAwardBidDetailsData({ appInfo: appInfo, packageId: selectedRecord?.id, bidderUniqueId: selectedItem?.id, }));
+											dispatch(fetchBidPackageDetails({appInfo: appInfo, packageId: selectedRecord?.id}));
+											dispatch(fetchAwardBidDetailsData({appInfo: appInfo, packageId: selectedRecord?.id, bidderUniqueId: selectedItem?.id, }));
 											createVendorContracts(appInfo, {
 												title: selectedRecord?.name,
-												vendor: { id: selectedItem?.company?.id },
-												bidPackage: { id: selectedRecord?.id }
-											}).then((response: any) => { console.log("vendor response", response); setContract(response) });
-										})
+												vendor: {id: selectedItem?.company?.id},
+												bidPackage: {id: selectedRecord?.id}
+											}).then((response: any) => {console.log("vendor response", response); setContract(response);});
+										});
 									}}
 								>
 									AWARD BID & CREATE CONTRACT NOW
@@ -692,8 +684,10 @@ const AwardBid = () => {
 					</span>
 					{awardBidType == 'contract-now' && (
 						<span className='toast-text-cls'>
-							<b>2</b> A Contract {<span onClick={() => window.open(`${appInfo.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/vendor-contracts/home?id=${contract?.id}#react`, '_blank')}>
-								{selectedRecord?.name}</span>} has been successfully created in draft state.
+							<b>2</b> A Contract {
+								<span onClick={() => window.open(useHotLink(`vendor-contracts/home?id=${contract?.id}`), '_blank')}>
+									{selectedRecord?.name}
+								</span>} has been successfully created in draft state.
 						</span>
 					)}
 				</Alert>

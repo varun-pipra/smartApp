@@ -11,6 +11,9 @@ import {
 import { makeStyles, createStyles } from '@mui/styles';
 import SmartDropDown from "components/smartDropdown";
 import "./SBSCategoryRightPanel.scss";
+import { UpdateSettings } from "../operations/sbsManagerAPI";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { getSBSGridList } from "../operations/sbsManagerSlice";
 const useStyles: any = makeStyles((theme: any) =>
 	createStyles({
 		menuPaper: {
@@ -20,9 +23,16 @@ const useStyles: any = makeStyles((theme: any) =>
 	})
 );
 const SBSCategoryRightPanel = (props:any) => {
+  const dispatch = useAppDispatch();
   const {handleSelectedCategory,handleSbsCategoryChange, ...rest} = props;
   const classes = useStyles();
+  const { settingsCategoryList } = useAppSelector((state) => state.sbsManager);
   const [selectedCategory, setSelectedCategory] = React.useState('System Breakdown Structure Categories');
+
+  React.useEffect(() => {
+    // Need to setup the category values;
+  },[settingsCategoryList])
+
   const CategoriesOptions = [{
     id: 1,
     name: "System Breakdown Structure Categories",
@@ -47,6 +57,16 @@ const SBSCategoryRightPanel = (props:any) => {
   const handleCategoryOnChange = (val:string) => {
     handleSbsCategoryChange(val);
     setSelectedCategory(val);
+    let payload = {"details":{ "id": null, "categoryId": 12 }};
+    UpdateSettings(payload)
+      .then((res: any) => {
+          if(res) {
+            dispatch(getSBSGridList());
+          }
+      })
+      .catch((error: any) => {
+        console.log("error", error);
+      });
   };
   return (
     <Box className="Sbs-General-Popup">
@@ -91,7 +111,7 @@ const SBSCategoryRightPanel = (props:any) => {
                 className="generalsettingtext"
               />
             </ListItem>
-            <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('supplemental')}>
+          {/*  <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('supplemental')}>
             <ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
 								<span className="common-icon-orgconsole-project-supplemental-info"></span>
 							</ListItemIcon>
@@ -108,7 +128,7 @@ const SBSCategoryRightPanel = (props:any) => {
                 primary="Set Dynamic Dates for Heatmap"
                 className="generalsettingtext"
               />
-            </ListItem>
+            </ListItem> */}
           </List>
         </Stack>
       </Stack>

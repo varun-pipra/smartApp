@@ -54,10 +54,11 @@ export interface IQGridWindowDetailProps {
 	onNext?: any;
 	handleHelp?: any;
 	showHepIcon?: boolean;
+	enableHelp?:boolean;
 };
 
 const IQGridWindowDetail = ({
-	appType, appInfo, data, presenceProps, title, subtitle, showSubTitle = false, handleHelp, showHepIcon = false,
+	appType, appInfo, data, presenceProps, title, subtitle, showSubTitle = false, handleHelp, showHepIcon = false,enableHelp=true,
 	iFrameId, isFromHelpIcon, onClose, headContent, defaultTabId, tabPadValue = 0, tabs, footer, onNavigation, handleActiveTab, hideNavigation = false,
 	navigationDisableFlag, defaultSpacing = false, onPrevious, onNext, ...props
 }: IQGridWindowDetailProps) => {
@@ -78,7 +79,9 @@ const IQGridWindowDetail = ({
 	useEffect(() => {
 		if (tabSelected) {
 			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, tabid.current, data?.id, data?.code);
-			help(false);
+			if(enableHelp) {
+				help(false);
+			};
 		}
 	}, [tabSelected]);
 
@@ -152,7 +155,7 @@ const IQGridWindowDetail = ({
 			<Stack direction='row' style={{ gap: '4px' }}>
 				{showHepIcon && (
 					<IconButton
-						className="close-btn"
+						className="close-btn live-support-cls"
 						aria-label="Close Right Pane"
 						onClick={handleHelp}
 					>

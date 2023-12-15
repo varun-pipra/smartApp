@@ -78,6 +78,7 @@ export interface TableGridProps extends AgGridReactProps {
 	openLID?: boolean;
 	isMainGrid?: boolean;
 	selectedRecord?: any;
+	activeTab?: any;
 }
 
 const SUIGrid = (props: TableGridProps) => {
@@ -87,7 +88,7 @@ const SUIGrid = (props: TableGridProps) => {
 		groupRowRendererParams, suppressContextMenu = false, onCellEditRequest, masterDetail = false, detailCellRendererParams = () => { }, onFirstDataRendered = () => { },
 		isRowSelectable = useMemo(() => { return () => { return true; }; }, []), isRowMaster = () => { return false; }, groupDefaultExpanded = -1, rowHeight = null,
 		groupSelectsChildren = true, cacheBlockSize, infiniteInitialRowCount, serverSideInitialRowCount = 50, serverSideInfiniteScroll = true, isServerSideGroupOpenByDefault = () => { }, serverSideStoreType = "partial",
-		tooltipShowDelay = 0, tooltipHideDelay, emptyMsg = "No items are available", suppressDragLeaveHidesColumns = false, gridRef, suppressMultiSort = true, openLID = false, isMainGrid = false, selectedRecord = {},
+		tooltipShowDelay = 0, tooltipHideDelay, emptyMsg = "No items are available", suppressDragLeaveHidesColumns = false, gridRef, suppressMultiSort = true, openLID = false, isMainGrid = false, selectedRecord = {}, activeTab = null,
 		...rest } = props;
 
 	const { gridData, selectedRows, originalGridApiData } = useAppSelector((state) => state.gridData);
@@ -118,23 +119,42 @@ const SUIGrid = (props: TableGridProps) => {
 	const onRowSelected = (e: any) => {
 		if (isMainGrid && !openLID) {
 			const selRows = tableRef?.current?.api?.getSelectedRows() || [];
-			postMessage({
-				event: "ctx-change",
-				body: { iframeId: "", data: selRows },
-			});
+			if (activeTab) {
+				postMessage({
+					event: "ctx-change",
+					body: { iframeId: "", data: selRows, tabName: activeTab },
+				});
+			} else {
+				postMessage({
+					event: "ctx-change",
+					body: { iframeId: "", data: selRows },
+				});
+			}
 		}
 		rowSelected(e);
 	};
 
 	useEffect(() => {
 		if (openLID && selectedRecord && Object.keys(selectedRecord)?.length) {
+			if(activeTab) {
+				postMessage({
+					event: "ctx-change",
+					body: { iframeId: "", data: [selectedRecord], tabName: activeTab },
+				});
+			} else {
+				postMessage({
+					event: "ctx-change",
+					body: { iframeId: "", data: [selectedRecord] },
+				});
+			}
+			console.log('rows', selectedRecord);
+		} else if (activeTab) {
 			postMessage({
 				event: "ctx-change",
-				body: { iframeId: "", data: [selectedRecord] },
+				body: { iframeId: "", data: [ ], tabName: activeTab },
 			});
-			console.log('rows', selectedRecord);
 		}
-	}, [openLID, selectedRecord]);
+	}, [openLID, selectedRecord, activeTab]);
 
 
 	React.useEffect(() => {

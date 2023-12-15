@@ -204,10 +204,14 @@ const Bidders = (props: BiddersProps) => {
 	};
 
 	const onContactPersonAddButtonClick = () => {
+		console.log("selectedBidder", selectedBidder?.company)
 		postMessage({
 			event: "common",
 			body: {
-				evt: "adduser"
+				evt: "adduser",
+				data: {
+					companyId: selectedBidder?.company?.objectId
+				}
 			},
 		});
 	};
@@ -485,7 +489,7 @@ const Bidders = (props: BiddersProps) => {
 				showActions={false}
 			/>
 			<Stack className="bidders_table">
-				<InputLabel style={{ fontWeight: 'bold' }}>{` Add Bidders (${props?.readOnly ? rowData?.length : rowData?.length - 1})`}</InputLabel>
+				<InputLabel style={{ fontWeight: 'bold' }}>{` ${selectedRecord?.type == 0 ? 'Add Bidder' : 'Add Bidders'} (${selectedRecord?.bidderCount ? selectedRecord?.bidderCount : 0 })`}</InputLabel>
 				<SUILineItem
 					headers={columnDefs}
 					data={rowData}

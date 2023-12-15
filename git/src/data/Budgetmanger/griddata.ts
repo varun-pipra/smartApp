@@ -41,7 +41,7 @@ export const gridData = {
 			"balance": 1500000.00,
 			"isCostCodeInvalid": false,
 			"Vendors": [],
-			"unitOfMeasure": "m2",
+			"unitOfMeasure": "m3",
 			"unitQuantity": 10000,
 			"unitCost": 1500000.00,
 			"pendingChangeOrderAmount": null,
@@ -61,7 +61,11 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+			"costCodeGroup": null,
+			"markupFeeType": 0,
+			"markupFeePercentage": null,
+			"markupFeeAmount": 1000,
+			allowMarkupFee: true,
 		},
 		{
 			"id": "9e9e21d0-a1e4-4e04-8643-003c55952352",

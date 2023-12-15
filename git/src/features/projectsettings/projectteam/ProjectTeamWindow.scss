@@ -1,4 +1,8 @@
 .project-team-cls {
+    .live-support-cls {
+        margin-right: 6px;
+        width: 30px;
+    }
     .toastmessage-div {
         z-index: 99999;
     }
@@ -17,7 +21,8 @@
     }
     .pt-skills,
     .pt-policyStatus,
-    .pt-safetyStatus {
+    .pt-safetyStatus,
+    .pt-regions {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
@@ -457,6 +462,11 @@
                             background-color: #fff;
                         }
                     }
+                }
+                .projectteam-help {
+                    position: fixed;
+                    right: 1%;
+                    top: 1%;
                 }
             }
         }

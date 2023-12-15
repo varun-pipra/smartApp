@@ -70,9 +70,9 @@ const VendorPayApplicationsWindow = (props: any) => {
 	if (statusFilter) defaultVPAStatusFilter = mainGridFilters.status;
 
 	const tabEnum: any = {
-		payAppDetails: 'payApplicationDetails',
-		sov: 'scheduleValues',
-		lienWaiver: 'lienWaiver',
+		payAppDetails: 'pay-Application-Details',
+		sov: 'schedule-of-Values',
+		lienWaiver: 'lien-Waiver',
 		links: 'links'
 	};
 

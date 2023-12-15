@@ -7,7 +7,7 @@ import {
 	getCostTypeList,
 	getServer,
 } from 'app/common/appInfoSlice';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
+import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
 import {postMessage} from 'app/utils';
 import CostCodeDropdown from 'components/costcodedropdown/CostCodeDropdown';
 import DatePickerComponent from 'components/datepicker/DatePicker';
@@ -255,7 +255,7 @@ const TableGrid = (props: TableGridProps) => {
 						title={<>
 							<div>{context.value}</div>
 							<div>Change Event ID: <a style={{cursor: 'pointer', color: '#059cdf'}}
-								onClick={() => window.open(`${appInfo?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/change-event-requests?inlineModule=true&id=${context.data?.changeEvent?.id}#react`, '_blank')}
+								onClick={() => window.open(useHotLink(`change-event-requests?inlineModule=true&id=${context.data?.changeEvent?.id}`), '_blank')}
 							>{context.data?.changeEvent?.code}</a>
 							</div>
 						</>}
@@ -828,7 +828,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return <span className='hot-link'
-						onClick={() => {window.open(`${appInfo?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/bid-manager/home?id=${params?.data?.bidPackage?.id}#react`, '_blank');}}
+						onClick={() => {window.open(useHotLink(`bid-manager/home?id=${params?.data?.bidPackage?.id}`), '_blank');}}
 					>
 						{params?.data?.bidPackage?.name && params?.data?.bidPackage?.name}
 					</span>;
@@ -881,7 +881,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return <span className='hot-link'
-						onClick={() => window.open(`${appInfo.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/vendor-contracts/home?id=${params?.data?.vendorContract?.id}#react`, '_blank')}					>
+						onClick={() => window.open(useHotLink(`vendor-contracts/home?id=${params?.data?.vendorContract?.id}`), '_blank')}					>
 						{params?.data?.vendorContract?.name && params?.data?.vendorContract?.name}
 					</span>;
 				}
@@ -937,7 +937,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return <span className='hot-link'
-						onClick={() => window.open(`${appInfo.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/client-contracts/home?id=${params?.data?.clientContract?.id}#react`, '_blank')}
+						onClick={() => window.open(useHotLink(`client-contracts/home?id=${params?.data?.clientContract?.id}`), '_blank')}
 					>
 						{params?.data?.clientContract?.name && params?.data?.clientContract?.name}
 					</span>;

@@ -132,7 +132,7 @@ const SBSManagerWindow = (props: any) => {
   const appInfo = useAppSelector(getServer);
   const { detailsData } = useAppSelector((state) => state.sbsManager);
   const { currencySymbol } = useAppSelector((state) => state.appInfo);
-  const { sbsGridData, showSbsPanel, showPhaseModel, toast } = useAppSelector(
+  const { sbsGridData, showSbsPanel, showPhaseModel, toast, sbsSettings } = useAppSelector(
     (state) => state.sbsManager
   );
   const [gridSearchText, setGridSearchText] = useState("");
@@ -162,7 +162,11 @@ const SBSManagerWindow = (props: any) => {
       findAndUpdateFiltersData(tradesData, "trade");
     }
   }, [tradesData]);
-
+  useEffect(() => {
+      if(sbsSettings) {
+          // dispatch(getCategoryDropDownOptions());
+      }
+  },[sbsSettings])
   useEffect(() => {
     if (appInfo) {
       dispatch(getSBSGridList());
@@ -170,6 +174,8 @@ const SBSManagerWindow = (props: any) => {
       dispatch(getPhaseDropdownValues());
       dispatch(getCategoryDropDownOptions());
       dispatch(getAppsList());
+      // dispatch(getSettingsCategoriesList());
+      // dispatch(getSbsSettings());
     }
   }, [appInfo]);
 
@@ -286,21 +292,21 @@ const SBSManagerWindow = (props: any) => {
       cellRenderer: (params: any) => {
         return (
           <div className="sbs-category-cell">
-            {
-              <IQTooltip
-                title={
-                  <Stack direction="row" className="tooltipcontent">
-                    <p className="tooltiptext">
-                      Category name needs to be updated.
-                    </p>
-                  </Stack>
-                }
-                placement={"bottom"}
-                arrow={true}
-              >
-                <WarningAmberIcon fontSize={"small"} style={{ color: "red" }} />
-              </IQTooltip>
-            }
+            {params?.data?.hasDifferentCategory ? (
+               <IQTooltip
+               title={
+                 <Stack direction="row" className="tooltipcontent">
+                   <p className="tooltiptext">
+                     Category name needs to be updated.
+                   </p>
+                 </Stack>
+               }
+               placement={"bottom"}
+               arrow={true}
+             >
+               <WarningAmberIcon fontSize={"small"} style={{ color: "red" }} />
+             </IQTooltip>
+            ) : null}
             {params.data?.name || "N/A"}
           </div>
         );

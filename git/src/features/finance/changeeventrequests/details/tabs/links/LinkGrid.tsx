@@ -1,13 +1,13 @@
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import SUIGrid from 'sui-components/Grid/Grid';
-import { ColDef } from 'ag-grid-enterprise';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
+import {ColDef} from 'ag-grid-enterprise';
+import {useAppSelector, useHotLink} from 'app/hooks';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 
 const LinkGrid = (props: any) => {
-	const { currencySymbol, server } = useAppSelector((state) => state.appInfo);
+	const {currencySymbol, server} = useAppSelector((state) => state.appInfo);
 	const [rowData, setRowData] = useState<any>([]);
 	const [gridRef, setGridRef] = useState<any>('');
 	const headers = [
@@ -27,7 +27,7 @@ const LinkGrid = (props: any) => {
 			minWidth: 150,
 			type: "rightAligned",
 			cellRenderer: (params: any) => {
-				return !params?.node?.group && <div className='right-align'>{amountFormatWithSymbol(params.value)}</div>
+				return !params?.node?.group && <div className='right-align'>{amountFormatWithSymbol(params.value)}</div>;
 			}
 		}, {
 			headerName: 'Est.Change Event Amount',
@@ -35,7 +35,7 @@ const LinkGrid = (props: any) => {
 			minWidth: 230,
 			type: "rightAligned",
 			cellRenderer: (params: any) => {
-				return !params?.node?.group && <div className='right-align'>{amountFormatWithSymbol(params.value)}</div>
+				return !params?.node?.group && <div className='right-align'>{amountFormatWithSymbol(params.value)}</div>;
 			}
 		}, {
 			headerName: 'Revised Budget',
@@ -43,16 +43,16 @@ const LinkGrid = (props: any) => {
 			minWidth: 170,
 			type: "rightAligned",
 			cellRenderer: (params: any) => {
-				return !params?.node?.group && <div className='right-align'>{amountFormatWithSymbol(params.value)}</div>
+				return !params?.node?.group && <div className='right-align'>{amountFormatWithSymbol(params.value)}</div>;
 			}
 		}
 	];
 	const [columns, setColumns] = React.useState<any>(headers);
 
 	useEffect(() => {
-		console.log("dataaaa", props?.data)
-		setRowData(props.data)
-	}, [props.data])
+		console.log("dataaaa", props?.data);
+		setRowData(props.data);
+	}, [props.data]);
 
 	const autoGroupColumnDef: ColDef = useMemo<ColDef>(() => {
 		return {
@@ -67,24 +67,24 @@ const LinkGrid = (props: any) => {
 				suppressCount: false,
 				checkbox: true,
 				innerRenderer: (cell: any) => {
-					console.log("celll", cell)
-					if (cell?.node?.group) {
+					console.log("celll", cell);
+					if(cell?.node?.group) {
 						return <div className='bold-font'>{cell.value}</div>;
 					} else {
-						const contractUrl = cell?.data?.type == 'Vendor Contract' ? 'vendor-contracts' : 'client-contracts'
+						const contractUrl = cell?.data?.type == 'Vendor Contract' ? 'vendor-contracts' : 'client-contracts';
 						return <>
 							{cell?.data?.hasChangeOrder && <IQTooltip
 								title={'Schedule Of Values of the Contract to be updated due to recent approval of the Change Event Request.'}
 								placement={'bottom'}
 								arrow={true}
 							>
-								<span className='common-icon-c-mark' style={{ color: '#26d8b1', position: 'absolute', left: '1%', marginTop: '8px', fontSize: '24px', cursor: 'pointer' }} />
+								<span className='common-icon-c-mark' style={{color: '#26d8b1', position: 'absolute', left: '1%', marginTop: '8px', fontSize: '24px', cursor: 'pointer'}} />
 							</IQTooltip>}
 							<span className='ag-costcodegroup'
-								style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
-								onClick={() => window.open(`${server?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/${contractUrl}/home?id=${cell?.data?.contract?.name}#react`, '_blank')}
+								style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}
+								onClick={() => window.open(useHotLink(`${contractUrl}/home?id=${cell?.data?.contract?.name}`), '_blank')}
 							>{cell?.data?.contract?.name} </span>
-						</>
+						</>;
 					}
 				}
 			},
@@ -100,7 +100,7 @@ const LinkGrid = (props: any) => {
 	}, []);
 	const onRowSelection = (event: any) => {
 		const selectedData: any = event.api.getSelectedRows();
-		props.gridRowSelection(selectedData)
+		props.gridRowSelection(selectedData);
 	};
 
 	return (
@@ -112,13 +112,13 @@ const LinkGrid = (props: any) => {
 			grouped={true}
 			rowSelection='multiple'
 			nowRowsMsg={'<div>Create new Link by Clicking the + button above</div>'}
-			getReference={(value: any) => { setGridRef(value) }}
+			getReference={(value: any) => {setGridRef(value);}}
 			autoGroupColumnDef={autoGroupColumnDef}
 			groupIncludeFooter={false}
 			groupIncludeTotalFooter={false}
 			groupSelectsChildren={true}
 			rowSelected={onRowSelection}
 		/>
-	)
-}
+	);
+};
 export default LinkGrid;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormControl, Select, InputLabel, MenuItem, TextField, Icon, InputAdornment, Box, ListItemText, IconButton, Input, SelectChangeEvent, ListSubheader, Checkbox, Chip, OutlinedInput, Button, Popover, FormControlLabel, checkboxClasses, Tooltip } from "@mui/material";
+import { FormControl, Select, InputLabel, MenuItem, TextField, Icon, InputAdornment, Box, ListItemText, IconButton, Input, SelectChangeEvent, ListSubheader, Checkbox, Chip, OutlinedInput, Button, Popover, FormControlLabel, checkboxClasses, Tooltip, Typography } from "@mui/material";
 import FuzzySearch from "fuzzy-search";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -14,6 +14,11 @@ import { Close } from "@mui/icons-material";
 import { primaryIconSize } from "features/budgetmanager/BudgetManagerGlobalStyles";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
+
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { TreeView } from "@mui/x-tree-view/TreeView";
+// import {TreeItem,TreeItemProps,treeItemClasses} from "@mui/x-tree-view/TreeItem";
 type TOption = {
 	id?: any,
 	label: string,
@@ -24,7 +29,11 @@ type TOption = {
 	color?:string,
 	options?: Array<{ label: string, value: string | number, colVal?: string | number, description?: string; }>;
 };
-
+type StyledTreeItemProps = TreeItemProps & {
+	nodeId:any;
+	labelIcon: React.ReactElement;
+	labelText: string;
+  };
 export interface ISmartDropDown {
 	name?: string | unknown;
 	required?: boolean;
@@ -32,7 +41,7 @@ export interface ISmartDropDown {
 	isSearchField?: boolean;
 	showIconInOptionsAtRight?:boolean;
 	hideNoRecordMenuItem?: boolean;
-	handleChange?: (selected: string | Array<string> | undefined) => void;
+	handleChange?: (selected: string | Array<string> | undefined, nodes?:any) => void;
 	handleChipDelete?: (selected: string | Array<string> | undefined) => void;
 	options: Array<TOption>;
 	selectedValue?: any;
@@ -87,6 +96,13 @@ export interface ISmartDropDown {
 	handleSearchProp?: any;
 	columnBasedOptions?: boolean;
 	defaultValue?: any;
+
+	isTreeView?:boolean;
+	treeDataOptions?:Array<any>;
+	isTreeMultiSelect?:boolean;
+    showCustomTreeIcon?:boolean;
+	TreeIcon?:React.ReactElement;
+	selectedNodes?:any;
 }
 
 const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
@@ -147,6 +163,13 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 		handleSearchProp,
 		columnBasedOptions = false,
 		defaultValue,
+
+		isTreeView = false,
+		treeDataOptions = [],
+		isTreeMultiSelect=false,
+        showCustomTreeIcon=false,
+		TreeIcon = <></>,
+		selectedNodes = [],
 		...rest
 	} = props;
 
@@ -194,6 +217,8 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 			setSelectedOption(selectedValue);
 		} else if (isMultiple && (selectedValue?.length > 0)) {
 			setSelectedOption(selectedValue);
+		} else if(isTreeView && !isMultiple) {
+			setSelectedOption(selectedValue ?? selectedValue?.[0]);
 		}
 	}, [selectedValue]);
 
@@ -315,10 +340,19 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 	 * @param value Selected value from the dropdown
 	 * @author Srinivas Nadendla
 	 */
-	const handleDelete = (e: React.MouseEvent, value: any) => {
+	const handleDelete = (e: React.MouseEvent, value: any, treeValue?:any) => {
 		e.preventDefault();
 		let itemToDelete = value;
+		if(isTreeView && treeValue) {
+			let activeOptions = [...selectedOption];
+			const index = activeOptions.indexOf(treeValue?.name);
+			if (index > -1) activeOptions.splice(index, 1);
+			setSelectedOption(activeOptions);
 
+			if (props?.handleChipDelete) {
+				props?.handleChipDelete(activeOptions);
+			}
+		} else {
 		if (itemToDelete) {
 			let activeOptions = [...selectedOption];
 			const index = activeOptions.indexOf(itemToDelete);
@@ -329,6 +363,7 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 				props?.handleChipDelete(activeOptions);
 			}
 		}
+	};
 	};
 	const getColumnsBasedSelectRenderTmpl = (selectedOptions: any) => {
 		const selectedItems: any = [];
@@ -384,6 +419,19 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 				);
 				if (selectedRec) selectedItems.push(selectedRec);
 			});
+		} else if(selectedOptions && isTreeView) {
+			let data = Array.isArray(selectedOptions) ? selectedOptions : selectedOptions.split();
+			(data || []).forEach((item: any) => {
+				const getSelectedNodeIds:any = (val: any, arr: any) => {
+					return (arr || []).reduce((a: any, item: any) => {
+					  if (a) return a;
+					  if (item.label === val) return item;
+					  if (item.children) return getSelectedNodeIds(val, item.children);
+					}, null);
+				  };
+				const selectedRec = getSelectedNodeIds(item, treeDataOptions);
+				if (selectedRec) selectedItems.push(selectedRec);
+			});
 		} else {
 			options.forEach((optionList: any) => {
 				const selectedRec = optionList?.options?.find(
@@ -428,7 +476,7 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 										key={rec?.value}
 										label={(rec?.displayLabel ?? false) ? rec?.displayLabel : rec?.label}
 										className="smart-dropdown-chip-cls"
-										onDelete={(e) => handleDelete(e, rec?.value)}
+										onDelete={(e) => handleDelete(e, rec?.value, rec)}
 										sx={{ maxWidth: availableWidth }}
 										deleteIcon={
 											<span
@@ -447,8 +495,10 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 								)}
 							</>
 						}
-
-						{!isMultiple && (renderItems.map((rec: any) => (
+						{isTreeView && !isTreeMultiSelect && (renderItems.map((rec: any) => (
+									<div key={rec?.value} style={{ display: "flex" }}>{rec?.label}</div>
+						)))}
+						{!isMultiple && !isTreeView && (renderItems.map((rec: any) => (
 							<Chip
 								key={rec?.value}
 								label={rec?.label}
@@ -471,6 +521,8 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 		dynamicProps.renderValue = (selectedOptions: any) => getMultiSelectRenderTmpl(isMultiple ? selectedOptions : selectedValue);
 	} else if (columnBasedOptions) {
 		dynamicProps.renderValue = (selectedOptions: any) => getColumnsBasedSelectRenderTmpl(selectedOptions);
+	} else if(isTreeView) {
+		dynamicProps.renderValue = (selectedOptions: any) => getMultiSelectRenderTmpl(selectedOptions);
 	}
 
 	/**
@@ -644,7 +696,170 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 			</Tooltip>
 		);
 	};
+	//Breadth First Search algorithm to find node by his ID
+	const bfsSearch = (graph:any, targetId:any) => {
+    const queue = [...graph];
+    while (queue.length > 0) {
+      const currNode = queue.shift();
+      if (currNode?.id?.toString() === targetId?.toString()) {
+        return currNode;
+      }
+      if (currNode.children) {
+        queue.push(...currNode.children);
+      }
+    }
+    return [];
+  };
+	const getAllIds = (node:any, idList:any = []) => {
+		idList.push(node?.id);
+		if (node.children) {
+		node.children.forEach((child:any) => getAllIds(child, idList));
+		}
+		return idList;
+	}
+	const getAllChildNodes = (id:any) => {
+    	return getAllIds(bfsSearch(treeDataOptions, id));
+  	};
+  	const getAllParentNodes:any = (id:any, list:any = []) => {
+    	const node = bfsSearch(treeDataOptions, id);
+		if (node.parent) {
+		list.push(node.parent);
 
+		return getAllParentNodes(node.parent, list);
+		}
+		return list;
+  	};
+	const getNodeIds = (items:any) => {
+		return (items || [])?.reduce((ids:any, item:any) => {
+		  ids.push(item.id);
+		  if (item.children) {
+			ids = ids.concat(getNodeIds(item.children));
+		  }
+		  return ids;
+		}, []);
+	};
+	const isAllChildrenChecked = (node:any, list:any) => {
+		const allChild = getAllChildNodes(node.id);
+		const nodeIdIndex = allChild.indexOf(node.id);
+		allChild.splice(nodeIdIndex, 1);
+	
+		return allChild.every((nodeId:any) =>
+		  selectedNodes.concat(list).includes(nodeId)
+		);
+	};
+	const getAllChildLabels = (node:any, idList:any = []) => {
+		if (node.children) {
+		  node.children.forEach((child:any) => {
+			if(!Array.isArray(child.children)) {
+				idList.push(child?.name);
+			}
+			getAllChildLabels(child, idList);
+		  })
+		} else if(node){
+			idList.push(node?.name);
+		};
+		return idList;
+	};
+	const onlyUnique = (value:any, index:any, array:any) => {
+		return array.indexOf(value) === index;
+	};
+	let allNodeIds = getNodeIds(treeDataOptions);
+	const StyledTreeItem = (props: StyledTreeItemProps) => {
+    const { nodeId, labelIcon: LabelIcon, labelText, ...other } = props;
+    const handleMultipleTreeView = (event: any, nodeIds: any) => {
+      event.stopPropagation();
+      const allChild = getAllChildNodes(nodeIds);
+      const allParent = getAllParentNodes(nodeIds);	 
+	const keys = getAllChildLabels(bfsSearch(treeDataOptions, nodeIds));
+	if(selectedOption.length === 1 && selectedOption?.[0] == '') {
+			delete selectedOption[0];
+	};
+	  let nodes:any;
+	  let labels:any;
+      if (selectedNodes.includes(nodeIds)) {
+		nodes = [...selectedNodes].filter((id: any) => !allChild.concat(allParent).includes(id));
+		labels = [...selectedOption].filter((id: any) => !keys.includes(id));
+      } else {
+        const ToBeChecked = allChild;
+        for (let i = 0; i < allParent.length; i++) {
+          if (isAllChildrenChecked(bfsSearch(treeDataOptions, allParent[i]),ToBeChecked)) {
+            ToBeChecked.push(allParent[i]);
+          }
+        }
+		nodes = [...selectedNodes].concat(ToBeChecked);
+		labels = selectedOption.concat(keys);
+      };
+	  if(nodes.length) {
+			labels = labels.filter(onlyUnique);
+			nodes = nodes.filter(onlyUnique);
+		  	setSelectedOption(labels);
+    	  	if (handleChange) handleChange(labels, nodes);
+	  } else if(nodes.length === 0) {
+			setSelectedOption([]);
+			if (handleChange) handleChange([], nodes);
+	  }
+    };
+    return (
+      <TreeItem
+        nodeId={nodeId}
+        label={
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              p: 0.5,
+              pr: 0,
+            }}
+          >
+            {isTreeMultiSelect && (
+              <Checkbox
+                size="small"
+                checked={selectedNodes.indexOf(nodeId) !== -1}
+                tabIndex={-1}
+                disableRipple
+                onClick={(event) => isTreeMultiSelect ? handleMultipleTreeView(event, nodeId) : null}
+              />
+            )}
+            {showCustomTreeIcon && (
+				<InputAdornment position="start">{LabelIcon}</InputAdornment>
+            )}
+            <Typography
+              variant="body2"
+              sx={{ fontWeight: "inherit", flexGrow: 1 }}
+            >
+              {labelText}
+            </Typography>
+          </Box>
+        }
+        {...other}
+      	/>
+    	   );
+  	  };  
+	  const renderTree = (treeItems: any) => {
+		return (treeItems || []).map((treeItemData: any) => {
+      let children = undefined;
+      if (treeItemData.children && treeItemData.children.length > 0) {
+        children = renderTree(treeItemData.children);
+      }
+      return (
+        <StyledTreeItem
+          nodeId={treeItemData?.nodeId}
+          labelText={treeItemData?.label}
+          labelIcon={TreeIcon}
+          children={children}
+        />
+      );
+    });
+	  };
+	  const handleSingleTreeView = (event: any, nodeIds: any) => {
+		event.stopPropagation();
+		if((getAllChildLabels(bfsSearch(treeDataOptions, nodeIds))?.length === 1 ?? false)) {
+			const target = event.target?.['innerText'] ?? '';
+			const name: any = typeof target === 'string' ? target.split(',') : target;
+			setSelectedOption(name);
+			if (handleChange) handleChange(name, [nodeIds]);
+		}
+    };
 	return (
 		<>
 			<InputLabel
@@ -1138,7 +1353,21 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 								}
 								)
 							) :
-								!hideNoRecordMenuItem && (<div className="base-no-data">{noDataFoundMsg}</div>)
+							isTreeView ? (
+								<TreeView
+									aria-label="gmail"
+									defaultExpanded={allNodeIds || []}
+									defaultCollapseIcon={<ArrowDropDownIcon />}
+									defaultExpandIcon={<ArrowRightIcon />}
+									defaultEndIcon={<div style={{ width: 24 }} />}
+									multiSelect={isTreeMultiSelect}
+									onNodeSelect={!isTreeMultiSelect ? handleSingleTreeView : undefined}
+									selected={selectedNodes || []}
+								>
+										{renderTree(treeDataOptions)}
+								</TreeView>
+							)
+							: !hideNoRecordMenuItem && (<div className="base-no-data">{noDataFoundMsg}</div>)
 					}
 				</Select>
 			</IQTooltip>

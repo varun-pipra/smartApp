@@ -12,7 +12,8 @@ export const AdditionalInfo = () => {
   const dispatch = useAppDispatch();
   const { detailsData, appsList, appDependentFields  } = useAppSelector(state => state.sbsManager)
   const [additionalInfo, setAdditionalInfo] = React.useState<any>();
-  const [ additionalFields, setAdditionalFields] = React.useState<any>([])
+  const [ additionalFields, setAdditionalFields] = React.useState<any>([]);
+  const [formatTreeData, setFormatTreeData] = React.useState<any>([]);
   React.useEffect(() => {
     let gridData:any = [];
     console.log("setAdditionalInfo", additionalInfo, detailsData); 
@@ -27,7 +28,18 @@ export const AdditionalInfo = () => {
   }, [detailsData]);
 
   React.useEffect(() => {dispatch(getAppDependentFields(additionalInfo?.supplementalInfoAppId))}, [additionalInfo?.supplementalInfoAppId]);
-  
+  React.useEffect(() => {
+    if (appDependentFields.length > 0) {
+      let data = [...appDependentFields];
+      let mapData = data.map((item: any, index: any) => ({
+        ...item, name: item.Name, nodeId: item.Id, label: item.Name, value: item.Id, id: item.Id,
+        children: item.Fields.map((obj: any) => ({
+          ...obj, name: obj.Label, nodeId: obj.Id, label: obj.Label, value: obj.Id, id: obj.Id, parent: item.Id
+        })),
+      }));
+      setFormatTreeData(mapData);
+    } else { setFormatTreeData([])};
+  }, [appDependentFields]);
   const handleOnChange = (name: string, value: any) => {
     console.log("value", value, additionalInfo?.uniqueid)
     setAdditionalInfo({...additionalInfo, [name]: value});
@@ -120,7 +132,7 @@ export const AdditionalInfo = () => {
           <div>
             <AdditionalInfoGrid 
               disabled={!(additionalInfo?.configureSupplementalInfo && additionalInfo?.supplementalInfoAppId)}
-              fieldsList={appDependentFields}
+              fieldsList={formatTreeData}
               gridData={additionalFields ? additionalFields : []}
               onAdd={(row:any) => handleOnAddRow(row)}
               onDelete={(rows:any) => handleOnDeleteRows(rows)}

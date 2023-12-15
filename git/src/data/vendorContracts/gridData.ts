@@ -243,6 +243,215 @@ export const VendorContractsGridData = {
     }
   },
   {
+    "title": "HVAC Package",
+    "id": "a44a9f2c-0eba-427a-95d6-0236b0c409b3",
+    "poNumber": "P456789",
+    "vendor": {
+        "pendingCompliances": [
+            {
+                "id": "c897a401-d18c-4cc0-a226-334a3decf3cc",
+                "name": "CC562"
+            }
+        ],
+        "pointOfContacts": [
+            {
+                "id": "92085c9e-33e5-4465-b73a-16b9fb3a4e4b",
+                "name": "Subcontractor, Swetha",
+                "email": "swetha+sc@smartapp.com",
+                "phone": "",
+                "image": {
+                    "downloadUrl": "https://central.smartappbeta.com/skins/base/img/s_200dp.png",
+                    "cloudStorageKey": null
+                }
+            }
+        ],
+        "id": "4dec6c09-da4b-4cd4-9f45-cb054418b362",
+        "name": "IQ Vendor",
+        "email": "iqvendor@gmail.com",
+        "phone": "",
+        "image": {
+            "downloadUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2308/kcx3i14q/cross.png",
+            "cloudStorageKey": null
+        }
+    },
+    "inclusions": null,
+    "exclusions": null,
+    "endDate": "2023-09-26T18:30:00Z",
+    "code": "C10151",
+    "createdOn": "2023-09-14T09:41:05.203Z",
+    "postedOn": null,
+    "startDate": "2023-09-13T18:30:00Z",
+    "modifiedOn": "2023-10-18T12:35:38.15Z",
+    "status": "ActiveUnlockedPendingSOVUpdate",
+    "createdBy": {
+        "id": "fb9fe865-986e-4991-91e5-656aa7b7fe14",
+        "email": "mksudeep@smartapp.com",
+        "globalId": "4cac5fc1-62d5-4676-9f1f-be5323b7a29b",
+        "lastName": "MK",
+        "firstName": "Sudeep",
+        "displayName": "MK, Sudeep"
+    },
+    "coveringLetter": null,
+    "modifiedBy": {
+        "id": "fb9fe865-986e-4991-91e5-656aa7b7fe14",
+        "email": "mksudeep@smartapp.com",
+        "globalId": "4cac5fc1-62d5-4676-9f1f-be5323b7a29b",
+        "lastName": "MK",
+        "firstName": "Sudeep",
+        "displayName": "MK, Sudeep"
+    },
+    "makeUpfrontPayment": false,
+    "retainagePercentage": 0.00,
+    "noOfBudgetLineItems": 3,
+    "hasPaymentRetainage": false,
+    "remainingAmount": null,
+    "totalPaidToDate": null,
+    "changeOrderAmount": 13200.00,
+    "upfrontPaymentAmount": 0.00,
+    "files": null,
+    "bidPackage": {
+        "id": "3083d46e-f821-42d2-8d86-4a68d31edeb6",
+        "name": "HVAC Package"
+    },
+    "amount": 1503000.00,
+    "budgetLineItemsWithValidSOV": 2,
+    "upfrontPaymentOption": "SplitEquallyOverAllScheduledPayments",
+    "responses": null,
+    "scheduleOfValues": [
+        {
+            "status": "Completed",
+            "monthlyPaymentDay": null,
+            "type": "PercentComplete",
+            "budgetItem": {
+                "bidValue": 1500000.00,
+                "budgetAmount": 1500000.00,
+                "name": "00286",
+                "id": "a842648b-b625-44a2-b5f1-e37681663683",
+                "quantity": null,
+                "costType": "M - Materials",
+                "costCode": "15700 HVAC Equipment",
+                "division": "15 - Mechanical/Plumbing",
+                "unitCost": 10.00,
+                "description": null,
+                "unitOfMeasure": "m2",
+                "estimatedEndDate": "2024-05-20T00:00:00Z",
+                "estimatedStartDate": "2024-02-20T00:00:00Z"
+            },
+            "weeklyPaymentEndsOn": null,
+            "autoCreatePayApplication": true,
+            "monthlyPaymentEndsOn": null,
+            "weeklyPaymentDay": null,
+            "monthlyPaymentWeek": null,
+            "monthlyPaymentWeekDay": null,
+            "monthlyPaymentType": null,
+            "payIntervalFrequency": null,
+            "payments": [
+                {
+                    "id": "3b510237-7fda-48c3-8de4-5af9cc1cde0e",
+                    "workStage": null,
+                    "payoutPercentage": 50,
+                    "payoutAmount": 750000.00,
+                    "paymentDate": null,
+                    "throughDate": null,
+                    "balanceAmount": 750000.00,
+                    "completionQuantity": 0,
+                    "retainageAmount": 0.00,
+                    "completionPercentage": 50,
+                    "status": "Pending",
+                    "invoice": null
+                },
+                {
+                    "id": "6aa1c328-3fee-4a38-aab8-39b7302ab8ff",
+                    "workStage": null,
+                    "payoutPercentage": 50,
+                    "payoutAmount": 750000.00,
+                    "paymentDate": null,
+                    "throughDate": null,
+                    "balanceAmount": 0.00,
+                    "completionQuantity": 0,
+                    "retainageAmount": 0.00,
+                    "completionPercentage": 100,
+                    "status": "Pending",
+                    "invoice": null
+                }
+            ]
+        },
+        {
+            "status": "Completed",
+            "monthlyPaymentDay": null,
+            "type": "PercentComplete",
+            "budgetItem": {
+                "bidValue": 3000.00,
+                "budgetAmount": 3000.00,
+                "name": "00295",
+                "id": "8f62ee8d-e176-46f3-bd71-99e2e4cae72b",
+                "quantity": null,
+                "costType": "M - Materials",
+                "costCode": "15900 HVAC Instrumentation and Controls",
+                "division": "15 - Mechanical/Plumbing",
+                "unitCost": 30.00,
+                "description": null,
+                "unitOfMeasure": "ea",
+                "estimatedEndDate": "2024-07-10T00:00:00Z",
+                "estimatedStartDate": "2024-06-01T00:00:00Z"
+            },
+            "weeklyPaymentEndsOn": null,
+            "autoCreatePayApplication": true,
+            "monthlyPaymentEndsOn": null,
+            "weeklyPaymentDay": null,
+            "monthlyPaymentWeek": null,
+            "monthlyPaymentWeekDay": null,
+            "monthlyPaymentType": null,
+            "payIntervalFrequency": null,
+            "payments": [
+                {
+                    "id": "a4f3fc2a-b64a-47a8-a77e-c79bf8f7855c",
+                    "workStage": null,
+                    "payoutPercentage": 100,
+                    "payoutAmount": 3000.00,
+                    "paymentDate": null,
+                    "throughDate": null,
+                    "balanceAmount": 0.00,
+                    "completionQuantity": 0,
+                    "retainageAmount": 0.00,
+                    "completionPercentage": 100,
+                    "status": "Pending",
+                    "invoice": null
+                }
+            ]
+        },
+        {
+            "status": "Pending",
+            "monthlyPaymentDay": null,
+            "type": "PercentComplete",
+            "budgetItem": {
+                "bidValue": null,
+                "budgetAmount": 13200.00,
+                "name": "00295CE",
+                "id": "bf810c99-37b3-4bba-a56b-8da2dafd9262",
+                "quantity": null,
+                "costType": "M - Materials",
+                "costCode": "15900 HVAC Instrumentation and Controls",
+                "division": "15 - Mechanical/Plumbing",
+                "unitCost": 110.00,
+                "description": null,
+                "unitOfMeasure": "ea",
+                "estimatedEndDate": "2024-07-10T00:00:00Z",
+                "estimatedStartDate": "2024-06-01T00:00:00Z"
+            },
+            "weeklyPaymentEndsOn": null,
+            "autoCreatePayApplication": true,
+            "monthlyPaymentEndsOn": null,
+            "weeklyPaymentDay": null,
+            "monthlyPaymentWeek": null,
+            "monthlyPaymentWeekDay": null,
+            "monthlyPaymentType": null,
+            "payIntervalFrequency": null,
+            "payments": []
+        }
+    ]
+},
+  {
     "rowId": 6,
     "title": "PayTest",
     "id": "a0bf32c1-92cf-464e-af0f-df8768c50571",

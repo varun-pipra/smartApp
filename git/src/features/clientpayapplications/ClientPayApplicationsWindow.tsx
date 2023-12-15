@@ -115,9 +115,9 @@ const ClientPayApplicationsWindow = (props: any) => {
 	const [groups, setGroups] = useState<any>(groupOptions);
 
 	const tabEnum: any = {
-		payAppDetails: 'payApplicationDetails',
-		sov: 'scheduleValues',
-		lienWaiver: 'lienWaiver',
+		payAppDetails: 'pay-Application-Details',
+		sov: 'billing-Schedules',
+		lienWaiver: 'lien-Waiver',
 		links: 'links'
 	};
 

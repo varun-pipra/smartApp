@@ -1,16 +1,12 @@
-import React, { useRef, useEffect, useCallback, memo } from 'react';
-import { makeStyles, createStyles } from '@mui/styles';
-import { useAppDispatch, useAppSelector, useFilePreview } from 'app/hooks';
+import React, {memo} from 'react';
+import {useAppDispatch, useAppSelector, useFilePreview, useHotLink} from 'app/hooks';
 import './ClientPayDetails.scss';
-import convertDateToDisplayFormat, { formatPhoneNumber } from 'utilities/commonFunctions';
-import { getServer } from 'app/common/appInfoSlice';
-import DatePickerComponent from 'components/datepicker/DatePicker';
-import InputIcon from 'react-multi-date-picker/components/input_icon';
-import { getAmountAlignment } from 'utilities/commonutills';
+import convertDateToDisplayFormat, {formatPhoneNumber} from 'utilities/commonFunctions';
+import {getServer} from 'app/common/appInfoSlice';
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 
 interface ClientPayDetailsProps {
 
@@ -20,12 +16,12 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 	const iFrameId = 'clientPayAppIframe';
 	const appType = 'clientPayApp';
 	const dispatch = useAppDispatch();
-	const { selectedRecord } = useAppSelector(state => state.clientPayApps);
+	const {selectedRecord} = useAppSelector(state => state.clientPayApps);
 	const [formData, setFormData] = React.useState<any>({
 		...selectedRecord,
 	});
 	const appInfo = useAppSelector(getServer);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 	const [paymentSentAttachments, setPaymentSentAttachments] = React.useState<any>([]);
 	const [paymentRecivedAttachments, setPaymentRecivedAttachments] = React.useState<any>([]);
 
@@ -44,23 +40,23 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 		return formattedList;
 	};
 	const gridIcon = React.useMemo<React.ReactElement>(() => {
-		return <div className='common-icon-info-icon common-icon-Budgetcalculator'></div>
+		return <div className='common-icon-info-icon common-icon-Budgetcalculator'></div>;
 	}, []);
 	const openPreview = (files: Array<any>, index: number) => {
 		useFilePreview(iFrameId, appInfo, appType, files, index);
 	};
 
 	React.useEffect(() => {
-		if (formData?.paymentSent != null) {
-			if (formData?.paymentSent?.attachments?.length > 0) {
+		if(formData?.paymentSent != null) {
+			if(formData?.paymentSent?.attachments?.length > 0) {
 				const result = formatAdditionalFileList(formData?.paymentSent?.attachments);
-				setPaymentSentAttachments(result)
+				setPaymentSentAttachments(result);
 			}
 		}
-		if (formData?.paymentReceived != null) {
-			if (formData?.paymentReceived?.attachments?.length > 0) {
+		if(formData?.paymentReceived != null) {
+			if(formData?.paymentReceived?.attachments?.length > 0) {
 				const result = formatAdditionalFileList(formData?.paymentReceived?.attachments);
-				setPaymentRecivedAttachments(result)
+				setPaymentRecivedAttachments(result);
 			}
 		}
 	}, [formData]);
@@ -79,7 +75,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 						{formData?.client?.image?.downloadUrl && (
 							<>
 								<span className="contract-info-company-icon">
-									<img src={formData?.client?.image?.downloadUrl} style={{ height: '28px', width: '28px', borderRadius: "50%" }} />
+									<img src={formData?.client?.image?.downloadUrl} style={{height: '28px', width: '28px', borderRadius: "50%"}} />
 								</span>
 							</>
 						)}
@@ -122,7 +118,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 							{row?.image?.downloadUrl && (
 								<>
 									<span className="contract-info-company-icon">
-										<img src={row?.image?.downloadUrl} style={{ height: '100%', width: '100%', borderRadius: "50%" }} />
+										<img src={row?.image?.downloadUrl} style={{height: '100%', width: '100%', borderRadius: "50%"}} />
 									</span>
 								</>
 							)
@@ -199,7 +195,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 					<div className='client-pay-contract-info-label'>Contract Name</div>
 					<div className='client-pay-contract-info-data-box'>
 						<span className="common-icon-contracts"></span>
-						<span className='contract-info-data hotlink' onClick={() => window.open(`${appInfo.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/client-contracts/home?id=${formData?.contract?.id}#react`, '_blank')}>{formData?.contract?.title}</span>
+						<span className='contract-info-data hotlink' onClick={() => window.open(useHotLink(`client-contracts/home?id=${formData?.contract?.id}`), '_blank')}>{formData?.contract?.title}</span>
 					</div>
 				</span>
 
@@ -223,14 +219,14 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 					<span className='client-pay-contract-info-tile'>
 						<div className='client-pay-contract-info-label'>Date Sent</div>
 						<div className='client-pay-contract-info-data-box'>
-						<span className="common-icon-DateCalendar"></span>
+							<span className="common-icon-DateCalendar"></span>
 							<span className='client-pay-contract-info-data'>{convertDateToDisplayFormat(formData?.paymentSent?.sentOn)}</span>
 						</div >
 					</span >
 					<span className='client-pay-contract-info-tile'>
 						<div className='client-pay-contract-info-label'>Amount Sent</div>
 						<div className='client-pay-contract-info-data-box'>
-						<span className="common-icon-payment-sent"></span>
+							<span className="common-icon-payment-sent"></span>
 							<span className='client-pay-contract-info-data'>{amountFormatWithSymbol(formData?.paymentSent?.amount || 0)}</span>
 						</div>
 					</span>
@@ -238,7 +234,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 					<span className='client-pay-contract-info-tile date-field'>
 						<div className='client-pay-contract-info-label'>Mode Of Payment</div>
 						<div className='client-pay-contract-info-data-box'>
-						<span className="common-icon-bank-transfer"></span>
+							<span className="common-icon-bank-transfer"></span>
 							<span className='client-pay-contract-info-data'>
 								{formData?.paymentSent?.modeOfPayment}
 							</span>
@@ -249,7 +245,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 					<span className='client-pay-contract-info-tile'>
 						<div className='client-pay-contract-info-label'>Notes</div>
 						<div className='client-pay-contract-info-data-box'>
-						<span className="common-icon-Description"></span>
+							<span className="common-icon-Description"></span>
 							<span className='contract-info-data contract-bid-pack-lbl'>{formData?.paymentSent?.notes}</span>
 						</div>
 					</span>
@@ -269,7 +265,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 						<div className='clientpay-contract-attachment-label'>Attachments</div>
 						<ImageList
 							sx={{
-								width: '100%',								
+								width: '100%',
 							}}
 							className="doc-img-item-contt"
 							cols={10}
@@ -277,7 +273,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 							{paymentSentAttachments?.map((item: any, index: number) => {
 								return <ImageListItem
 									key={index}
-									style={{ width: '110px', height: '110px', margin: '2px' }}
+									style={{width: '110px', height: '110px', margin: '2px'}}
 									className="doc-img-item"
 									onClick={() => openPreview(paymentSentAttachments, index)}
 								>
@@ -287,7 +283,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 										loading="lazy"
 									/>
 									<ImageListItemBar title={item.fileName} position="below" />
-								</ImageListItem>
+								</ImageListItem>;
 							})}
 						</ImageList>
 					</div>
@@ -312,14 +308,14 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 					<span className='client-pay-contract-info-tile'>
 						<div className='client-pay-contract-info-label'>Date Sent</div>
 						<div className='client-pay-contract-info-data-box'>
-						<span className="common-icon-DateCalendar"></span>
+							<span className="common-icon-DateCalendar"></span>
 							<span className='client-pay-contract-info-data'>{convertDateToDisplayFormat(formData?.paymentReceived?.sentOn)}</span>
 						</div >
 					</span >
 					<span className='client-pay-contract-info-tile'>
 						<div className='client-pay-contract-info-label'>Date Received</div>
 						<div className='client-pay-contract-info-data-box'>
-						<span className="common-icon-DateCalendar"></span>
+							<span className="common-icon-DateCalendar"></span>
 							<span className='client-pay-contract-info-data'>{convertDateToDisplayFormat(formData?.paymentReceived?.receivedOn)}</span>
 						</div>
 					</span>
@@ -327,7 +323,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 					<span className='client-pay-contract-info-tile date-field'>
 						<div className='client-pay-contract-info-label'>Amount Received</div>
 						<div className='client-pay-contract-info-data-box'>
-						<span className="common-icon-payment-received"></span>
+							<span className="common-icon-payment-received"></span>
 							<span className='client-pay-contract-info-data'>
 								{amountFormatWithSymbol(formData?.paymentReceived?.amount)}
 							</span>
@@ -338,7 +334,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 					<span className='client-pay-contract-info-tile'>
 						<div className='client-pay-contract-info-label'>Notes</div>
 						<div className='client-pay-contract-info-data-box'>
-						<span className="common-icon-Description"></span>
+							<span className="common-icon-Description"></span>
 							<span className='contract-info-data contract-bid-pack-lbl'>{formData?.paymentReceived?.notes}</span>
 						</div>
 					</span>
@@ -354,17 +350,17 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 					</span> */}
 				</div >
 				{paymentRecivedAttachments?.length > 0 &&
-					<div className='clientpay-contract-attachment' style={{ marginBottom: '20px' }}>
+					<div className='clientpay-contract-attachment' style={{marginBottom: '20px'}}>
 						<div className='clientpay-contract-attachment-label'>Attachments</div>
 						<ImageList
-							sx={{ width: '100%' }}
+							sx={{width: '100%'}}
 							className="doc-img-item-contt"
 							cols={10}
 						>
 							{paymentRecivedAttachments?.map((item: any, index: number) => {
 								return <ImageListItem
 									key={index}
-									style={{ width: '110px', height: '110px', margin: '2px' }}
+									style={{width: '110px', height: '110px', margin: '2px'}}
 									className="doc-img-item"
 									onClick={() => openPreview(paymentRecivedAttachments, index)}
 								>
@@ -374,7 +370,7 @@ const ClientPayDetails = (props: ClientPayDetailsProps) => {
 										loading="lazy"
 									/>
 									<ImageListItemBar title={item.fileName} position="below" />
-								</ImageListItem>
+								</ImageListItem>;
 							})}
 						</ImageList>
 					</div>

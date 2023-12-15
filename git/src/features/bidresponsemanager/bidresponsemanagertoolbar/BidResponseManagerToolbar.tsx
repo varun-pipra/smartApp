@@ -26,6 +26,7 @@ import React from 'react';
 import { statusFilterOptions } from 'utilities/bid/enums';
 import _ from "lodash";
 import { postMessage } from 'app/utils';
+import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 
 const BidResponseManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -286,9 +287,9 @@ const BidResponseManagerToolbar = (props: any) => {
 					}}
 				/>
 			</div>
-			{/* <div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
+			<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 				<ReportAndAnalyticsToggle/>
-			</div> */}
+			</div>
 			{showRightPanel && (
 				<SUIDrawer
 					PaperProps={{ style: { position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a' } }}

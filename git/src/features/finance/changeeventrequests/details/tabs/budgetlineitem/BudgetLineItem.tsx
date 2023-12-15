@@ -1,13 +1,13 @@
-import { Nullable } from 'app/common/types';
-import { isChangeEventClient, isChangeEventGC, isChangeEventSC } from 'app/common/userLoginUtils';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
+import {Nullable} from 'app/common/types';
+import {isChangeEventClient, isChangeEventGC, isChangeEventSC} from 'app/common/userLoginUtils';
+import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
 import DatePickerComponent from 'components/datepicker/DatePicker';
 import IQButton from 'components/iqbutton/IQButton';
-import { ChangeEvent, MouseEvent, memo, useCallback, useState, useEffect } from 'react';
+import {ChangeEvent, MouseEvent, memo, useCallback, useState, useEffect} from 'react';
 import InputIcon from 'react-multi-date-picker/components/input_icon';
 import SUIAlert from 'sui-components/Alert/Alert';
 import SUINote from 'sui-components/Note/Note';
-import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import {formatDate} from 'utilities/datetime/DateTimeUtils';
 import './BudgetLineItem.scss';
 
 import {
@@ -17,17 +17,16 @@ import {
 
 import IQMenuButton from 'components/iqmenu/IQMenuButton';
 import OriginalBudget from 'features/budgetmanager/orginalBudget/OrginalBudget';
-import { getChangeEventById, getChangeEventList, setBudgetListItems, setChangeRequestDetails } from 'features/finance/changeeventrequests/stores/ChangeEventSlice';
+import {getChangeEventById, getChangeEventList, setBudgetListItems, setChangeRequestDetails} from 'features/finance/changeeventrequests/stores/ChangeEventSlice';
 import Grid from 'sui-components/Grid/Grid-copy';
 import convertDateToDisplayFormat from 'utilities/commonFunctions';
-import { getAmountAlignment } from 'utilities/commonutills';
-import { budgetStateMap, getUpdatedCEAmount } from '../../../CERUtils';
+import {budgetStateMap, getUpdatedCEAmount} from '../../../CERUtils';
 import {
 	acceptBudgetById, addBudgets, ignoreQuoteById,
 	removeBudgetsById, reviseBydgetById, updateBudget
 } from '../../../stores/ChangeEventAPI';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 
 interface IVendor {
 	title?: string,
@@ -40,7 +39,7 @@ interface IVendor {
 		thumbnail?: string;
 		contractName?: string;
 		pointOfContacts?: any;
-		image?: { downloadUrl?: string; };
+		image?: {downloadUrl?: string;};
 	};
 };
 
@@ -75,33 +74,33 @@ interface IBudgetItem {
 
 const BudgetItemList = memo(() => {
 	const dispatch = useAppDispatch();
-	const [alert, setAlert] = useState<any>({ show: false, message: '' });
-	const { currencySymbol, server } = useAppSelector((state) => state.appInfo);
-	const { budgetListItems = [], sourceBudgetListItems = [], changeRequestDetails, currentChangeEventId } = useAppSelector(state => state.changeEventRequest);
+	const [alert, setAlert] = useState<any>({show: false, message: ''});
+	const {currencySymbol, server} = useAppSelector((state) => state.appInfo);
+	const {budgetListItems = [], sourceBudgetListItems = [], changeRequestDetails, currentChangeEventId} = useAppSelector(state => state.changeEventRequest);
 	const isReadonly = isChangeEventClient() ? true : isChangeEventSC() && changeRequestDetails?.status !== 'AwaitingQuote' ? true : !['Draft', 'Revise', 'SentBackForRevision', 'QuoteReceived', 'Rejected']?.includes(changeRequestDetails?.status);
 	const summaryValue = sourceBudgetListItems?.reduce((sumValue: number, currentObject: IBudgetItem) => sumValue += (currentObject?.status == 'QuoteReceived' ? currentObject?.quote?.amount : currentObject?.estimate?.amount || 0), 0) || 0;
 
 	const handleRemoveBudgetItem = useCallback((id: string) => {
-		if (budgetListItems?.length == 1) {
-			setAlert({ show: true, message: 'There should be at least one budget.' });
+		if(budgetListItems?.length == 1) {
+			setAlert({show: true, message: 'There should be at least one budget.'});
 		}
-		else removeBudgetsById(currentChangeEventId, [{ id: id }], (response: any) => dispatch(getChangeEventById(changeRequestDetails?.id)));
+		else removeBudgetsById(currentChangeEventId, [{id: id}], (response: any) => dispatch(getChangeEventById(changeRequestDetails?.id)));
 	}, [changeRequestDetails]);
 
-	const handleReviseBudgetItem = useCallback((id: string) => reviseBydgetById(changeRequestDetails?.id, id, (response: any) => { dispatch(getChangeEventById(changeRequestDetails?.id)); dispatch(getChangeEventList()); }), []);
-	const handleAcceptBudgetItem = useCallback((id: string) => { acceptBudgetById(changeRequestDetails?.id, id, (response: any) => { dispatch(getChangeEventById(changeRequestDetails?.id)); dispatch(getChangeEventList()); }); }, []);
-	const handleCancelQuoteRequest = useCallback((id: string) => { console.log("ignoreQuoteById", currentChangeEventId, id); ignoreQuoteById(changeRequestDetails?.id, id, (response: any) => { dispatch(getChangeEventById(changeRequestDetails?.id)); dispatch(getChangeEventList()); }) }, []);
+	const handleReviseBudgetItem = useCallback((id: string) => reviseBydgetById(changeRequestDetails?.id, id, (response: any) => {dispatch(getChangeEventById(changeRequestDetails?.id)); dispatch(getChangeEventList());}), []);
+	const handleAcceptBudgetItem = useCallback((id: string) => {acceptBudgetById(changeRequestDetails?.id, id, (response: any) => {dispatch(getChangeEventById(changeRequestDetails?.id)); dispatch(getChangeEventList());});}, []);
+	const handleCancelQuoteRequest = useCallback((id: string) => {console.log("ignoreQuoteById", currentChangeEventId, id); ignoreQuoteById(changeRequestDetails?.id, id, (response: any) => {dispatch(getChangeEventById(changeRequestDetails?.id)); dispatch(getChangeEventList());});}, []);
 
 	const handleWorkItemsDropdownClose = () => {
 		const existedIds = sourceBudgetListItems?.map((obj: any) => obj?.id);
 		const budgetListItemIds = budgetListItems?.map((item: any) => item?.id);
 		const toBeAdded = budgetListItems?.filter((obj: any) => !existedIds?.includes(obj?.id));
-		const newIds = toBeAdded?.map((obj: any) => { return { id: obj.id, estimateSource: 'EstimatedChangeAmount', description: null, estimate: null }; });
-		const idsNeedToRemove: any = existedIds?.filter((id: string) => !budgetListItemIds?.includes(id))?.map((val: any) => { return { id: val }; });
+		const newIds = toBeAdded?.map((obj: any) => {return {id: obj.id, estimateSource: 'EstimatedChangeAmount', description: null, estimate: null};});
+		const idsNeedToRemove: any = existedIds?.filter((id: string) => !budgetListItemIds?.includes(id))?.map((val: any) => {return {id: val};});
 		console.log("sourceBudgetListItems", sourceBudgetListItems, budgetListItems, toBeAdded, newIds, idsNeedToRemove);
-		newIds?.length > 0 && addBudgets(currentChangeEventId, newIds, (response: any) => { dispatch(setChangeRequestDetails(response)); });
-		if (existedIds?.length == 1 && newIds?.length == 0 && idsNeedToRemove == 1) setAlert({ show: true, message: 'There should be atleast one budget' });
-		else idsNeedToRemove?.length > 0 && removeBudgetsById(currentChangeEventId, idsNeedToRemove, (response: any) => { dispatch(getChangeEventById(changeRequestDetails?.id)); });
+		newIds?.length > 0 && addBudgets(currentChangeEventId, newIds, (response: any) => {dispatch(setChangeRequestDetails(response));});
+		if(existedIds?.length == 1 && newIds?.length == 0 && idsNeedToRemove == 1) setAlert({show: true, message: 'There should be atleast one budget'});
+		else idsNeedToRemove?.length > 0 && removeBudgetsById(currentChangeEventId, idsNeedToRemove, (response: any) => {dispatch(getChangeEventById(changeRequestDetails?.id));});
 	};
 
 	const handleBudgetDetailsChange = (payload: any, budgetItemId: string) => {
@@ -141,21 +140,21 @@ const BudgetItemList = memo(() => {
 			open={true}
 			DailogClose={true}
 			onClose={() => {
-				setAlert({ show: false, message: '' });
+				setAlert({show: false, message: ''});
 			}}
 			title='Warning'
 			contentText={<span>{alert?.message}</span>}
 			showActions={false}
-			onAction={() => setAlert({ show: false, message: '' })}
+			onAction={() => setAlert({show: false, message: ''})}
 		/>}
 	</Box>;
 });
 
 export default BudgetItemList;
 
-const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, onAcceptItem,
-	onCancelQuoteRequest, onBudgetDetailsChange, server, ...budgetItem }: IBudgetItem) => {
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+const BudgetItem = memo(({eventStatus, isReadonly, onRemoveItem, onReviseItem, onAcceptItem,
+	onCancelQuoteRequest, onBudgetDetailsChange, server, ...budgetItem}: IBudgetItem) => {
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 	const [type, setType] = useState<string>(budgetItem?.estimateSource ? budgetItem?.estimateSource : 'EstimatedChangeAmount');
 	const [submitBy, setSubmitBy] = useState<string>(budgetItem?.submitBy || '');
 	const [description, setDescription] = useState<any>(budgetItem?.description);
@@ -164,7 +163,7 @@ const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, 
 	// 	isChangeEventGC() && statusNames.includes(eventStatus) ||
 	// 		isChangeEventGC() && (eventStatus == 'QuoteReceived' && budgetItem?.status !== 'QuoteAccepted') ? false :
 	// 		isChangeEventGC() && !['Draft', 'Revise'].includes(eventStatus)) || isChangeEventClient());
-	const [showAlert, setShowAlert] = useState<any>({ show: false, message: '', title: '', type: null });
+	const [showAlert, setShowAlert] = useState<any>({show: false, message: '', title: '', type: null});
 	const [quoteIgnored, setQuoteIgnored] = useState<boolean>(false);
 	const [estimateValue, setEstimateValue] = useState<number>(budgetItem?.status == "QuoteReceived" ? budgetItem?.quote?.amount : budgetItem?.estimate?.amount || 0);
 	const [specifyQuoteValue, setSpecifyQuoteValue] = useState<number>(budgetItem?.quote?.amount || 0);
@@ -177,68 +176,73 @@ const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, 
 	const quoteStateObject = budgetStateMap[(budgetItem?.status || '')];
 
 	useEffect(() => {
-		console.log("type after cNCEL", budgetItem, type, estimateValue);
-		if (budgetItem?.estimateSource && type != budgetItem?.estimateSource) setType(budgetItem?.estimateSource);
+		console.log("type after cNCEL123", budgetItem, type, estimateValue);
+		if(budgetItem?.estimateSource && type != budgetItem?.estimateSource) setType(budgetItem?.estimateSource);
 		// setEstimateValue(budgetItem?.status == "QuoteReceived" ? budgetItem?.quote?.amount : budgetItem?.estimate?.amount || 0);
-	}, [budgetItem])
+	}, [budgetItem?.estimateSource]);
+
+	useEffect(() => {
+		console.log("setSubmitBy1", budgetItem, submitBy);
+		if(submitBy != budgetItem?.submitBy) setSubmitBy(budgetItem?.submitBy ?? '');
+	}, [budgetItem?.submitBy]);
 
 	const handleTypeChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const value = event.target.value;
 		setType(value);
 		setEstimateValue(0);
-		onBudgetDetailsChange && onBudgetDetailsChange({ estimateSource: value }, budgetItem?.id);
+		onBudgetDetailsChange && onBudgetDetailsChange({estimateSource: value}, budgetItem?.id);
 	};
 
 	const handleSubmitByChange = (value: any) => {
 		setSubmitBy(value);
-		onBudgetDetailsChange && onBudgetDetailsChange({ submitBy: new Date(value) }, budgetItem?.id);
+		onBudgetDetailsChange && onBudgetDetailsChange({submitBy: new Date(value)}, budgetItem?.id);
 	};
 
 	const handleDescriptionChange = (value: any) => {
 		setDescription(value);
-		onBudgetDetailsChange && onBudgetDetailsChange({ description: value }, budgetItem?.id);
+		onBudgetDetailsChange && onBudgetDetailsChange({description: value}, budgetItem?.id);
 	};
 
 	const handleEstimateChange = (event: any, type: string) => {
 		const amountString = type == 'onBlur' ? event?.amount?.replaceAll(',', '') : event?.amount;
-		const payload = type == 'onBlur' ? { estimate: { amount: Number(amountString) } } : { estimate: { amount: Number(amountString), quantity: event?.quantity ? Number(event?.quantity) : null, unitCost: event?.cost ? Number(event?.cost) : null } };
+		const payload = type == 'onBlur' ? {estimate: {amount: Number(amountString)}} : {estimate: {amount: Number(amountString), quantity: event?.quantity ? Number(event?.quantity) : null, unitCost: event?.cost ? Number(event?.cost) : null}};
 		setEstimateValue(amountString ? Number(amountString) : 0);
-		onBudgetDetailsChange && onBudgetDetailsChange({ ...payload }, budgetItem?.id);
+		onBudgetDetailsChange && onBudgetDetailsChange({...payload}, budgetItem?.id);
 	};
 
 	const handleSpecifyQuoteChange = (event: any, type: string) => {
 		const amountString = type == 'onBlur' ? event?.amount?.replaceAll(',', '') : event?.amount;
 		setSpecifyQuoteValue(amountString ? Number(amountString) : 0);
-		const payload = type == 'onBlur' ? { quote: { amount: Number(amountString) } } : { quote: { amount: Number(amountString), quantity: event?.quantity ? Number(event?.quantity) : null, unitCost: event?.cost ? Number(event?.cost) : null } };
+		const payload = type == 'onBlur' ? {quote: {amount: Number(amountString)}} : {quote: {amount: Number(amountString), quantity: event?.quantity ? Number(event?.quantity) : null, unitCost: event?.cost ? Number(event?.cost) : null}};
 		onBudgetDetailsChange && onBudgetDetailsChange(payload, budgetItem?.id);
 	};
 
 	const showIgnoreQuoteAlert = useCallback(() => {
-		setShowAlert({ show: true, message: 'Are you sure you want to Ignore the quote from vendor?', title: 'Confirmation', type: 'ignore' });
+		setShowAlert({show: true, message: 'Are you sure you want to Ignore the quote from vendor?', title: 'Confirmation', type: 'ignore'});
 	}, []);
 
 	const handleIgnoreBudgetItem = (event: MouseEvent<HTMLButtonElement>, option: string) => {
-		if (option === 'yes') {
-			if (showAlert?.type == 'accept') onAcceptItem && onAcceptItem(budgetItem?.id);
-			if (showAlert?.type == 'revise') onReviseItem && onReviseItem(budgetItem?.id);
-			if (showAlert?.type == 'ignore') {
+		if(option === 'yes') {
+			if(showAlert?.type == 'accept') onAcceptItem && onAcceptItem(budgetItem?.id);
+			if(showAlert?.type == 'revise') onReviseItem && onReviseItem(budgetItem?.id);
+			if(showAlert?.type == 'ignore') {
 				onCancelQuoteRequest && onCancelQuoteRequest(budgetItem?.id);
 				setType('EstimatedChangeAmount');
 				setSubmitBy('');
 				setEstimateValue(0);
 				setQuoteIgnored(true);
 			}
-			setShowAlert({ show: false, message: '', title: '', type: '' });
+			setShowAlert({show: false, message: '', title: '', type: ''});
 		}
-		setShowAlert({ show: false, message: '', title: '', type: '' });
+		setShowAlert({show: false, message: '', title: '', type: ''});
 	};
-	const handleCancelRequest = () => { 
-		if (onCancelQuoteRequest) { 
-			console.log("onCancelQuoteRequest", budgetItem); 
-			onCancelQuoteRequest(budgetItem.id); 
-			setSubmitBy('') 
-		} 
-	}
+	const handleCancelRequest = () => {
+		if(onCancelQuoteRequest) {
+			console.log("onCancelQuoteRequest", budgetItem);
+			onCancelQuoteRequest(budgetItem.id);
+			setSubmitBy('');
+		}
+	};
 
 	return <Stack direction='column' className='cer-budget-list-item'>
 		<div className='wi-info'>
@@ -247,7 +251,7 @@ const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, 
 			<span className='wi-spacer'></span>
 			{budgetItem?.estimateSource === 'QuoteFromVendor' && <span
 				className='wi-status-label'
-				style={{ backgroundColor: quoteStateObject?.bgColor }}
+				style={{backgroundColor: quoteStateObject?.bgColor}}
 			>
 				<span className={`wi-status-icon ${quoteStateObject?.icon}`}></span>
 				{quoteStateObject?.text}
@@ -285,7 +289,7 @@ const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, 
 						Vendor Contract
 					</div>
 					<div className='wi-vendor-detail-value'
-						onClick={() => window.open(`${server?.hostUrl}/EnterpriseDesktop/DesktopClientUI/AppZoneV2/appholder/?url=https://react.smartappbeta.com/vendor-contracts/home?id=${budgetItem?.vendorContract?.id}#react`, '_blank')}
+						onClick={() => window.open(useHotLink(`vendor-contracts/home?id=${budgetItem?.vendorContract?.id}`), '_blank')}
 					>
 						{budgetItem?.vendorContract?.title}
 					</div>
@@ -338,7 +342,7 @@ const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, 
 				{!isChangeEventClient() && <div className='wi-vendor-detail wi-submit-by'>
 					<div className='wi-vendor-detail-label'>{budgetItem?.status == 'QuoteAccepted' ? 'Accepted Quote' : (quoteIgnored === false ? eventStatus !== 'QuoteReceived' : true) ? 'Submit By' : 'Quote Amount'}</div>
 					<div className='wi-vendor-detail-value quote-amount'>
-						{budgetItem?.status == 'QuoteAccepted' ? `${amountFormatWithSymbol(budgetItem?.quote?.amount)}` : (quoteIgnored === false ? isSubmitByReadonly : false) ? formatDate(budgetItem?.submitBy || '', { year: 'numeric', month: '2-digit', day: '2-digit' })
+						{budgetItem?.status == 'QuoteAccepted' ? `${amountFormatWithSymbol(budgetItem?.quote?.amount)}` : (quoteIgnored === false ? isSubmitByReadonly : false) ? formatDate(budgetItem?.submitBy || '', {year: 'numeric', month: '2-digit', day: '2-digit'})
 							: ((quoteIgnored === false ? eventStatus !== 'QuoteReceived' : true) ? <DatePickerComponent
 								containerClassName='iq-customdate-cont'
 								minDate={new Date()}
@@ -349,7 +353,7 @@ const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, 
 									<InputIcon
 										placeholder='MM/DD/YYYY'
 										className='custom-input rmdp-input'
-										style={{ background: '#f7f7f7' }}
+										style={{background: '#f7f7f7'}}
 									/>
 								}
 							/> : `${amountFormatWithSymbol(budgetItem?.quote?.amount)}`)}
@@ -446,13 +450,13 @@ const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, 
 			}
 		</div>
 		{(areButtonsVisible || isCancelButtonVisible) && <div className='wi-buttons'>
-			{ 
+			{
 				isCancelButtonVisible && <IQButton color='orange' variant='outlined' onClick={() => handleCancelRequest()}>CANCEL REQUEST</IQButton>
 			}
 			{areButtonsVisible && <>
-				<IQButton color='lightGrey' onClick={() => setShowAlert({ show: true, message: 'Would you like the Vendor to Revise & Re-submit the quote?', title: 'Confirmation', type: 'revise' })}>REVISE & SEND BACK</IQButton>
+				<IQButton color='lightGrey' onClick={() => setShowAlert({show: true, message: 'Would you like the Vendor to Revise & Re-submit the quote?', title: 'Confirmation', type: 'revise'})}>REVISE & SEND BACK</IQButton>
 				<IQButton color='orange' variant='outlined' onClick={() => showIgnoreQuoteAlert()}>IGNORE QUOTE</IQButton>
-				<IQButton color='orange' onClick={() => setShowAlert({ show: true, message: 'Are you sure you want to Accept this quote from vendor?', title: 'Accept Quote', type: 'accept' })}>ACCEPT QUOTE</IQButton>
+				<IQButton color='orange' onClick={() => setShowAlert({show: true, message: 'Are you sure you want to Accept this quote from vendor?', title: 'Accept Quote', type: 'accept'})}>ACCEPT QUOTE</IQButton>
 			</>}
 		</div>}
 		{showAlert?.show && <SUIAlert
@@ -464,17 +468,17 @@ const BudgetItem = memo(({ eventStatus, isReadonly, onRemoveItem, onReviseItem, 
 	</Stack>;
 });
 
-const AddWorkItem = memo(({ selected = [], onClose }: { selected?: Array<any>; onClose?: Function; }) => {
+const AddWorkItem = memo(({selected = [], onClose}: {selected?: Array<any>; onClose?: Function;}) => {
 	const dispatch = useAppDispatch();
 	const [close, setClose] = useState<boolean>(true);
 	const [search, setSearch] = useState<string>('');
 	const [filter, setFilter] = useState<Array<string>>([]);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
-	const { workItemDropdownData = [] } = useAppSelector(state => state.changeEventRequest);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
+	const {workItemDropdownData = []} = useAppSelector(state => state.changeEventRequest);
 
 	const currencyRenderer = useCallback((context: any) => {
-		if (!context.node.group)
-			return amountFormatWithSymbol(context.value)
+		if(!context.node.group)
+			return amountFormatWithSymbol(context.value);
 	}, []);
 
 	const handleFirstDataRendered = (event: any) => {
@@ -482,7 +486,7 @@ const AddWorkItem = memo(({ selected = [], onClose }: { selected?: Array<any>; o
 			event.api.forEachNode((node: any) => {
 				node.setSelected(!node.group && selected.includes(node.data?.id), false);
 			});
-		} catch (e) { console.log(e); }
+		} catch(e) {console.log(e);}
 	};
 
 	const handleSelectionChange = (grid: any) => {
@@ -492,7 +496,7 @@ const AddWorkItem = memo(({ selected = [], onClose }: { selected?: Array<any>; o
 
 	const handleFilter = (value: string) => {
 		let newList = [];
-		if (filter.indexOf(value) > -1) {
+		if(filter.indexOf(value) > -1) {
 			newList = filter.filter((division: string) => division !== value);
 		} else {
 			newList = filter.concat(value);
@@ -530,7 +534,7 @@ const AddWorkItem = memo(({ selected = [], onClose }: { selected?: Array<any>; o
 		type: 'rightAligned',
 		maxWidth: 120,
 		cellRenderer: useCallback((context: any) => {
-			if (!context.node.group)
+			if(!context.node.group)
 				return `${context.value?.toLocaleString('en-US') || 0}`;
 		}, [])
 	}, {
@@ -600,7 +604,7 @@ const AddWorkItem = memo(({ selected = [], onClose }: { selected?: Array<any>; o
 									}
 								}}
 							>
-								<List className='cer-add-work-filter' sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+								<List className='cer-add-work-filter' sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
 									<ListItem className='title-item'>Filter By</ListItem>
 									<ListItem disablePadding>
 										<ListItemButton
@@ -628,7 +632,7 @@ const AddWorkItem = memo(({ selected = [], onClose }: { selected?: Array<any>; o
 														edge='start'
 														tabIndex={-1}
 														disableRipple
-														inputProps={{ 'aria-labelledby': labelId }}
+														inputProps={{'aria-labelledby': labelId}}
 														checked={filter.indexOf(el.value) !== -1}
 													/>
 												</ListItemIcon>
@@ -669,14 +673,14 @@ const AddWorkItem = memo(({ selected = [], onClose }: { selected?: Array<any>; o
 						checkbox: true,
 						suppressCount: false,
 						innerRenderer: (context: any) => {
-							if (context.node.group) {
+							if(context.node.group) {
 								return context.value;
 							} else {
-								const { data } = context,
-									{ name, division, costCode, costType, description } = data;
+								const {data} = context,
+									{name, division, costCode, costType, description} = data;
 								return <>
 									{`${name} - ${division} - ${costCode} - ${costType}`}
-									<IQTooltip title={description} placement={'bottom'} sx={{ maxWidth: '35em' }}>
+									<IQTooltip title={description} placement={'bottom'} sx={{maxWidth: '35em'}}>
 										<div className='description'>{description}</div>
 									</IQTooltip>
 								</>;

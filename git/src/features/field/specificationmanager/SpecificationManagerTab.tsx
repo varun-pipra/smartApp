@@ -724,6 +724,7 @@ const SpecificationManagerTab = ({activeTab, ...props} : SpecManagerWindowProps)
           groupRowRendererParams: groupRowRendererParams,
           groupDisplayType: "groupRows",
           onFirstDataRendered: onFirstDataRendered,
+          activeTab: activeTab
         }}
       />
       <SMSpecBookDailog
