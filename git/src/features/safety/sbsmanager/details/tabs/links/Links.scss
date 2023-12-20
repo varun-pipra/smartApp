@@ -14,12 +14,27 @@
         justify-content: space-between;
         .left-Section {
             display: flex;
+            div {
+                .iq-button {
+                    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+                }
+            }
             .icon-section {
                 display: flex;
+                margin-left: 10px;
+                .ref-delete-btn {
+                    color: #333;
+                }
+                .Mui-disabled {
+                    color: #999;
+                }
             }
         }
         .right-section {
             display: flex;
+            .iqsearch-field .MuiInputBase-root {
+                border-left: 0px solid rgb(194, 194, 194) !important;
+            }
         }
     }
     .grid {

@@ -1,13 +1,26 @@
 #submenu-popover {
     .user-menu-items {
+        padding-top: 0px;
+        padding-bottom: 0px;
         .MuiListItem-root {
             padding-left: 10px;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            .MuiListItemSecondaryAction-root {
+                right: 10px;
+                top: 54%;
+            }
             .MuiTypography-root {
                 font-size: 15px;
                 color: rgb(51, 51, 51)
             }
             .MuiListItemIcon-root {
-                min-width: 40px;
+                min-width: 30px;
+                .common-icon-new-smart-item,
+                .common-icon-existing-smart-items {
+                    font-size: 22px;
+                    color: #666;
+                }
             }
         }
     }

@@ -10,7 +10,7 @@ import Links from './tabs/links/Links';
 import moment from "moment";
 import { AdditionalInfo } from "./tabs/additionalInfo/AdditionalInfo";
 
-import {getSBSDetailsById, getSBSGridList, setEnableSaveButton, setSaveDetailsObj} from "../operations/sbsManagerSlice"
+import {getSBSDetailsById, getSBSGridList, setDetailsData, setEnableSaveButton, setSaveDetailsObj} from "../operations/sbsManagerSlice"
 import { saveRightPanelData } from "../operations/sbsManagerAPI";
 import { getServer } from "app/common/appInfoSlice";
 const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
@@ -29,6 +29,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
   useEffect(() => {
 		// To show the grid data if GET Api fails
 		if (data?.uniqueid) {
+			dispatch(setDetailsData(data))
 			loadData(data.uniqueid);
 		}
 	}, [data?.uniqueid]);

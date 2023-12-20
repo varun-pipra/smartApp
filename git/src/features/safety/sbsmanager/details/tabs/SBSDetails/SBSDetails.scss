@@ -28,9 +28,9 @@
             }
         }
         .eventrequest-details-content {
-            display: grid; // grid-template-columns: repeat(3, 1fr);
+            display: grid;
             grid-gap: 1em 2em;
-            grid-template-columns: repeat(3, 30%); // margin-bottom: 2em;
+            grid-template-columns: repeat(3, 30%);
             padding: 25px 0px;
             .eventrequest-info-data-box {
                 .iq-customdate-cont {

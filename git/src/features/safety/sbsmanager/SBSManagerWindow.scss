@@ -79,6 +79,36 @@
             color: #666;
         }
     }
+    .SBSLinks .grid,
+    .sbs-referenceFile .grid {
+        .no-rows-msg {
+            border: 2px dotted #d9d9d9;
+            border-radius: 10px;
+            background-color: #fcfcfc;
+            .common-icon-No-Item-Available {
+                width: 250px;
+                height: 60px;
+                display: block;
+                background-image: none;
+            }
+            .common-icon-No-Item-Available:before {
+                content: "\eac2";
+                font-size: 60px;
+                color: #ccc;
+            }
+            .empty-rows-mark {
+                color: #999;
+                font-size: 15px;
+            }
+        }
+    }
+    .sbs-referenceFile .grid {
+        .no-rows-msg {
+            .common-icon-No-Item-Available:before {
+                content: "\ebf9";
+            }
+        }
+    }
 }
 
 .general-window-cls {

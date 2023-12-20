@@ -52,6 +52,8 @@ import {
   setSelectedNodes,
   setShowPhaseModel,
   setToast,
+  getSettingsCategoriesList,
+  getSbsSettings,
 } from "./operations/sbsManagerSlice";
 import { formatDate } from "utilities/datetime/DateTimeUtils";
 import _ from "lodash";
@@ -132,7 +134,7 @@ const SBSManagerWindow = (props: any) => {
   const appInfo = useAppSelector(getServer);
   const { detailsData } = useAppSelector((state) => state.sbsManager);
   const { currencySymbol } = useAppSelector((state) => state.appInfo);
-  const { sbsGridData, showSbsPanel, showPhaseModel, toast, sbsSettings } = useAppSelector(
+  const { sbsGridData, showSbsPanel, showPhaseModel, toast, sbsSettings,settingsCategoryList } = useAppSelector(
     (state) => state.sbsManager
   );
   const [gridSearchText, setGridSearchText] = useState("");
@@ -163,19 +165,20 @@ const SBSManagerWindow = (props: any) => {
     }
   }, [tradesData]);
   useEffect(() => {
-      if(sbsSettings) {
-          // dispatch(getCategoryDropDownOptions());
+      if(sbsSettings && sbsSettings?.categoryId && settingsCategoryList?.length > 0) {
+          let value = [...settingsCategoryList].find((rec:any) => rec.id === sbsSettings.categoryId)?.name;
+          dispatch(getCategoryDropDownOptions(value ?? "System Breakdown Structure Categories (SBS)"));
       }
-  },[sbsSettings])
+  },[sbsSettings, settingsCategoryList])
   useEffect(() => {
     if (appInfo) {
       dispatch(getSBSGridList());
       dispatch(fetchTradesData(appInfo));
       dispatch(getPhaseDropdownValues());
-      dispatch(getCategoryDropDownOptions());
+      // dispatch(getCategoryDropDownOptions("System Breakdown Structure Categories (SBS)"));
       dispatch(getAppsList());
-      // dispatch(getSettingsCategoriesList());
-      // dispatch(getSbsSettings());
+      dispatch(getSettingsCategoriesList());
+      dispatch(getSbsSettings());
     }
   }, [appInfo]);
 
@@ -242,6 +245,9 @@ const SBSManagerWindow = (props: any) => {
                   data: data.data,
                   appType: data.appType,
                 });
+                break;
+              case "smartitemlink":
+                console.log('smartitemlink data', data);
                 break;
             }
           }

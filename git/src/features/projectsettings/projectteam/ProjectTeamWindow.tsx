@@ -31,7 +31,7 @@ import {
 } from "app/common/appInfoSlice";
 import LeftToolbarButtons from "./projectteamcontent/toolbarbuttons/LeftToolbarButtons";
 import RightToolbarButtons from "./projectteamcontent/toolbarbuttons/RightToolbarButtons";
-import { memberPrivilegeApi, approveWorkersApi, memberInviteApi, deleteMemberApi, fetchPtGridDataList, getUserRTLSData } from "features/projectsettings/projectteam/operations/ptGridAPI";
+import { memberPrivilegeApi, approveWorkersApi, memberInviteApi, deleteMemberApi, fetchPtGridDataList, getUserRTLSData, fetchRegionsData } from "features/projectsettings/projectteam/operations/ptGridAPI";
 import { fetchRoleInfo, upsertUserDetails, checkIsRTLSIdExists } from "./operations/ptDataAPI";
 import {
 	fetchProjectTeamRolesData,
@@ -223,6 +223,8 @@ const ProjectTeamWindow = (props: any) => {
 	const [skillsAdded, setSkillsAdded] = React.useState(false);
 	const [companiesAdded, setCompaniesAdded] = React.useState(false);
 	const [gridSelectedRowIds, setGridSelectedRowIds] = React.useState<string[]>([]);
+	const [regionsData, setRegionsData] = React.useState([]);
+	const [regionsOriginalData, setRegionsOriginalData] = React.useState([]);
 	const safetyGroupOptions = [
 		{ text: "Safety Status", value: "safetyStatus", iconCls: 'common-icon-Safety-Onboarding-Flyer' },
 		{ text: "Policy Status", value: "policyStatus", iconCls: 'common-icon-orgconsole-safety-policies' },
@@ -1073,6 +1075,24 @@ const ProjectTeamWindow = (props: any) => {
 			/* appInfo?.fullScreen &&  */
 			setFullScreen(appInfo?.fullScreen || false);
 			setGridSafetyStatusFilters(checkSafetyStatusFilters());
+			if((appInfo?.orgId ?? false)) {
+				fetchRegionsData(appInfo)
+				.then((res: any) => {
+					if(res?.length) {
+						setRegionsOriginalData(res);
+						const mapData = (res || []).map((data: any) => ({
+								...data,
+								value: data.id,
+								label: data.name,
+								displayLabel : data.name
+						}));
+						setRegionsData(mapData);
+					}
+				})
+				.catch((error: any) => {
+					console.log("error", error);
+				});
+			};
 			searchKey.current = search ?? "";
 			setSearchText(search ?? "");
 			setGridGroupValue(group);
@@ -1958,6 +1978,26 @@ const ProjectTeamWindow = (props: any) => {
 
 	}
 
+	const handleOnRegionsChange = (selectedValues: any = [], params: any) => {
+		const selectedValuesStr = selectedValues.sort().toString();
+		let regionsFromParams: any = [];
+		(params.data.regions || []).forEach((region: any) => {
+			regionsFromParams.push(region.id);
+		});
+		const regionsIdsStr = regionsFromParams.sort().toString();
+		if (selectedValuesStr === regionsIdsStr) {
+			return;
+		};
+
+		let mappedRegions: any = [];
+		selectedValues.forEach((recId: any) => {
+			const regionObj = (regionsOriginalData|| []).find((rec: any) => rec.id == recId);
+			mappedRegions.push(regionObj);
+		});
+		mappedRegions = (mappedRegions|| [])?.filter((x:any) => x?.id);
+		validateAndPreparePayload("regions", params, { ...params.node.data, regions: mappedRegions });
+	};
+
 	const handleOnRolesChange = (selectedValues: any = [], params: any) => {
 		const selectedValuesStr = selectedValues.sort().toString();
 		let roleIdsFromParams: any = [];
@@ -2381,19 +2421,41 @@ const ProjectTeamWindow = (props: any) => {
 			field: "regions",
 			minWidth: 100,
 			cellRenderer: (params: any) => {
-				return <span className={`pt-${params?.column?.colId}`}
-					onClick={(event: any) => {
-						if (event.detail == 2) {
-							const currentRec = params?.data,
-								canEdit = canEditProjectTeamRec(currentRec, appInfo?.gblConfig, true);
-							if (canEdit) {
-								dispatch(setCurrentSelection(params?.data));
-								setDefaultTabId("userDetails");
-								setOpenRightPanel(true);
-							}
+				const canEdit = (appInfo?.orgId ?? false);
+					return (
+						<>
+						{canEdit &&
+							<div className={`pt-${params?.column?.colId}`}>
+								<SmartDropDown
+									options={regionsData || []}
+									dropDownLabel=""
+									isSearchField={true}
+									isMultiple={true}
+									selectedValue={(params.data && params?.data?.regions?.length) ? params?.data?.regions?.map((data: any) => data?.id || data?.name) : []}
+									isFullWidth
+									outSideOfGrid={true}
+									menuProps={classes.menuPaper}
+									sx={{ fontSize: '18px' }}
+									Placeholder={''}
+									showCheckboxes={true}
+									reduceMenuHeight={true}
+									showAddButton={false}
+									doTextSearch={true}
+									isCustomSearchField={false}
+									dynamicClose={dynamicClose}
+									insideGridCellEditor={true}
+									handleListClose={(value: any) => {
+										handleOnRegionsChange(value, params);
+									}}
+								/>
+							</div>
 						}
-					}}>
-						{params?.data?.regions?.map((obj: any) => obj.name)?.join(", ")}{" "}</span>;// class name is fieldname
+						{!canEdit && <span className={`pt-${params?.column?.colId}`}>
+							{params?.data?.regions &&
+								params?.data?.regions?.map((obj: any) => obj.name).join(", ")}{" "}
+						</span>}
+					</>
+					)
 			},
 		},
 		{
@@ -3650,6 +3712,7 @@ const ProjectTeamWindow = (props: any) => {
 			case "gpsTagId":
 			case "phone":
 			case "rtlsId":
+			case "regions":
 				updatedRec = { ...params.node.data, [colName]: params.newValue };
 				break;
 			default:
@@ -3697,6 +3760,7 @@ const ProjectTeamWindow = (props: any) => {
 			role: selectedRoles,
 			rtlsId: updatedRec?.rtlsId,
 			skills: updatedRec?.skills,
+			regions:updatedRec?.regions,
 			workcategory: workCategory,
 			skillMapping: {
 				skillIds: (updatedRec?.skills || []).map((o: any) => o.objectId),
@@ -3705,6 +3769,7 @@ const ProjectTeamWindow = (props: any) => {
 			id: updatedRec?.objectId,
 			isUser: true,
 		};
+		console.log("diosdfiodsiods", payload.regions);
 		const rtlsConnectorType = isLocalhost ? 1 : appInfo?.rtlsConnectorType;
 		if (colName === 'rtlsId' &&
 			updatedRec?.rtlsId !== params?.value &&
@@ -3810,6 +3875,13 @@ const ProjectTeamWindow = (props: any) => {
 					RTLSUser[0] ? obj = { ...data, ...prepareRTLSData(RTLSUser[0]) } : false;
 				}
 				obj = { ...obj, isOwner };
+				if((data?.regions ?? false) && regionsData?.length && data?.regions?.length) {
+					const mapFields = (data?.regions || [])?.map((item:any) => {
+						let obj = [...regionsData].find((rec:any) => rec.name === item.name);
+						return  obj ?? [];
+					});
+					obj = { ...data, ['regions'] : mapFields};
+				};
 				array.push(obj);
 			});
 			if (!_.isEqual(array, rowData)) {

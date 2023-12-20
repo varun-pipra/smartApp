@@ -1,6 +1,6 @@
 .phases-color {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
     cursor: pointer;
     &.selected {
@@ -10,12 +10,14 @@
         height: 100%;
         width: 100%;
         display: block;
-        &::before {
+        &:before {
             color: white;
             justify-content: center;
             display: flex;
             align-items: center;
             height: 100%;
+            font-size: 18px;
+            margin-left: 2px;
         }
     }
 }
@@ -52,7 +54,7 @@
     border-radius: 5px;
     .MuiTooltip-tooltip {
         background-color: white !important;
-        border-radius: 10px;
+        border-radius: 4px;
         margin-top: 8px !important;
         padding: 8px !important;
         box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);

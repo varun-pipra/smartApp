@@ -18,8 +18,16 @@
     }
     .type-field {
         flex: 1;
+        .MuiInputBase-root {
+            .MuiInputAdornment-root {
+                margin-right: 4px;
+            }
+        }
         .common-icon-Budgetcalculator:before {
             font-size: 20px;
+        }
+        .MuiSelect-select {
+            padding-bottom: 2px;
         }
     }
     .start-date-field,

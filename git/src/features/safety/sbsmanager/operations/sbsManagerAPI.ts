@@ -6,6 +6,7 @@ import {
   PhasesData,
   getGridDataById,
   gridDetailsByIdData,
+  GeneralSettingsCategories,
 } from "data/sbsManager/sbsData";
 import { appDependentFieldsData, appsData } from "data/sbsManager/appsList";
 import { sbsRequest } from "../utils";
@@ -60,12 +61,12 @@ export const fetchDataList = async () => {
   }
   return GridData;
 };
-export const fetchCategoryList = async () => {
+export const fetchCategoryList = async (name:any) => {
   let response;
   const appInfo: any = getServerInfo();
   if (!isLocalhost) {
     response = await fetch(
-      `${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetByName?name=System Breakdown Structure Categories (SBS)&sessionId=${appInfo?.sessionId}`
+      `${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetByName?name=${name}&sessionId=${appInfo?.sessionId}`
     );
     if (!response.ok) {
       const message = `API Request Error (${moduleName}): ${response.status}`;
@@ -291,15 +292,15 @@ export const fetchSettingsCategoriesList = async () => {
   const appInfo: any = getServerInfo();
   if (!isLocalhost) {
     response = await fetch(
-      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/category?sessionId=${appInfo?.sessionId}`
+      `${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetListManagerByCategories?projectId=${appInfo?.projectId}&page=1&start=0&limit=25`
     );
     if (!response.ok) {
       const message = `API Request Error (${moduleName}): ${response.status}`;
       throw new Error(message);
     }
     const responseData = await response.json();
-    return responseData?.data || [];
-  } else return { success: true };
+    return responseData?.values || [];
+  } else return GeneralSettingsCategories?.values || [];
 };
 export const fetchSbsSettings = async () => {
   let response;
@@ -313,6 +314,10 @@ export const fetchSbsSettings = async () => {
       throw new Error(message);
     }
     const responseData = await response.json();
-    return responseData?.data || [];
-  } else return { success: true };
+    return responseData?.[0] || {};
+  } else return {
+        "id": 1,
+        "categoryId": 1,
+        "projectId": "6e83792a-3e66-49d6-9442-c6a1e918b48f"
+    };
 };

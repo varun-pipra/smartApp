@@ -593,3 +593,21 @@ export const unBlockUser = async (appInfo: any, payload: any, callback: any) => 
 
 	callback && callback(responseData);
 };
+
+export const fetchRegionsData = async (appInfo: any) => {
+	let response;
+	if (!isLocalhost) {
+		let id = appInfo?.orgId ?? appInfo?.projectId;
+		let url = `${appInfo?.gblConfig?.saxhome}/api/orgconsoles/${id}/regions?globalId=${appInfo?.gblConfig?.globalID}`;
+		response = await fetch(`${appInfo?.hostUrl}/Enterprisedesktop/SAX/API/EndPoint?url=${url}`);
+	} else {
+			response = await fetch(`${localServer}projectteam/GetRegions.json`);
+	}
+	if (!response.ok) {
+		const message = `API Request Error (${moduleName}): ${response.status}`;
+		throw new Error(message);
+	}
+	const responseData = await response.json();
+
+	return (responseData?.values || []);
+};

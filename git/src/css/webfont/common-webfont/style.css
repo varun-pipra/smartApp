@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?hyrp6u');
-  src:  url('fonts/common-webfont.eot?hyrp6u#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?hyrp6u') format('truetype'),
-    url('fonts/common-webfont.woff?hyrp6u') format('woff'),
-    url('fonts/common-webfont.svg?hyrp6u#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?xi9q8s');
+  src:  url('fonts/common-webfont.eot?xi9q8s#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?xi9q8s') format('truetype'),
+    url('fonts/common-webfont.woff?xi9q8s') format('woff'),
+    url('fonts/common-webfont.svg?xi9q8s#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-add-external-url:before {
+  content: "\ec65";
+}
+.common-icon-existing-smart-items:before {
+  content: "\ec66";
+}
+.common-icon-new-smart-item:before {
+  content: "\ec67";
+}
+.common-icon-rule-based-linking:before {
+  content: "\ec68";
+}
 .common-icon-forward1:before {
   content: "\ec60";
 }

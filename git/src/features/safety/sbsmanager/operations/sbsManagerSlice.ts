@@ -65,10 +65,10 @@ export const getPhaseDropdownValues = createAsyncThunk<any>(
     return response;
   }
 );
-export const getCategoryDropDownOptions = createAsyncThunk<any>(
+export const getCategoryDropDownOptions = createAsyncThunk<any, any>(
   "categoryDropDownOptions",
-  async () => {
-    const response = await fetchCategoryList();
+  async (name:any) => {
+    const response = await fetchCategoryList(name);
     return response;
   }
 );
@@ -237,7 +237,19 @@ export const SBSManagerSlice = createSlice({
       })
       .addCase(getSettingsCategoriesList.fulfilled, (state, action) => {
         state.loading = false;
-        state.settingsCategoryList = action.payload;
+        const categories = action.payload;
+        let data:any  = categories?.filter((item:any) => {
+            let index = item?.listCategories?.findIndex((rec:any) => rec.name === 'Planner');
+            if(index !== -1) {
+              return item;
+            };
+        });
+        data = data?.filter((x:any) => x?.listCategories).map((item:any) => ({
+          ...item, 
+          label:item.name,
+          value: item.id
+        }));
+        state.settingsCategoryList = data || [];
       })
       .addCase(getSettingsCategoriesList.rejected, (state) => {
         state.loading = false;

@@ -10,6 +10,7 @@ import IQSearch from 'components/iqsearchfield/IQSearchField';
 import SUIGrid from 'sui-components/Grid/Grid';
 import { formatDate } from 'utilities/datetime/DateTimeUtils';
 import IQSubMenuButton from 'components/iqmenu/IQSubMenuButton';
+import { postMessage } from "app/utils";
 
 const AddLinksData = [
 	{
@@ -17,7 +18,7 @@ const AddLinksData = [
 		"value": "New Smart Item",
 		"id": 1,
 		"type": "Custom",
-		iconCls: "common-icon-sketch",
+		iconCls: "common-icon-new-smart-item",
 		children: [],
 		// "children": [
 		// 	{
@@ -107,7 +108,7 @@ const AddLinksData = [
 		// 	iconCls: "common-icon-sketch",
 		// 	"type": "custom"
 		// }],
-		iconCls: "common-icon-sketch",
+		iconCls: "common-icon-existing-smart-items",
 	},
 	// {
 	// 	"text": "Rule Based linking",
@@ -184,23 +185,35 @@ const Links = () => {
 	const [gridData, setGridData] = useState<any>([]);
 
 	useEffect(()=>{
-		setLinksData(detailsData?.links)
-		setGridData(detailsData?.links)
+		setLinksData(detailsData?.links?.length ? detailsData?.links : [])
+		setGridData(detailsData?.links?.length ? detailsData?.links : [])
 	},[detailsData])
 	useEffect(() => {
 		const addLinksOptionsCopy = [...addLinksOptions];
 		let newSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "New Smart Item");
 		let existingSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "Existing Smart Items");
 		
-		const apps = appsList?.map((obj:any) => {return {
+		const appsForNew = appsList?.map((obj:any) => {return {
+				isNew:true,
 				"text": obj?.name,
 				"value":  obj?.name,
 				"id": obj?.id,
 				iconCls: obj?.thumbnailUrl,
-				"type": "custom" }
+				"appid":obj?.objectId,
+				"type": "Document"
+			}
 		});
-		newSmartItem.children = apps
-		existingSmartItem.children = apps
+		const appsForExisting = appsList?.map((obj:any) => {return {
+			isNew:false,
+			"text": obj?.name,
+			"value":  obj?.name,
+			"id": obj?.id,
+			iconCls: obj?.thumbnailUrl,
+			"appid":obj?.objectId,
+			"type": "Document" }
+		});
+		newSmartItem.children = appsForNew
+		existingSmartItem.children = appsForExisting
 		setAddLinksOptions(addLinksOptionsCopy);
 	}, [appsList]);
 
@@ -322,13 +335,13 @@ const Links = () => {
 			value = FilterBy(gridDataCopy, filterKeyValue);
 			if (searchText !== "") {
 				let SearchGridData = SearchBy(value);
-				setGridData(SearchGridData);
+				setGridData([...SearchGridData]);
 			} else {
 				setGridData(value);
 			};
 		} else if (searchText !== "") {
 			let SearchGridData = SearchBy(gridDataCopy);
-			setGridData(SearchGridData);
+			setGridData([...SearchGridData]);
 		} else {
 			setGridData([...gridDataCopy]);
 		};
@@ -339,7 +352,7 @@ const Links = () => {
 		const firstResult = gridData.filter((obj: any) => {
 			return filteredIds?.includes(obj?.id) && JSON.stringify(obj)?.toLowerCase()?.includes(searchText?.toLowerCase());
 		});
-		return firstResult;
+		return firstResult || [];
 	};
 
 	const FilterBy = (gridData: any, filterValue: any) => {
@@ -358,9 +371,23 @@ const Links = () => {
 		return filteredData;
 	};
 	const handleMenu = (e:any) => {
-		console.log("Menu Item Selected", e);
+		let sendMsg = {
+			event: "common",
+			body: {
+				evt: "smartitemlink",
+				isNew: e.isNew,
+				data:{
+					"Id": e.id,
+					"smartAppId": e.appid,
+					"Text": e.text,
+					"Type": e.type,
+				}
+			}
+		}
+		postMessage(sendMsg);
+		console.log("Menu Item Selected", sendMsg);
 	};
-	const handleSubMenu = (e:any) => {
+	const handleSubMenu = (e:any) => {		
 		console.log("Sub Menu Item Selected", e);
 	};
 	return (

@@ -94,6 +94,7 @@ const BudgetManagerWindow = (props: any) => {
 						switch (data.event || data.evt) {
 							case "hostAppInfo":
 								const structuredData = data.data;
+								console.log("structuredData", structuredData, data)
 								dispatch(setCostCodeList(structuredData?.DivisionCost?.CostCode));
 								// dispatch(setCostTypeList(structuredData?.DivisionCost?.CostType));
 								dispatch(setCostUnitList(structuredData?.DivisionCost?.CostUnit));

@@ -13,7 +13,7 @@ import SmartDropDown from "components/smartDropdown";
 import "./SBSCategoryRightPanel.scss";
 import { UpdateSettings } from "../operations/sbsManagerAPI";
 import { useAppDispatch, useAppSelector } from "app/hooks";
-import { getSBSGridList } from "../operations/sbsManagerSlice";
+import { getSBSGridList, getSbsSettings } from "../operations/sbsManagerSlice";
 const useStyles: any = makeStyles((theme: any) =>
 	createStyles({
 		menuPaper: {
@@ -26,42 +26,27 @@ const SBSCategoryRightPanel = (props:any) => {
   const dispatch = useAppDispatch();
   const {handleSelectedCategory,handleSbsCategoryChange, ...rest} = props;
   const classes = useStyles();
-  const { settingsCategoryList } = useAppSelector((state) => state.sbsManager);
-  const [selectedCategory, setSelectedCategory] = React.useState('System Breakdown Structure Categories');
-
+  const { settingsCategoryList, sbsSettings } = useAppSelector((state) => state.sbsManager);
+  const [selectedCategory, setSelectedCategory] = React.useState("");
   React.useEffect(() => {
-    // Need to setup the category values;
-  },[settingsCategoryList])
-
-  const CategoriesOptions = [{
-    id: 1,
-    name: "System Breakdown Structure Categories",
-    label: "System Breakdown Structure Categories",
-    value: "System Breakdown Structure Categories"
-  },
-  {
-    id: 2,
-    name: "User Defined System Breakdown List 1",
-    label:"User Defined System Breakdown List 1",
-    value: "User Defined System Breakdown List 1",
-  },
-  {
-    id: 3,
-    name: "User Defined System Breakdown List 2",
-    label:"User Defined System Breakdown List 2",
-    value: "User Defined System Breakdown List 2",
-  }]
+      if(sbsSettings.categoryId ) {
+        setSelectedCategory([...settingsCategoryList].find((rec:any) => rec.id === sbsSettings.categoryId)?.id ?? ""); 
+      } else {
+        setSelectedCategory([...settingsCategoryList].find((rec:any) => rec.name === "System Breakdown Structure Categories (SBS)")?.id ?? "");
+      }
+  },[sbsSettings])
   const onCategoryItemClick = (type:string) => {
       handleSelectedCategory(type);
   };
   const handleCategoryOnChange = (val:string) => {
     handleSbsCategoryChange(val);
     setSelectedCategory(val);
-    let payload = {"details":{ "id": null, "categoryId": 12 }};
+    let payload = {"details":{ "id": null, "categoryId": val }};
     UpdateSettings(payload)
       .then((res: any) => {
           if(res) {
             dispatch(getSBSGridList());
+            dispatch(getSbsSettings());
           }
       })
       .catch((error: any) => {
@@ -92,14 +77,14 @@ const SBSCategoryRightPanel = (props:any) => {
             </ListItem>
             <ListItem className="generalSettings-listitem dropdown">
             <SmartDropDown
-            options={CategoriesOptions || []}
+            options={settingsCategoryList || []}
             outSideOfGrid={true}
             isSearchField={true}
             isFullWidth
             Placeholder={"Select"}
             selectedValue={[selectedCategory]}
             menuProps={classes.menuPaper}
-            handleChange={(value: any) => handleCategoryOnChange(value?.[0])}
+            handleChange={(value: any) => handleCategoryOnChange(value)}
           />
           </ListItem>
             <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('managerSbs')}>
