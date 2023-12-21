@@ -13,7 +13,7 @@ import { useAppSelector, useAppDispatch } from 'app/hooks';
 import './ClientContractsToolbar.scss';
 import DeleteIcon from 'resources/images/common/Delete.svg'
 
-import { getServer, getAppWindowMaximize } from 'app/common/appInfoSlice';
+import { getServer, getAppWindowMaximize, getShowSettingsPanel, setShowSettingsPanel } from 'app/common/appInfoSlice';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import IconMenu from 'components/iqsearchfield/iqiconbuttonmenu/IQIconButtonMenu';
 import IQSearch from "components/iqsearchfield/IQSearchField";
@@ -39,6 +39,10 @@ import { isUserGCForCC } from 'features/clientContracts/utils';
 import { activateClientContract, lockAndPostContract } from '../../stores/CCButtonActionsAPI';
 import _ from "lodash";
 import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
+import {List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/material';
+import SUIDrawer from 'sui-components/Drawer/Drawer';
+import IQToggle from 'components/iqtoggle/IQToggle';
+
 
 const ClientContractsToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -52,6 +56,8 @@ const ClientContractsToolbar = (props: any) => {
 	const [alert, setAlert] = React.useState<any>({ show: false, message: '', type: '' })
 	const [disablePostContract, setDisablePostContract] = React.useState<boolean>(true);
 
+	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
+	const [toggleChecked, setToggleChecked] = React.useState(true);
 	const groupOptions = [
 		{ text: "Client Company", value: "client.name" },
 		{ text: appInfo && isUserGCForCC(appInfo) ? "Status" : 'Response Status', value: "status" },
@@ -166,7 +172,10 @@ const ClientContractsToolbar = (props: any) => {
 		</div>
 		})
 	}
-
+	
+	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setToggleChecked(event.target.checked)
+	};
 	return <Stack direction='row' className='toolbar-root-container-client-contracts'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -332,13 +341,73 @@ const ClientContractsToolbar = (props: any) => {
 				<IconButton
 					className='settings-button'
 					aria-label="settings budgetmanager"
-				// onClick={() => dispatch(setShowSettingPopup2(true))}
+					onClick={() => dispatch(setShowSettingsPanel(true))}
 				>
 					<TableRows />
 				</IconButton>
 			</IQTooltip>
 
 		</div>
+		{showSettingsPanel ? 
+		<SUIDrawer
+				  PaperProps={{
+					style: {
+					borderRadius: "4px",
+					boxShadow: "-6px 0px 10px -10px",
+					border: "1px solid rgba(0, 0, 0, 0.12) !important",
+					position: "absolute",
+					top: '95px',
+					bottom: '0px',
+					width: '25em',
+					height: 'inherit',
+					overflow: 'auto'
+					},
+				  }}
+				anchor='right'
+				variant='permanent'
+				elevation={8}
+				open={false}
+			>
+				<Box>
+					<Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
+						<IconButton	className="Close-btn" aria-label="Close Right Pane"
+							onClick={() => dispatch(setShowSettingsPanel(false))}
+						>
+							<span className="common-icon-Declined"></span>
+						</IconButton>
+					</Stack>
+					<Stack className='General-settings'>
+						<Stack className='generalSettings-Sections'>
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Settings</Typography>
+							<List className='generalSettings-list'
+								sx={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									alignSelf: 'center',
+									textWrap: 'nowrap'
+								}}
+							>
+							<ListItem className='generalSettings-listitem'>
+								<ListItemText primary="Blockchain Two Factor Authentication" className='generalsettingtext' />
+								<ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
+										<span className="common-icon-Project-Info"></span>
+								</ListItemIcon>
+								<ListItemIcon>
+									<IQToggle
+										checked={toggleChecked}
+										switchLabels={['ON', 'OFF']}
+										onChange={(e) => { handleToggleChange(e) }}
+										edge={'end'}
+									/>
+								</ListItemIcon>
+							</ListItem>
+						</List>
+				</Stack>
+			</Stack>
+			</Box>
+		</SUIDrawer>
+		:null}
 		{alert?.show && <SUIAlert
 			open={alert?.show}
 			contentText={<span>{alert?.message}</span>}

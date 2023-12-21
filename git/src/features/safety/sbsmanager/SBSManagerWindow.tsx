@@ -54,6 +54,7 @@ import {
   setToast,
   getSettingsCategoriesList,
   getSbsSettings,
+  getSBSDetailsById
 } from "./operations/sbsManagerSlice";
 import { formatDate } from "utilities/datetime/DateTimeUtils";
 import _ from "lodash";
@@ -66,68 +67,36 @@ import SBSManagePhasesModal from "features/projectsettings/projectteam/projectte
 import PhasesGridList from "./phasesGridList/PhasesGridList";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import IQTooltip from "components/iqtooltip/IQTooltip";
-import { AddFiles } from "./operations/sbsManagerAPI";
+import { AddFiles , saveLinksData} from "./operations/sbsManagerAPI";
+import { findAndUpdateFiltersData } from "./utils";
 
 const SBSManagerWindow = (props: any) => {
-  const filterOptions = useMemo(() => {
+  let filterOptions = useMemo(() => {
     var filterMenu = [
       {
         text: "Category",
         value: "category",
         key: "category",
+        keyValue:"category",
         children: { type: "checkbox", items: [] },
       },
       {
         text: "Trade",
         value: "trade",
         key: "trade",
+        keyValue:"trades",
         children: { type: "checkbox", items: [] },
       },
       {
         text: "Phase",
         value: "phase",
         key: "phase",
+        keyValue:"phase",
         children: { type: "checkbox", items: [] },
       },
     ];
     return filterMenu;
   }, []);
-  const GetUniqueList = (data: any, key?: any) => {
-    let unique: any = [];
-    data?.map((x: any) =>
-      unique?.filter((a: any) => a?.[key] === x?.[key])?.length > 0
-        ? null
-        : unique.push(x)
-    );
-    unique?.sort((a: any, b: any) =>
-      a?.[key]?.localeCompare(b?.[key], undefined, { numeric: true })
-    );
-    return unique;
-  };
-  const findAndUpdateFiltersData = (
-    data: any,
-    key: string,
-    nested?: boolean,
-    nestedKey?: any
-  ) => {
-    const formattedData = data?.map((rec: any) => {
-      if (nested)
-        return {
-          text: rec?.[key]?.[nestedKey],
-          value: rec?.[key]?.[nestedKey],
-          id: rec?.[key]?.id,
-        };
-      else
-        return {
-          text: rec?.[key] === "" ? "NA" : rec?.[key] ?? rec?.["name"],
-          value: rec?.[key] === "" ? "NA" : rec?.[key] ?? rec?.["name"],
-          id: rec?.id,
-        };
-    });
-    const filtersCopy: any = [...filterOptions];
-    let currentItem: any = filtersCopy.find((rec: any) => rec?.value === key);
-    currentItem.children.items = GetUniqueList(formattedData, "text");
-  };
   const dispatch = useAppDispatch();
   const [localhost] = React.useState(isLocalhost);
   const [appData] = React.useState(appInfoData);
@@ -150,8 +119,10 @@ const SBSManagerWindow = (props: any) => {
   const [openRightPanel, setOpenRightPanel] = useState(false);
   const [currentRowSelection, setCurrentRowSelection] = useState<any>(null);
   const [driveFileQueue, setDriveFileQueue] = useState<any>([]);
+  const [smartItemLink, setSmartItemLink] = useState<any>({});
   const [toastMessage, setToastMessage] = useState<string>("");
   const [isRightPanelOpened, setIsRightPanelOpened] = React.useState(false);
+  const [filters, setFilters] = useState<any>([]);
   const isAppMaximized = useAppSelector(
     (state) => state.appInfo.isAppMaximized
   );
@@ -160,16 +131,13 @@ const SBSManagerWindow = (props: any) => {
     setShowManagePhasesModal(showPhaseModel);
   }, [showPhaseModel]);
   useEffect(() => {
-    if (tradesData?.length && filterOptions?.length) {
-      findAndUpdateFiltersData(tradesData, "trade");
-    }
-  }, [tradesData]);
-  useEffect(() => {
       if(sbsSettings && sbsSettings?.categoryId && settingsCategoryList?.length > 0) {
           let value = [...settingsCategoryList].find((rec:any) => rec.id === sbsSettings.categoryId)?.name;
           dispatch(getCategoryDropDownOptions(value ?? "System Breakdown Structure Categories (SBS)"));
-      }
-  },[sbsSettings, settingsCategoryList])
+      } else if(sbsSettings?.length === 0) {
+        dispatch(getCategoryDropDownOptions("System Breakdown Structure Categories (SBS)"));
+      };
+  },[sbsSettings, settingsCategoryList]);
   useEffect(() => {
     if (appInfo) {
       dispatch(getSBSGridList());
@@ -186,13 +154,15 @@ const SBSManagerWindow = (props: any) => {
     if (sbsGridData.length > 0) {
       setModifiedList(sbsGridData);
       setRowData(sbsGridData);
-      findAndUpdateFiltersData(sbsGridData, "phase", true, "name");
-      findAndUpdateFiltersData(sbsGridData, "category", true, "name");
+      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "phase", true, "name"));
+      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "category", true, "name"));
+      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "trades", true, "name"));
     } else if (sbsGridData.length === 0) {
       setModifiedList([]);
       setRowData([]);
-      findAndUpdateFiltersData(sbsGridData, "phase", true, "name");
-      findAndUpdateFiltersData(sbsGridData, "category", true, "name");
+      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "phase", true, "name"));
+      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "category", true, "name"));
+      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "trades", true, "name"));
     }
   }, [sbsGridData]);
   useEffect(() => {
@@ -248,6 +218,7 @@ const SBSManagerWindow = (props: any) => {
                 break;
               case "smartitemlink":
                 console.log('smartitemlink data', data);
+                setSmartItemLink(data.body.data)
                 break;
             }
           }
@@ -274,8 +245,24 @@ const SBSManagerWindow = (props: any) => {
     console.log("structuredFiles drive", structuredFiles);
     AddFiles(detailsData?.id, structuredFiles, (response: any) => {
       console.log("respone in drive", response);
+      dispatch(getSBSDetailsById(detailsData?.id))
     });
   };
+
+  const saveSmartItemLink = (smartData: any) => {
+    let payload =  { "details":{ "sbsId": detailsData?.id, "LinkType":0, "Link": smartData.smartAppId}}
+      saveLinksData(payload, (response: any) => {
+      dispatch(getSBSDetailsById(detailsData?.id));
+      setSmartItemLink({});
+    });
+  };
+
+  useEffect(() => {
+    if (smartItemLink) {
+      saveSmartItemLink(smartItemLink);
+    }
+  }, [smartItemLink]);
+
   useEffect(() => {
     if (driveFileQueue?.length > 0) {
       console.log("driveFileQueue", driveFileQueue);
@@ -459,9 +446,9 @@ const SBSManagerWindow = (props: any) => {
   const handleSbsCategoryChange = (val: string) => {
     console.log("Category val", val);
   };
-  const onFilterChange = useCallback((filterValues: any) => {
+  const onFilterChange = (filterValues: any) => {
     setSelectedFilters(filterValues);
-  }, []);
+  };
   const onGridSearch = (searchTxt: string) => {
     setGridSearchText(searchTxt);
   };
@@ -472,6 +459,7 @@ const SBSManagerWindow = (props: any) => {
   const searchAndFilter = (list: any) => {
     return list.filter((item: any) => {
       const tradeNames = item.trades?.map((x: any) => x?.name?.toString());
+      const phaseNames = item.phase?.map((x: any) => x?.name?.toString());
       const regex = new RegExp(gridSearchText, "gi");
       const searchVal = Object.keys(item).some((field) => {
         if (Array.isArray(item[field])) {
@@ -496,7 +484,7 @@ const SBSManagerWindow = (props: any) => {
             selectedFilters.category?.indexOf(item.category.name) > -1) &&
           (_.isEmpty(selectedFilters.phase) ||
             selectedFilters.phase?.length === 0 ||
-            selectedFilters.phase?.indexOf(item.phase.name) > -1) &&
+            _.intersection(selectedFilters.phase, phaseNames).length > 0) &&
           (_.isEmpty(selectedFilters.trade) ||
             selectedFilters.trade?.length === 0 ||
             _.intersection(selectedFilters.trade, tradeNames).length > 0));
@@ -598,7 +586,7 @@ const SBSManagerWindow = (props: any) => {
                   { text: "Trade", value: "trade" },
                   { text: "Phase", value: "phase" },
                 ],
-                filterOptions: filterOptions,
+                filterOptions: filters,
                 onGroupChange: onGroupingChange,
                 onFilterChange: onFilterChange,
                 onSearchChange: onGridSearch,

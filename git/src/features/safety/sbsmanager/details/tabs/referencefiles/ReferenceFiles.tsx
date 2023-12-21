@@ -19,7 +19,8 @@ import {
   deleteFiles,
 } from "features/safety/sbsmanager/operations/sbsManagerAPI";
 import { getSBSDetailsById } from "features/safety/sbsmanager/operations/sbsManagerSlice";
-
+import _ from "lodash";
+import { findAndUpdateFiltersData } from "features/safety/sbsmanager/utils";
 const referenceData = [
   {
     id: 1,
@@ -45,6 +46,7 @@ const filterOptions = [
     text: "Phase",
     value: "phase",
     key: "phase",
+    keyValue: "phase",
     children: {
       type: "checkbox",
       items: [],
@@ -52,8 +54,9 @@ const filterOptions = [
   },
   {
     text: "Type",
-    value: "type",
-    key: "type",
+    value: "folderType",
+    key: "folderType",
+    keyValue: "folderType",
     children: {
       type: "checkbox",
       items: [],
@@ -114,54 +117,34 @@ const ReferenceFiles =(props: any) => {
   const [disableDownloadBtn, setDisableDownloadBtn] = useState<boolean>(true);
   const [disableDeleteBtn, setDisableDeleteBtn] = useState<boolean>(true);
   const [selected, setSelected] = useState<any>();
-  const [searchText, setSearchText] = useState<any>();
-  const [filterKeyValue, setFilterKeyValue] = useState<any>([]);
+  const [gridSearchText, setGridSearchText] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState<any>();
+  const [modifiedList, setModifiedList] = useState<Array<any>>([]);
   const [filters, setFilters] = React.useState<any>(filterOptions);
   const dispatch = useAppDispatch();
 
   var tinycolor = require("tinycolor2");
   const [gridData, setGridData] = useState<any>([]);
-
+  const [refFiles, setRefFiles] = useState<any>([]);
   React.useEffect(() => {
-    setGridData(detailsData?.referencefiles ?? []);
-  }, [detailsData?.referencefiles]);
-
-  useEffect(() => {
-    if (gridData?.length > 0) {
-      const filtersCopy = [...filters];
-      let phaseItem = filtersCopy.find((rec: any) => rec?.value === "phase");
-      let typeItem = filtersCopy.find((rec: any) => rec?.value === "type");
-      const uniqueTypes = new Set();
-      const uniqueTypes2 = new Set();
-      const newArray = gridData?.reduce((acc: any, item: any) => {
-        if (!uniqueTypes.has(item.phase)) {
-          uniqueTypes.add(item.phase);
-          acc.push({
-            text: item.phase,
-            id: item.phase,
-            key: item.phase,
-            value: item.phase,
-          });
-        }
-        return acc;
-      }, []);
-      const newArray2 = gridData?.reduce((acc: any, item: any) => {
-        if (!uniqueTypes2.has(item.type)) {
-          uniqueTypes2.add(item.type);
-          acc.push({
-            text: item.type,
-            id: item.type,
-            key: item.type,
-            value: item.type,
-          });
-        }
-        return acc;
-      }, []);
-      phaseItem.children.items = newArray;
-      typeItem.children.items = newArray2;
-      setFilters(filtersCopy);
+    if((detailsData?.referencefiles?.length ?? [])) {
+      const data: any = (detailsData?.referencefiles || []).map((item: any) => ({
+				...item,
+        phaseValue : item.phase.name === null || item.phase.name === undefined || item.phase.name === '' ? 'NA' : item.phase.name,
+        creationDateValue : item?.createdDate ? formatDate(item?.createdDate) : "",
+        folderType : (typeof item?.folderType === 'number') ? item?.folderType?.toString() : item?.folderType
+			}));
+      setModifiedList(data);
+      setGridData(data);
+      setFilters(findAndUpdateFiltersData(filterOptions, data, "phase", true, "name"));
+      setFilters(findAndUpdateFiltersData(filterOptions, data, "folderType"));
+    } else if((detailsData?.referencefiles?.length === 0 ?? false)){
+      setModifiedList([]);
+      setGridData([]);
+      setFilters(findAndUpdateFiltersData(filterOptions, detailsData?.referencefiles, "phase", true, "name"));
+      setFilters(findAndUpdateFiltersData(filterOptions, detailsData?.referencefiles, "folderType"));
     }
-  }, [gridData]);
+  }, [detailsData?.referencefiles]);
 
   const headers = useMemo(
     () => [
@@ -226,19 +209,22 @@ const ReferenceFiles =(props: any) => {
         minWidth: 250,
         suppressMenu: true,
         cellRenderer: (params: any) => {
+          const phase = params.data?.phase?.name;
+          const buttonStyle = {
+            backgroundColor: params.data?.phase?.color ?? "red",
+            color: "#fff",
+            alignItems: "center",
+          };
+  
           return (
-            <Button
-              disabled
-              variant="contained"
-              style={{
-                backgroundColor: `#fd8d27`,
-                color: tinycolor(`#fd8d27`).isDark() ? "white" : "black",
-              }}
-              className="phaseButton"
-            >
-              <span className="common-icon-phase"></span>
-              {params?.value}
-            </Button>
+            <>
+              {phase ? (
+                <Button style={buttonStyle} className="phase-btn">
+                  <span className="common-icon-phase"></span>
+                  {phase}
+                </Button>
+              ) : 'NA'}
+            </>
           );
         },
       },
@@ -289,7 +275,9 @@ const ReferenceFiles =(props: any) => {
     deleteFiles(
       detailsData?.id,
       selected?.map((file: any) => file.id),
-      (response: any) => {}
+      (response: any) => {
+        dispatch(getSBSDetailsById(detailsData?.id))
+      }
     );
   };
   const rowSelected = (sltdRows: any) => {
@@ -305,54 +293,47 @@ const ReferenceFiles =(props: any) => {
   };
 
   useEffect(() => {
-    const gridDataCopy = [...gridData];
-    let value: any;
-    if (filterKeyValue && Object.keys(filterKeyValue)?.length > 0) {
-      value = FilterBy(gridDataCopy, filterKeyValue);
-      if (searchText !== "") {
-        let SearchGridData = SearchBy(value);
-        setGridData(SearchGridData);
-      } else {
-        setGridData(value);
-      }
-    } else if (searchText !== "") {
-      let SearchGridData = SearchBy(gridDataCopy);
-      setGridData(SearchGridData);
-    } else {
-      setGridData([...gridDataCopy]);
+    if (gridSearchText || selectedFilters) {
+      const data = searchAndFilter([...modifiedList]);
+      setGridData(data);
     }
-  }, [filterKeyValue, searchText, gridData]);
-
-  const SearchBy = (gridData: any) => {
-    const filteredIds = gridData?.map((obj: any) => obj?.id);
-    const firstResult = gridData.filter((obj: any) => {
-      return (
-        filteredIds?.includes(obj?.id) &&
-        JSON.stringify(obj)?.toLowerCase()?.includes(searchText?.toLowerCase())
-      );
+  }, [gridSearchText, selectedFilters]);
+  
+  const searchAndFilter = (list: any) => {
+    return list.filter((item: any) => {
+      const regex = new RegExp(gridSearchText, "gi");
+      const searchVal = Object.keys(item).some((field) => {
+        if (Array.isArray(item[field])) {
+          if (item[field]?.length > 0) {
+            for (let i = 0; i < item[field].length; i++) {
+              return Object.keys(item?.[field]?.[i])?.some((objField) => {
+                return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
+              });
+            }
+          } else return false;
+        } else if ((item[field] ?? false) && typeof item[field] === "object") {
+          return Object.keys(item?.[field])?.some((objField) => {
+            return item?.[field]?.[objField]?.toString()?.match(regex);
+          });
+        } else return item?.[field]?.toString()?.match(regex);
+      });
+      const filterVal =
+        _.isEmpty(selectedFilters) ||
+        (!_.isEmpty(selectedFilters) &&
+          (_.isEmpty(selectedFilters.folderType) ||
+            selectedFilters.folderType?.length === 0 ||
+            selectedFilters.folderType?.indexOf(item.folderType) > -1) &&
+          (_.isEmpty(selectedFilters.phase) ||
+            selectedFilters.phase?.length === 0 ||
+            selectedFilters.phase?.indexOf(item.phaseValue) > -1));
+      return searchVal && filterVal;
     });
-    return firstResult;
   };
-  const FilterBy = (gridData: any, filterValue: any) => {
-    const gridDataCopy = gridData;
-    let filteredData: any = gridDataCopy;
-    const keys = Object.keys(filterValue);
-    const lastvalue = keys.slice(-1).pop();
-
-    if (lastvalue == "all") {
-      filteredData = gridData;
-    }
-    if (filterValue?.type?.length > 0) {
-      filteredData = filteredData.filter((item: any) =>
-        filterValue?.type?.includes(item?.type)
-      );
-    }
-    if (filterValue?.phase?.length > 0) {
-      filteredData = filteredData.filter((item: any) =>
-        filterValue?.phase?.includes(item?.phase)
-      );
-    }
-    return filteredData;
+  const onFilterChange = (filterValues: any) => {
+    setSelectedFilters(filterValues);
+  };
+  const onGridSearch = (searchTxt: string) => {
+    setGridSearchText(searchTxt);
   };
 
   return (
@@ -406,12 +387,8 @@ const ReferenceFiles =(props: any) => {
             filters={filters}
             filterHeader=""
             showGroups={false}
-            onSearchChange={(text: string) => {
-              setSearchText(text);
-            }}
-            onFilterChange={(filters: any) => {
-              setFilterKeyValue(filters);
-            }}
+            onFilterChange= {onFilterChange}
+            onSearchChange= {onGridSearch}
           />
           {/* <IQTooltip title="Gallery" placement="bottom">
 						<IconButton

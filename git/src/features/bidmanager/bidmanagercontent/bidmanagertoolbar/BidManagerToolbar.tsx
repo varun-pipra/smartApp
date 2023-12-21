@@ -1,6 +1,6 @@
 import './BidManagerToolbar.scss';
 
-import {getServer} from 'app/common/appInfoSlice';
+import {getServer, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/appInfoSlice';
 import {useAppDispatch, useAppSelector} from 'app/hooks';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
@@ -17,10 +17,12 @@ import SUIAlert from 'sui-components/Alert/Alert';
 import {statusFilterOptions} from 'utilities/bid/enums';
 
 import {AssessmentOutlined, Gavel, GridOn, TableRows} from '@mui/icons-material';
-import {Button, IconButton, Stack, ToggleButton, ToggleButtonGroup} from '@mui/material';
+import {Box, Button, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, ToggleButton, ToggleButtonGroup, Typography} from '@mui/material';
 import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 import React from 'react';
 import _ from "lodash";
+import SUIDrawer from 'sui-components/Drawer/Drawer';
+import IQToggle from 'components/iqtoggle/IQToggle';
 
 const BidManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -42,7 +44,8 @@ const BidManagerToolbar = (props: any) => {
 		title: '',
 		method: ''
 	});
-
+	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
+	const [toggleChecked, setToggleChecked] = React.useState(true);
 	const groupOptions = [
 		{text: "Status", value: "status"},
 		{text: "Companies", value: "company"},
@@ -208,7 +211,9 @@ const BidManagerToolbar = (props: any) => {
 			dispatch(setShowTableViewType(value));
 		}
 	};
-
+	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setToggleChecked(event.target.checked)
+	};
 	return <Stack direction='row' className='toolbar-root-container-bidmanager'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -346,12 +351,72 @@ const BidManagerToolbar = (props: any) => {
 				<IconButton
 					className='settings-button'
 					aria-label='settings budgetmanager'
-				// onClick={() => dispatch(setShowSettingPopup2(true))}
+					onClick={() => dispatch(setShowSettingsPanel(true))}
 				>
 					<TableRows />
 				</IconButton>
 			</IQTooltip>
 		</div>
+		{showSettingsPanel ? 
+		<SUIDrawer
+				  PaperProps={{
+					style: {
+					borderRadius: "4px",
+					boxShadow: "-6px 0px 10px -10px",
+					border: "1px solid rgba(0, 0, 0, 0.12) !important",
+					position: "absolute",
+					top: '105px',
+					bottom: '0px',
+					width: '25em',
+					height: 'inherit',
+					overflow: 'auto'
+					},
+				  }}
+				anchor='right'
+				variant='permanent'
+				elevation={8}
+				open={false}
+			>
+				<Box>
+					<Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
+						<IconButton	className="Close-btn" aria-label="Close Right Pane"
+							onClick={() => dispatch(setShowSettingsPanel(false))}
+						>
+							<span className="common-icon-Declined"></span>
+						</IconButton>
+					</Stack>
+					<Stack className='General-settings'>
+						<Stack className='generalSettings-Sections'>
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Settings</Typography>
+							<List className='generalSettings-list'
+								sx={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									alignSelf: 'center',
+									textWrap: 'nowrap'
+								}}
+							>
+							<ListItem className='generalSettings-listitem'>
+								<ListItemText primary="Blockchain Two Factor Authentication" className='generalsettingtext' />
+								<ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
+										<span className="common-icon-Project-Info"></span>
+								</ListItemIcon>
+								<ListItemIcon>
+									<IQToggle
+										checked={toggleChecked}
+										switchLabels={['ON', 'OFF']}
+										onChange={(e) => { handleToggleChange(e) }}
+										edge={'end'}
+									/>
+								</ListItemIcon>
+							</ListItem>
+						</List>
+				</Stack>
+			</Stack>
+			</Box>
+		</SUIDrawer>
+		:null}
 		<SUIAlert
 			open={alert.open}
 			contentText={<span>{alert.contentText}</span>}

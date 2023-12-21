@@ -53,7 +53,7 @@ export const AdditionalInfo = () => {
   const handleOnAddRow = (obj:any) => {
     console.log("obj", obj, additionalInfo)
 
-    const payload = {uniqueID: additionalInfo?.uniqueid, [obj?.mappingExpression] : obj?.dependentAppFields }
+    const payload = {uniqueID: additionalInfo?.uniqueid, [obj?.mappingExpression] : obj?.dependentAppFields?.[0] }
     updateAdditionalInfo([payload], (response:any) => {console.log("update fileds resp", response); dispatch(setDetailsData(response[0]))})
   }
   const handleOnDeleteRows = (rows:any) => {

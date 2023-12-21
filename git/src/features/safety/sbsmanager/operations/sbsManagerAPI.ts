@@ -219,6 +219,22 @@ export const updateAdditionalInfo = async (payload: any, callback: any) => {
 	}
 };
 
+export const saveLinksData = async (payload: any, callback: any) => {
+	const appInfo: any = getServerInfo();
+  let response;
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/sbs/${appInfo?.uniqueId}/link?sessionId=${appInfo?.sessionId}`,
+      {
+        method: "PATCH",
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      }
+    );
+      callback && callback(response);
+  }
+};
+
 export const saveRightPanelData = async (body: any) => {
   const appInfo: any = getServerInfo();
   let response;

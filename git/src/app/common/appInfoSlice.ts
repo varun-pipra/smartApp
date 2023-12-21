@@ -19,6 +19,7 @@ export interface AppInfoState {
 	sketchPageInfo: any;
 	isAppMaximized: boolean;
 	detailInfoSelectionIndex?:any;
+	showSettingsPanel?:boolean;
 };
 
 const initialState: AppInfoState = {
@@ -36,7 +37,8 @@ const initialState: AppInfoState = {
 	sketchMarkup: null,
 	sketchPageInfo: null,
 	isAppMaximized: false,
-	detailInfoSelectionIndex : ''
+	detailInfoSelectionIndex : '',
+	showSettingsPanel: false
 };
 
 export const appInfoSlice = createSlice({
@@ -104,10 +106,13 @@ export const appInfoSlice = createSlice({
 		setDetailInfoSelectionIndex: (state, action: PayloadAction<any>) => {
 			state.detailInfoSelectionIndex = action.payload;
 		},
+		setShowSettingsPanel: (state, action: PayloadAction<boolean>) => {
+			state.showSettingsPanel = action.payload;
+		}
 	}
 });
 
-export const { setServer, setCostCodeList, setCostTypeList, setCostUnitList, setCostCodeDivisionList, setCurrencySymbol, setCurrencyCode, setAppWindowMaximize, setFullView, setEnableAddBtn, setSketchIns, setSketchMarkup, setSketchPageInfo, setIsAppMaximized, setDetailInfoSelectionIndex } = appInfoSlice.actions;
+export const { setServer, setCostCodeList, setCostTypeList, setCostUnitList, setCostCodeDivisionList, setCurrencySymbol, setCurrencyCode, setAppWindowMaximize, setFullView, setEnableAddBtn, setSketchIns, setSketchMarkup, setSketchPageInfo, setIsAppMaximized, setDetailInfoSelectionIndex, setShowSettingsPanel } = appInfoSlice.actions;
 
 export const getServer = (state: RootState) => state.appInfo.server;
 export const getCostCodeList = (state: RootState) => state.appInfo.costCodeList;
@@ -121,5 +126,6 @@ export const getSketchIns = (state: RootState) => state.appInfo.sketchIns;
 export const getSketchMarkup = (state: RootState) => state.appInfo.sketchMarkup;
 export const getSketchPageInfo = (state: RootState) => state.appInfo.sketchPageInfo;
 export const getCurrentDetailInfoSelectionIndex = (state: RootState) => state.appInfo.detailInfoSelectionIndex;
+export const getShowSettingsPanel = (state: RootState) => state.appInfo.showSettingsPanel;
 
 export default appInfoSlice.reducer;
