@@ -218,7 +218,7 @@ const SBSManagerWindow = (props: any) => {
                 break;
               case "smartitemlink":
                 console.log('smartitemlink data', data);
-                setSmartItemLink(data.body.data)
+                setSmartItemLink(data)
                 break;
             }
           }
@@ -245,20 +245,20 @@ const SBSManagerWindow = (props: any) => {
     console.log("structuredFiles drive", structuredFiles);
     AddFiles(detailsData?.id, structuredFiles, (response: any) => {
       console.log("respone in drive", response);
-      dispatch(getSBSDetailsById(detailsData?.id))
+      dispatch(getSBSDetailsById(detailsData?.uniqueid))
     });
   };
 
   const saveSmartItemLink = (smartData: any) => {
-    let payload =  { "details":{ "sbsId": detailsData?.id, "LinkType":0, "Link": smartData.smartAppId}}
+    let payload =  { "details":{ "sbsId": detailsData?.id, "LinkType":0, "Link": smartData?.smartItemId}}
       saveLinksData(payload, (response: any) => {
-      dispatch(getSBSDetailsById(detailsData?.id));
+      dispatch(getSBSDetailsById(detailsData?.uniqueid));
       setSmartItemLink({});
     });
   };
 
   useEffect(() => {
-    if (smartItemLink) {
+    if (Object.keys(smartItemLink).length) {
       saveSmartItemLink(smartItemLink);
     }
   }, [smartItemLink]);
@@ -381,9 +381,10 @@ const SBSManagerWindow = (props: any) => {
           <div
             className="sbs-suppli-info-cell"
             onClick={() => {
-              setDefaultTabId("SBSAdditionalInfo");
-              setOpenRightPanel(true);
-              setCurrentRowSelection(params.data);
+              postMessage({event: 'openitem', body: {smartItemId:params.data.uniqueid}});
+              // setDefaultTabId("SBSAdditionalInfo");
+              // setOpenRightPanel(true);
+              // setCurrentRowSelection(params.data);
             }}
           >
             View/Update Info

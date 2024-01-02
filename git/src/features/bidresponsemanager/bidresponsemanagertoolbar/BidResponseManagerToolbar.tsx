@@ -288,7 +288,7 @@ const BidResponseManagerToolbar = (props: any) => {
 				/>
 			</div>
 			<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
-				{/*<ReportAndAnalyticsToggle />*/}
+				{<ReportAndAnalyticsToggle />}
 			</div>
 			{showRightPanel && (
 				<SUIDrawer

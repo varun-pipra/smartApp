@@ -1,0 +1,17 @@
+.inventory-analytics-root {
+	.MuiBox-root {
+		border: 1px solid rgb(224, 224, 224);
+    	box-sizing: border-box;
+	}
+
+	.inventory-header {
+    	box-sizing: border-box;
+		border: 1px solid rgb(224, 224, 224);
+		border-bottom: 2px solid rgba(0,0,0,0.12);
+
+		.toolbar-root-container {
+			height: 2.5em;
+			padding: 0.25em 1.5em;
+		}
+	}
+}

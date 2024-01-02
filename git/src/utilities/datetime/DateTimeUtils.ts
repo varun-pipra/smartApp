@@ -1,3 +1,4 @@
+
 /**
  * Date formatter utility function. (Do not edit this method)
  * @param input - date string

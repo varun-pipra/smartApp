@@ -80,11 +80,11 @@ import SmartSubmittalTabbedWindow from 'features/field/smartsubmittals/SmartSubm
 import PhasesColorPickerExample from 'examples/PhasesColorPicker/PhasesColorPickerExample';
 import PhasesGridListExample from 'examples/phasesGrid/PhasesGridExample';
 import MultiSelectTreeView from 'examples/SelectTreeComponent/Treeview';
+import TimeLogWindow from 'features/common/timelog/TimeLogWindow';
+
 const AppRoutes = () => {
 	return <>
 		<Routes>
-			<Route path='finance'>
-			</Route>
 			<Route path='tools-equipment' element={<ToolsEquipmentWindow />} >
 				<Route path='home' element={<ToolsEquipmentWindow />} />
 			</Route>
@@ -142,6 +142,7 @@ const AppRoutes = () => {
 			</Route>
 			<Route path='common'>
 				<Route path='supplementalContracts' element={<SupplementalContracts open={true} />} />
+				<Route path='timelog' element={<TimeLogWindow />} />
 			</Route>
 			<Route path='examples'>
 				<Route path='infinite-scroll' element={<GridInfiniteScroll />} />

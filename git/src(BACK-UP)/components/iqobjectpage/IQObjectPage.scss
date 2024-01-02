@@ -1,0 +1,165 @@
+.iqobjectpage-main-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .iqobjectpage-tabbar-outer {
+        flex: 0.5;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.15);
+        z-index: 1;
+        .MuiTabs-scroller {
+            display: flex;
+        }
+        .iqobjectpage-tabbar {
+            height: 2.5em;
+            min-height: unset;
+            .MuiButtonBase-root {
+                &.Mui-disabled {
+                    opacity: 0.25;
+                }
+            }
+            .MuiTabScrollButton-root~.MuiTabs-scroller {
+                .MuiTabs-flexContainer {
+                    justify-content: unset;
+                }
+            }
+            .MuiTabs-flexContainer {
+                width: 100%;
+                height: inherit;
+                padding-bottom: 0.25em;
+                display: flex;
+                justify-content: space-evenly;
+                .Mui-selected {
+                    .MuiTab-iconWrapper {
+                        color: #ed7431;
+                    }
+                    .label-cls {
+                        font-weight: bold;
+                    }
+                }
+            }
+            .iqobjectpage-tab {
+                color: #333333;
+                min-height: unset;
+                text-transform: none;
+                font-size: 15px;
+                font-family: 'Roboto-Regular';
+                padding: 0 0.5em;
+                &.disabled {
+                    opacity: 0.5;
+                }
+                .label-cls {
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    .counter-cls {
+                        align-items: center;
+                        align-self: flex-start;
+                        background-color: #059cdf;
+                        border-radius: 50%;
+                        color: #fff;
+                        display: flex;
+                        font-size: 10px;
+                        font-weight: 400;
+                        justify-content: center;
+                        line-height: 1;
+                        margin: 0.25em;
+                        width: 2em;
+                        height: 2em; // padding: 10px;
+                    }
+                    .common-icon-tickmark {
+                        font-size: 20px;
+                        margin-left: 4px;
+                    }
+                    .common-icon-exclamation {
+                        font-size: 24px;
+                    }
+                }
+                .icon-container {
+                    height: 1.2em;
+                    width: 1.2em;
+                    margin-right: 0.2em;
+                    .icon-cls {
+                        width: inherit;
+                        height: inherit;
+                    }
+                    .common-icon-SBS:before {
+                        font-size: 22px;
+                    }
+                    .common-icon-orgconsole-project-supplemental-info:before {
+                        font-size: 20px;
+                    }
+                }
+                .MuiAvatar-root {
+                    height: 25px;
+                    width: 25px;
+                    font-size: 17px;
+                }
+            }
+            .MuiTabs-indicator {
+                height: 0.2em;
+                margin-left: 0.15em;
+                border-radius: 0.1em;
+                background-color: #ed7532;
+            }
+        }
+    }
+    .iqobjectpage-content-outer {
+        flex: auto;
+        overflow: auto;
+        &.default-spacing {
+            padding: 1em 1.6em;
+        }
+        .iqobjectpage-section {
+            min-height: 100%;
+            height: 100%;
+            padding: 0em 1.6em;
+            font-family: "Roboto-Regular";
+            font-size: 15px;
+            .referenceFile {
+                height: 80%;
+                padding-top: 10px;
+                .doc-upload-header {
+                    padding: 0em 0.4em 0em 0em;
+                }
+                .doc-upload-base-container {
+                    //height: 100%;
+                    .doc-file-cont-wrap {
+                        height: 430px;
+                        .doc-file-cont {
+                            height: 48vh;
+                            margin-bottom: -50px;
+                            height: 100%;
+                        }
+                    }
+                }
+                .ag-root-wrapper-body.ag-layout-normal {
+                    height: 100%;
+                }
+                .doc-file-grid-view {
+                    margin-bottom: -50px;
+                }
+            }
+        }
+        #referencefiles {
+            .ev-referencefiles {
+                height: 80%;
+                padding-top: 10px;
+                .doc-upload-header {
+                    padding: 0em 0.4em 0em 0em;
+                }
+                .doc-upload-base-container {
+                    height: 100%;
+                    .doc-file-cont-wrap {
+                        height: 430px;
+                        .doc-file-cont {
+                            height: 48vh;
+                            margin-bottom: -50px;
+                            height: 100%;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

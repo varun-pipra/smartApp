@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?xi9q8s');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?xi9q8s#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?xi9q8s') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?xi9q8s') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?xi9q8s##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?fpcoxd');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?fpcoxd#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?fpcoxd') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?fpcoxd') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?fpcoxd##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -1519,8 +1519,7 @@
 }
 .common-icon-duration-time {
   &:before {
-    content: $common-icon-duration-time;     
-    color: #8d8d8d;
+    content: $common-icon-duration-time; 
   }
 }
 .common-icon-sort {
@@ -1531,14 +1530,12 @@
 }
 .common-icon-monthly {
   &:before {
-    content: $common-icon-monthly;     
-    color: #8d8d8d;
+    content: $common-icon-monthly; 
   }
 }
 .common-icon-duration {
   &:before {
-    content: $common-icon-duration;     
-    color: #8d8d8d;
+    content: $common-icon-duration; 
   }
 }
 .common-icon-mute {
@@ -1618,8 +1615,7 @@
 }
 .common-icon-daily-photos {
   &:before {
-    content: $common-icon-daily-photos;     
-    color: #8d8d8d;
+    content: $common-icon-daily-photos; 
   }
 }
 .common-icon-meeting-minutes {

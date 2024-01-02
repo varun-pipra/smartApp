@@ -1,0 +1,25 @@
+.MuiToolbar-root {
+	min-height: 48px !important;
+	border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+
+	.toolbar-item-wrapper {
+		flex: 1;
+
+		&.search-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		&.toolbar-group-button-wrapper {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+		}
+	}
+
+	.MuiIconButton-root {
+		padding-left: 0.5em;
+		padding-right: 0.5em;
+	}
+}

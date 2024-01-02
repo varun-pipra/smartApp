@@ -1,0 +1,37 @@
+@import "Smart_theme_variable";
+.selectcostcode {
+    font-family: 'Roboto-Regular' !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #333333 !important;
+    font-size: $medium !important;
+}
+
+.selectcostcodenew {
+    font-family: 'Roboto-Regular' !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #333333 !important;
+    font-size: $small !important;
+}
+
+.costcodedropdown {
+    .makeStyles-menuPaper-3 {
+        // max-width: 170px !important;
+        // min-width: 22% !important;
+        //max-height: 300px
+    }
+}
+
+.MuiButtonBase-root {
+    .common-icon-Filter {
+        line-height: 0.9;
+        &:before {
+            font-size: 15pt; //top: 1px; // position: absolute;
+        }
+    }
+    .common-icon-Filter-blue:before {
+        font-size: 15pt; // top: 1px;
+        // position: absolute;
+    }
+}

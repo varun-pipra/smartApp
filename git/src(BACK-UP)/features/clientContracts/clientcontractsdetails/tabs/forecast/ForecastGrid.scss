@@ -1,0 +1,69 @@
+// .forecast-txn {
+// 	.ag-header {
+// 		// height: 2.5em !important;
+// 		.ag-header-row {
+// 			// height: inherit !important;
+// 			.ag-header-cell {
+// 				display: flex;
+// 				align-items: center;
+// 				// height: 10%;
+// 				padding: 0 0.6em;
+// 				.ag-header-cell-text {
+// 					font-size: 14px;
+// 					font-weight: 500;
+// 					font-family: 'Roboto-Regular';
+// 				}
+// 			}
+// 		}
+// 	}
+// 	.ag-row{
+// 		.ag-cell {
+// 			display: flex;
+// 			align-items: center;
+// 			padding: 0 0.5em;
+// 			font-size: 14px;
+// 			// font-weight: 500;
+// 			font-family: 'Roboto-Regular';
+// 			.app-items-cell-content {
+// 				cursor: pointer;
+// 				display: flex;
+// 				align-items: center;
+// 				.txn-name-tag {
+// 					width: inherit;
+// 					overflow: hidden;
+// 					white-space: nowrap;
+// 					text-overflow: ellipsis;
+// 					font-weight: 600;
+// 				}
+// 			}
+// 			.auto-wrapped-ellipsis {
+// 				width: inherit;
+// 				overflow: hidden;
+// 				white-space: nowrap;
+// 				text-overflow: ellipsis;
+// 			}
+// 		}
+// 	}
+.app-items-cell-content {
+    display: flex;
+    align-items: center;
+    &.clickable {
+        cursor: pointer;
+    }
+    .txn-name-tag {
+        font-weight: normal;
+        width: inherit;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+
+.auto-wrapped-ellipsis {
+    width: inherit;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+// }

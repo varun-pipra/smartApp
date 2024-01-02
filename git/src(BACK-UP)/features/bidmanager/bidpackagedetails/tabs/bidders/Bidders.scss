@@ -1,0 +1,125 @@
+.Bidders_Section {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    .Togglesection {
+        margin-bottom: 1em;
+        margin-top: 0.5em;
+        .MuiToggleButtonGroup-root {
+            .MuiButtonBase-root {
+                border: 1px solid #059cdf;
+                text-transform: capitalize;
+                height: 32px;
+                font-size: 14px;
+                padding: 0px 10px;
+                line-height: 1.0;
+            }
+        }
+        .Mui-selected {
+            background-color: #059cdf !important;
+            color: white !important;
+        }
+        .Mui-selected:hover {
+            background-color: #059cdf;
+            color: white !important;
+        }
+        .MuiButtonBase-root {
+            color: #059cdf;
+            border-radius: 6px;
+            background-color: transparent;
+        }
+        .header_label {
+            display: block;
+            align-items: center;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #666;
+            .infoicon {
+                font-size: 1.4rem;
+                padding-left: 4px;
+            }
+        }
+    }
+    .bidders_table {
+        flex: 4;
+        label {
+            margin-bottom: 10px;
+            color: #333;
+        }
+    }
+    padding-top: 0.6em;
+    padding-bottom: 0.6em;
+    .ag-row:first-child {
+        --ag-selected-row-background-color: #fff !important;
+        --ag-row-hover-color: #fff !important;
+    }
+    .ag-cell {
+        .image {
+            border: 1px solid #dbdbdb;
+            object-fit: contain;
+            margin-right: 4px;
+        }
+        .base-container {
+            height: 40px;
+            .MuiFormControl-root {
+                //vertical-align: text-bottom;
+            }
+            .MuiSelect-select {
+                min-height: 1.85em;
+                max-height: 1.85em; //padding: 4px 0 5px;
+                .base-custom-img {
+                    border: 1px solid #ccc;
+                    object-fit: cover; // vertical-align: baseline !important;
+                    //top: 5px;
+                    //position: relative;
+                    padding: 0px !important;
+                    margin-top: -2px;
+                }
+                .MuiBox-root {
+                    display: block;
+                    margin-top: 6px;
+                    div {
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                    }
+                }
+            }
+            .MuiSvgIcon-root {
+                // top: calc(50% - 0.8em);
+                //margin-top: 6px;
+            }
+            .MuiSelect-nativeInput {
+                //  width: calc(100% - 1.3em);
+            }
+        }
+    }
+    .ag-cell {
+        .MuiTextField-root {
+            width: 100%;
+        }
+        svg {
+            cursor: pointer;
+        }
+    }
+    .cancel-cls {
+        background-color: #666;
+        color: #fff;
+        padding: 12px;
+        height: 37px;
+        border-radius: 2px;
+        text-transform: uppercase !important;
+        margin-right: 10px;
+        box-shadow: 0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%);
+    }
+    .common-icon-biddersgray {
+        font-size: 70px;
+    }
+}
+
+.companyMenu-dropdown-cls {
+    overflow-y: overlay !important;
+    max-height: 329px !important;
+    border-radius: 2px !important;
+}

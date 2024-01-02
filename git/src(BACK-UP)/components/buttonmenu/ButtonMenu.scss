@@ -1,0 +1,24 @@
+.MuiButton-root {
+    display: flex;
+    justify-content: space-between !important;
+    color: #000;
+    font-size: 14px !important;
+    font-weight: 700;
+    border-color: #ff0000;
+    text-transform: none !important;
+    padding-top: 2px !important;
+    padding-bottom: 0 !important;
+}
+
+.MuiPaper-root {
+    .MuiList-root {
+        // padding: 0;
+        .MuiMenuItem-root {
+            font-size: 14px;
+            &.Mui-selected {
+                font-weight: 600;
+                background-color: #fffad2;
+            }
+        }
+    }
+}

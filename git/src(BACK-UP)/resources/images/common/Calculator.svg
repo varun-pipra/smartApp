@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_154661" data-name="Rectangle 154661" width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Calculator" clip-path="url(#clip-path)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <g id="forcast" clip-path="url(#clip-path)">
+      <rect id="Rectangle_154660" data-name="Rectangle 154660" width="48" height="48" fill="rgba(255,255,255,0)"/>
+    </g>
+    <g id="Group_145281" data-name="Group 145281" transform="translate(8 8)">
+      <path id="Subtraction_97" data-name="Subtraction 97" d="M27.736,32H4.268A4.273,4.273,0,0,1,0,27.731V4.269A4.273,4.273,0,0,1,4.268,0H27.736A4.271,4.271,0,0,1,32,4.269V27.731A4.271,4.271,0,0,1,27.736,32ZM7.1,5.2A1.041,1.041,0,0,0,5.97,6.27v19.2A1.042,1.042,0,0,0,7.1,26.537H24.04a1.042,1.042,0,0,0,1.129-1.068V6.27A1.041,1.041,0,0,0,24.04,5.2ZM22.911,24.4H19.522V22.269h3.388V24.4Zm-5.647,0H13.876V22.269h3.388V24.4Zm-5.646,0H8.229V22.269h3.389V24.4Zm11.293-4.269H19.522V18h3.388v2.129Zm-5.647,0H13.876V18h3.388v2.129Zm-5.646,0H8.229V18h3.389v2.129Zm11.293-4.265H19.522V13.736h3.388v2.132Zm-5.647,0H13.876V13.736h3.388v2.132Zm-5.646,0H8.229V13.736h3.389v2.132ZM22.911,11.6H8.229V7.338H22.911V11.6Z" fill="#ed7532"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,75 @@
+.sbs-manager-lineitem-form {
+    align-items: center;
+    gap: 1em;
+    width: 100%;
+    height: calc(100% - 1px);
+    padding: 0.8em 1em 1em 1em;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.15);
+    .title-field {
+        flex: 1 1;
+        .MuiFormControl-root {
+            width: 100%;
+        }
+    }
+    .company-field {
+        flex: 3;
+    }
+    .type-field {
+        flex: 1;
+        .MuiInputBase-root {
+            .MuiInputAdornment-root {
+                margin-right: 4px;
+            }
+        }
+        .common-icon-Budgetcalculator:before {
+            font-size: 20px;
+        }
+        .MuiSelect-select {
+            padding-bottom: 2px;
+        }
+    }
+    .start-date-field,
+    .end-date-field {
+        flex: 1;
+        .iq-customdate-cont {
+            margin-top: 10px;
+            width: 100%;
+        }
+    }
+    .common-icon-title:before,
+    .common-icon-Companies:before,
+    .common-icon-switch-tiles:before,
+    .common-icon-contract-amount:before {
+        font-size: 18px;
+        color: #ed7431
+    }
+    .common-icon-Companies:before {
+        font-size: 26px !important;
+    }
+    .common-icon-bid-lookup:before {
+        font-size: 22px !important;
+    }
+    .MuiInputBase-input {
+        padding-left: 4px;
+    }
+}
+
+.sbs-title-description-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 1em;
+    .title-text {
+        padding-right: 1em;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .main-container {
+        flex: 2.75;
+    }
+    .right-spacer {
+        flex: 7;
+    }
+}

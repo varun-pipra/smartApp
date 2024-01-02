@@ -1,0 +1,20 @@
+
+	.SuiDialog .MuiDialog-container .MuiDialogContent-root {
+		padding: 20px 24px !important;
+	}
+	.SuiDialog .MuiDialog-container .MuiPaper-root .MuiDialogActions-root {
+		background: none !important;
+		height:70px !important;
+	}
+	.main-container {
+		.browser_button{
+			 margin-left: -4px;
+			 border-radius: 0px;
+			 background:#1e8fd229;
+		}
+		.import-button {
+			margin-bottom: -50px;
+			margin-left: 330px;
+			align-items: flex-end;
+		}
+	}

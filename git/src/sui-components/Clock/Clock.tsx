@@ -16,6 +16,8 @@ interface ClockProps {
 	disabled?: boolean;
 	onTimeSelection?: any;
 	placeholder?: any;
+	actions?: any;
+	ampmInClock?:boolean;
 }
 
 const SUIClock = (props: ClockProps) => {
@@ -46,6 +48,10 @@ const SUIClock = (props: ClockProps) => {
 			if (currentTime != null) {
 				setPickerTime(currentTime);
 				setTime(dayjs(currentTime).format("hh:mm A"));
+			} else {
+				let currentTime = convertTimetoDate(dayjs(new Date()).format("HH:mm A"));
+				setPickerTime(currentTime);
+				setTime('');
 			}
 		} else {
 			let currentTime = convertTimetoDate(dayjs(new Date()).format("HH:mm A"));
@@ -109,7 +115,7 @@ const SUIClock = (props: ClockProps) => {
 					<StaticTimePicker
 						componentsProps={{
 							actionBar: {
-								actions: ['accept'],
+								actions: props.actions || ['accept'],
 							},
 						}}
 						className="clock-picker"
@@ -119,6 +125,8 @@ const SUIClock = (props: ClockProps) => {
 						}}
 						renderInput={(params) => <></>}
 						onAccept={onAcceptFn}
+						ampmInClock={props.ampmInClock || false}
+						minutesStep={5}
 					/>
 				</LocalizationProvider>
 			</Popover>

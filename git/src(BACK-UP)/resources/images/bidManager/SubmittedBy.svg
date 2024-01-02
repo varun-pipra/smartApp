@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-Submitted_by">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Submitted_by" data-name="Submitted by" clip-path="url(#clip-Submitted_by)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <g id="MDI_briefcase-clock-outline" data-name="MDI / briefcase-clock-outline" transform="translate(0.337)">
+      <g id="Boundary" transform="translate(-0.337)" fill="#a7a7a7" stroke="rgba(0,0,0,0)" stroke-width="1" opacity="0">
+        <rect width="48" height="48" stroke="none"/>
+        <rect x="0.5" y="0.5" width="47" height="47" fill="none"/>
+      </g>
+      <path id="Path_111107" data-name="Path 111107" d="M50.459,44.25h-1.9a11.959,11.959,0,1,0-16.708,0h-1.9A11.972,11.972,0,0,0,18,56.209v6.834a1.708,1.708,0,0,0,1.708,1.708h41a1.708,1.708,0,0,0,1.708-1.708V56.209A11.972,11.972,0,0,0,50.459,44.25ZM31.667,35.709a8.542,8.542,0,1,1,8.542,8.542A8.556,8.556,0,0,1,31.667,35.709ZM59,61.334H21.417V56.209a8.556,8.556,0,0,1,8.542-8.542h20.5A8.556,8.556,0,0,1,59,56.209Z" transform="translate(-16.007 -20.275)" fill="#a7a7a7"/>
+    </g>
+  </g>
+</svg>

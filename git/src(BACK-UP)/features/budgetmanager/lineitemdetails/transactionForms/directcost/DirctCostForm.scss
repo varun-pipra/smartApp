@@ -1,0 +1,21 @@
+.attach-file-cls {
+    height: 56px;
+    width: 134px;
+    position: absolute;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid #dadada;
+    .option-cls {
+        font-size: 14px;
+        color: #333;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        vertical-align: middle;
+        align-items: center;
+        height: 28px;
+        &:hover {
+            background-color: #f5f5f5;
+        }
+    }
+}

@@ -1,0 +1,75 @@
+@import "Smart_theme_variable";
+// .SmartDialog {
+.MuiDialog-container {
+    .MuiDialogContent-root {
+        padding: 0 !important;
+        overflow: hidden;
+    }
+    .MuiPaper-root {
+        margin: 0;
+        overflow: hidden; // temp fix for presence tooltip issue
+        .MuiDialogTitle-root {
+            display: flex;
+            line-height: 2;
+            font-size: $titleSize; // padding: 1em 1em !important;
+            color: #333333 !important;
+            justify-content: space-between;
+            .titlebar-inner-items {
+                flex: 1;
+                &.title-text {
+                    display: flex;
+					gap: 0.5em;
+                    align-items: center;
+                    font-family: 'Roboto-Regular';
+                }
+                .header-company-name {
+                    position: absolute;
+                    margin-top: 90px;
+                    .MuiInputBase-root {
+                        height: 32px;
+                        padding-left: 0px;
+                        border-radius: 16px;
+                        .notranslate {
+                            margin-right: 0px;
+                        }
+                        img {
+                            border: 1px solid #eaeaea;
+                        }
+                        .MuiInputBase-input {
+                            font-size: 13px !important;
+                            font-weight: bold;
+                        }
+                        fieldset {
+                            border: 1px solid #eaeaea !important;
+                        }
+                    }
+                }
+            }
+            .title-tools {
+                text-align: right;
+                .MuiButtonBase-root {
+                    padding-left: 0.5em;
+                    padding-right: 0.5em;
+                    font-size: 1rem;
+                    color: #333;
+                    margin-left: 10px;
+                    .MuiSvgIcon-root {
+                        font-size: 1.8rem;
+                    }
+                }
+            }
+        }
+        .MuiDialogActions-root {
+            padding: 1em;
+        }
+        .MuiDialog-Presence {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .MuiDialog-Presence.NoTools {
+            padding: 0px 12px 0px;
+        }
+    }
+}
+
+// }

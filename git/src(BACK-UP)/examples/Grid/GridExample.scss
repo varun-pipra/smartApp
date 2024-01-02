@@ -1,0 +1,27 @@
+.budget-grid-cls {
+    min-height: 80px;
+    height: 8%;
+    display: flex;
+    .title-action,
+    .search-action {
+        flex: 1;
+        display: flex;
+        align-items: center;
+    }
+    .title-action {
+        .title {
+            margin-right: 1em;
+            font-size: 17px;
+            font-weight: bold;
+        }
+    }
+    .search-action {
+        justify-content: end;
+    }
+}
+
+.NestedGrid {
+    .gridCt {
+        height: 640px !important;
+    }
+}

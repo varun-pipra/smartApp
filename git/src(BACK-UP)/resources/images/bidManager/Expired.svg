@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-Expired">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Expired" clip-path="url(#clip-Expired)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <path id="Union_623" data-name="Union 623" d="M5533.778,17292.316l-5.967-5.949v-9.273l5.967-5.961h9.25l5.971,5.961v9.256l-5.946,5.967Zm3.309-3.98h2.656v-2.631h-2.656Zm0-5.295h2.656v-7.93h-2.656Zm-25.2,2.537a4.9,4.9,0,0,1-4.89-4.893v-17.914a4.892,4.892,0,0,1,4.89-4.885h1.624V17253h3.257v4.887h9.777V17253h3.257v4.887h1.627a4.893,4.893,0,0,1,4.888,4.885v6.428h-3.256v-8.062h-22.8v21.172h15.7v3.27Zm1.394-12.219v-8.148h8.376v8.148Z" transform="translate(-5503.999 -17249)" fill="#fff"/>
+  </g>
+</svg>

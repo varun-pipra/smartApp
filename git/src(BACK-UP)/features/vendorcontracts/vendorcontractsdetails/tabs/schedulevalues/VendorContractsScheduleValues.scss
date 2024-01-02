@@ -1,0 +1,105 @@
+.vc-schedule-values {
+    // margin: 0 1em;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    padding: 1em 1.5em 1.5em 1.5em;
+    margin: 1em 0;
+    border-radius: 2px;
+    &_headers {
+        margin-bottom: 10px;
+    }
+    &_work-items {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    &_title-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        .vc-schedule-values_auto-pay-switch {
+            float: left;
+            display: flex;
+            align-items: center;
+            gap: 0.2em;
+        }
+    }
+    &_unit {
+        display: grid;
+        padding-left: 30px; //min-width: 140px;
+        font-size: 14px;
+        text-align: right;
+        color: #666;
+        height: 3em;
+        width: -webkit-fill-available;
+        b {
+            text-align: right;
+            color: #333;
+            line-height: 2;
+        }
+    }
+    .vc-schedule-values_work-items {
+        margin: 30px 0px 20px 0px;
+        .common-icon-smartapp:before {
+            font-size: 18px;
+            line-height: 0.8;
+            color: #ed7431;
+        }
+    }
+    &_row-count {
+        background-color: #ffdfca;
+        color: #fe8d42;
+        border: 1px solid #fe8d42;
+        border-radius: 50%;
+        padding: 0px 4px;
+        margin-right: 12px;
+    }
+    #payout-text-field,
+    #work-completion-text-field,
+    #work-stage-text-field,
+    #payout-amount-text-field {
+        color: rgb(5, 156, 223);
+        font-weight: 600;
+    }
+    #payout-text-field,
+    #work-completion-text-field {
+        text-align: right;
+        padding: 10px 6px 4px 5px;
+    }
+    #payout-amount-text-field {
+        text-align: right;
+        padding: 10px 6px 4px 5px;
+    }
+    #work-stage-text-field {
+        text-align: left;
+        padding: 10px 6px 4px 5px;
+    }
+    .MuiInputAdornment-root .MuiTypography-root {
+        color: #df6e0c;
+        padding-top: 6px;
+    }
+    .totalAmount {
+        color: gray;
+        font-size: 12px;
+        font-style: italic;
+        margin-left: 4px;
+    }
+    &_buttons-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        padding-bottom: 10px;
+        padding-top: 10px;
+        &-btn {
+            border-color: #ed7431 !important;
+            color: #ed7431 !important;
+        }
+        &.Mui-disabled {
+            opacity: 1; // background-color: #059cdf;
+        }
+        .common-icon-lock-fill {
+            margin-top: -5px;
+            font-size: 22px !important;
+        }
+    }
+}

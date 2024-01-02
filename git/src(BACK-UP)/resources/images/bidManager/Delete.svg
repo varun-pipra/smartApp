@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <clipPath id="clip-Delete">
+      <rect width="48" height="48"/>
+    </clipPath>
+  </defs>
+  <g id="Delete" clip-path="url(#clip-Delete)">
+    <rect width="48" height="48" fill="rgba(255,255,255,0)"/>
+    <g id="outline-delete-24px" transform="translate(11 7)">
+      <path id="Path_4011" data-name="Path 4011" d="M25.778,14.333V33.222H10.667V14.333H25.778M22.944,3H13.5L11.611,4.889H5V8.667H31.444V4.889H24.833Zm6.611,7.556H6.889V33.222A3.789,3.789,0,0,0,10.667,37H25.778a3.789,3.789,0,0,0,3.778-3.778Z" transform="translate(-5 -3)" fill="#999"/>
+    </g>
+  </g>
+</svg>

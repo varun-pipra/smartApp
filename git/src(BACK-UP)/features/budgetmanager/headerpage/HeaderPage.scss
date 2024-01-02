@@ -1,0 +1,31 @@
+.headerContent {
+	.datepicker-Section{
+		.iq-customdate-cont.rmdp-container{ 
+			margin-top: 8.2px !important;
+			.icon {
+				// display:none !important;
+			}
+		}
+		.common-icon-Date-1{
+			position: absolute;
+			z-index: 1;
+			margin-top: 6px;
+			cursor: pointer;	
+		}
+		.common-icon-Date-1:before {
+			color:#ed7532 !important;
+			font-size: 1.25rem;
+		}
+	}
+	.add-button {
+		padding: 4px !important;
+		width: 81px !important;
+		height: 41px !important;
+		text-transform: uppercase;
+		.css-1893wfe-MuiButtonBase-root-MuiButton-root {
+			padding: 4px !important;
+			min-width: 10px !important;
+			text-transform: uppercase;
+		}
+	}
+}

@@ -1,0 +1,396 @@
+.ProjectTeam-lineitem-detail-panel {
+    .iqobjectpage-main-container {
+        #userDetails {
+            height: fit-content !important;
+            padding-top: 14px;
+        }
+        #userBadge {
+            height: fit-content !important;
+            padding: 1em 1.6em 0.2em 1.6em;
+        }
+        #safetyCredentials {
+            height: fit-content !important;
+        }
+        #safetyPolicies {
+            height: fit-content !important;
+            display: flex;
+        }
+        #certifications {
+            height: fit-content !important;
+            display: flex;
+        }
+        #safetyViolation {
+            height: fit-content !important;
+            display: flex;
+        }
+    }
+    .NonCollapseContent {
+        color: #32363a;
+        font-size: 15px;
+        font-family: "Roboto-Regular";
+        .kpi-vertical-container {
+            padding: 0.4em 1em;
+            justify-content: space-between;
+            display: flex;
+            align-items: center;
+            .left-container {
+                display: flex;
+                margin-left: 2px;
+                width: 40%;
+                .userimage {
+                    border: 1px solid #ddd;
+                    object-fit: cover;
+                    border-radius: 2px;
+                }
+                .image_upload {
+                    height: 3em;
+                    width: 100px;
+                    position: absolute;
+                    opacity: 0.7;
+                    background-color: #fff;
+                    background-image: unset;
+                    border-radius: 0px;
+                    top: 100px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                }
+                .userdetails_icons {
+                    font-size: 1.4rem;
+                }
+                .userdata {
+                    max-width: 400px;
+                    word-break: break-word;
+                    .common-icon-Approval-Role:before {
+                        color: #666;
+                        margin-right: 6px;
+                    }
+                    .common-icon-company:before {
+                        margin-right: 5px;
+                        color: #666;
+                    }
+                    .userdetails_icons {
+                        font-size: 1.4rem;
+                    }
+                    div {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        margin-left: 12px;
+                    }
+                    div>span {
+                        padding-bottom: 10px
+                    }
+                    .safety-violation-alert-cls {
+                        border: 1px solid #ef7c35;
+                        color: #ef7c35;
+                        padding: 5px 10px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        .common-icon-exclamation:before {
+                            font-size: 1em;
+                        }
+                    }
+                }
+            }
+            .center-container {
+                align-self: flex-start;
+                width: auto;
+                .safety-violation-alert-cls {
+                    border: 2px solid #ef7c35;
+                    color: #ef7c35;
+                    padding: 2px 8px 2px 4px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 2px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    font-size: 14px;
+                    cursor: pointer;
+                    letter-spacing: 0.5px;
+                    min-width: 230px; // margin: 0px auto;
+                    //position: absolute;
+                    .common-icon-exclamation:before {
+                        font-size: 24px;
+                        margin-right: 4px;
+                    }
+                }
+            }
+            .kpi-section {
+                font-size: 15px;
+                width: 40%;
+                .kpi-right-container {
+                    display: grid;
+                    gap: 0.2em;
+                    grid-template-columns: 10em minmax(4em, auto);
+                    margin-bottom: 8px;
+                    .kpi-name,
+                    .status {
+                        padding: 0.20em 0.5em;
+                        text-align: right;
+                    }
+                    .status {
+                        border-radius: 2px;
+                        display: flex;
+                        text-align: left;
+                        align-items: center;
+                        .status-icon {
+                            padding-right: 8px;
+                        }
+                        .common-icon-SafetyPermit:before {
+                            font-size: 16px;
+                        }
+                        .common-icon-orgconsole-safety-policies:before {
+                            font-size: 14px;
+                            margin-right: 2px;
+                            margin-left: 2px;
+                            vertical-align: text-top;
+                        }
+                        .common-icon-certification:before {
+                            font-size: 20px;
+                            margin-right: -2px;
+                            margin-left: -1px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .CollapseContent {
+        color: #32363a;
+        font-size: 15px;
+        font-family: "Roboto-Regular";
+        .lid-details-container {
+            display: flex;
+            margin-left: 18px;
+            margin-bottom: 0px;
+            .userimage {
+                border: 1px solid #ddd;
+                object-fit: cover;
+                border-radius: 2px;
+            }
+            .userdata {
+                .common-icon-Approval-Role:before {
+                    color: #666;
+                    margin-right: 6px;
+                }
+                .common-icon-company:before {
+                    margin-right: 5px;
+                    color: #666;
+                }
+                .userdetails_icons {
+                    font-size: 1.3rem;
+                }
+                div {
+                    display: flex;
+                    align-items: center;
+                    justify-content: flex-start;
+                    margin-left: 10px;
+                    font-size: 13.5px;
+                }
+                div>span {
+                    padding-bottom: 4px
+                }
+                .safety-violation-alert-cls-wrap {
+                    .safety-violation-alert-cls {
+                        border: 2px solid #ef7c35;
+                        color: #ef7c35;
+                        padding: 2px 8px 2px 4px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 2px;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        font-size: 14px;
+                        cursor: pointer;
+                        letter-spacing: 0.5px;
+                        min-width: 230px;
+                        margin: 0px auto;
+                        margin: -44px auto 12px auto;
+                        span {
+                            padding-bottom: 0px;
+                        }
+                        .common-icon-exclamation {
+                            &:before {
+                                font-size: 24px;
+                                margin-right: 4px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .kpi-vertical-container {
+            display: flex;
+            align-items: center;
+            padding-bottom: 8px;
+            justify-content: center;
+            gap: 1em;
+            .kpi-right-container {
+                display: grid;
+                gap: 0.1em;
+                grid-template-columns: 10em minmax(6em, auto);
+                margin-bottom: 2px;
+                .kpi-name {
+                    padding: 0.25em 0.5em;
+                    text-align: right;
+                    width: max-content;
+                }
+                .status {
+                    border-radius: 2px;
+                    display: flex;
+                    text-align: left;
+                    align-items: center;
+                    padding: 0.2em 0.5em;
+                    .status-icon {
+                        padding-right: 8px;
+                    }
+                    .common-icon-SafetyPermit:before {
+                        font-size: 16px;
+                    }
+                    .common-icon-orgconsole-safety-policies:before {
+                        font-size: 14px;
+                        margin-right: 2px;
+                        margin-left: 2px;
+                        vertical-align: text-top;
+                    }
+                    .common-icon-certification:before {
+                        font-size: 20px;
+                        margin-right: -2px;
+                        margin-left: -1px;
+                    }
+                }
+            }
+            .one,
+            .two {
+                grid-template-columns: 7.2em minmax(6em, auto);
+            }
+        }
+    }
+    .footer {
+        .worker-reinstated-cls {
+            font-size: 13px;
+            color: #333;
+            display: flex;
+            align-content: center;
+            margin-top: -18px;
+            font-style: italic;
+            align-items: center;
+            margin-left: 25px;
+            gap: 4px;
+        }
+        .footer-left {
+            .footer-content-container {
+                display: grid;
+                gap: 4px;
+                margin: 5px;
+                .checkbox-content {
+                    color: #333;
+                    margin: 0px 0px;
+                    align-items: center;
+                    display: flex;
+                    height: 24px;
+                    font-size: 14px;
+                }
+                .verificationdetails-cls {
+                    color: #333;
+                    display: flex;
+                    font-size: 14px;
+                    margin-left: -9px;
+                    align-items: center;
+                    .common-icon-safety-tick {
+                        font-size: 24px;
+                        margin-right: 3px;
+                    }
+                }
+            }
+        }
+        .footer-content-container {
+            padding-left: 24px;
+            .verificationdetails-cls {
+                color: #333;
+                font-size: 14px;
+                height: 26px;
+                margin-top: -2px;
+                font-size: 14px;
+            }
+            .verify-cred-content {
+                .common-icon-safety-tick {
+                    font-size: 26px;
+                    margin-bottom: 8px;
+                    margin-left: -12px;
+                    margin-right: 4px;
+                    vertical-align: middle;
+                }
+                .checkbox-content {
+                    .Mui-disabled {
+                        opacity: 0.4;
+                        cursor: no-drop;
+                    }
+                    .Mui-disabled+.MuiTypography-root {
+                        opacity: 0.4;
+                        cursor: no-drop;
+                    }
+                }
+            }
+        }
+    }
+    .footer-right {
+        .btn-save-changes {
+            background-color: #059cdf;
+            color: #fff !important;
+            font-weight: normal !important;
+            box-shadow: 0px 1px 5px #a0a0a0;
+        }
+        .btn-save-changes:hover {
+            background-color: #23a3dc;
+        }
+        .btn-allow-back {
+            background-color: #fff;
+            color: #059cdf;
+            border: 2px solid #059cdf;
+            font-weight: bold !important;
+        }
+    }
+}
+
+.safety_details_errorIcon {
+    border: 2px solid #e8c516;
+    border-radius: 50%;
+    width: 30px !important;
+    height: 30px !important;
+    color: #e8c516;
+    background-color: white;
+}
+
+.safetyViolation_tooltip_content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .safetyViolation_tooltip_label {
+        color: #e8c516;
+        margin-bottom: 2px;
+        text-shadow: 1px 1px 0px #191919;
+    }
+}
+
+.floating-toast-cls.lid-cls {
+    background-color: #333 !important;
+    border: 1px solid #333 !important;
+    border-radius: 30px !important;
+    box-shadow: none !important;
+    padding: 4px !important;
+    width: 350px;
+    left: 55%;
+    .MuiAlert-icon {
+        display: none;
+    }
+    .MuiAlert-action {
+        display: none;
+    }
+}

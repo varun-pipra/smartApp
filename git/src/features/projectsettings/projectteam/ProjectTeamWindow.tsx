@@ -4079,19 +4079,27 @@ const ProjectTeamWindow = (props: any) => {
 			<GridWindow
 				open={true}
 				title={popTitle}
-				className={`project-team-cls project-team-gridcls teamorientation-${appInfo?.viewConfig?.fromSafetyTab || false
-					}`}
-				// iconCls='common-icon-vendor-pay-applications'
+				className={`project-team-cls project-team-gridcls teamorientation-${appInfo?.viewConfig?.fromSafetyTab || false}`}
 				appType={appType}
 				appInfo={{ ...appInfo, fullScreen: fullScreen }}
 				iFrameId={iframeID}
 				defaultTabId={defaultTabId}
-				// iframeEventData, setIframeEventData
+				isFromHelpIcon={true}
 				iframeEventData={iframeEventData}
 				setIframeEventData={setIframeEventData}
 				zIndex={100}
 				onClose={handleClose}
 				//isFullView={fullScreen}
+				presenceProps={{
+					presenceId: 'ProjectTeam-presence',
+					showBrena: false,
+					showLiveSupport: true,
+					showLiveLink: true,
+					showStreams: true,
+					showComments: true,
+					showChat: false,
+					hideProfile: false,
+				}}
 				tools={{
 					closable: !fullScreen,
 					resizable: !fullScreen,

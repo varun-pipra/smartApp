@@ -1,0 +1,48 @@
+.sui-selection-tiles {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    &:hover {
+        cursor: pointer;
+    }
+    &_item {
+        border: 1px solid lightgrey;
+        padding: 10px 8px;
+        border-radius: 5px;
+        height: auto;
+        width: auto;
+        max-width: 24%;
+        margin-right: 10px;
+        margin-bottom: 20px;
+        cursor: pointer; //box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 1px -1px, rgba(0, 0, 0, 0.14) 0px 1px 1px 0px, rgba(0, 0, 0, 0.12) 0px 1px 3px 0px;
+        &:last-child {
+            margin-right: 0;
+        }
+        &.active {
+            border: 1px solid #059cdf;
+            background-color: rgba(5, 156, 223, 0.08);
+            // background-color: #fff9cc;
+            // border: 1px solid #c4b545;
+        }
+        &-title-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.5em;
+            .MuiRadio-root {
+                padding: 0;
+            }
+        }
+        &-title {
+            font-weight: 600;
+        }
+        &-desc {
+            text-align: left;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+    }
+}

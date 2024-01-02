@@ -1,0 +1,155 @@
+.timeLog-lineitem-detail {
+    .title-bar {
+		.title{
+			.title-section {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				gap:10px;
+				padding-top: 6px;
+				.image-section{
+					.image{
+						border-radius: 50%;
+						width:65px;
+						height:65px;
+					}
+				}
+				.name-section{
+					.name{
+						font-weight: bold;
+					}
+					.companyName{
+						font-weight: normal;
+						color:#d1cccc;
+						padding-top: 6px;
+					}
+				}
+			}
+		}
+        .close-btn {
+            margin-top: -6px;
+        }
+    }
+    .kpi-section {
+        color: #32363a;
+        font-size: 15px;
+        font-family: 'Roboto-Regular';
+        .kpi-horizontal-container,
+        .kpi-vertical-container {
+            display: flex;
+            align-items: center;
+            .bold {
+                font-weight: 600;
+            }
+        }
+        .kpi-horizontal-container {
+            height: 3em;
+            justify-content: space-around;
+            margin: 0.5em 0;
+            .kpi-tile {
+                flex: 1;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .bold {
+                    display: flex;
+                    align-items: center;
+                    .amount {
+                        min-width: 5em;
+                        margin-left: 0.25em;
+                        font-weight: bold;
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                    }
+                }
+            }
+        }
+        .kpi-vertical-container {
+            padding: 0.4em 1em;
+            justify-content: space-between;
+            .lid-details-container {
+                flex: 0.4;
+                height: 100%;
+                padding: 0.25em 0;
+                box-sizing: content-box;
+                display: grid;
+                grid-gap: 0.2em 0;
+                grid-template-columns: 40% 150%;
+                >span {
+                    padding: 0.3em 0;
+                }
+                .grey-font {
+                    color: #999;
+                }
+                .budgetid-label,
+                .last-modified-label {
+                    height: 100%;
+                    font-family: Roboto-Regular !important;
+				}
+				.bold{
+					font-weight: bold;
+				}
+            }
+            .kpi-right-container {
+                display: grid;
+                gap: 0.5em;
+                grid-template-columns: 17em minmax(4em, auto);
+                .kpi-name {
+                    padding: 0.25em 0.5em;
+                    text-align: right;
+                }
+                .amount {
+                    text-align: center;
+                    font-weight: bold;
+                    border-radius: 2px;
+                }
+            }
+        }
+       
+    }
+    .dynamic-page-body {
+        #change-Event-Details {
+            height: fit-content !important;
+		}
+		#budget-line-items
+		{
+			height: fit-content !important;
+		}
+		#reference-files{
+			height: fit-content !important;
+		}
+		#Links{
+			height: fit-content !important;
+		}
+	}
+    .changeeventbutton {
+        height: 34px;
+        font-weight: bold;
+    }
+    .btn-reject {
+        background-color: gray;
+        color: white;
+    }
+    .footer {
+        .footer-right {
+            .ce-buttons {
+                // background-color: #059cdf;
+            }
+            .reject.ce-buttons {
+                background-color: #666;
+            }
+            .revise-resubmit.ce-buttons {
+                border: 1px solid #059cdf;
+                background-color: transparent;
+                color: #059cdf;
+            }
+            .revise-resubmit-contained.ce-buttons {
+                border: 1px solid #059cdf;
+                background-color: #059cdf;
+                color: white;
+            }
+        }
+    }
+}

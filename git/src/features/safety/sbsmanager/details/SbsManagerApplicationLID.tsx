@@ -20,7 +20,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
     (state) => state.specificationManager
   );
   const { detailsData,sbsSaveEnableBtn,sbsDetailsPayload } = useAppSelector((state) => state.sbsManager);
-  const [lidTitle, setLidTitle] = useState(data?.category?.name);
+  const [lidTitle, setLidTitle] = useState(data?.name);
 
   const loadData = (id: any) => {
 		dispatch(getSBSDetailsById(id));
@@ -31,6 +31,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
 		if (data?.uniqueid) {
 			dispatch(setDetailsData(data))
 			loadData(data.uniqueid);
+			setLidTitle(data?.name) 
 		}
 	}, [data?.uniqueid]);
 

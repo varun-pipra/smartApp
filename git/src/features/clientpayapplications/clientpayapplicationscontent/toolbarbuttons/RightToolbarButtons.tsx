@@ -34,7 +34,7 @@ const ClientPayAppToolbarRightButtons = () => {
 	};
 	return <>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
-			{/*<ReportAndAnalyticsToggle />*/}
+			{<ReportAndAnalyticsToggle />}
 			<ToggleButtonGroup
 				exclusive
 				value={tableViewType}

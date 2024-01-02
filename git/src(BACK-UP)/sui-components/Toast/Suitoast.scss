@@ -1,0 +1,115 @@
+.Sui-toastmessage-div {
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+    bottom: 15px;
+    width: -moz-fit-content;
+    width: fit-content;
+    background: #fdf5c9;
+    color: black;
+    padding: 10px;
+    border: 2px solid #f5e7a3;
+    border-radius: 4px;
+    font-family: 'Roboto-Regular' !important;
+    font-size: 16px;
+    align-items: center;
+    z-index: 1;
+    .closebutton_section {
+        text-align: end;
+        position: absolute;
+        right: 8px;
+        top: 6px;
+        .common-icon-close {
+            color: #333;
+            cursor: pointer;
+        }
+    }
+    .message_section {
+        display: flex;
+        align-items: center;
+        .common-icon-c-mark:before {
+            color: #26d8b1;
+            font-size: 64px;
+        }
+        .message {
+            line-height: 24px;
+            font-size: 12px;
+            .message-content {
+                margin-right: 30px;
+                padding-left: 8px;
+                p {
+                    font-size: 14px;
+                    color: #333;
+                    margin: 0px;
+                    line-height: 1.8;
+                    a {
+                        color: #059cdf;
+                        text-decoration: underline;
+                        cursor: pointer;
+                    }
+                    .bold-oa {
+                        margin-left: 18px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.Sui-toastmessage-div2 {
+    position: absolute;
+    margin: auto;
+    left: 0;
+    right: 0;
+    bottom: 54px;
+    width: -moz-fit-content;
+    width: fit-content;
+    background: #3aca9b;
+    color: black;
+    padding: 10px;
+    border: 2px solid #3aca9b;
+    border-radius: 4px;
+    font-family: 'Roboto-Regular' !important;
+    font-size: 16px;
+    align-items: center;
+    z-index: 1;
+    .closebutton_section {
+        text-align: end;
+        position: absolute;
+        right: 8px;
+        top: 6px;
+        .common-icon-close {
+            color: white;
+            cursor: pointer;
+        }
+    }
+    .message_section {
+        display: flex;
+        align-items: center;
+        padding: 1px 22px 1px 0px;
+        .common-icon-Certification-approve-icon:before {
+            color: white;
+        }
+        .message {
+            line-height: 24px;
+            font-size: 12px;
+            color: white;
+            .number {
+                padding: 1px 4px;
+                border: 1px solid white;
+                border-radius: 50%;
+            }
+            .message {
+                color: white;
+                padding-left: 4px;
+            }
+            .line {
+                width: 1px;
+                height: 13px;
+                border: 1px solid white;
+                margin-left: 7px;
+            }
+        }
+    }
+}

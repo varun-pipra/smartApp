@@ -1,0 +1,121 @@
+.post-list {
+    flex: auto;
+    .post-empty-text {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: #b2b2b2;
+        margin: 11% auto;
+        width: 200px;
+        border: 2px dashed #ccc;
+        padding: 20px;
+        border-radius: 6px;
+        .common-icon-BidQueries {
+            background-color: #b2b2b2;
+            border-radius: 50%;
+            font-size: 40px;
+            color: #fff;
+            padding: 6px;
+            margin-bottom: 10px;
+            &:before {
+                color: #fff;
+            }
+        }
+    }
+    .post-box {
+        padding-top: 1em;
+        .post-item {
+            padding: 0.5em;
+            gap: 0.4em;
+            margin: 10px 0px 0px 42px;
+            &.question {
+                background-color: #fafafa;
+                border: 1px solid #e7e7e7;
+                border-radius: 4px;
+                margin: 15px 0px 0px 0px;
+            }
+            .post-header {
+                display: flex;
+                gap: 0.8em;
+                .post-thumbnail {
+                    width: 2.2em;
+                    height: 2.2em;
+                    border: 1px solid #999;
+                    border-radius: 50%;
+                }
+                .post-metadata {
+                    .post-author,
+                    .post-timestamp {
+                        margin: 0;
+                    }
+                    .post-author {
+                        font-size: 15px;
+                        font-weight: bold;
+                        color: #333;
+                        margin-bottom: 2px;
+                    }
+                    .post-timestamp {
+                        font-size: 13px;
+                        color: #999;
+                    }
+                    .privacy-badge {
+                        padding: 0.3em 0.6em;
+                        font-size: 12px;
+                        margin-left: 0.5em;
+                        border-radius: 0.2em;
+                        &.private {
+                            color: #333;
+                            background-color: #ffd351;
+                        }
+                        &.public {
+                            color: #fff;
+                            background-color: #059cdf;
+                        }
+                    }
+                }
+            }
+            .post-body {
+                font-size: 14px;
+                color: #333;
+                line-height: 1.8;
+                padding-left: 45px;
+            }
+        }
+        .post-reply-box {
+            padding: 1em 1em 1em 0.0em;
+            .post-reply-btn {
+                height: 2.5em;
+                border-color: #059cdf;
+                color: #059cdf;
+            }
+            .privacy-settings {
+                padding: 1em 0 0.5em 0.5em;
+                display: flex;
+                gap: 1em;
+                align-items: center;
+                justify-content: flex-end;
+                .privacy-toggle-label {
+                    font-size: 14px;
+                    color: #333;
+                }
+                .privacy-toggle {
+                    height: 2em;
+                    .privacy-toggle-btn {
+                        padding: 0 0.5em;
+                        text-transform: unset;
+                        color: #333;
+                        background-color: #f4f4f4;
+                        line-height: 1;
+                        &.Mui-selected {
+                            color: #fff;
+                            background-color: #059cdf;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,25 +1,25 @@
-import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
-import { HeadsetMic } from '@mui/icons-material';
-import { useAppSelector, useAppDispatch } from 'app/hooks';
+import {HeadsetMic} from '@mui/icons-material';
+import {useAppSelector, useAppDispatch, hideLoadMask} from 'app/hooks';
 
 import './ToolsEquipmentWindow.scss';
 
-import { postMessage } from 'app/utils';
+import {postMessage} from 'app/utils';
 import CatalogList from './catalog/CatalogList';
 import InverntoryContainer from './inventory/InventoryContainer';
 import SmartDialog from 'components/smartdialog/SmartDialog';
 import Menu from 'components/buttonmenu/ButtonMenu';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { ToolsAndEquipmentPageTypes, getPageType, setPageType } from './operations/catalogSlice';
-import { useLocation } from 'react-router-dom';
+import {ToolsAndEquipmentPageTypes, getPageType, setPageType} from './operations/catalogSlice';
+import {useLocation} from 'react-router-dom';
+import {useEffect, useState} from 'react';
 
 const handleHelp = () => {
 	postMessage({
 		event: "help",
-		body: { iframeId: "toolsAndEquipment" },
+		body: {iframeId: "toolsAndEquipment"},
 	});
-}
+};
 
 const optionalTools = [
 	<IQTooltip title="Help" placement={'bottom'}>
@@ -33,7 +33,7 @@ const ToolsEquipmentWindow = (props: any) => {
 	const pageType = useAppSelector(getPageType);
 	const dispatch = useAppDispatch();
 
-	const [isFullView, setIsFullView] = React.useState(false);
+	const [isFullView, setIsFullView] = useState(false);
 	const location = useLocation();
 
 	const titleEl = <>Tools and Equipment &nbsp;&nbsp;&nbsp;<Menu
@@ -43,9 +43,13 @@ const ToolsEquipmentWindow = (props: any) => {
 		onChange={(selectedType: ToolsAndEquipmentPageTypes) => dispatch(setPageType(selectedType))} />
 	</>;
 
-	React.useEffect(() => {
+	useEffect(() => {
+		hideLoadMask();
+	}, []);
+
+	useEffect(() => {
 		const pathName = location.pathname;
-		if (pathName.includes('home')) {
+		if(pathName.includes('home')) {
 			setIsFullView(true);
 		}
 	}, [location]);
@@ -54,7 +58,7 @@ const ToolsEquipmentWindow = (props: any) => {
 		className="ToolsEquipment"
 		open={true}
 		PaperProps={{
-			sx: { height: '80%', width: '90%' }
+			sx: {height: '80%', width: '90%'}
 		}}
 		custom={{
 			closable: true,
@@ -63,12 +67,12 @@ const ToolsEquipmentWindow = (props: any) => {
 			tools: [optionalTools]
 		}}
 		onClose={() => {
-			postMessage({ event: 'closeiframe', body: { iframeId: 'toolsAndEquipment' } });
+			postMessage({event: 'closeiframe', body: {iframeId: 'toolsAndEquipment'}});
 		}}
 		isFullView={isFullView}
 	>
 		{pageType === 'catalog' ? <CatalogList /> : <InverntoryContainer />}
-	</SmartDialog >
+	</SmartDialog >;
 };
 
 const getMenuOptions = () => {
