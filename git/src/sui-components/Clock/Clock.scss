@@ -4,7 +4,7 @@
         margin-top: 2px;
         &:before {
             color: #ed7532;
-            font-size: 1.45rem;
+            font-size: 1.3rem;
         }
     }
     .MuiInputBase-input {
@@ -15,5 +15,26 @@
 .clock-picker {
     .MuiPickersToolbar-penIconButton {
         display: none !important;
+    }
+    .MuiClock-root {
+        .MuiClock-amButton1,
+        .MuiClock-pmButton1 {
+            background-color: transparent;
+            background-color: #1976d2;
+            color: #333;
+            border: 1px solid #333;
+            border-radius: 2px;
+            padding: 4px 8px;
+        }
+    }
+    .MuiClockPointer-root {
+        background-color: #059cdf;
+        .MuiClockPointer-thumb {
+            border: 16px solid #059cdf;
+            background-color: #059cdf;
+        }
+    }
+    .MuiClock-pin {
+        background-color: #059cdf;
     }
 }

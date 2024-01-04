@@ -19,7 +19,7 @@
     &_form-row {
         display: flex;
         align-items: center;
-        margin: 10px 0;
+        margin: 20px 0;
         .time-field {
             width: 100px;
             margin-right: 15px;
@@ -27,10 +27,29 @@
         .notes-field {
             margin-right: 15px;
             width: 250px;
+            .common-icon-Description:before {
+                color: #ec711c;
+                font-size: 24px;
+            }
         }
         &:first-child {
             .MuiIconButton-root {
                 margin-left: 40px;
+                .common-icon-add:before {
+                    content: "\e945";
+                    background-color: #059cdf;
+                    color: #fff;
+                    border-radius: 50%;
+                    padding: 4px;
+                    font-size: 18px;
+                }
+            }
+        }
+        .action-btn-cls {
+            //padding-top: 20px;
+            span {
+                color: #333;
+                font-size: 22px;
             }
         }
     }
@@ -55,7 +74,15 @@
     .duration-field {
         .common-icon-monthly {
             color: #ed7431;
-            font-size: 30px;
+            font-size: 26px;
+            margin-right: 0px;
+            vertical-align: sub;
+        }
+    }
+    .smart-item-field {
+        .common-icon-smartapp {
+            color: #ed7431;
+            font-size: 20px;
             margin-right: 0px;
             vertical-align: sub;
         }

@@ -671,13 +671,26 @@ const BidManagerGrid = (props: any) => {
 export default memo(BidManagerGrid);
 
 export const CustomGroupHeader = memo((props: any) => {
-	const {iconCls, color, baseCustomLine = false, label, colName = '', ...rest} = props;
+	const {iconCls, color,bgColor, baseCustomLine = false,showStatus = false, label, colName = '', ...rest} = props;
 	return (
 		<div className="custom-group-header-cls" style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
 			{baseCustomLine && (
 				<div className={"base-custom-line pt-group"} style={{backgroundColor: color, width: '4px', height: '36px'}}></div>
 			)}
-			<span className="custom-group-header-label-cls">{label}</span>
+			{showStatus && (
+				<div
+				className='status'
+				style={{
+					color: color,
+					backgroundColor: bgColor
+				}}
+			>
+				<span className={`status-icon ${iconCls}`}></span> {label}{' '}
+			</div>
+			)}
+			{!showStatus && (
+				<span className="custom-group-header-label-cls">{label}</span>
+			)}
 		</div>
 	);
 });

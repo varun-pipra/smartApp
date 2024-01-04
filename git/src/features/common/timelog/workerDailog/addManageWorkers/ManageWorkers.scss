@@ -1,0 +1,46 @@
+.worker-title-section{
+    display: flex;
+    padding: 0px 15px;
+        .worker-name-section{
+            padding: 10px 15px;            
+            .worker-hours{
+                color: #ed7431 !important;
+            }
+        }
+        .worker-image-section{
+            height: 45px;
+            width: 45px;
+            border-radius: 50%;
+            .worker-image{
+                height: 45px;
+                width: 45px;
+                border-radius: 50%;
+                // padding: 10px 15px;
+            }
+        }
+}
+
+.Add-manage-workers-titel{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    text-align: center;
+    background-color: #f8f2f3;
+    align-items: center;
+    .add-manage-workers-member-or-hrs{
+        color: #ed7431;
+       font-size: xx-large
+    }
+}
+
+.worker-info{
+    padding: 20px 10px;
+    box-shadow: 0 0 1px #a4b3c5
+}
+
+.btn-add-manage-worker{
+    background-color: #ed7431 !important;
+}
+
+        
+    

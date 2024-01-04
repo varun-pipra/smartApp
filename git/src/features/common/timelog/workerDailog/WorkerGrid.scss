@@ -1,0 +1,38 @@
+.worker-grid-cont {
+    flex: 4;
+    margin: 10px 0;
+    .ag-root-wrapper {
+        border: unset;
+        .ag-root-wrapper-body {
+            height: 100%;
+        }
+    }
+    .app-items-cell-contentt {
+        display: flex;
+        .link-name-icon {
+            background-color: #059cdf;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            text-align: center;
+            display: flex;
+            align-content: stretch;
+            justify-content: center;
+            flex-direction: column;
+            margin-right: 4px;
+            color: white;                
+        }
+        .link-name-tag {
+            font-weight: 600;
+        }
+    }
+}
+
+.workers-main-container{
+    .footer{
+        // display: flex;
+        bottom: 20px;
+        position: absolute;
+        right: 15px;
+    }
+}

@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?fpcoxd');
-  src:  url('fonts/common-webfont.eot?fpcoxd#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?fpcoxd') format('truetype'),
-    url('fonts/common-webfont.woff?fpcoxd') format('woff'),
-    url('fonts/common-webfont.svg?fpcoxd#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?uamryt');
+  src:  url('fonts/common-webfont.eot?uamryt#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?uamryt') format('truetype'),
+    url('fonts/common-webfont.woff?uamryt') format('woff'),
+    url('fonts/common-webfont.svg?uamryt#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-accept:before {
+  content: "\ec69";
+}
+.common-icon-duration1:before {
+  content: "\ec6a";
+}
+.common-icon-reported:before {
+  content: "\ec6b";
+}
+.common-icon-send-back1:before {
+  content: "\ec6c";
+}
 .common-icon-add-external-url:before {
   content: "\ec65";
 }

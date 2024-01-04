@@ -13,7 +13,7 @@ import { getTime, addTimeToDate } from "utilities/datetime/DateTimeUtils";
 const TimeLogPicker = (props: any) => {
   const rowObj = { startTime: "", endTime: "", notes: "", duration: "" };
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const [logEntries, setLogEntries] = useState<any>([
+    const [logEntries, setLogEntries] = useState<any>([
     { ...rowObj, id: Date.now() },
   ]);
   const [overallDuration, setOverallDuration] = useState<any>("0 Hrs 00 Mins");
@@ -26,12 +26,12 @@ const TimeLogPicker = (props: any) => {
 
   const open = Boolean(anchorEl);
   const id = open ? "popover" : undefined;
-
+  
   const onInputClick = (e: any) => {
-    setAnchorEl(e.currentTarget);
-  };
+        setAnchorEl(e.currentTarget);
+    };
 
- /**
+   /**
   * On add button click pushing one empty object to the local state, so that it will render new row.
   * @author Srinivas Nadendla
   */
@@ -221,7 +221,7 @@ const TimeLogPicker = (props: any) => {
           <TextField
             fullWidth
             InputProps={{
-              startAdornment: <span className="common-icon-title"></span>,
+              startAdornment: <span className="common-icon-Description"></span>,
             }}
             name="name"
             variant="standard"
@@ -231,13 +231,14 @@ const TimeLogPicker = (props: any) => {
         </div>
         {index !== 0 && (
           <IconButton
+          className="action-btn-cls"
             data-action="delete"
             onClick={(e: any) => onDeleteBtnClick(index)}
           >
             <span className="common-icon-delete" />
           </IconButton>
         )}
-        <IconButton data-action="add" onClick={() => onAddBtnClick()}>
+        <IconButton  className="action-btn-cls" data-action="add" onClick={() => onAddBtnClick()}>
           <span className="common-icon-add" />
         </IconButton>
       </div>
@@ -249,7 +250,7 @@ const TimeLogPicker = (props: any) => {
       <Input
         id="timeLogPicker"
         fullWidth
-        startAdornment={<span className="common-icon-CurrentTime"> </span>}
+        startAdornment={<span className="common-icon-CurrentTime"></span>}
         placeholder={"HH:MM - HH:MM"}
         name={props.name || "Time"}
         readOnly={true}
@@ -263,7 +264,7 @@ const TimeLogPicker = (props: any) => {
         onClose={handleClose}
         anchorOrigin={{
           vertical: "bottom",
-          horizontal: "center",
+          horizontal: 'left'
         }}
       >
         <div className="time-log-modal">

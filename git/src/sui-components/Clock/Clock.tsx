@@ -72,6 +72,11 @@ const SUIClock = (props: ClockProps) => {
 	};
 
 	const onFieldClick = (event: any) => {
+		if (time) {
+			const timeDt = convertTimetoDate(time);
+			setPickerTime(timeDt);
+			onTimeSelection(timeDt);
+		}
 		!disabled && setAnchorEl(event.currentTarget);
 	};
 
@@ -99,6 +104,20 @@ const SUIClock = (props: ClockProps) => {
 				value={time}
 				disabled={disabled}
 				onClick={onFieldClick}
+				onChange={(e: any)=> setTime(e.target.value)}
+				onBlur={(e: any)=> {
+					const time = e.target.value;
+					if (time) {
+						const timeDt = convertTimetoDate(time);
+						if (isNaN(timeDt)) {
+							setTime('');
+							onTimeSelection('');
+						} else {
+							onTimeSelection(timeDt);
+						}
+						
+					}
+				}}
 			/>
 
 			<Popover

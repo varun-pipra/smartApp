@@ -29,22 +29,26 @@ export const TLLeftButtons = memo(() => {
 		</IQTooltip>
 		<IQTooltip title='Delete' placement='bottom'>
 			<IconButton aria-label='Delete Time Log Item'
-				disabled={true}
+				disabled={false}
 			>
 				<span className='common-icon-delete'></span>
 			</IconButton>
 		</IQTooltip>
+		<IconButton className='divider-line-cls'>
+			</IconButton>
 		<IQTooltip title='Generate PDF' placement='bottom'>
-			<IconButton aria-label='Generate PDF Time Log List'
+			<IconButton className='pdf-toolbar-btn1' aria-label='Generate PDF Time Log List'
 			// disabled={selectedCount === 0}
 			>
 				<span className='common-icon-pdf'></span>
 			</IconButton>
 		</IQTooltip>
-		<Button variant="outlined" startIcon={<Gavel />} disabled={true}>
+		<IconButton className='divider-line-cls'>
+			</IconButton>
+		<Button className='tl-toolbar-btn' variant="outlined" startIcon={<span className='common-icon-accept'></span>} disabled={false}>
 			Accept
 		</Button>
-		<Button variant="outlined" startIcon={<Gavel />} disabled={true}>
+		<Button className='tl-toolbar-btn' variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} disabled={false}>
 			Send Back
 		</Button>
 	</>;

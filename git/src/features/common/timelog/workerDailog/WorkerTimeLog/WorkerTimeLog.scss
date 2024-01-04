@@ -1,0 +1,85 @@
+.time-log-modal {
+    padding: 16px;
+    width: 600px;
+    &-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    &-header_close {
+        cursor: pointer;
+        transform: rotate(45deg);
+        color: #666;
+        font-size: 22px;
+    }
+    &_form {
+        overflow-y: auto;
+        max-height: 300px;
+    }
+    &_form-row {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        .time-field {
+            width: 100px;
+            margin-right: 15px;
+        }
+        .notes-field {
+            margin-right: 15px;
+            width: 65%;
+        }
+        &:first-child {
+            .MuiIconButton-root {
+                margin-left: 40px;
+            }
+        }
+    }
+}
+
+.time-log-form {
+    grid-template-columns: minmax(200px, 1fr) 2.0fr 2.5fr 2.5fr 2.5fr minmax(75px, auto);
+    .resource-field {
+        .common-icon-name {
+            color: #ed7431;
+            font-size: 18px;
+            margin-right: 6px;
+        }
+    }
+    .time-field {
+        .common-icon-CurrentTime {
+            color: #ed7431;
+            font-size: 20px;
+            margin-right: 6px;
+        }
+    }
+    .duration-field {
+        .common-icon-monthly {
+            color: #ed7431;
+            font-size: 30px;
+            margin-right: 0px;
+            vertical-align: sub;
+        }
+    }
+}
+
+.time-log-container{
+    .common-icon-title:before{
+        color: #666 !important;
+    }
+    .common-icon-CurrentTime:before{
+        color: #666 !important;
+    }
+    .common-icon-CurrentTime:before{
+        color: #666 !important;
+    }
+    .common-icon-add:before{
+        height: 27px;
+        width: 27px;
+        border-radius: 50%;
+        color: white !important;
+        background-color: #1976d2 !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

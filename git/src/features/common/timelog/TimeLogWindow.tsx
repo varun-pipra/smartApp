@@ -1,5 +1,6 @@
+import React from 'react';
 import {AgGridReact} from 'ag-grid-react';
-// import './TimeLogWindow.scss';
+import './TimeLogWindow.scss';
 
 import {setCurrencySymbol, setServer} from 'app/common/appInfoSlice';
 import {useAppDispatch, useAppSelector, useHomeNavigation} from 'app/hooks';
@@ -7,7 +8,7 @@ import {currency, isLocalhost, postMessage} from 'app/utils';
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
 import {appInfoData} from 'data/appInfo';
 import _ from 'lodash';
-import {memo, useMemo, useEffect, useState, useRef} from 'react';
+import {memo, useMemo, useEffect, useState, useRef, useCallback} from 'react';
 import {useLocation} from 'react-router-dom';
 import {triggerEvent} from 'utilities/commonFunctions';
 import {formatDate} from 'utilities/datetime/DateTimeUtils';
@@ -18,6 +19,10 @@ import CustomFilterHeader from '../gridHelper/CustomFilterHeader';
 import {TLLeftButtons, TLRightButtons} from './toolbar/TimeLogToolbar';
 import {timelogList} from 'data/timelog/TimeLogData';
 import TimeLogLID from './details/TimeLogLID';
+import { Button } from '@mui/material';
+import { findAndUpdateFiltersData } from 'features/safety/sbsmanager/utils';
+import moment from "moment";
+import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 
 let defaultTimeLogStatusFilter: any = [];
 
@@ -40,8 +45,10 @@ const TimeLogWindow = (props: any) => {
 	const [search, setSearch] = useState<string>('');
 	const [defaultFilters, setDefaultFilters] = useState<any>({});
 	const groupKeyValue = useRef<any>(null);
-	const [activeGroupKey, setActiveGroupKey] = useState<String>('');
-
+	// const [activeGroupKey, setActiveGroupKey] = useState<String>('');
+	const [columns, setColumns] = useState([]);
+	const [rowData, setRowData] = useState<Array<any>>([]);
+  	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
 	let gridRef = useRef<AgGridReact>();
 
 	if(statusFilter) defaultTimeLogStatusFilter = filters.status;
@@ -51,7 +58,7 @@ const TimeLogWindow = (props: any) => {
 	}, {
 		text: 'Work Team', value: 'workTeam'
 	}, {
-		text: 'Companies', value: 'companies'
+		text: 'Companies', value: 'company'
 	}, {
 		text: 'Apps', value: 'apps'
 	}, {
@@ -61,9 +68,9 @@ const TimeLogWindow = (props: any) => {
 	}, {
 		text: 'Created By', value: 'createdBy'
 	}, {
-		text: 'Conflicting Time Entries', value: 'conflicting'
+		text: 'Timelog ID', value: 'timeLogId'
 	}, {
-		text: 'Date Range', value: 'dateRange'
+		text: 'Date', value: 'startDate'
 	}, {
 		text: 'System Breakdown Structure', value: 'sbs'
 	}, {
@@ -171,23 +178,19 @@ const TimeLogWindow = (props: any) => {
 	}, [localhost, appData]);
 
 	const onGroupingChange = (groupKey: any) => {
-		// const columnsCopy = [...columns];
-		setActiveGroupKey(groupKey);
-		// console.log("activeMainGridGroupKey", groupKey, columnsCopy);
+		const columnsCopy:any = [...headers];
 		if(((groupKey ?? false) && groupKey !== "")) {
 			groupKeyValue.current = groupKey;
-			// columnsCopy.forEach((col: any) => {
-			// 	col.rowGroup = groupKey ? groupKey === col.field : false;
-			// 	setColumns(columnsCopy);
-			// });
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = groupKey ? groupKey === col.field : false;
+				setColumns(columnsCopy);
+			});
 		} else if(groupKey ?? true) {
 			groupKeyValue.current = null;
-			// columnsCopy.forEach((col: any) => {
-			// 	// console.log("status", col?.rowGroup);
-			// 	col.rowGroup = false;
-			// });
-			// console.log("else group key", columnsCopy);
-			// setColumns(columnsCopy);
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = false;
+			});
+			setColumns(columnsCopy);
 		}
 	};
 
@@ -196,38 +199,50 @@ const TimeLogWindow = (props: any) => {
 		if(node.group) {
 			const colName = groupKeyValue?.current;
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			// if(colName === "status") {
-			// 	return (
-			// 		<div style={{display: 'flex'}}>
-			// 			<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
-			// 				label={stateMap[data?.status]?.text} colName={colName}
-			// 			/>
-			// 		</div>
-			// 	);
-			// } else if(colName === "fundingSource") {
-			// 	return (
-			// 		<div style={{display: 'flex'}}>
-			// 			<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
-			// 				label={data?.fundingSource} colName={colName}
-			// 			/>
-			// 		</div>
-			// 	);
-			// } else if(colName === "clientContract.title") {
-			// 	return (
-			// 		<div style={{display: 'flex'}}>
-			// 			<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
-			// 				label={data?.clientContract?.title} colName={colName}
-			// 			/>
-			// 		</div>
-			// 	);
-			// }
+			if(colName === "status") {
+				const stateObject: any = (timelogStatusMap || [])?.find((x:any) => x.value === node?.key);
+				return (
+					<div style={{display: 'flex'}} className='status-column'>
+						<CustomGroupHeader iconCls={stateObject?.icon} baseCustomLine={false}
+							label={stateObject?.text} showStatus = {true}
+							color = {stateObject?.color} bgColor = {stateObject?.bgColor}
+						/>
+					</div>
+				);
+			}else if(colName === "startDate") {
+				let now = moment.utc(new Date());
+				let lastContact = moment.utc(data.endDate);
+				let months = now.diff(lastContact, 'months');
+          		let weeks = now.diff(lastContact, 'weeks');
+				let days = now.diff(lastContact, 'days');
+				// let hours = lastContact.diff(now, 'hours');
+				// let minutes = lastContact.diff(now, 'minutes');
+				// let seconds = lastContact.diff(now, 'seconds');
+				let label = '';
+    			if (days >= 2) {
+        			label = moment.utc(lastContact).fromNow(); // '2 days ago' etc.
+    			};	
+				console.log("dfdsiufhuisd", lastContact.calendar(), months, weeks, days);
+    			label = lastContact.calendar().split(' ')[0];
+				return (
+					<div style={{display: 'flex'}} className='status-column'>
+						<CustomGroupHeader  label={moment.utc(data?.endDate).format('DD/MM/YYYY') +" "+ (`(${label})`)} />
+					</div>
+				);
+			} else {
+				return (
+					<div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+						<span className="custom-group-header-label-cls">{node?.key || ""}</span>
+					</div>
+				)
+			}
 		};
 	};
 
 	const groupRowRendererParams = useMemo(() => {
 		return {
 			checkbox: true,
-			suppressCount: false,
+			suppressCount: true,
 			suppressGroupRowsSticky: true,
 			innerRenderer: GroupRowInnerRenderer
 		};
@@ -242,21 +257,26 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const searchAndFilter = (list: any) => {
-		// return list.filter((item: any) => {
-		// 	const regex = new RegExp(search, 'gi');
-		// 	return (!search || (search && (item.name?.match(regex) || (fundingSourceMap[item.fundingSource]).match(regex) ||
-		// 		(stateMap[item.status]?.text).match(regex) || item.code?.match(regex) ||
-		// 		item.fundingSource?.match(regex) || item.clientContract?.client?.name?.match(regex) ||
-		// 		item.clientContract?.title?.match(regex) ||
-		// 		item.budgetItems?.filter((el: any) => {
-		// 			return el.name?.match(regex) || el.constType?.match(regex) ||
-		// 				el.costCode?.match(regex) || el.division?.match(regex);
-		// 		}).length > 0)))
-		// 		&& (_.isEmpty(filters) || (!_.isEmpty(filters)
-		// 			&& (_.isEmpty(filters.status) || filters.status?.length === 0 || filters.status?.indexOf(item.status) > -1)
-		// 			&& (_.isEmpty(filters.fundingSource) || filters.fundingSource?.length === 0 || filters.fundingSource?.indexOf(item.fundingSource) > -1)
-		// 			&& (_.isEmpty(filters.clientContracts) || filters.clientContracts?.length === 0 || filters.clientContracts?.indexOf(item.clientContract.id) > -1)));
-		// });
+		return list.filter((item: any) => {
+			const regex = new RegExp(search, "gi");
+			const searchVal = Object.keys(item).some((field) => {
+			  if (Array.isArray(item[field])) {
+				if (item[field]?.length > 0) {
+				  for (let i = 0; i < item[field].length; i++) {
+					return Object.keys(item?.[field]?.[i])?.some((objField) => {
+					  return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
+					});
+				  }
+				} else return false;
+			  } else if ((item[field] ?? false) && typeof item[field] === "object") {
+				return Object.keys(item?.[field])?.some((objField) => {
+				  return item?.[field]?.[objField]?.toString()?.match(regex);
+				});
+			  } else return item?.[field]?.toString()?.match(regex);
+			});
+			
+			return searchVal;
+		  });
 	};
 
 	const handleStatusFilter = (statusFilters: any) => {
@@ -280,16 +300,19 @@ const TimeLogWindow = (props: any) => {
 	 * Search, Filters are applied to the source data and the result
 	 * is set to the local state
 	 */
-	const modifiedList = searchAndFilter([]);
-
-	const columns = useMemo(() => [{
+	const headers:any = useMemo(() => [{
 		headerName: 'Time Segment ID',
 		field: 'timeSegmentId',
-		pinned: 'left'
+		pinned: 'left',
+		suppressMenu: true,
+		checkboxSelection: true,
+		headerCheckboxSelection: true,
 	}, {
 		headerName: 'Status',
 		field: 'status',
 		pinned: 'left',
+		cellClass: 'status-column',
+		headerClass: 'custom-filter-header',
 		headerComponent: CustomFilterHeader,
 		headerComponentParams: {
 			columnName: 'Status',
@@ -300,6 +323,18 @@ const TimeLogWindow = (props: any) => {
 			onClose: () => setStatusFilter(true),
 			onFilter: handleStatusFilter
 		},
+		cellRenderer: (params: any) => {
+			const stateObject: any = (timelogStatusMap || [])?.find((x:any) => x.value === params?.value);
+			return <div
+				className='status'
+				style={{
+					color: stateObject?.color,
+					backgroundColor: stateObject?.bgColor
+				}}
+			>
+				<span className={`status-icon ${stateObject?.icon}`}></span> {stateObject?.text}{' '}
+			</div>;
+		}
 	}, {
 		headerName: 'Time Entry For',
 		field: 'entryFor',
@@ -308,39 +343,77 @@ const TimeLogWindow = (props: any) => {
 		headerName: 'Company',
 		field: 'company'
 	}, {
+		headerName: 'Start Date',
+		field: 'startDate',
+		valueGetter: (params: any) => `${moment.utc(params?.data?.startDate).format('DD/MM/YYYY')}`,
+	}, {
+		headerName: 'End Date',
+		field: 'endDate',
+		valueGetter: (params: any) => `${moment.utc(params?.data?.endDate).format('DD/MM/YYYY')}`,
+	}, {
 		headerName: 'Start Time',
-		field: 'startTime'
+		field: 'startTime',
+		valueGetter: (params: any) => `${moment.utc(params?.data?.startTime).format('h:mm A')}`,
 	}, {
 		headerName: 'End Time',
-		field: 'endTime'
+		field: 'endTime',
+		valueGetter: (params: any) => `${moment.utc(params?.data?.endTime).format('h:mm A')}`,
 	}, {
 		headerName: 'Duration',
 		field: 'duration'
 	}, {
 		headerName: 'Source',
-		field: 'source'
+		field: 'source',
+		keyCreator: (params: any) => params.data?.source || "None"
 	}, {
 		headerName: 'Created By',
-		field: 'createdBy'
+		field: 'createdBy',
+		valueGetter: (params: any) => params.data?.createdBy?.name,
+		keyCreator: (params: any) => params.data?.createdBy?.name || "None"
 	}, {
 		headerName: 'Smart Item',
-		field: 'smartItem'
+		field: 'smartItem',
+		keyCreator: (params: any) => params.data?.smartItem || "None"
 	}, {
 		headerName: 'Work Team',
-		field: 'workItem'
+		field: 'workTeam',
+		keyCreator: (params: any) => params.data?.workTeam || "None"
 	}, {
 		headerName: 'Location',
-		field: 'location'
+		field: 'location',
+		keyCreator: (params: any) => params.data?.location || "None"
 	}, {
 		headerName: 'System Breakdown Structure',
-		field: 'sbs'
+		field: 'sbs',
 	}, {
 		headerName: 'Phase',
-		field: 'phase'
+		field: 'phase',
+		keyCreator: (params: any) => params.data?.phase?.[0]?.name || "None",
+		minWidth: 260,
+		cellRenderer: (params: any) => {
+		  const phase = params.data?.phase?.[0]?.name;
+		  const buttonStyle = {
+			backgroundColor: params.data?.phase?.[0]?.color ?? "red",
+			color: "#fff",
+			alignItems: "center",
+		  };
+  
+		  return (
+			<>
+			  {phase ? (
+				<Button style={buttonStyle} className="phase-btn">
+				  <span className="common-icon-phase"></span>
+				  {phase}
+				</Button>
+			  ) : null}
+			</>
+		  );
+		},
 	}, {
 		headerName: 'Time Log ID',
 		field: 'timeLogId',
-	}], [defaultTimeLogStatusFilter, server, groupKeyValue.current]);
+		keyCreator: (params: any) => params?.data?.timeLogId || "None"
+	}], []);
 
 	const filterOptions = useMemo(() => [{
 		text: 'Users',
@@ -475,6 +548,27 @@ const TimeLogWindow = (props: any) => {
 		if(isInline) useHomeNavigation(iFrameId, appType);
 	};
 
+	const onFirstDataRendered = useCallback((params: any) => {
+		gridRef.current = params;
+		setColumns(headers);
+	}, []);
+	useEffect(() => {
+		if (search || filters) {
+		  const data = searchAndFilter([...modifiedList]);
+		  setRowData(data);
+		}
+	  }, [search, filters]);
+	React.useEffect(() => {
+		if (timelogList.length > 0) {
+		  setModifiedList(timelogList);
+		  setRowData(timelogList);
+		//   setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "phase", true, "name"));
+		} else if (timelogList.length === 0) {
+		  setModifiedList([]);
+		  setRowData([]);
+		//   setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "phase", true, "name"));
+		}
+	  }, [timelogList]);
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
 	return (
@@ -535,7 +629,7 @@ const TimeLogWindow = (props: any) => {
 							type: 'regular',
 							defaultFilters: defaultFilters,
 							groupOptions: groupOptions,
-							filterOptions: filterOptions,
+							filterOptions: filters,
 							onGroupChange: onGroupingChange,
 							onSearchChange: onGridSearch,
 							onFilterChange: onFilterChange
@@ -543,16 +637,19 @@ const TimeLogWindow = (props: any) => {
 					},
 					grid: {
 						headers: columns,
-						data: timelogList,
+						data: rowData,
 						getRowId: (params: any) => params.data?.id,
-						grouped: true,
-						groupIncludeTotalFooter: false,
-						rowSelection: 'single',
-						groupIncludeFooter: false,
 						rowSelected: (e: any) => rowSelected(e),
 						groupDisplayType: 'groupRows',
 						nowRowsMsg: '<div>No items available yet</div>',
 						groupRowRendererParams: groupRowRendererParams,
+						onFirstDataRendered: onFirstDataRendered,
+						groupIncludeTotalFooter: false,
+						groupIncludeFooter: false,
+						groupSelectsChildren: true,
+						rowSelection: "multiple",
+						groupDefaultExpanded: 1,
+						grouped: true,
 					}
 				}
 			}}
