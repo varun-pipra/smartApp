@@ -102,7 +102,7 @@ const HeaderPinning = (props: any) => {
 		// console.log('settings in header pinning', CostCodeAndTypeData)
 		dispatch(fetchDivisionCostCodeFilterList({appInfo: appInfo, costCodeName: settingsData.divisionCostCode}));
 		dispatch(fetchCostCodeDropdownList({appInfo: appInfo, name: settingsData.divisionCostCode}));
-		dispatch(fetchCostTypeDropdownList({appInfo: appInfo, name: settingsData.divisionCostCode}));
+		// dispatch(fetchCostTypeDropdownList({appInfo: appInfo, name: settingsData.divisionCostCode}));
 		// console.log("List divisionCostCodeFilterData",divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData)
 
 		const ListData = localhost ? settingcostcodetypeData.values : CostCodeAndTypeData.values;

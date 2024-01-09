@@ -9,6 +9,7 @@ import {
 import "./TimeLogPicker.scss";
 import SUIClock from "sui-components/Clock/Clock";
 import { getTime, addTimeToDate } from "utilities/datetime/DateTimeUtils";
+import dayjs from "dayjs";
 
 const TimeLogPicker = (props: any) => {
   const rowObj = { startTime: "", endTime: "", notes: "", duration: "" };
@@ -153,6 +154,46 @@ const TimeLogPicker = (props: any) => {
     props.onDurationChange(overallDuration);
   }, [overallDuration]);
 
+  const convertTimetoDate = (date: any) => {
+		if (date === "") return null;
+		let b: any = date ? dayjs(`1/1/1 ${date}`).format("HH:mm:00") : null; //checking AM or PM
+		let a: any = dayjs(new Date()).set('hour', (b?.split(":")?.[0])).set('minute', (b?.split(":")?.[1]?.split(" ")?.[0]));
+		return a.$d;
+	};
+
+  const getPickerDefaultTime = (time: any, incrementDecrement: any) => {
+    let currentTime: any = convertTimetoDate(time);
+    if (isNaN(currentTime)) {
+      return '';
+    }
+    let [hours, minutes, ampm] = time.split(/:|\s/);
+    hours = parseInt(hours, 10);
+		minutes = parseInt(minutes, 10);
+    if (isNaN(hours) && isNaN(minutes)) {
+      return '';
+    }
+    if (incrementDecrement) {
+					minutes += 5;
+					if (minutes >= 60) {
+            minutes -= 60;
+            hours = (hours + 1) % 12;
+					}
+    } else {
+          minutes -= 5;
+					if (minutes < 0) {
+            minutes += 60;
+            hours = (hours - 1 + 12) % 12;
+					}
+    }
+    // Format the new time
+    hours = hours === 0 ? 12 : hours; // Handle midnight (0 hours)
+    if (hours === 12 && minutes === 0) {
+    ampm = ampm?.toLowerCase() === "am" ? "PM" : "AM";
+    }
+    let newTime = `${hours}:${String(minutes).padStart(2, "0")} ${ampm}`;
+    return newTime;
+  }
+
   /**
    * 
    * @param rec object
@@ -161,6 +202,14 @@ const TimeLogPicker = (props: any) => {
    * @author Srinivas Nadendla
    */
   const generateFormRow = (rec: any, index: any) => {
+    let pickerDefaultStartTime: any = '', pickerDefaultEndTime: any ='';
+   
+      if (rec.startTime || rec.endTime) {
+        const startTime: any = (!rec.startTime && rec.endTime) ? getPickerDefaultTime(rec.endTime, false) : (rec.startTime || '');
+        pickerDefaultStartTime = startTime;
+        const endTime: any = (!rec.endTime && rec.startTime) ? getPickerDefaultTime(rec.startTime, true) : (rec.endTime || '');
+        pickerDefaultEndTime = endTime;
+      }
     return (
       <div className="time-log-modal_form-row">
         <div className="time-field">
@@ -180,6 +229,7 @@ const TimeLogPicker = (props: any) => {
             }}
             disabled={false}
             defaultTime={rec?.startTime || ""}
+            pickerDefaultTime={pickerDefaultStartTime}
             placeholder={"HH:MM"}
             // actions={[]}
             ampmInClock={true}
@@ -202,6 +252,7 @@ const TimeLogPicker = (props: any) => {
             }}
             disabled={false}
             defaultTime={rec?.endTime || ""}
+            pickerDefaultTime={pickerDefaultEndTime}
             placeholder={"HH:MM"}
             // actions={[]}
             ampmInClock={true}

@@ -22,7 +22,8 @@
     .pt-skills,
     .pt-policyStatus,
     .pt-safetyStatus,
-    .pt-regions {
+    .pt-regions,
+    .pt-hourlyRate {
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
@@ -366,6 +367,11 @@
         &.about-toexpire:before {
             color: orange;
         }
+    }
+    .pt-Company,.base-container, .inside-grid-cell-cls, .MuiBox-root {
+            .dropdown-without-chip-cls {
+                display : flex;
+            }
     }
     .pt-email,
     .pt-Company,

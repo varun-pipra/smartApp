@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormControl, Select, InputLabel, MenuItem, TextField, Icon, InputAdornment, Box, ListItemText, IconButton, Input, SelectChangeEvent, ListSubheader, Checkbox, Chip, OutlinedInput, Button, Popover, FormControlLabel, checkboxClasses, Tooltip, Typography } from "@mui/material";
+import { FormControl, Select, InputLabel, MenuItem, TextField, Icon, InputAdornment, Box, ListItemText, IconButton, Input, SelectChangeEvent, ListSubheader, Checkbox, Chip, OutlinedInput, Button, Popover, FormControlLabel, checkboxClasses, Tooltip, Typography, ListItemIcon, ListItem, MenuList } from "@mui/material";
 import FuzzySearch from "fuzzy-search";
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -19,6 +19,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { TreeView } from "@mui/x-tree-view/TreeView";
 import {TreeItem,TreeItemProps,treeItemClasses} from "@mui/x-tree-view/TreeItem";
+import { PopoverSelect } from "components/iqsearchfield/iqiconbuttonmenu/IQIconButtonMenu";
 type TOption = {
 	id?: any,
 	label: string,
@@ -103,6 +104,8 @@ export interface ISmartDropDown {
     showCustomTreeIcon?:boolean;
 	TreeIcon?:React.ReactElement;
 	selectedNodes?:any;
+	isDropdownSubMenu?:boolean;
+	filterRef?:any
 }
 
 const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
@@ -170,6 +173,7 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
         showCustomTreeIcon=false,
 		TreeIcon = <></>,
 		selectedNodes = [],
+		isDropdownSubMenu = false,
 		...rest
 	} = props;
 
@@ -523,6 +527,8 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 		dynamicProps.renderValue = (selectedOptions: any) => getColumnsBasedSelectRenderTmpl(selectedOptions);
 	} else if(isTreeView) {
 		dynamicProps.renderValue = (selectedOptions: any) => getMultiSelectRenderTmpl(selectedOptions);
+	} else if(isDropdownSubMenu) {
+		dynamicProps.renderValue = (selectedOption: any) => {return <Typography variant="body2" sx={{ fontWeight: "inherit", flexGrow: 1 }}> {selectedOption} </Typography>}
 	}
 
 	/**
@@ -860,6 +866,20 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 			if (handleChange) handleChange(name, [nodeIds]);
 		}
     };
+	const handleSubMenuChange = (parentName:any, selectedValue?: any) => {
+		if(props?.handleChange) {
+			props?.handleChange(parentName, selectedValue);
+			setOpen(false);
+		};
+	};
+	const moveFocusToInput = (e:any) => {
+		console.log("move")
+		if (e.key === "Tab" || e.key === "ArrowRight") {
+		  e.stopPropagation();
+		  e.preventDefault();
+		  rest?.filterRef.current.focus();
+		}
+	  };
 	return (
 		<>
 			<InputLabel
@@ -1080,6 +1100,8 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 									option.options.map((_option: TOption, i: number) => (
 										<MenuItem
 											key={index + "-" + i}
+											// button={false}
+											onKeyDown={_option?.id == 'adhoc' ? moveFocusToInput : undefined}
 											value={_option.value}
 											disabled={disableOptionsList?.includes(option?.value)}
 											sx={{
@@ -1201,9 +1223,18 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 									</span>
 								</MenuItem>;
 							}) : !hideNoRecordMenuItem && (<div className="base-no-data">{noDataFoundMsg}</div>)
-						)
-							:
-							menuItems.length > 0 ? (
+							) : 
+							isDropdownSubMenu ? (
+								<PopoverSelect
+								showNone={true}
+								options={menuItems}
+								allowSubMenu={true}
+								defaultValue={{}}
+								open={true}
+								onChange={handleSubMenuChange}
+							  />
+							) :
+							menuItems && menuItems.length > 0 ? (
 								menuItems.map((option: TOption, index: number) => {
 									if (showToolTipForDisabledOption && disableOptionsList?.includes(option?.value)) {
 										return <div>

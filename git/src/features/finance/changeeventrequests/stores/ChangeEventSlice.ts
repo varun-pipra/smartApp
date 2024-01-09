@@ -23,7 +23,7 @@ export interface ChangeEventRequestState {
 	workItemDropdownData?: Array<any>;
 	linksGridData?: any;
 	driveFiles: Array<any>;
-	changeEventsListRefreshed:boolean;
+	changeEventsListRefreshed: boolean;
 	tab?: string | undefined;
 };
 

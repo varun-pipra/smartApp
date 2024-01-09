@@ -5,6 +5,7 @@ import React from "react";
 import { useMemo } from "react";
 import SUIGrid from "sui-components/Grid/Grid";
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import { providerSourceObj } from "utilities/commonutills";
 
 export const BudgetGrid = (props: any) => {
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
@@ -55,6 +56,11 @@ export const BudgetGrid = (props: any) => {
 					return amountFormatWithSymbol(params?.value);
 				}
 			}
+		},
+		{
+			headerName: 'Provider Source',
+			field: 'providerSource',
+			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],			
 		},
 		{
 			headerName: "Mark-up Fee",

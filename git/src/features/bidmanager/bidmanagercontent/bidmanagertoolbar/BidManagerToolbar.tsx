@@ -23,6 +23,8 @@ import React from 'react';
 import _ from "lodash";
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
+import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
+import {moduleType, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 
 const BidManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -32,6 +34,7 @@ const BidManagerToolbar = (props: any) => {
 		activeMainGridDefaultFilters, activeCompaniesList
 	} = useAppSelector((state) => state.bidManagerGrid);
 	const {selectedRecord} = useAppSelector((state) => state.bidManager);
+	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 
 	const appInfo = useAppSelector(getServer);
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
@@ -148,6 +151,10 @@ const BidManagerToolbar = (props: any) => {
 		setFilters(filtersCopy);
 	}, [activeCompaniesList]);
 
+	useEffect(() => {
+		setToggleChecked(blockchainEnabled);
+	}, [blockchainEnabled]);
+
 	const handleDelete = () => {
 		setAlert({
 			open: true,
@@ -203,6 +210,9 @@ const BidManagerToolbar = (props: any) => {
 		patchBidPackage(appInfo, selectedRows[0]?.id, {status: 3}).then((response: any) => {
 			dispatch(fetchGridData(appInfo));
 			setDisablePostBid(true);
+			if(blockchainEnabled) {
+				dispatch(setShowBlockchainDialog(true));
+			}
 		});
 	};
 
@@ -212,8 +222,11 @@ const BidManagerToolbar = (props: any) => {
 		}
 	};
 	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setToggleChecked(event.target.checked)
+		setToggleChecked(event.target.checked);
+		const typeValue: number = moduleType['BidManager'];
+		blockchainAction(event.target.checked, typeValue);
 	};
+
 	return <Stack direction='row' className='toolbar-root-container-bidmanager'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -357,29 +370,29 @@ const BidManagerToolbar = (props: any) => {
 				</IconButton>
 			</IQTooltip>
 		</div>
-		{showSettingsPanel ? 
-		<SUIDrawer
-				  PaperProps={{
+		{showSettingsPanel ?
+			<SUIDrawer
+				PaperProps={{
 					style: {
-					borderRadius: "4px",
-					boxShadow: "-6px 0px 10px -10px",
-					border: "1px solid rgba(0, 0, 0, 0.12) !important",
-					position: "absolute",
-					top: '105px',
-					bottom: '0px',
-					width: '25em',
-					height: 'inherit',
-					overflow: 'auto'
+						borderRadius: "4px",
+						boxShadow: "-6px 0px 10px -10px",
+						border: "1px solid rgba(0, 0, 0, 0.12) !important",
+						position: "absolute",
+						top: '105px',
+						bottom: '0px',
+						width: '25em',
+						height: 'inherit',
+						overflow: 'auto'
 					},
-				  }}
+				}}
 				anchor='right'
 				variant='permanent'
 				elevation={8}
 				open={false}
 			>
 				<Box>
-					<Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
-						<IconButton	className="Close-btn" aria-label="Close Right Pane"
+					<Stack direction="row" sx={{justifyContent: "end", height: "5em"}}>
+						<IconButton className="Close-btn" aria-label="Close Right Pane"
 							onClick={() => dispatch(setShowSettingsPanel(false))}
 						>
 							<span className="common-icon-Declined"></span>
@@ -397,26 +410,26 @@ const BidManagerToolbar = (props: any) => {
 									textWrap: 'nowrap'
 								}}
 							>
-							<ListItem className='generalSettings-listitem'>
-								<ListItemText primary="Blockchain Two Factor Authentication" className='generalsettingtext' />
-								<ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
+								{(window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled && <ListItem className='generalSettings-listitem'>
+									<ListItemText primary="Blockchain Two Factor Authentication" className='generalsettingtext' />
+									<ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
 										<span className="common-icon-Project-Info"></span>
-								</ListItemIcon>
-								<ListItemIcon>
-									<IQToggle
-										checked={toggleChecked}
-										switchLabels={['ON', 'OFF']}
-										onChange={(e) => { handleToggleChange(e) }}
-										edge={'end'}
-									/>
-								</ListItemIcon>
-							</ListItem>
-						</List>
-				</Stack>
-			</Stack>
-			</Box>
-		</SUIDrawer>
-		:null}
+									</ListItemIcon>
+									<ListItemIcon>
+										<IQToggle
+											checked={toggleChecked}
+											switchLabels={['ON', 'OFF']}
+											onChange={(e) => {handleToggleChange(e);}}
+											edge={'end'}
+										/>
+									</ListItemIcon>
+								</ListItem>}
+							</List>
+						</Stack>
+					</Stack>
+				</Box>
+			</SUIDrawer>
+			: null}
 		<SUIAlert
 			open={alert.open}
 			contentText={<span>{alert.contentText}</span>}

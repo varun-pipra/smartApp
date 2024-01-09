@@ -19,10 +19,13 @@ import CustomFilterHeader from '../gridHelper/CustomFilterHeader';
 import {TLLeftButtons, TLRightButtons} from './toolbar/TimeLogToolbar';
 import {timelogList} from 'data/timelog/TimeLogData';
 import TimeLogLID from './details/TimeLogLID';
-import { Button } from '@mui/material';
-import { findAndUpdateFiltersData } from 'features/safety/sbsmanager/utils';
+import { Avatar, Button } from '@mui/material';
+import {findAndUpdateFiltersData} from 'features/safety/sbsmanager/utils';
 import moment from "moment";
 import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
+import { getAppsList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
+import { setSelectedTimeLog } from './stores/TimeLogSlice';
+import { getTimeLogStatus } from 'utilities/timeLog/enums';
 
 let defaultTimeLogStatusFilter: any = [];
 
@@ -42,13 +45,15 @@ const TimeLogWindow = (props: any) => {
 	const [isInline, setInline] = useState(false);
 	const [toastMessage, setToastMessage] = useState<string>('');
 	const [filters, setFilters] = useState<any>({});
+	const [selectedFilters, setSelectedFilters] = useState<any>();
 	const [search, setSearch] = useState<string>('');
 	const [defaultFilters, setDefaultFilters] = useState<any>({});
 	const groupKeyValue = useRef<any>(null);
 	// const [activeGroupKey, setActiveGroupKey] = useState<String>('');
 	const [columns, setColumns] = useState([]);
 	const [rowData, setRowData] = useState<Array<any>>([]);
-  	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
+	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
+	const dateTimeFields = ['startDate','endDate','startTime','endTime'];
 	let gridRef = useRef<AgGridReact>();
 
 	if(statusFilter) defaultTimeLogStatusFilter = filters.status;
@@ -60,7 +65,7 @@ const TimeLogWindow = (props: any) => {
 	}, {
 		text: 'Companies', value: 'company'
 	}, {
-		text: 'Apps', value: 'apps'
+		text: 'Apps', value: 'smartItem'
 	}, {
 		text: 'Status', value: 'status'
 	}, {
@@ -122,6 +127,7 @@ const TimeLogWindow = (props: any) => {
 	useEffect(() => {
 		if(server) {
 			// dispatch(getChangeEventList());
+			dispatch(getAppsList());
 		}
 	}, [server]);
 
@@ -178,7 +184,7 @@ const TimeLogWindow = (props: any) => {
 	}, [localhost, appData]);
 
 	const onGroupingChange = (groupKey: any) => {
-		const columnsCopy:any = [...headers];
+		const columnsCopy: any = [...headers];
 		if(((groupKey ?? false) && groupKey !== "")) {
 			groupKeyValue.current = groupKey;
 			columnsCopy.forEach((col: any) => {
@@ -199,43 +205,31 @@ const TimeLogWindow = (props: any) => {
 		if(node.group) {
 			const colName = groupKeyValue?.current;
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if(colName === "status") {
-				const stateObject: any = (timelogStatusMap || [])?.find((x:any) => x.value === node?.key);
-				return (
+			if(colName === 'smartItem') return (
 					<div style={{display: 'flex'}} className='status-column'>
-						<CustomGroupHeader iconCls={stateObject?.icon} baseCustomLine={false}
-							label={stateObject?.text} showStatus = {true}
-							color = {stateObject?.color} bgColor = {stateObject?.bgColor}
-						/>
+						{data?.smartItem?.iconUrl ? 
+							<img
+									src={data?.smartItem?.iconUrl}
+									alt="Avatar"
+									style={{ width: "24px", height: "24px", padding: "1px" }}
+									className="base-custom-img"
+								/> : <Avatar 
+								sx={{ backgroundColor: `#${data?.color}` ?? '#fff', 
+										width: "24px", 
+										height: "24px", 
+										padding: "1px", 
+										marginRight: '10px', 
+										fontSize: '13px' 
+							}}>{data?.smartItem?.name?.toUpperCase()}</Avatar>
+						}
+						<span className="custom-group-header-label-cls">{data?.smartItem?.name || ""}</span>
 					</div>
 				);
-			}else if(colName === "startDate") {
-				let now = moment.utc(new Date());
-				let lastContact = moment.utc(data.endDate);
-				let months = now.diff(lastContact, 'months');
-          		let weeks = now.diff(lastContact, 'weeks');
-				let days = now.diff(lastContact, 'days');
-				// let hours = lastContact.diff(now, 'hours');
-				// let minutes = lastContact.diff(now, 'minutes');
-				// let seconds = lastContact.diff(now, 'seconds');
-				let label = '';
-    			if (days >= 2) {
-        			label = moment.utc(lastContact).fromNow(); // '2 days ago' etc.
-    			};	
-				console.log("dfdsiufhuisd", lastContact.calendar(), months, weeks, days);
-    			label = lastContact.calendar().split(' ')[0];
-				return (
-					<div style={{display: 'flex'}} className='status-column'>
-						<CustomGroupHeader  label={moment.utc(data?.endDate).format('DD/MM/YYYY') +" "+ (`(${label})`)} />
-					</div>
-				);
-			} else {
-				return (
-					<div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+			else return (
+					<div className="custom-group-header-cls" style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
 						<span className="custom-group-header-label-cls">{node?.key || ""}</span>
 					</div>
-				)
-			}
+			);
 		};
 	};
 
@@ -249,7 +243,7 @@ const TimeLogWindow = (props: any) => {
 	}, []);
 
 	const onFilterChange = (activeFilters: any, type?: string) => {
-		setFilters(activeFilters);
+		setSelectedFilters(activeFilters);
 	};
 
 	const onGridSearch = (searchText: any) => {
@@ -260,27 +254,44 @@ const TimeLogWindow = (props: any) => {
 		return list.filter((item: any) => {
 			const regex = new RegExp(search, "gi");
 			const searchVal = Object.keys(item).some((field) => {
-			  if (Array.isArray(item[field])) {
-				if (item[field]?.length > 0) {
-				  for (let i = 0; i < item[field].length; i++) {
-					return Object.keys(item?.[field]?.[i])?.some((objField) => {
-					  return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
+				if(Array.isArray(item[field])) {
+					if(item[field]?.length > 0) {
+						for(let i = 0;i < item[field].length;i++) {
+							return Object.keys(item?.[field]?.[i])?.some((objField) => {
+								return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
+							});
+						}
+					} else return false;
+				} else if((item[field] ?? false) && typeof item[field] === "object") {
+					return Object.keys(item?.[field])?.some((objField) => {
+						return item?.[field]?.[objField]?.toString()?.match(regex);
 					});
-				  }
-				} else return false;
-			  } else if ((item[field] ?? false) && typeof item[field] === "object") {
-				return Object.keys(item?.[field])?.some((objField) => {
-				  return item?.[field]?.[objField]?.toString()?.match(regex);
-				});
-			  } else return item?.[field]?.toString()?.match(regex);
+				} else return item?.[field]?.toString()?.match(regex);
 			});
-			
-			return searchVal;
-		  });
-	};
+			const filterVal = (_.isEmpty(selectedFilters) || (!_.isEmpty(selectedFilters)
+			&& (_.isEmpty(selectedFilters?.apps) || selectedFilters?.apps?.length === 0 || selectedFilters?.apps?.indexOf(item.smartItem.name) > -1)
+			&& (_.isEmpty(selectedFilters?.companies) || selectedFilters?.companies?.length === 0 || selectedFilters?.companies?.indexOf(item.company) > -1)
+			&& (_.isEmpty(selectedFilters?.conflicting) || selectedFilters?.conflicting?.length === 0 || selectedFilters?.conflicting?.indexOf(item?.conflicting)) > -1)
+			&& (_.isEmpty(selectedFilters?.createdBy) || selectedFilters?.createdBy?.length === 0 || selectedFilters?.createdBy?.indexOf(item.createdBy?.name) > -1)
+			&& (_.isEmpty(selectedFilters?.location) || selectedFilters?.location?.length === 0 || selectedFilters?.location?.indexOf(item?.location)) > -1)
+			&& (_.isEmpty(selectedFilters?.sbs) || selectedFilters?.sbs?.length === 0 || selectedFilters?.sbs?.indexOf(item.sbs) > -1)
+			&& (_.isEmpty(selectedFilters?.source) || selectedFilters?.source?.length === 0 || selectedFilters?.source?.indexOf(item?.source) > -1)
+			&& (_.isEmpty(selectedFilters?.workTeam) || selectedFilters?.workTeam?.length === 0 || selectedFilters?.workTeam?.indexOf(item?.workTeam) > -1)
+			&& (_.isEmpty(selectedFilters?.status) || selectedFilters?.status?.length === 0 || selectedFilters?.status?.indexOf(item.status) > -1);
+			// && (_.isEmpty(selectedFilters?.dateRange) || selectedFilters?.dateRange?.length === 0 || selectedFilters?.dateRange?.indexOf(item?.dateRange)) > -1;
 
+			return searchVal && filterVal;
+		});
+	};
+	
+	useEffect(() => {
+		if (search || selectedFilters) {
+		  const data = searchAndFilter([...modifiedList]);
+		  setRowData(data);
+		}
+	  }, [search, selectedFilters]);
 	const handleStatusFilter = (statusFilters: any) => {
-		setFilters((prevFilters: any) => {
+		setSelectedFilters((prevFilters: any) => {
 			const consolidatedFilter = {...prevFilters, ...{status: statusFilters}};
 			setDefaultFilters(consolidatedFilter);
 			return consolidatedFilter;
@@ -300,12 +311,15 @@ const TimeLogWindow = (props: any) => {
 	 * Search, Filters are applied to the source data and the result
 	 * is set to the local state
 	 */
-	const headers:any = useMemo(() => [{
+	const headers: any = useMemo(() => [{
 		headerName: 'Time Segment ID',
 		field: 'timeSegmentId',
 		pinned: 'left',
 		suppressMenu: true,
-		checkboxSelection: true,
+		checkboxSelection: (params:any) => {
+			if(!!params?.node?.footer) return false;
+			else return true;
+		},
 		headerCheckboxSelection: true,
 	}, {
 		headerName: 'Status',
@@ -323,8 +337,9 @@ const TimeLogWindow = (props: any) => {
 			onClose: () => setStatusFilter(true),
 			onFilter: handleStatusFilter
 		},
+		keyCreator: (params: any) => getTimeLogStatus(params?.data?.status),
 		cellRenderer: (params: any) => {
-			const stateObject: any = (timelogStatusMap || [])?.find((x:any) => x.value === params?.value);
+			const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === params?.value);
 			return <div
 				className='status'
 				style={{
@@ -338,13 +353,29 @@ const TimeLogWindow = (props: any) => {
 	}, {
 		headerName: 'Time Entry For',
 		field: 'entryFor',
-		pinned: 'left'
+		pinned: 'left',
+		aggFunc: (params: any) => {
+			if(!params.rowNode?.key) {
+				return 	'Summary';
+			} 	return 	`Sub Total - ${params.rowNode?.key}`;
+		}
 	}, {
 		headerName: 'Company',
 		field: 'company'
 	}, {
 		headerName: 'Start Date',
 		field: 'startDate',
+		keyCreator: (params :any) => {
+			let now = moment.utc(new Date());
+				let lastContact = moment.utc(params?.data.endDate);
+				let days = now.diff(lastContact, 'days');
+				let label = '';
+				if(days >= 2) {
+					label = moment.utc(lastContact).fromNow(); // '2 days ago' etc.
+				};
+				label = lastContact.calendar().split(' ')[0];
+				return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${label})`) || "None";
+		},
 		valueGetter: (params: any) => `${moment.utc(params?.data?.startDate).format('DD/MM/YYYY')}`,
 	}, {
 		headerName: 'End Date',
@@ -360,7 +391,21 @@ const TimeLogWindow = (props: any) => {
 		valueGetter: (params: any) => `${moment.utc(params?.data?.endTime).format('h:mm A')}`,
 	}, {
 		headerName: 'Duration',
-		field: 'duration'
+		field: 'duration',
+		aggFunc: (params: any) => {
+			let sum = 0;
+			params.values.forEach((time:any) => {
+			  let a = time.split(":");
+			  let calculate = +a[0] * 60 * 60 + +a[1] * 60;
+			  sum += calculate;
+			});
+			if(moment(new Date(sum * 1000))?.isValid()) {
+				let finalCnt = new Date(sum * 1000)?.toISOString();
+				return finalCnt?.substr(11, 5);
+				// return finalCnt?.substr(11, 2)+"Hrs"+" "+ finalCnt?.substr(14, 2)+"Mins";
+			}
+		},
+		valueGetter: (params: any) => params?.data?.duration
 	}, {
 		headerName: 'Source',
 		field: 'source',
@@ -373,7 +418,8 @@ const TimeLogWindow = (props: any) => {
 	}, {
 		headerName: 'Smart Item',
 		field: 'smartItem',
-		keyCreator: (params: any) => params.data?.smartItem || "None"
+		valueGetter: (params: any) => params.data?.smartItem?.name,
+		keyCreator: (params: any) => params.data?.smartItem?.name || "None"
 	}, {
 		headerName: 'Work Team',
 		field: 'workTeam',
@@ -391,62 +437,69 @@ const TimeLogWindow = (props: any) => {
 		keyCreator: (params: any) => params.data?.phase?.[0]?.name || "None",
 		minWidth: 260,
 		cellRenderer: (params: any) => {
-		  const phase = params.data?.phase?.[0]?.name;
-		  const buttonStyle = {
-			backgroundColor: params.data?.phase?.[0]?.color ?? "red",
-			color: "#fff",
-			alignItems: "center",
-		  };
-  
-		  return (
-			<>
-			  {phase ? (
-				<Button style={buttonStyle} className="phase-btn">
-				  <span className="common-icon-phase"></span>
-				  {phase}
-				</Button>
-			  ) : null}
-			</>
-		  );
+			const phase = params.data?.phase?.[0]?.name;
+			const buttonStyle = {
+				backgroundColor: params.data?.phase?.[0]?.color ?? "red",
+				color: "#fff",
+				alignItems: "center",
+			};
+
+			return (
+				<>
+					{phase ? (
+						<Button style={buttonStyle} className="phase-btn">
+							<span className="common-icon-phase"></span>
+							{phase}
+						</Button>
+					) : null}
+				</>
+			);
 		},
 	}, {
 		headerName: 'Time Log ID',
 		field: 'timeLogId',
 		keyCreator: (params: any) => params?.data?.timeLogId || "None"
 	}], []);
-
-	const filterOptions = useMemo(() => [{
+	(headers || [])?.forEach((item:any) => {
+		if(dateTimeFields?.includes(item?.field)) {
+			item.cellRenderer =  (params: any) => {
+				if(!!params?.node?.footer) return null;
+				else return (
+					<>{params.value}</>
+				);
+			}
+		};
+	});
+	let filterOptions = useMemo(() => {
+	var filterMenu = [{
 		text: 'Users',
 		value: 'users',
 		key: 'users',
-		children: {
-			type: 'checkbox'
-		}
+		keyValue: 'users',
+		children: { type: "checkbox", items: [] }
 	}, {
 		text: 'Work Team',
 		value: 'workTeam',
 		key: 'workTeam',
-		children: {
-			type: 'checkbox'
-		}
+		keyValue: 'workTeam',
+		children: { type: "checkbox", items: [] }
 	}, {
 		text: 'Companies',
 		value: 'companies',
 		key: 'companies',
-		children: {
-			type: 'checkbox'
-		}
+		keyValue: 'company',
+		children: { type: "checkbox", items: [] }
 	}, {
 		text: 'Apps',
 		value: 'apps',
 		key: 'apps',
-		children: {
-			type: 'checkbox'
-		}
+		keyValue: 'smartItem',
+		children: { type: "checkbox", items: [] }
 	}, {
 		text: 'Status',
 		value: 'status',
 		key: 'status',
+		keyValue: 'status',
 		children: {
 			type: 'checkbox',
 			items: timelogStatusMap
@@ -455,20 +508,19 @@ const TimeLogWindow = (props: any) => {
 		text: 'Source',
 		value: 'source',
 		key: 'source',
-		children: {
-			type: 'checkbox'
-		}
+		keyValue: 'source',
+		children: { type: "checkbox", items: [] }
 	}, {
 		text: 'Created By',
 		value: 'createdBy',
 		key: 'createdBy',
-		children: {
-			type: 'checkbox'
-		}
+		keyValue: 'createdBy',
+		children: { type: "checkbox", items: [] }
 	}, {
 		text: 'Conflicting Time Entries',
 		value: 'conflicting',
 		key: 'conflicting',
+		keyValue :'conflicting',
 		children: {
 			type: 'checkbox',
 			items: [{
@@ -485,6 +537,7 @@ const TimeLogWindow = (props: any) => {
 		text: 'Date Range',
 		value: 'dateRange',
 		key: 'dateRange',
+		keyValue :'dateRange',
 		children: {
 			type: 'checkbox',
 			items: [{
@@ -521,17 +574,17 @@ const TimeLogWindow = (props: any) => {
 		text: 'System Breakdown Structure',
 		value: 'sbs',
 		key: 'sbs',
-		children: {
-			type: 'checkbox'
-		}
+		keyValue: 'sbs',
+		children: { type: "checkbox", items: [] }
 	}, {
 		text: 'Location',
 		value: 'location',
 		key: 'location',
-		children: {
-			type: 'checkbox'
-		}
-	}], []);
+		keyValue: 'location',
+		children: { type: "checkbox", items: [] }
+	}];
+    return filterMenu;
+  }, []);
 
 	const handleClose = () => {
 		postMessage({
@@ -541,7 +594,7 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const rowSelected = (sltdRows: any) => {
-		// dispatch(setSelectedChangeEvents(sltdRows));
+		//dispatch(setSelectedTimeLog(sltdRows));
 	};
 
 	const handleIconClick = () => {
@@ -553,22 +606,31 @@ const TimeLogWindow = (props: any) => {
 		setColumns(headers);
 	}, []);
 	useEffect(() => {
-		if (search || filters) {
-		  const data = searchAndFilter([...modifiedList]);
-		  setRowData(data);
+		if(search || filters) {
+			const data = searchAndFilter([...modifiedList]);
+			setRowData(data);
 		}
-	  }, [search, filters]);
+	}, [search, filters]);
+	const GenerateFilters = () => {
+			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "workTeam"));
+			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "company"));
+			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "source"));
+			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "sbs"));
+			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "location"));
+			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "createdBy", true, "name"));
+			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "smartItem", true, "name"));
+	};
 	React.useEffect(() => {
-		if (timelogList.length > 0) {
-		  setModifiedList(timelogList);
-		  setRowData(timelogList);
-		//   setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "phase", true, "name"));
-		} else if (timelogList.length === 0) {
-		  setModifiedList([]);
-		  setRowData([]);
-		//   setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "phase", true, "name"));
+		if(timelogList.length > 0) {
+			setModifiedList(timelogList);
+			setRowData(timelogList);
+			GenerateFilters();
+		} else if(timelogList.length === 0) {
+			setModifiedList([]);
+			setRowData([]);
+			GenerateFilters();
 		}
-	  }, [timelogList]);
+	}, [timelogList]);
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
 	return (
@@ -629,10 +691,11 @@ const TimeLogWindow = (props: any) => {
 							type: 'regular',
 							defaultFilters: defaultFilters,
 							groupOptions: groupOptions,
-							filterOptions: filters,
+							filterOptions: filterOptions,
 							onGroupChange: onGroupingChange,
 							onSearchChange: onGridSearch,
-							onFilterChange: onFilterChange
+							onFilterChange: onFilterChange,
+							defaultGroups: "startDate"
 						}
 					},
 					grid: {
@@ -641,15 +704,15 @@ const TimeLogWindow = (props: any) => {
 						getRowId: (params: any) => params.data?.id,
 						rowSelected: (e: any) => rowSelected(e),
 						groupDisplayType: 'groupRows',
-						nowRowsMsg: '<div>No items available yet</div>',
+						nowRowsMsg: '<div>create new time log entries from above</div>',
 						groupRowRendererParams: groupRowRendererParams,
 						onFirstDataRendered: onFirstDataRendered,
-						groupIncludeTotalFooter: false,
-						groupIncludeFooter: false,
+						groupIncludeTotalFooter: true,
+						groupIncludeFooter: true,
 						groupSelectsChildren: true,
 						rowSelection: "multiple",
 						groupDefaultExpanded: 1,
-						grouped: true,
+						grouped: true
 					}
 				}
 			}}

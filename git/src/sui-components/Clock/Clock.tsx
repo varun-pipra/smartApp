@@ -7,7 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { StaticTimePicker } from "@mui/x-date-pickers/StaticTimePicker/StaticTimePicker";
 import dayjs from "dayjs";
-import React from "react";
+import React, { useEffect } from "react";
 import "./Clock.scss";
 //import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
@@ -18,6 +18,7 @@ interface ClockProps {
 	placeholder?: any;
 	actions?: any;
 	ampmInClock?:boolean;
+	pickerDefaultTime?:any;
 }
 
 const SUIClock = (props: ClockProps) => {
@@ -49,16 +50,28 @@ const SUIClock = (props: ClockProps) => {
 				setPickerTime(currentTime);
 				setTime(dayjs(currentTime).format("hh:mm A"));
 			} else {
-				let currentTime = convertTimetoDate(dayjs(new Date()).format("HH:mm A"));
+				let currentTime = convertTimetoDate(props.pickerDefaultTime ? props.pickerDefaultTime : dayjs(new Date()).format("hh:mm A"));
 				setPickerTime(currentTime);
 				setTime('');
 			}
 		} else {
-			let currentTime = convertTimetoDate(dayjs(new Date()).format("HH:mm A"));
+			let currentTime = convertTimetoDate(dayjs(new Date()).format("hh:mm A"));
 			setPickerTime(currentTime);
 			setTime(dayjs(currentTime).format("hh:mm A"));
 		};
 	}, [defaultTime])
+
+	useEffect(()=> {
+		if (open) {
+      let currentTime = convertTimetoDate(
+        props.pickerDefaultTime
+          ? props.pickerDefaultTime
+          : dayjs(new Date()).format("hh:mm A")
+      );
+      setPickerTime(currentTime);
+    }
+		
+	}, [props?.pickerDefaultTime, open]);
 
 	const convertTimetoDate = (date: any) => {
 		if (date === "") return null;
@@ -76,6 +89,8 @@ const SUIClock = (props: ClockProps) => {
 			const timeDt = convertTimetoDate(time);
 			setPickerTime(timeDt);
 			onTimeSelection(timeDt);
+		} else {
+			setPickerTime(new Date());
 		}
 		!disabled && setAnchorEl(event.currentTarget);
 	};
@@ -86,6 +101,59 @@ const SUIClock = (props: ClockProps) => {
 		handleClose();
 		onTimeSelection(value.$d);
 	};
+
+	const hanldeKeyDown = (event: any) => {
+		if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+			// Get the current value of the input field
+			let currentTime: any = event.target.value;
+			if (currentTime) {
+				const timeDt = convertTimetoDate(currentTime);
+				if (isNaN(timeDt)) {
+					setTime('');
+					return;
+				}
+				// Parse the current time into hours, minutes, and AM/PM parts
+				let [hours, minutes, ampm] = currentTime.split(/:|\s/);
+
+				// Convert hours and minutes to integers
+				hours = parseInt(hours, 10);
+				minutes = parseInt(minutes, 10);
+				if (isNaN(hours) || isNaN(minutes)) {
+					setTime('');
+					return;
+				}
+
+				// Handle the arrow key events
+				if (event.key === "ArrowUp") {
+					// Increment time
+					minutes += 5;
+					if (minutes >= 60) {
+					minutes -= 60;
+					hours = (hours + 1) % 12;
+					}
+				} else if (event.key === "ArrowDown") {
+					// Decrement time
+					minutes -= 5;
+					if (minutes < 0) {
+					minutes += 60;
+					hours = (hours - 1 + 12) % 12;
+					}
+				}
+				// Format the new time
+				hours = hours === 0 ? 12 : hours; // Handle midnight (0 hours)
+				if (hours === 12 && minutes === 0) {
+				ampm = ampm?.toLowerCase() === "am" ? "PM" : "AM";
+				}
+				let newTime = `${hours}:${String(minutes).padStart(2, "0")} ${ampm}`;
+
+				// Update the input field with the new time
+				setTime(newTime);
+			} else {
+				setTime('12:00 AM');
+			}
+	}
+		
+  };
 
 	return (
 		<div className="clock-container">
@@ -105,6 +173,7 @@ const SUIClock = (props: ClockProps) => {
 				disabled={disabled}
 				onClick={onFieldClick}
 				onChange={(e: any)=> setTime(e.target.value)}
+				onKeyDown={(e: any)=> hanldeKeyDown(e)}
 				onBlur={(e: any)=> {
 					const time = e.target.value;
 					if (time) {

@@ -77,8 +77,6 @@ const CommittedTransaction = (props: any) => {
 
 	const filterAction = (list: Array<any>, filters: any = {}, searchText: string = '') => {
 		let filteredTransactions = [...list];
-		console.log("filters", filters);
-
 		if (!isEmpty(filters?.vendor)) {
 			filteredTransactions = filteredTransactions.filter((item: any) => {
 				return filters?.vendor?.includes(item?.vendor?.id);

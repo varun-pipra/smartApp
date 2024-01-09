@@ -3,40 +3,40 @@ import './VendorPayApplicationsWindow.scss';
 import {
 	getServer, setCostUnitList, setCurrencySymbol, setServer
 } from 'app/common/appInfoSlice';
-import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
-import { currency, isLocalhost, postMessage } from 'app/utils';
+import {useAppDispatch, useAppSelector, useHomeNavigation} from 'app/hooks';
+import {currency, isLocalhost, postMessage} from 'app/utils';
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { appInfoData } from 'data/appInfo';
-import CustomHeader from 'features/bidmanager/bidmanagercontent/bidmanagergrid/CustomHeader';
-import { fetchCompanyList } from 'features/vendorcontracts/stores/VendorContractsSlice';
+import {appInfoData} from 'data/appInfo';
+import {fetchCompanyList} from 'features/vendorcontracts/stores/VendorContractsSlice';
 import _ from 'lodash';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {useLocation} from 'react-router-dom';
 import SUIAlert from 'sui-components/Alert/Alert';
-import { triggerEvent } from 'utilities/commonFunctions';
+import {triggerEvent} from 'utilities/commonFunctions';
 import {
 	vendorPayAppsPaymentStatus, vendorPayAppsPaymentStatusColors, vendorPayAppsPaymentStatusFilterOptions, vendorPayAppsPaymentStatusIcons,
 	vendorPayAppsPaymentStatusOptions
 } from 'utilities/vendorPayApps/enums';
 
-import { formatDate } from '@fullcalendar/react';
-import { Button } from '@mui/material';
+import {formatDate} from '@fullcalendar/react';
+import {Button} from '@mui/material';
 
-import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import { getVendorPayAppsLst, setSelectedRows } from './stores/gridSlice';
+import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
+import {getVendorPayAppsLst, setSelectedRows} from './stores/gridSlice';
 import {
-	getPayAppDetails, getToastMessage, setSelectedNode, setSelectedRecord, setShowLineItemDetails,
+	getPayAppDetails, getToastMessage, setSelectedRecord, setShowLineItemDetails,
 	setToastMessage, setVPayAppId, setTab
 } from './stores/VendorPayAppSlice';
-import { isUserGCForVPA } from './utils';
+import {isUserGCForVPA} from './utils';
 import VendorPayAppToolbarLeftButtons from './vendorpayapplicationscontent/toolbarbuttons/LeftToolbarButtons';
 import VendorPayAppToolbarRightButtons from './vendorpayapplicationscontent/toolbarbuttons/RightToolbarButtons';
 import VendorPayApplicationsForm from './vendorpayapplicationscontent/vendorpayapplicationsform/VendorPayApplicationsForm';
 import VendorPayApplicationsLID from './vendorpayapplicationsdetails/VendorPayApplicationsLID';
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
-import { AgGridReact } from 'ag-grid-react';
+import {AgGridReact} from 'ag-grid-react';
+import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVPAStatusFilter: any = [];
@@ -48,7 +48,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	const [localhost] = useState(isLocalhost);
 	const [appData] = useState(appInfoData);
 	const appInfo = useAppSelector(getServer);
-	const { gridData, gridOriginalData, refreshed } = useAppSelector((state) => state.VPAGrid);
+	const {gridData, gridOriginalData, refreshed} = useAppSelector((state) => state.VPAGrid);
 	const [columns, setColumns] = useState<any>([]);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	// const [statusFilter, setStatusFilter] = useState<any>({ids: [], names: []});
@@ -67,7 +67,8 @@ const VendorPayApplicationsWindow = (props: any) => {
 	const [gridSearchText, setGridSearchText] = useState<any>('');
 	const [selectedGroup, setSelectedGroup] = useState<string>('');
 	let gridRef = useRef<AgGridReact>();
-	if (statusFilter) defaultVPAStatusFilter = mainGridFilters.status;
+	if(statusFilter) defaultVPAStatusFilter = mainGridFilters.status;
+	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 
 	const tabEnum: any = {
 		payAppDetails: 'pay-Application-Details',
@@ -77,7 +78,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	};
 
 	useEffect(() => {
-		if (gridOriginalData?.length) {
+		if(gridOriginalData?.length) {
 			let updatedGridData = gridOriginalData.map((obj: any) => ({
 				...obj,
 				aliasStatus: vendorPayAppsPaymentStatus[obj['status']] || '',
@@ -88,7 +89,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	}, [gridOriginalData]);
 
 	useEffect(() => {
-		if (refreshed) {
+		if(refreshed) {
 			console.log("refesh", refreshed);
 			setActiveMainGridDefaultFilters({});
 			groupKeyValue.current = null;
@@ -96,9 +97,9 @@ const VendorPayApplicationsWindow = (props: any) => {
 	}, [refreshed]);
 
 	const groupOptions = [
-		{ text: "Payment Status", value: "status" },
-		{ text: "Contracts", value: "contract.name" },
-		{ text: "Vendors", value: "vendor.name" },
+		{text: "Payment Status", value: "status"},
+		{text: "Contracts", value: "contract.name"},
+		{text: "Vendors", value: "vendor.name"},
 	];
 	//isUserGCForVPA(appInfo) ? 'Payment Status' : 'Response Status',
 	const filterOptions = [
@@ -140,17 +141,17 @@ const VendorPayApplicationsWindow = (props: any) => {
 
 	useEffect(() => {
 		// const {search} = location;
-		if (queryParams?.size > 0) {
+		if(queryParams?.size > 0) {
 			// const params: any = new URLSearchParams(search);
 			setMaxByDefault(queryParams?.get('maximizeByDefault') === 'true');
 			setInline(queryParams?.get('inlineModule') === 'true');
 			setFullView(queryParams?.get('inlineModule') === 'true');
 
-			if (queryParams?.get("id")) {
+			if(queryParams?.get("id")) {
 				dispatch(setVPayAppId(queryParams?.get("id")));
 				dispatch(setShowLineItemDetails(true));
 
-				if (queryParams?.get("tab")) {
+				if(queryParams?.get("tab")) {
 					dispatch(setTab(tabEnum[queryParams?.get("tab")]));
 				}
 			}
@@ -159,37 +160,38 @@ const VendorPayApplicationsWindow = (props: any) => {
 
 	useEffect(() => {
 		setShowToastMessage(ToastMessage);
-		setTimeout(() => { setShowToastMessage(''); dispatch(setToastMessage('')); }, 3000);
+		setTimeout(() => {setShowToastMessage(''); dispatch(setToastMessage(''));}, 3000);
 	}, [ToastMessage]);
 
 	useEffect(() => {
 		const filtersCopy = [...filters];
 		const groupsCopy = [...groups];
-		if (appInfo) {
+		if(appInfo) {
 			let statusItem = filtersCopy.find((rec: any) => rec.value === "status");
 			let groupItem = groupsCopy.find((rec: any) => rec.value === "status");
-			if (appInfo && !isUserGCForVPA(appInfo)) {
+			if(appInfo && !isUserGCForVPA(appInfo)) {
 				statusItem.text = 'Response Status';
 				groupItem.text = 'Response Status';
 			}
+			dispatch(checkBlockchainStatus('VendorPayApplication'));
 			dispatch(fetchCompanyList(appInfo));
 			dispatch(getVendorPayAppsLst(appInfo));
 		}
 	}, [appInfo]);
 
 	useEffect(() => {
-		if (localhost) {
+		if(localhost) {
 			dispatch(setServer(_.omit(appData, ['DivisionCost'])));
 			dispatch(setCurrencySymbol(currency['USD']));
 			dispatch(setCostUnitList(appData?.DivisionCost?.CostUnit));
 		} else {
-			if (!appInfo) {
+			if(!appInfo) {
 				window.onmessage = (event: any) => {
 					let data = event.data;
 					data = typeof (data) == 'string' ? JSON.parse(data) : data;
 					data = data.hasOwnProperty('args') && data.args[0] ? data.args[0] : data;
-					if (data) {
-						switch (data.event || data.evt) {
+					if(data) {
+						switch(data.event || data.evt) {
 							case 'hostAppInfo':
 								const structuredData = data.data;
 								dispatch(setServer(structuredData));
@@ -204,17 +206,17 @@ const VendorPayApplicationsWindow = (props: any) => {
 							case 'getdrivefiles':
 								try {
 									// setDriveFileQueue(data.data);
-								} catch (error) {
+								} catch(error) {
 									console.log('Error in adding Vendor Contract Additional File from Drive:', error);
 								}
 								break;
 							case 'updateparticipants':
 								// console.log('updateparticipants', data)
-								triggerEvent('updateparticipants', { data: data.data, appType: data.appType });
+								triggerEvent('updateparticipants', {data: data.data, appType: data.appType});
 								break;
 							case 'updatecommentbadge':
 								// console.log('updatecommentbadge', data)
-								triggerEvent('updatecommentbadge', { data: data.data, appType: data.appType });
+								triggerEvent('updatecommentbadge', {data: data.data, appType: data.appType});
 								break;
 							case 'updatechildparticipants':
 								// console.log('updatechildparticipants', data)
@@ -225,7 +227,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 				};
 				postMessage({
 					event: 'hostAppInfo',
-					body: { iframeId: 'vendorPayAppsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorPayApps' }
+					body: {iframeId: 'vendorPayAppsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorPayApps'}
 				});
 			}
 		}
@@ -233,10 +235,10 @@ const VendorPayApplicationsWindow = (props: any) => {
 
 	const onClick = (values: any) => {
 		console.log("valuesss", values, gridOriginalData, gridData);
-		setActiveMainGridDefaultFilters({ ...mainGridFilters, status: [...values?.ids] });
-		if (values?.ids?.length) {
+		setActiveMainGridDefaultFilters({...mainGridFilters, status: [...values?.ids]});
+		if(values?.ids?.length) {
 			let data = gridOriginalData.map((row: any) => {
-				if (values?.ids?.includes(row?.status)) return row;
+				if(values?.ids?.includes(row?.status)) return row;
 				return;
 			});
 			data = data.filter(function (element: any) {
@@ -259,11 +261,11 @@ const VendorPayApplicationsWindow = (props: any) => {
 		let contractItem = filtersCopy.find((rec: any) => rec.value === "contract");
 
 		const uniqueVendors: any = Array.from(new Map((gridData || []).map((item: any) =>
-			[item?.vendor?.id, { text: item?.vendor?.name, key: item?.vendor?.id, value: item?.vendor?.id }])).values());
+			[item?.vendor?.id, {text: item?.vendor?.name, key: item?.vendor?.id, value: item?.vendor?.id}])).values());
 		vendorItem.children.items = uniqueVendors;
 
 		const uniqueContracts: any = Array.from(new Map((gridData || []).map((item: any) =>
-			[item?.contract?.id, { text: item?.contract?.name, key: item?.contract?.id, value: item?.contract?.id }])).values());
+			[item?.contract?.id, {text: item?.contract?.name, key: item?.contract?.id, value: item?.contract?.id}])).values());
 		contractItem.children.items = uniqueContracts;
 
 		setFilters(filtersCopy);
@@ -281,7 +283,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 		const gridDataCopy = [...data];
 		let filteredData = gridDataCopy;
 		// if(!mainGridFilters?.status) setStatusFilter({ids: [], names: []});
-		if (mainGridFilters?.status?.length > 0) {
+		if(mainGridFilters?.status?.length > 0) {
 			filteredData = gridDataCopy.filter((rec: any) => {
 				return mainGridFilters?.status?.includes(rec.status);
 			});
@@ -292,15 +294,15 @@ const VendorPayApplicationsWindow = (props: any) => {
 			// 	statusNames.push(vendorPayAppsPaymentStatus[ele]);
 			// });
 			// setStatusFilter({ids: [...statusIds], names: [...statusNames]});
-		} else if (Object.keys(mainGridFilters).length === 0 || (mainGridFilters?.status?.length === 0 ?? false)) {
+		} else if(Object.keys(mainGridFilters).length === 0 || (mainGridFilters?.status?.length === 0 ?? false)) {
 			// setStatusFilter({ids: [], names: []});
 		};
-		if (mainGridFilters?.vendor?.length > 0) {
+		if(mainGridFilters?.vendor?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return mainGridFilters?.vendor?.includes(rec?.vendor?.id);
 			});
 		}
-		if (mainGridFilters?.contract?.length > 0) {
+		if(mainGridFilters?.contract?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return mainGridFilters?.contract?.includes(rec?.contract?.id);
 			});
@@ -310,11 +312,11 @@ const VendorPayApplicationsWindow = (props: any) => {
 
 	const onGroupingChange = (groupKey: any) => {
 		const columnsCopy = [...columns];
-		if (((groupKey ?? false) && groupKey !== "")) {
+		if(((groupKey ?? false) && groupKey !== "")) {
 			// setGroupKey(activeMainGridGroupKey);
 			groupKeyValue.current = groupKey;
 
-		} else if (groupKey ?? true) {
+		} else if(groupKey ?? true) {
 			groupKeyValue.current = null;
 
 			setColumns(columnsCopy);
@@ -323,14 +325,14 @@ const VendorPayApplicationsWindow = (props: any) => {
 	};
 
 	const onFilterChange = (activeFilters: any) => {
-		if (activeFilters) {
+		if(activeFilters) {
 			let filterObj = activeFilters;
 			Object.keys(filterObj).filter((item) => {
-				if (filterObj[item]?.length === 0) {
+				if(filterObj[item]?.length === 0) {
 					delete filterObj[item];
 				};
 			});
-			if (!_.isEqual(mainGridFilters, filterObj)) {
+			if(!_.isEqual(mainGridFilters, filterObj)) {
 				setMainGridFilters(filterObj);
 			};
 		};
@@ -339,15 +341,15 @@ const VendorPayApplicationsWindow = (props: any) => {
 	useEffect(() => {
 		const gridDataCopy = [...gridData];
 		let data: any;
-		if (mainGridFilters && Object.keys(mainGridFilters)?.length > 0) {
+		if(mainGridFilters && Object.keys(mainGridFilters)?.length > 0) {
 			data = FilterBy(gridDataCopy);
-			if (gridSearchText !== "") {
+			if(gridSearchText !== "") {
 				let SearchGridData = onGridSearch(data);
 				setRowData(SearchGridData);
 			} else {
 				setRowData(data);
 			};
-		} else if (gridSearchText !== "") {
+		} else if(gridSearchText !== "") {
 			let SearchGridData = onGridSearch(gridDataCopy);
 			setRowData(SearchGridData);
 		} else {
@@ -358,7 +360,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 
 	const handleStatusFilter = (statusFilters: any) => {
 		setMainGridFilters((prevFilters: any) => {
-			const consolidatedFilter = { ...prevFilters, ...{ status: statusFilters } };
+			const consolidatedFilter = {...prevFilters, ...{status: statusFilters}};
 			setActiveMainGridDefaultFilters(consolidatedFilter);
 			return consolidatedFilter;
 		});
@@ -366,8 +368,8 @@ const VendorPayApplicationsWindow = (props: any) => {
 
 	const handleStatusColumnSort = (direction: any) => {
 		gridRef?.current?.columnApi?.applyColumnState({
-			state: [{ colId: 'status', sort: direction }],
-			defaultState: { sort: null }
+			state: [{colId: 'status', sort: direction}],
+			defaultState: {sort: null}
 		});
 	};
 
@@ -435,7 +437,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 										className={
 											vendorPayAppsPaymentStatusIcons[params?.data?.status]
 										}
-										style={{ color: 'white' }}
+										style={{color: 'white'}}
 									/>
 								}
 								// startIcon={<Box component='img' src={StatusIcons[params?.data?.status]} style={{ height: '16px', width: '16px' }} />}
@@ -519,7 +521,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	const handleClose = () => {
 		postMessage({
 			event: 'closeiframe',
-			body: { iframeId: 'vendorPayAppsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorPayApps' }
+			body: {iframeId: 'vendorPayAppsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorPayApps'}
 		});
 	};
 
@@ -530,40 +532,40 @@ const VendorPayApplicationsWindow = (props: any) => {
 	const onFirstDataRendered = () => {
 		const params = new URLSearchParams(window.location.search);
 		// console.log('onFirstDataRendered params', params);
-		if (params.has('id')) {
+		if(params.has('id')) {
 			const selectedRecId = params.get('id');
 			const selectedRec = rowData.find((rec: any) => rec.id === selectedRecId);
 			setManualLIDOpen(true);
 			dispatch(setSelectedRecord(selectedRec));
-			dispatch(getPayAppDetails({ appInfo: appInfo, id: selectedRecId }));
+			dispatch(getPayAppDetails({appInfo: appInfo, id: selectedRecId}));
 		}
 	};
 
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props.node;
-		if (node.group) {
+		if(node.group) {
 			const colName = groupKeyValue?.current;
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if (colName === "status") {
+			if(colName === "status") {
 				return (
-					<div style={{ display: 'flex' }}>
+					<div style={{display: 'flex'}}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={vendorPayAppsPaymentStatus[data?.status]} colName={colName}
 						/>
 					</div>
 				);
-			} else if (colName === "contract.name") {
+			} else if(colName === "contract.name") {
 				// console.log("contract", colName);
 				return (
-					<div style={{ display: 'flex' }}>
+					<div style={{display: 'flex'}}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={data?.contract?.name} colName={colName}
 						/>
 					</div>
 				);
-			} else if (colName === "vendor.name") {
+			} else if(colName === "vendor.name") {
 				return (
-					<div style={{ display: 'flex' }}>
+					<div style={{display: 'flex'}}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={data?.vendor?.name} colName={colName}
 						/>
@@ -583,7 +585,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	}, []);
 
 	const handleIconClick = () => {
-		if (isInline) useHomeNavigation('vendorPayAppIframe', 'VendorPayApps');
+		if(isInline) useHomeNavigation('vendorPayAppIframe', 'VendorPayApps');
 	};
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
@@ -598,8 +600,8 @@ const VendorPayApplicationsWindow = (props: any) => {
 			appType='VendorPayApps'
 			appInfo={appInfo}
 			iFrameId='vendorPayAppIframe'
-			isFromHelpIcon = {true}
-			defaultTabId= 'pay-Application-Details'
+			isFromHelpIcon={true}
+			defaultTabId='pay-Application-Details'
 			zIndex={100}
 			gridRef={gridRef}
 			onClose={handleClose}
@@ -638,7 +640,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 			}}
 			toast={showToastMessage}
 			content={{
-				headContent: { regularContent: <VendorPayApplicationsForm /> },
+				headContent: {regularContent: <VendorPayApplicationsForm />},
 				detailView: VendorPayApplicationsLID,
 				gridContainer: {
 					toolbar: {
@@ -681,7 +683,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 				onClose={() => {
 					postMessage({
 						event: 'closeiframe',
-						body: { iframeId: 'vendorPayAppIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorPayApp' }
+						body: {iframeId: 'vendorPayAppIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorPayApp'}
 					});
 				}}
 				contentText={'You Are Not Authorized'}
@@ -689,7 +691,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 				onAction={(e: any, type: string) => {
 					type == 'close' && postMessage({
 						event: 'closeiframe',
-						body: { iframeId: 'vendorPayAppIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorPayApp' }
+						body: {iframeId: 'vendorPayAppIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorPayApp'}
 					});
 				}}
 				showActions={false}

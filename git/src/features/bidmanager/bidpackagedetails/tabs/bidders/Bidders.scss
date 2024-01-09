@@ -70,7 +70,7 @@
                 max-height: 1.85em; //padding: 4px 0 5px;
                 .base-custom-img {
                     border: 1px solid #ccc;
-                    object-fit: cover; // vertical-align: baseline !important;
+                    object-fit: contain; // vertical-align: baseline !important;
                     //top: 5px;
                     //position: relative;
                     padding: 0px !important;

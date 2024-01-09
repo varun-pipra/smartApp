@@ -6,7 +6,7 @@ import SUIGrid from "sui-components/Grid/Grid";
 import IQSearch from "components/iqsearchfield/IQSearchField";
 import './BudgetManager.scss';
 import { ColDef } from "ag-grid-community";
-import { getAmountAlignment } from "utilities/commonutills";
+import { getAmountAlignment, providerSourceObj } from "utilities/commonutills";
 import SUIAlert from "sui-components/Alert/Alert";
 import _ from "lodash";
 import IQBaseWindow from 'components/iqbasewindow/IQBaseWindow';
@@ -20,6 +20,9 @@ interface BudgetManagerROProps {
 	getBudgetValue?: any;
 	defaultRecords?: any;
 	allowMarkupFee?: boolean;
+	disableRowsKey?: string;
+	alertText?: React.ReactNode;
+	alertTitle?: string;
 };
 
 const BudgetManagerRO = (props: BudgetManagerROProps) => {
@@ -217,6 +220,11 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			field: "unitCost",
 			valueGetter: (params: any) => params.data?.unitCost ? `${currencySymbol} ${params.data?.unitCost?.toLocaleString("en-US")}` : "",
 
+		},
+		{
+			headerName: "Provider Source",
+			field: "providerSource",
+			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],			
 		}
 	];
 	const autoGroupColumnDef = useMemo<ColDef>(() => {
@@ -243,7 +251,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 
 	const isRowSelectable = useMemo(() => {
 		return (params: any) => {
-			return params.data && (props?.defaultRecords?.includes(params.data?.id) || params.data?.clientContract == null);
+			return params.data && (props?.defaultRecords?.includes(params.data?.id) || params.data?.[props?.disableRowsKey ?? 'clientContract'] == null);
 		};
 	}, []);
 
@@ -350,13 +358,13 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			}
 			else if (filters == 'notContracted') {
 				const filteredRecs = props?.data?.filter((obj: any) => {
-					if (props?.defaultRecords?.includes(obj.id) || obj?.clientContract == null) return obj;
+					if (props?.defaultRecords?.includes(obj.id) || obj?.[props?.disableRowsKey ?? 'clientContract'] == null) return obj;
 				});
 				setRowData(filteredRecs);
 			}
 			else if (filters == 'contracted') {
 				const filteredRecs = props?.data?.filter((obj: any) => {
-					if (obj?.clientContract != null && !props?.defaultRecords?.includes(obj.id)) return obj;
+					if (obj?.[props?.disableRowsKey ?? 'clientContract'] != null && !props?.defaultRecords?.includes(obj.id)) return obj;
 				});
 				setRowData(filteredRecs);
 			}
@@ -389,10 +397,10 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 									onSelectionChanged={() => { onSelectionChanged(); }}
 									rowClassRules={{
 										"budget-manager-row-disabled-cls": (params: any) => {
-											return params?.data?.clientContract != null;
+											return params?.data?.[props?.disableRowsKey ?? 'clientContract'] != null && !props?.defaultRecords?.includes(params?.data?.id);
 										},
 										"budget-manager-row-active-cls": (params: any) => {
-											return params?.data?.clientContract == null;
+											return params?.data?.[props?.disableRowsKey ?? 'clientContract'] == null;
 										},
 									}}
 								></SUIGrid>
@@ -407,7 +415,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 	return (
 		<IQBaseWindow
 			open={true}
-			className='bid-manager-window vendor-contracts-window custom-style'
+			className='bid-manager-window vendor-contracts-window add-budget-lineitem-cls custom-style'
 			title='Add Budget Line Item'
 			isFullView={isFullView}
 			disableEscapeKeyDown={true}
@@ -430,9 +438,8 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			actions={
 				<>
 					<div className='total-left-cls'>
-						<span><span className='length-cls'>Total No. of Selected Budget Line Items</span> <b>{selectedIds?.length}</b></span>
-						<br />
-						<span><span className='length-cls'>Total Budget Value of Selected Item</span> <b>{`${currencySymbol} ${getAmountAlignment(totalBudgetValue)}`}</b></span>
+						<span className='total-cls'><span className='length-cls'>Total No. of Selected Budget Line Items</span> <b>{selectedIds?.length}</b></span>
+						<span className='total-cls'><span className='length-cls'>Total Budget Value of Selected Item</span> <b>{`${currencySymbol} ${getAmountAlignment(totalBudgetValue)}`}</b></span>
 					</div>
 					<IQButton
 						disabled={selectedRows?.length > 0 ? false : true}
@@ -465,10 +472,11 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 					onClose={() => {
 						setAlert({ show: false, node: '' });
 					}}
+					DailogClose={true}
 					contentText={
-						<span>Are you sure you want to remove the selected Budget Line Item(s)</span>
+						props?.alertText ?? <span>Are you sure you want to remove the selected Budget Line Item(s)</span>
 					}
-					title={'Confirmation'}
+					title={props?.alertTitle ?? 'Confirmation'}
 					onAction={(e: any, type: string) => handleDeSelect(type)}
 				/>
 			}
@@ -492,6 +500,11 @@ const getFilterMenuOptions = () => {
 			text: 'Not Contracted',
 			value: 'notContracted',
 			key: 'notContracted'
+		},
+		{
+			text: 'Provider Source',
+			value: 'providerSource',
+			key: 'providerSource'
 		},
 	];
 };

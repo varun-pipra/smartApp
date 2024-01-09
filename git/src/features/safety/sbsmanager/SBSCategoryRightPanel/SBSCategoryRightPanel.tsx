@@ -96,7 +96,7 @@ const SBSCategoryRightPanel = (props:any) => {
                 className="generalsettingtext"
               />
             </ListItem>
-          {/*  <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('supplemental')}>
+           <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('supplemental')}>
             <ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
 								<span className="common-icon-orgconsole-project-supplemental-info"></span>
 							</ListItemIcon>
@@ -105,7 +105,7 @@ const SBSCategoryRightPanel = (props:any) => {
                 className="generalsettingtext"
               />
             </ListItem>
-            <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('dynamicHeatMap')}>
+            {/* <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('dynamicHeatMap')}>
             <ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
 								<span className="common-icon-dynamic-dates"></span>
 							</ListItemIcon>

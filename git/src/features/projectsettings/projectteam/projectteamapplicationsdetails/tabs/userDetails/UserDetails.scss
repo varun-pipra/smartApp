@@ -3,11 +3,17 @@
         .MuiGrid-item {
             padding-top: 26px;
         }
+        .hourly-rate-cls {
+            .MuiInputBase-input {
+                margin-left: -4px;
+                padding-bottom: 4px;
+            }
+        }
         .roles-section-cls {
             .common-icon-Project-Info {
-                font-size: 26px;
+                font-size: 24px;
                 cursor: pointer;
-                color: #333;
+                color: #666;
                 line-height: 1.6;
             }
         }
@@ -26,6 +32,14 @@
     }
     .MuiInputBase-input {
         color: #333;
+        .dropdown-without-chip-cls {
+            display: flex;
+            align-items: end;
+            .MuiAvatar-root {
+                margin-right: 6px;
+                border: 1px solid #ccc;
+            }
+        }
     }
     .userdetails_icons {
         font-size: 1.5rem;
@@ -43,6 +57,10 @@
     }
     .userdetails_icon_Color {
         color: #ef7c35;
+    }
+    .common-icon-hourly-rate:before {
+        color: #ec711c;
+        font-size: 24px;
     }
     .email-auto-complete .MuiInputBase-root:before {
         color: #999;

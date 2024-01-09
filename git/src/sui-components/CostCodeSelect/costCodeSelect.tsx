@@ -42,6 +42,7 @@ export interface CostCodeSelectProps {
 	filteroptions?: any;
 	onFiltersUpdate?:any;
 	defaultFilters?:any;
+	hiddenOptions?: any;
 }
 const useStyles: any = makeStyles((theme: any) =>
 	createStyles({
@@ -61,7 +62,7 @@ const useStyles: any = makeStyles((theme: any) =>
 	})
 );
 
-export default function CostCodeSelect({ label, options, onChange, required, startIcon, selectedValue, checkedColor, showFilter, sx, isFullWidth = true, tooltipShow = true, variant = "standard", Placeholder = 'Select', displayEmpty = false, outSideOfGrid = true, filteringValue, showFilterInSearch = false, filteroptions, onFiltersUpdate, defaultFilters=[] }: CostCodeSelectProps) {
+export default function CostCodeSelect({ label, options, onChange, required, startIcon, selectedValue, checkedColor, showFilter, sx, isFullWidth = true, tooltipShow = true, variant = "standard", Placeholder = 'Select', displayEmpty = false, outSideOfGrid = true, filteringValue, showFilterInSearch = false, filteroptions, onFiltersUpdate, defaultFilters=[], hiddenOptions=[] }: CostCodeSelectProps) {
 	const classes = useStyles();
 	const [items, setItems] = useState(options);
 	const [value, setValue] = useState<any>(selectedValue);
@@ -78,6 +79,10 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 	React.useEffect(() => {
 		defaultFilters?.length && setSelectedFilters(defaultFilters);
 	}, [defaultFilters])
+
+	React.useEffect(() => {
+		setValue(selectedValue);
+	}, [selectedValue])
 
 	const handleChange = (event: any) => {
 		console.log("eventtt", event.target.value)
@@ -189,7 +194,6 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 	}
 
 	const onFilterChange = (data: any, updatedList: any, defaultFilters:boolean=false) => {
-		console.log("onFilkterChange", data)
     if(!defaultFilters) {
 		setSelectedFilters(data);
 		onFiltersUpdate && onFiltersUpdate(data)
@@ -200,13 +204,9 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
     const filterIds: any = changeFilterFormat(data);
     data.forEach((key: any) => {
       // const value = filterIds[key];
-      console.log("key", key);
       options.forEach((option: any) => {
         let children: any = [];
-        console.log("option", option, option?.hierarchy?.includes(key));
-
         if (option?.hierarchy?.includes(key?.replaceAll(";", ","))) {
-          console.log("iff");
           filteredData?.push(option);
         }
         // if (value[0].toString().split(";").length > 1) {
@@ -239,166 +239,176 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
   };
 
 	return (
-		<>
-			<Box className='cost-code-field-box'>
-				<Box>
-					<InputLabel className={outSideOfGrid ? "inputlabel" : "inputlabel1"}
+    <>
+      <Box className='cost-code-field-box'>
+        <Box>
+          <InputLabel className={outSideOfGrid ? "inputlabel" : "inputlabel1"}
 					>{label}{(label && required) && <span className="required_color">*</span>}
-					</InputLabel>
+          </InputLabel>
 
-					<Select
-						// className="selectcostcode"
-						multiple={false}
-						className={outSideOfGrid ? "selectcostcode" : "selectcostcodenew"}
-						variant={variant}
-						style={{
-							backgroundColor: "transparent !important",
-						}}
-						fullWidth={isFullWidth}
-						value={value}
-						onOpen={onOpenChange}
-						MenuProps={{
-							classes: { paper: classes.menuPaper },
-							PaperProps: { sx: { maxHeight: 500 } },
-							autoFocus: false,
-							className: 'costcodedropdown'
-						}}
-						onChange={(e: any) => handleChange(e)}
-						onFocus={() => {
-							if (searchRef?.current) {
-								setTimeout(() => {
-									searchRef.current?.focus();
-								}, 400);
-							}
-						}}
+          <Select
+            // className="selectcostcode"
+            multiple={false}
+            className={outSideOfGrid ? "selectcostcode" : "selectcostcodenew"}
+            variant={variant}
+            style={{
+              backgroundColor: "transparent !important",
+            }}
+            fullWidth={isFullWidth}
+            value={value}
+            onOpen={onOpenChange}
+            MenuProps={{
+              classes: { paper: classes.menuPaper },
+              PaperProps: { sx: { maxHeight: 500 } },
+              autoFocus: false,
+              className: 'costcodedropdown'
+            }}
+            onChange={(e: any) => handleChange(e)}
+            onFocus={() => {
+              if (searchRef?.current) {
+                setTimeout(() => {
+                  searchRef.current?.focus();
+                }, 400);
+              }
+            }}
 
-						startAdornment={
-							<InputAdornment position="start">{startIcon}</InputAdornment>
-						}
-						// endAdornment={
-						// 	<>
-						// 		{showFilter && <SUIFilterInfiniteMenu
-						// 			menusData={filteroptions ? filteroptions : []}
-						// 			onSelectionChange={onFilterChange}
-						// 			identifier={'hierarchy'}
-						// 			selectedFilterVals={selectedFilters}
+            startAdornment={
+              <InputAdornment position="start">{startIcon}</InputAdornment>
+            }
+            // endAdornment={
+            // 	<>
+            // 		{showFilter && <SUIFilterInfiniteMenu
+            // 			menusData={filteroptions ? filteroptions : []}
+            // 			onSelectionChange={onFilterChange}
+            // 			identifier={'hierarchy'}
+            // 			selectedFilterVals={selectedFilters}
 
-						// 		></SUIFilterInfiniteMenu>}
-						// 	</>
-						// }
-						sx={{
-							...sx,
-							'& .MuiSelect-select': {
-								color: '#333333 !important',
-								fontFamily: 'Roboto-Regular !important',
-							},
-							'& .MuiSelect-select .notranslate::after': Placeholder
-								? {
-									content: `"${Placeholder}"`,
-								}
-								: {},
-							// '& .MuiSvgIcon-root': {
-							// 	display: 'none'
-							// }
-						}}
-						displayEmpty={displayEmpty}
-					>
-						<Box p={1} className="search-wrapper">
-							<TextField
-								size="small"
-								fullWidth tabIndex={1}
-								inputRef={searchRef}
-								value={search}
-								onChange={(event: any) => handleSearch(event.target.value)}
-								placeholder="Search"
-								onKeyDown={(e) => {
-									if (e.key !== "Escape") {
-										// Prevents autoselecting item while typing (default Select behaviour)
-										e.stopPropagation();
-									}
-								}}
-								InputProps={{
-									endAdornment: (
-										<InputAdornment position="end">
-
+            // 		></SUIFilterInfiniteMenu>}
+            // 	</>
+            // }
+            sx={{
+              ...sx,
+              '& .MuiSelect-select': {
+                color: '#333333 !important',
+                fontFamily: 'Roboto-Regular !important',
+              },
+              '& .MuiSelect-select .notranslate::after': Placeholder
+                ? {
+                    content: `"${Placeholder}"`,
+                  }
+                : {},
+              // '& .MuiSvgIcon-root': {
+              // 	display: 'none'
+              // }
+            }}
+            displayEmpty={displayEmpty}
+          >
+            <Box p={1} className="search-wrapper">
+              <TextField
+                size="small"
+                fullWidth tabIndex={1}
+                inputRef={searchRef}
+                value={search}
+                onChange={(event: any) => handleSearch(event.target.value)}
+                placeholder="Search"
+                onKeyDown={(e) => {
+                  if (e.key !== "Escape") {
+                    // Prevents autoselecting item while typing (default Select behaviour)
+                    e.stopPropagation();
+                  }
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      
 											{search == '' ? <SearchIcon /> : <ClearIcon onClick={handleSearchClear} style={{ cursor: 'pointer' }} />}
-											{showFilterInSearch &&
-												<> <Button
-													sx={{
-														border: `solid 1px ${selectedFilters?.length > 0 ? "#0590cd" : "rgba(0,0,0,0.6)"} !important`,
-														borderRadius: 50,
-														color: `${selectedFilters?.length > 0 ? "#0590cd" : "rgba(0,0,0,0.6)"} !important`,
-														padding: "1px",
-														width: "24px",
-														minWidth: "24px",
-														height: "24px",
-													}}
-													onClick={(e) => { setToggleDropDown(Date.now()); setFilterIconPos(e) }}
-												>
-													<div className={`common-icon-Filter ${selectedFilters?.length == 0 ? 'common-icon-Filter' : 'common-icon-Filter-blue'}`}></div>
-												</Button>
-													<SUIFilterInfiniteMenu
-														menusData={filteroptions ? filteroptions : []}
-														onSelectionChange={(ids: any, ops: any) => { onFilterChange(ids, ops); }}
-														identifier="hierarchy"
-														toggleDropDown={toggleDropDown}
-														filterIconPos={filterIconPos}
-														selectedFilterVals={selectedFilters}
-													></SUIFilterInfiniteMenu>
-												</>
-											}
-										</InputAdornment>
-									),
-								}}
-							></TextField>
-						</Box>
+                      {showFilterInSearch &&
+                        <> <Button
+                            sx={{
+                              border: `solid 1px ${selectedFilters?.length > 0 ? "#0590cd" : "rgba(0,0,0,0.6)"} !important`,
+                              borderRadius: 50,
+                              color: `${selectedFilters?.length > 0 ? "#0590cd" : "rgba(0,0,0,0.6)"} !important`,
+                              padding: "1px",
+                              width: "24px",
+                              minWidth: "24px",
+                              height: "24px",
+                            }}
+                            onClick={(e) => { setToggleDropDown(Date.now()); setFilterIconPos(e) }}
+                          >
+                            <div className={`common-icon-Filter ${selectedFilters?.length == 0 ? 'common-icon-Filter' : 'common-icon-Filter-blue'}`}></div>
+                          </Button>
+                          <SUIFilterInfiniteMenu
+                            menusData={filteroptions ? filteroptions : []}
+                            onSelectionChange={(ids: any, ops: any) => { onFilterChange(ids, ops); }}
+                            identifier="hierarchy"
+                            toggleDropDown={toggleDropDown}
+                            filterIconPos={filterIconPos}
+                            selectedFilterVals={selectedFilters}
+                          ></SUIFilterInfiniteMenu>
+                        </>
+                      }
+                    </InputAdornment>
+                  ),
+                }}
+              ></TextField>
+            </Box>
 
-						{items.length > 0 ?
-							items?.map((item: any, index: number) => {
-								return [
+            {items.length > 0 ?
+              items?.map((item: any, index: number) => {
+                return [
 
-									<ListSubheader
-										sx={{
-											fontWeight: "bold",
-											lineHeight: 1.8,
-											marginTop: "5px",
-										}}
-										disableSticky={true}
-									>
-										{item?.value}
-									</ListSubheader>,
+                  <ListSubheader
+                    sx={{
+                      fontWeight: "bold",
+                      lineHeight: 1.8,
+                      marginTop: "5px",
+                    }}
+                    disableSticky={true}
+                  >
+                    {item?.value}
+                  </ListSubheader>,
 
-									item?.children?.map((option: any, i: number) => (
+                  item?.children?.map((option: any, i: number) => (
 
-										<MenuItem
-											key={i}
-											value={item.value + '|' + option.value}
-											sx={{
-												backgroundColor: "white",
-												fontWeight: "100 !important",
-												paddingLeft: 4,
-												fontSize: outSideOfGrid ? '16px' : '14px',
-												lineHeight: 1.3,
-												" &.Mui-selected": {
-													backgroundColor: value != '' ? "#fff9cc !important" : "#fff !important",
-												},
-												// "&:hover, &:focus, &.Mui-selected": {
-												// 	backgroundColor: "#fff9cc !important",
-												// },
-
-											}}
-										>
-											{option.value}
-										</MenuItem>
-									))
-								];
-							})
-							: <MenuItem>No records found</MenuItem>
-						}
-					</Select>
-
-				</Box>
-			</Box>
-		</>
-	);
+                    <MenuItem
+                      key={i}
+                      value={item.value + '|' + option.value}
+                      sx={{
+                        backgroundColor: "white",
+                        fontWeight: "100 !important",
+                        paddingLeft: 4,
+                        fontSize: outSideOfGrid ? '16px' : '14px',
+                        lineHeight: 1.3,
+                        " &.Mui-selected": {
+                          backgroundColor: value != '' ? "#fff9cc !important" : "#fff !important",
+                        },
+                        // "&:hover, &:focus, &.Mui-selected": {
+                        // 	backgroundColor: "#fff9cc !important",
+                        // },
+                      }}
+                    >
+                      {option.value}
+                    </MenuItem>
+                  )),
+                ];
+              })
+             : (
+              <MenuItem>No records found</MenuItem>
+            )}
+            {hiddenOptions?.length > 0 && hiddenOptions.map((rec: any) => {
+              return (
+                <MenuItem
+                  className="cost-code-select-menu-item-hidden"
+                  key={rec.id}
+                  value={rec.value}
+                >
+                  {rec.value}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </Box>
+      </Box>
+    </>
+  );
 }

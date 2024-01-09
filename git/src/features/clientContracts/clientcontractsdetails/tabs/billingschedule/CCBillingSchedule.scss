@@ -18,6 +18,13 @@
     &_auto-pay-switch {
         display: flex;
         align-items: center;
+        .common-icon-Project-Info {
+            cursor: pointer;
+            &:before {
+                font-size: 20px;
+                color: #333;
+            }
+        }
     }
     &_body {
         padding: 12px;

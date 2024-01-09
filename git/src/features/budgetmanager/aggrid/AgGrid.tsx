@@ -45,6 +45,7 @@ import {vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatu
 import {budgetManagerMainGridRTListener} from '../BudgetManagerRT';
 import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
 import {getCostCodeDropdownList, getCostCodeFilterList} from '../operations/settingsSlice';
+import { providerSourceObj } from 'utilities/commonutills';
 // import {setInterval} from 'timers/promises';
 var tinycolor = require('tinycolor2');
 
@@ -226,6 +227,24 @@ const TableGrid = (props: TableGridProps) => {
 
 	}, [selectedGroupKey]);
 
+	const isCostCodeExists = (options: any, costCodeVal: any)=> {
+		let isExists: any = false;
+		(options || []).forEach((rec: any)=>{
+			if (rec.value === costCodeVal) {
+				isExists = true;
+			} else {
+				if(rec.children?.length > 0) {
+					rec.children.forEach((childRec: any)=>{
+						if(childRec.value === costCodeVal) {
+							isExists = true;
+						}
+					})
+				}
+			}
+		});
+		return isExists;
+	}
+
 	const columns: any = [
 		{
 			headerName: 'Cost Code Group',
@@ -291,6 +310,19 @@ const TableGrid = (props: TableGridProps) => {
 					: null;
 			},
 			cellRenderer: (params: any) => {
+				let selectOptions: any = [...getDivisionOptions()];
+				let hiddenOptions: any = [];
+				let isCostCodeExistsInOptions: any = params?.data?.costCode ? isCostCodeExists(selectOptions, params?.data?.costCode) : false;
+				if (!isCostCodeExistsInOptions) {
+					let obj: any = 
+						{
+							value: params?.data?.costCode,
+							id: params?.data?.costCode,
+							children: null,
+							isHidden: true,
+						}
+					hiddenOptions.push(obj);
+				}
 				let inLinefilter: any = [];
 				getDivisionFilterOptions()?.map((option: any) => {
 					if(option?.value == params?.data?.division) {
@@ -298,8 +330,7 @@ const TableGrid = (props: TableGridProps) => {
 						inLinefilter = [option?.hierarchy];
 					}
 				});
-				if(params?.node?.level == 1)console.log("inline", inLinefilter, selectedGroupKey, params)
-				if(params?.node?.level == -1)console.log("outline", params)
+				
 				
 				// return params?.node?.level == 1 ? (
 					// <CostCodeDropdown
@@ -331,36 +362,70 @@ const TableGrid = (props: TableGridProps) => {
 					// 	}}
 					// 	filteringValue={params?.data?.division}
 					// />
-					return params?.data && <CostCodeSelect
-						label=" "
-						options={getDivisionOptions()}
-						onChange={(value: any) => handleOnChange(value, params)}
-						// required={true}
-						// startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
-						checkedColor={'#0590cd'}
-						showFilter={false}
-						selectedValue={params?.data?.division && params?.data?.costCode ? params?.data?.division + '|' + params?.data?.costCode : ''}
-						Placeholder={'Select'}
-						outSideOfGrid={false}
-						showFilterInSearch={true}
-						isFullWidth={true}
-						sx={{
-							fontSize: '13px',
-							'&:before': {
-								border: 'none',
-							},
-							'&:after': {
-								border: 'none',
-							},
-							'.MuiSelect-icon': {
-								display: 'none',
-							},
-						}}
-						filteroptions={getDivisionFilterOptions()}
-						filteringValue={params?.data?.division}
-						onFiltersUpdate={(filters: any) => setMultiLevelDefaultFilters(filters)}
-						defaultFilters={multiLevelDefaultFilters?.length ? multiLevelDefaultFilters?.length : inLinefilter}
-					/>
+					return (
+            params?.data && (
+              <>
+                {(
+                  <CostCodeSelect
+                    label=" "
+                    options={selectOptions}
+					hiddenOptions = {hiddenOptions}
+                    onChange={(value: any) => handleOnChange(value, params)}
+                    // required={true}
+                    // startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
+                    checkedColor={"#0590cd"}
+                    showFilter={false}
+                    selectedValue={
+                      params?.data?.division && params?.data?.costCode
+                        ? (!isCostCodeExistsInOptions ? params?.data?.costCode : (params?.data?.division + "|" + params?.data?.costCode))
+                        : ""
+                    }
+                    Placeholder={"Select"}
+                    outSideOfGrid={false}
+                    showFilterInSearch={true}
+                    isFullWidth={true}
+                    sx={{
+                      fontSize: "13px",
+                      "&:before": {
+                        border: "none",
+                      },
+                      "&:after": {
+                        border: "none",
+                      },
+                      ".MuiSelect-icon": {
+                        display: "none",
+                      },
+                    }}
+                    filteroptions={getDivisionFilterOptions()}
+                    filteringValue={params?.data?.division}
+                    onFiltersUpdate={(filters: any) =>
+                      setMultiLevelDefaultFilters(filters)
+                    }
+                    defaultFilters={
+                      multiLevelDefaultFilters?.length
+                        ? multiLevelDefaultFilters?.length
+                        : inLinefilter
+                    }
+                  />
+                ) 
+				// : (
+                //   <div
+                //     onClick={(e: any) => {
+				// 		console.log('srini on click');
+                //     //   e.stopPropagation();
+                //     //   params.node.setData({
+                //     //     ...params.node.data,
+                //     //     isCostCodeExistsInOptions: true,
+                //     //   });
+                //     }}
+                //   >
+                //     Srini {params.data?.costCode}
+                //   </div>
+                // )
+				}
+              </>
+            )
+          );
 				// ) : null;
 			}
 		},
@@ -542,6 +607,12 @@ const TableGrid = (props: TableGridProps) => {
 					return amountFormatWithSymbol(params?.value);
 				}
 			}
+		},
+		{
+			headerName: 'Provider Source',
+			field: 'providerSource',
+			hide: false,
+			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],			
 		},
 		{
 			headerName: 'Transaction Amount',
@@ -1522,6 +1593,7 @@ const TableGrid = (props: TableGridProps) => {
 			const curveText = _.find(curveList, {value: item.curve})?.label;
 			const estimatedStartText = formatDate(item.estimatedStart, {year: 'numeric', month: '2-digit', day: '2-digit'});
 			const estimatedEndText = formatDate(item.estimatedEnd, {year: 'numeric', month: '2-digit', day: '2-digit'});
+			const providerSourceText = providerSourceObj?.[item?.providerSource];
 
 			return (!searchText || (searchText && (item.name?.match(regex) || item.description?.match(regex) ||
 				item.division.match(regex) || item.costCode.match(regex) || item.costType?.match(regex) ||
@@ -1529,7 +1601,7 @@ const TableGrid = (props: TableGridProps) => {
 				item.vendorContract?.code.match(regex) || item.vendorContract?.status.match(regex) ||
 				item.clientContract?.name?.match(regex) || item.clientContract?.code?.match(regex) ||
 				item.clientContract?.status?.match(regex) || locationText?.match(regex) ||
-				vendorText?.match(regex) || curveText?.match(regex) || estimatedStartText?.match(regex) ||
+				vendorText?.match(regex) || curveText?.match(regex) || providerSourceText?.match(regex) || estimatedStartText?.match(regex) ||
 				estimatedEndText?.match(regex) || item.originalAmount?.toString()?.match(regex) ||
 				item.revisedBudget?.toString()?.match(regex) || item.balance?.toString()?.match(regex) ||
 				item.originalAmount?.toString()?.match(regex) ||
@@ -1546,6 +1618,7 @@ const TableGrid = (props: TableGridProps) => {
 					&& (_.isEmpty(selectedFilters.clientStatus) || selectedFilters.clientStatus?.length === 0 || selectedFilters.clientStatus?.indexOf(item.clientContract?.status) > -1)
 					&& (_.isEmpty(selectedFilters.location) || selectedFilters.location?.length === 0 || _.intersection(selectedFilters.location, locationIds).length > 0)
 					&& (_.isEmpty(selectedFilters.Vendors) || selectedFilters.Vendors?.length === 0 || _.intersection(selectedFilters.Vendors, vendorsIds).length > 0)
+					&& (_.isEmpty(selectedFilters.providerSource) || selectedFilters.providerSource?.length === 0 || selectedFilters.providerSource?.indexOf(item.providerSource?.toString()) > -1)	
 				));
 		});
 	};

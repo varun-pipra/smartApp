@@ -67,6 +67,7 @@ interface SUIBaseDropdownSelectorProps {
 	handleListOpen?: Function;
 	handleListClose?: Function;
 	disabled?: boolean;
+	showIconInField?:boolean;
 }
 
 const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
@@ -107,6 +108,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 		handleListOpen= () => { },
 		handleListClose= () => { },
 		disabled = false,
+		showIconInField = false,
 	} = props;
 
 	const [selectedOptions, setSelectedOptions] = React.useState<any[]>(value);
@@ -404,7 +406,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 								alt="Avatar"
 								style={{ width: "24px", height: "24px", padding: "1px" }}
 								className="base-custom-img"
-							/> : <Avatar sx={{ backgroundColor: `#${item.color}`, width: "24px", height: "24px", padding: "1px", marginRight: '10px', fontSize: '13px' }}>{item?.displayField?.[0]?.toUpperCase()}</Avatar> }
+							/> : <Avatar sx={{ backgroundColor: `#${item.color}`, width: "24px", height: "24px", padding: "1px", marginRight: '10px', fontSize: '12px' }}>{item?.displayField?.[0]?.toUpperCase()}</Avatar> }
 						</CompnayCardTooltip>
 					)}
 					<ListItemText
@@ -536,8 +538,23 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 													/>
 													:
 													<div key={x.displayField + index} className="dropdown-without-chip-cls">
-														{/*x?.thumbnailUrl && <img src={x?.thumbnailUrl} key={x.displayField + index} alt="Avatar" style={{ width: companyImageWidth, height: companyImageHeight, verticalAlign: 'middle', padding: '1px' }} className="base-custom-img" />*/}
-														{x.displayField}
+														{showIconInField && (
+															<>
+															{!!x?.thumbnailUrl ? <img
+															src={x?.thumbnailUrl}
+															alt="Avatar"
+															style={{ width: "24px", height: "24px", padding: "1px" }}
+															className="base-custom-img"
+														/> : <Avatar sx={{ backgroundColor: `#${x.color}`, 
+																width: "24px", 
+																height: "24px", 
+																padding: "1px", 
+																marginRight: '10px', 
+																fontSize: '12px' 
+															}}>{x?.displayField?.[0]?.toUpperCase()}</Avatar>}
+															</>	
+														)}
+														{x?.displayField}
 													</div>
 												}
 											</>

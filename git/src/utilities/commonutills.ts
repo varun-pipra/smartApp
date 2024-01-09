@@ -54,3 +54,8 @@ export const getCurrencySymbolAndAlign = (data: any) => {
 
 export const errorStatus = [500, 400, 401, 403, 404, 303];
 export const errorMsg = 'Something Went Wrong!!!';
+
+export const providerSourceObj:any = {
+	0: 'Trade Partner',
+	1: 'Self Perform'
+}

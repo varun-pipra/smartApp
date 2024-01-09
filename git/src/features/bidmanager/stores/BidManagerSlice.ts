@@ -1,6 +1,9 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from 'app/store';
-import {fetchBudgetLineItemsData, fetchContactPersonsData, fetchCompanyData, fetchTeammembersByProjectData, fetchCompanyFilters} from './BidManagerAPI';
+import {
+	fetchBudgetLineItemsData, fetchContactPersonsData, fetchCompanyData,
+	fetchTeammembersByProjectData, fetchCompanyFilters
+} from './BidManagerAPI';
 import {fetchBidPackage} from './gridAPI';
 
 export interface BidManagerState {

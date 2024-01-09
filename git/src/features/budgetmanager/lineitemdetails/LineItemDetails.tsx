@@ -214,9 +214,7 @@ const LineItemDetails = (props: headerprops) => {
 	};
 
 	const help = (isFromHelpIcon: any) => {
-		console.log('useref', tabid.current);
 		const body = {iframeId: "budgetManagerIframe", roomId: selectedRow.id, appType: "BudgetManagerLineItem", tabName: tabid.current, isFromHelpIcon: isFromHelpIcon};
-		console.log('help', body);
 		postMessage({
 			event: "help",
 			body: body

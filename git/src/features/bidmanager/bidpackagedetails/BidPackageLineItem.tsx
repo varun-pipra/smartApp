@@ -1,33 +1,35 @@
 import './BidPackageLineItem.scss';
 import 'utilities/presence/PresenceManager.css';
 
-import { getServer } from 'app/common/appInfoSlice';
-import { hideLoadMask, useAppDispatch, useAppSelector } from 'app/hooks';
-import { postMessage } from 'app/utils';
+import {getServer} from 'app/common/appInfoSlice';
+import {hideLoadMask, useAppDispatch, useAppSelector} from 'app/hooks';
+import {postMessage} from 'app/utils';
 import IQObjectPage from 'components/iqobjectpage/IQObjectPage';
-import React, { useEffect, useState, useRef } from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import SUICountDownTimer from 'sui-components/CountDownTimer/CountDownTimer';
-import { getBidStatus, StatusColors, StatusIcons } from 'utilities/bid/enums';
-import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import {getBidStatus, StatusColors, StatusIcons} from 'utilities/bid/enums';
+import {formatDate} from 'utilities/datetime/DateTimeUtils';
 import PresenceManager from 'utilities/presence/PresenceManager.js';
 
-import { Close, ExpandLess, ExpandMore, PushPinOutlined as PushPin } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import {Close, ExpandLess, ExpandMore, PushPinOutlined as PushPin} from '@mui/icons-material';
+import {IconButton} from '@mui/material';
 
-import { fetchVendorData } from '../../budgetmanager/operations/vendorInfoSlice';
-import { fetchBiddersGriddata } from '../stores/BiddersSlice';
+import {fetchVendorData} from '../../budgetmanager/operations/vendorInfoSlice';
+import {fetchBiddersGriddata} from '../stores/BiddersSlice';
 import {
 	fetchBidPackageDetails, fetchCompanyList, fetchTeammembersByProject,
 	getCompanyFilters, getSelectedRecord, setSelectedTabName
 } from '../stores/BidManagerSlice';
-import { loadBidQueriesByPackage } from '../stores/BidQueriesSlice';
-import { setFiles } from '../stores/FilesSlice';
+import {loadBidQueriesByPackage} from '../stores/BidQueriesSlice';
+import {setFiles} from '../stores/FilesSlice';
 import AwardBid from './tabs/awardbid/AwardBid';
 import Bidders from './tabs/bidders/Bidders';
 import BidDetails from './tabs/biddetails/BidDetails';
 import BidDetailsRO from './tabs/biddetails/BidDetailsReadOnly';
 import BidQueries from './tabs/bidqueries/BidQueries';
-import { ReferenceFiles } from './tabs/referencefiles/ReferenceFiles';
+import {ReferenceFiles} from './tabs/referencefiles/ReferenceFiles';
+import {setViewType} from '../stores/awardBidSlice';
+import BlockchainIB from 'features/common/informationBubble/BlockchainIB';
 
 var tinycolor = require('tinycolor2');
 
@@ -46,13 +48,14 @@ const BidPackageLineItem = (props: any) => {
 	const [bidderCount, setBidderCount] = useState(0);
 	const [queryCount, setQueryCount] = useState(0);
 
-	const { bidId, tab } = useAppSelector((state) => state.bidManager);
+	const {bidId, tab} = useAppSelector((state) => state.bidManager);
 	const bidLineItem: any = useAppSelector(getSelectedRecord);
 	const tabid = useRef('bid-details');
 	const appInfo = useAppSelector(getServer);
 
 	useEffect(() => {
-		if (bidLineItem) {
+		dispatch(setViewType('grid'));
+		if(bidLineItem) {
 			setFileCount(bidLineItem.refFileCount);
 			setBidderCount(bidLineItem.bidderCount);
 			setQueryCount(bidLineItem.bidderQueryCount);
@@ -63,7 +66,7 @@ const BidPackageLineItem = (props: any) => {
 			setEndsOn(formatDate(endDate));
 		}
 
-		if (presenceRef.current) return;
+		if(presenceRef.current) return;
 		else {
 			presenceRef.current = true;
 			renderPresence();
@@ -71,15 +74,15 @@ const BidPackageLineItem = (props: any) => {
 	}, [bidLineItem]);
 
 	useEffect(() => {
-		if (bidId) {
-			const payload = { appInfo: appInfo, packageId: bidId },
+		if(bidId) {
+			const payload = {appInfo: appInfo, packageId: bidId},
 				callList: Array<any> = [
 					dispatch(fetchBidPackageDetails(payload)),
 					dispatch(fetchBiddersGriddata(payload)),
 					dispatch(fetchVendorData(appInfo)),
 					dispatch(fetchCompanyList(appInfo)),
 					dispatch(fetchTeammembersByProject(appInfo)),
-					dispatch(getCompanyFilters({ appInfo: appInfo, name: 'Diverse Supplier Categories' })),
+					dispatch(getCompanyFilters({appInfo: appInfo, name: 'Diverse Supplier Categories'})),
 					dispatch(loadBidQueriesByPackage(payload))
 				];
 
@@ -95,24 +98,24 @@ const BidPackageLineItem = (props: any) => {
 		dispatch(setSelectedTabName(value));
 	};
 	useEffect(() => {
-		if (tabSelected) {
+		if(tabSelected) {
 			help(false);
 		}
 	}, [tabSelected]);
 
 	const onScroll = (value: any) => {
-		if (pinned == false) {
+		if(pinned == false) {
 			setCollapsed(value);
 		}
 	};
 
 	const addPresenceListener = (presenceManager: any) => {
-		if (presenceManager && presenceManager.control) {
+		if(presenceManager && presenceManager.control) {
 			let participantCtrl = presenceManager.control;
 			participantCtrl.addEventListener('livelinkbtnclick', function (e: any) {
 				postMessage({
 					event: 'launchcommonlivelink',
-					body: { iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem' },
+					body: {iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem'},
 					data: participantCtrl.getParticipants()
 				});
 			});
@@ -122,35 +125,35 @@ const BidPackageLineItem = (props: any) => {
 			participantCtrl.addEventListener('streambuttonclick', function (e: any) {
 				postMessage({
 					event: 'launchcommonstream',
-					body: { iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem' },
+					body: {iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem'},
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('commentbuttonclick', function (e: any) {
 				postMessage({
 					event: 'launchcommoncomment',
-					body: { iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem' },
+					body: {iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem'},
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('presencecountclick', function (e: any) {
 				let participantsjson = participantCtrl.getParticipants(),
 					participantids = [];
-				if (participantsjson) {
-					for (var i = 0; i < participantsjson.length; i++) {
+				if(participantsjson) {
+					for(var i = 0;i < participantsjson.length;i++) {
 						participantids.push((participantsjson[i].userid));
 					}
 				}
 				postMessage({
 					event: 'launchlivechat',
-					body: { iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem' },
-					livechatData: { participantsIds: participantids }
+					body: {iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem'},
+					livechatData: {participantsIds: participantids}
 				});
 			});
 			participantCtrl.addEventListener('presenceuserclick', function (e: any) {
 				postMessage({
 					event: 'launchcontactcard',
-					body: { iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem' },
+					body: {iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem'},
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -162,7 +165,7 @@ const BidPackageLineItem = (props: any) => {
 			participantCtrl.addEventListener('presenceuserhover', function (e: any) {
 				postMessage({
 					event: 'launchcontactcard',
-					body: { iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem' },
+					body: {iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem'},
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -172,19 +175,19 @@ const BidPackageLineItem = (props: any) => {
 				});
 			});
 			document.addEventListener('updateparticipants', function (event: any) {
-				console.log('updateparticipants', event.detail)
-				if (participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
+				console.log('updateparticipants', event.detail);
+				if(participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
 					return;
 				}
-				if (event.detail.appType === 'BidManagerLineItem') {
+				if(event.detail.appType === 'BidManagerLineItem') {
 					participantCtrl.updateParticipants(event.detail.data);
 				}
 			});
 			document.addEventListener('updatecommentbadge', function (event: any) {
-				if (participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
+				if(participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
 					return;
 				}
-				if (event.detail.appType === 'BidManagerLineItem') {
+				if(event.detail.appType === 'BidManagerLineItem') {
 					let chatCount = event.detail.data,
 						animation = (chatCount.eventType === 'commentReceived') ? true : false;
 					participantCtrl.setButtonBadge('comment', chatCount.count, animation);
@@ -192,7 +195,7 @@ const BidPackageLineItem = (props: any) => {
 			});
 			postMessage({
 				event: 'joinroom',
-				body: { iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem', roomTitle: bidLineItem?.name }
+				body: {iframeId: 'bidManagerIframe', roomId: bidLineItem?.id, appType: 'BidManagerLineItem', roomTitle: bidLineItem?.name}
 			});
 			return;
 		}
@@ -203,13 +206,13 @@ const BidPackageLineItem = (props: any) => {
 
 	const help = (isFromHelpIcon: any) => {
 		console.log('useref', tabid.current);
-		const body = { iframeId: "bidManagerIframe", roomId: bidLineItem?.id, appType: "BidManagerLineItem", tabName: tabid.current, isFromHelpIcon: isFromHelpIcon }
-		console.log('help', body)
+		const body = {iframeId: "bidManagerIframe", roomId: bidLineItem?.id, appType: "BidManagerLineItem", tabName: tabid.current, isFromHelpIcon: isFromHelpIcon};
+		console.log('help', body);
 		postMessage({
 			event: "help",
 			body: body
 		});
-	}
+	};
 
 	const renderPresence = () => {
 		let presenceManager = new PresenceManager({
@@ -301,6 +304,7 @@ const BidPackageLineItem = (props: any) => {
 				</IconButton>
 			</div>
 			<div className='presence-section'>
+				{props.showBCInfo && <BlockchainIB />}
 				<div className='presence-tools'>
 					{[presenceTools].map((presenceTool: any) => presenceTool)}
 				</div>
@@ -356,7 +360,7 @@ const BidPackageLineItem = (props: any) => {
 								<PushPin
 									fontSize='small'
 									className={`pin ${pinned === true ? 'focused' : ''}`}
-									{...(pinned === true ? { color: 'primary' } : {})}
+									{...(pinned === true ? {color: 'primary'} : {})}
 								/>
 							}
 						</IconButton>
@@ -365,7 +369,7 @@ const BidPackageLineItem = (props: any) => {
 			</div>
 			<div
 				className='tab-panel-container'
-				style={{ maxHeight: (collapsed ? 'calc(100% - 7.5em)' : 'calc(100% - 10em)') }}
+				style={{maxHeight: (collapsed ? 'calc(100% - 7.5em)' : 'calc(100% - 10em)')}}
 			>
 				{tabConfig?.length > 0 && (
 					<IQObjectPage

@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from 'app/store';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {RootState} from 'app/store';
 import each from 'lodash/each';
 import groupBy from 'lodash/groupBy';
 
@@ -18,8 +18,9 @@ export interface AppInfoState {
 	sketchMarkup: any;
 	sketchPageInfo: any;
 	isAppMaximized: boolean;
-	detailInfoSelectionIndex?:any;
-	showSettingsPanel?:boolean;
+	detailInfoSelectionIndex?: any;
+	toggleBlockchainAuthModal?: boolean;
+	showSettingsPanel?: boolean;
 };
 
 const initialState: AppInfoState = {
@@ -37,7 +38,8 @@ const initialState: AppInfoState = {
 	sketchMarkup: null,
 	sketchPageInfo: null,
 	isAppMaximized: false,
-	detailInfoSelectionIndex : '',
+	detailInfoSelectionIndex: '',
+	toggleBlockchainAuthModal: false,
 	showSettingsPanel: false
 };
 
@@ -53,40 +55,40 @@ export const appInfoSlice = createSlice({
 			state.costCodeList = action.payload;
 		},
 		setCostTypeList: (state, action: PayloadAction<any>) => {
-			if (action.payload?.length) {
+			if(action.payload?.length) {
 				const newOptions = action.payload.map((type: any) => {
-					return { label: type.value, value: type.value };
+					return {label: type.value, value: type.value};
 				});
 				state.costTypeList = newOptions;
 			}
 		},
 		setCostUnitList: (state, action: PayloadAction<any>) => {
-			if (action.payload?.length) {
+			if(action.payload?.length) {
 				const newOptions = action.payload.map((unit: any) => {
-					return { label: unit.value, value: unit.value };
+					return {label: unit.value, value: unit.value};
 				});
 				state.costUnitList = newOptions;
 			}
 		},
 		setCostCodeDivisionList: (state, action: PayloadAction<any>) => {
-			const grouped = groupBy(action.payload, 'keyValue');
+			const grouped = groupBy(action.payload, 'value');
 			let groupedList: any = [];
 			each(grouped, (optionList, costCode) => {
-				groupedList.push({ id: optionList[0].displayOrder, name: costCode, options: optionList.map(opt => { return { id: opt.id, name: opt.value } }) });
+				groupedList.push({id: optionList[0].displayOrder, name: costCode, options: optionList.map(opt => {return {id: opt.id, name: opt.value};})});
 			});
 			state.costCodeDivisionList = groupedList;
 		},
 		setCurrencySymbol: (state, action: PayloadAction<any>) => {
-			state.currencySymbol = action.payload
+			state.currencySymbol = action.payload;
 		},
 		setCurrencyCode: (state, action: PayloadAction<any>) => {
-			state.currencyCode = action.payload
+			state.currencyCode = action.payload;
 		},
 		setAppWindowMaximize: (state, action: PayloadAction<any>) => {
-			state.appWindowMaximize = action.payload
+			state.appWindowMaximize = action.payload;
 		},
 		setFullView: (state, action: PayloadAction<any>) => {
-			state.fullView = action.payload
+			state.fullView = action.payload;
 		},
 		setEnableAddBtn: (state, action: PayloadAction<boolean>) => {
 			state.enableAddBtn = action.payload;
@@ -106,13 +108,18 @@ export const appInfoSlice = createSlice({
 		setDetailInfoSelectionIndex: (state, action: PayloadAction<any>) => {
 			state.detailInfoSelectionIndex = action.payload;
 		},
+		setToggleBlockchainAuthModal: (state, action: PayloadAction<any>) => {
+			state.toggleBlockchainAuthModal = action.payload;
+		},
 		setShowSettingsPanel: (state, action: PayloadAction<boolean>) => {
 			state.showSettingsPanel = action.payload;
 		}
 	}
 });
 
-export const { setServer, setCostCodeList, setCostTypeList, setCostUnitList, setCostCodeDivisionList, setCurrencySymbol, setCurrencyCode, setAppWindowMaximize, setFullView, setEnableAddBtn, setSketchIns, setSketchMarkup, setSketchPageInfo, setIsAppMaximized, setDetailInfoSelectionIndex, setShowSettingsPanel } = appInfoSlice.actions;
+export const {setServer, setCostCodeList, setCostTypeList, setCostUnitList, setCostCodeDivisionList, setCurrencySymbol,
+	setCurrencyCode, setAppWindowMaximize, setFullView, setEnableAddBtn, setSketchIns, setSketchMarkup, setSketchPageInfo,
+	setIsAppMaximized, setDetailInfoSelectionIndex, setShowSettingsPanel, setToggleBlockchainAuthModal} = appInfoSlice.actions;
 
 export const getServer = (state: RootState) => state.appInfo.server;
 export const getCostCodeList = (state: RootState) => state.appInfo.costCodeList;

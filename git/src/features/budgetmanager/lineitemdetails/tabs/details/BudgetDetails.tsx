@@ -93,7 +93,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const [rollupDisabelData, setRollupDisabelData] = useState<any>([]);
 	const [wbsOptions, setWbsOptions] = useState<any>([]);
 	const [selectedLevel, setSelectedLevel] = useState<any>();
-	const [alert, setAlert] = useState<any>({show: false, msg: ''});
+	const [alert, setAlert] = useState<any>({show: false, msg: '', type: 'Warning'});
 	const [levelValue, setLevelValue] = useState<any>('');
 	const [catalogLocalData, setCatalogLocalData] = useState<any>(catalogData);
 	const companyDataRef = useRef<any>([]);
@@ -102,6 +102,43 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	// const [wbsAddButton, setWbsAddButton] = useState<any>(false);
 	// const [wbsSearchText, setWbsSearchText] = useState<any>('');
 	const CompanyData = useAppSelector((state: any) => state.rightPanel.companyList);
+	const [costCodeHiddenOptions, setCostCodeHiddenOptions] = useState<any>([]);
+	const [isCostCodeExistsInOptions, setIsCostCodeExistsInOptions] = useState<any>(false);
+
+	const isCostCodeExists = (options: any, costCodeVal: any)=> {
+		let isExists: any = false;
+		(options || []).forEach((rec: any)=>{
+			if (rec.value === costCodeVal) {
+				isExists = true;
+			} else {
+				if(rec.children?.length > 0) {
+					rec.children.forEach((childRec: any)=>{
+						if(childRec.value === costCodeVal) {
+							isExists = true;
+						}
+					})
+				}
+			}
+		});
+		return isExists;
+	}
+
+	useEffect(()=> {
+		if (formData?.costCode && costCodeDropdownData?.length > 0) {
+			let isCostCodeExistsInOptionsList: any =  isCostCodeExists(costCodeDropdownData, formData.costCode);
+			setIsCostCodeExistsInOptions(isCostCodeExistsInOptionsList);
+			if (!isCostCodeExistsInOptionsList) {
+				let obj: any = 
+					{
+						value: formData?.costCode,
+						id: formData?.costCode,
+						children: null,
+						isHidden: true,
+					}
+					setCostCodeHiddenOptions([obj]);
+			}
+		}
+	}, [formData?.costCode, costCodeDropdownData])
 
 	const formatCompanyData = () => {
 		let list: any = [];
@@ -188,10 +225,14 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		if(name === 'costCode') {
 			const costCodeTuple = value.split('|');
 			setFormData({...formData, 'division': costCodeTuple[0], 'costCode': costCodeTuple[1]});
+		} 
+		else if(name === 'providerSource') {
+			setAlert({show: true, type: 'Confirmation', msg: `Are you sure want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}`});			
+
 		} else {
 			// if (name == 'markupFeeAmount' && Number(value) > formData?.originalAmount) setAlert({ show: true, msg: 'Amount Should Not be greater then Original Amount.' });
 			// else if (name == 'markupFeePercentage' && Number(value) > 100) setAlert({ show: true, msg: 'Percentage Should be between 1 to 100.' });
-			if(Number(value) < 0) setAlert({show: true, msg: 'Negative Values are not Allowed.'});
+			if(Number(value) < 0) setAlert({show: true, type: 'Warning', msg: 'Negative Values are not Allowed.'});
 			else setFormData({...formData, [name]: value, markupFeeAmount: name == 'markupFeeType' ? null : name == 'markupFeeAmount' ? value : formData?.markupFeeAmount, markupFeePercentage: name == 'markupFeeType' ? null : name == 'markupFeePercentage' ? value : formData?.markupFeePercentage, addMarkupFee: name !== 'addMarkupFee' ? formData?.addMarkupFee : value});
 		}
 	};
@@ -240,7 +281,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 			equipmentModel: formData?.equipmentModel,
 			equipmentManufacturer: formData?.equipmentManufacturer?.[0]?.name || '',
 			equipmentManufacturerId: formData?.equipmentManufacturer?.[0]?.objectId || '',
-			equipmentCatalogId: formData?.equipmentCatalogId
+			equipmentCatalogId: formData?.equipmentCatalogId,
+			providerSource: formData?.providerSource
 		};
 
 		console.log('data', data);
@@ -421,6 +463,15 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		return inlineFilter;
 	};
 
+	const handleProviderSourceChange = (type:string) => {
+		if(type == 'yes') {
+			console.log("yeeeee", formData)
+			setFormData({...formData, providerSource: formData?.providerSource == 0 ? 1 : 0})
+			setAlert({show: false, type: '', msg: ''})
+		}
+		else setAlert({show: false, type: '', msg: ''})
+	}
+
 
 	return (
 		<div className="budget-details-box">
@@ -518,12 +569,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						<CostCodeSelect
 							label=" "
 							options={costCodeDropdownData?.length > 0 ? costCodeDropdownData : []}
+							hiddenOptions = {costCodeHiddenOptions}
 							onChange={(value: any) => handleDropdownChange(value, 'costCode')}
 							// required={true}
 							startIcon={<div className='budget-Budgetcalculator' style={{fontSize: '1.25rem'}}></div>}
 							checkedColor={'#0590cd'}
 							showFilter={false}
-							selectedValue={formData?.division && formData?.costCode ? formData?.division + '|' + formData?.costCode : ''}
+							selectedValue={formData?.division && formData?.costCode ? (isCostCodeExistsInOptions ? (formData?.division + '|' + formData?.costCode) : formData?.costCode) : ''}
 							Placeholder={'Select'}
 							outSideOfGrid={true}
 							showFilterInSearch={true}
@@ -954,6 +1006,23 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</span>
 					</div>
 				</span>
+				<div className="budget-info-subheader">Provider Source</div>				
+				<span>
+					<RadioGroup
+						row
+						aria-labelledby="demo-row-radio-buttons-group-label"
+						name="row-radio-buttons-group"
+						value={formData?.providerSource == 1 ? 'self' : 'trade' }
+						onChange={(e) => { handleDropdownChange(e.target.value == 'self' ? 1 : 0, "providerSource") }}
+					>
+						<FormControlLabel value="self" control={<Radio />} label="Self Perform" 
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract }
+						/>
+						<FormControlLabel value="trade" control={<Radio />} label="Trade Partner" 
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract }
+						/>
+					</RadioGroup>
+				</span>
 				<div className="budget-info-subheader">Bid Details</div>
 				<span className="budget-info-tile">
 					<div className="budget-info-label">Bid Package</div>
@@ -1335,13 +1404,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				<SUIAlert
 					open={alert?.show}
 					onClose={() => {
-						setAlert({...alert, show: false});
+						setAlert({...alert, show: false, type: ''});
 					}}
 					contentText={
 						<div>
 							<span>{alert?.msg}</span>
 							<br />
-							<div style={{textAlign: "right", marginTop: "10px"}}>
+							{ alert?.type == 'Warning' && <div style={{textAlign: "right", marginTop: "10px"}}>
 								<Button
 									className="cancel-cls"
 									style={{
@@ -1355,15 +1424,17 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 											"0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)",
 										display: "initial",
 									}}
-									onClick={(e: any) => setAlert({...alert, show: false})}
+									onClick={(e: any) => setAlert({...alert, show: false, type: ''})}
 								>
 									OK
 								</Button>
-							</div>
+							</div> }
 						</div>
 					}
-					title={"Warning"}
-					showActions={false}
+					DailogClose={true}
+					title={alert?.type}
+					onAction={(e: any, type: string) => handleProviderSourceChange(type)}					
+					showActions={alert?.type == 'Warning' ? false : true}
 				/>
 			)}
 		</div>

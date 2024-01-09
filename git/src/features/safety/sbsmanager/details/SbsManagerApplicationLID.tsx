@@ -43,14 +43,14 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
       iconCls: "common-icon-SBS",
       content: <SBSDetailsTab selectedRec={data} />,
     },
-    {
-      tabId: "SBSAdditionalInfo",
-      label: "Additional Info",
-      showCount: false,
-      iconCls: "common-icon-orgconsole-project-supplemental-info",
-			content: <AdditionalInfo />
+    // {
+    //   tabId: "SBSAdditionalInfo",
+    //   label: "Additional Info",
+    //   showCount: false,
+    //   iconCls: "common-icon-orgconsole-project-supplemental-info",
+	// 		content: <AdditionalInfo />
       
-    },
+    // },
     {
       tabId: "SBSReferenceFiles",
       label: "Reference Files",

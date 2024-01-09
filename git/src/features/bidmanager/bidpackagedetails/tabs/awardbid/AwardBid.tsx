@@ -6,7 +6,7 @@ import AwardBidCompareBarChart from 'charts/barcharts/AwardBidCompareBarChart';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
 import {awardBid} from 'features/bidmanager/stores/awardBidAPI';
 import {
-	fetchAwardBidDetailsData, setActiveAwardBidFilters, setAwardBidClick, setAwardBidSelectedRecord
+	fetchAwardBidDetailsData, setActiveAwardBidFilters, setAwardBidClick, setAwardBidSelectedRecord, setViewType
 } from 'features/bidmanager/stores/awardBidSlice';
 import {fetchBidPackageDetails} from 'features/bidmanager/stores/BidManagerSlice';
 import {fetchGridData} from 'features/bidmanager/stores/gridSlice';
@@ -35,7 +35,7 @@ const AwardBid = () => {
 	const currency = useAppSelector(getCurrencySymbol);
 	const {selectedRecord} = useAppSelector((state) => state.bidManager);
 	const {BiddersGridData} = useAppSelector((state) => state.bidders);
-	const {expandedRows, activeAwardBidFilters} = useAppSelector((state) => state.awardBid);
+	const {expandedRows, activeAwardBidFilters, viewType} = useAppSelector((state) => state.awardBid);
 	const {awardBidSelectedRecord, awardBidClick, awardBidDetailData, openUpdateBudgetDialog, files} = useAppSelector((state) => state.awardBid);
 	const containerStyle = React.useMemo(() => ({width: '100%', height: '300px'}), []);
 	const [data, setData] = React.useState<any>(BiddersGridData);
@@ -48,6 +48,11 @@ const AwardBid = () => {
 	const leftContentRef = useRef<any>('');
 	const [showChartView, setShowChartView] = React.useState<boolean>(false);
 	const [contract, setContract] = React.useState<any>(null);
+
+	React.useEffect(() => {
+		console.log("tableViewType", tableViewType, viewType)
+		if(viewType != tableViewType) setTableViewType(viewType)
+	}, [viewType])
 
 	const filterOptions = [
 		{
@@ -188,6 +193,8 @@ const AwardBid = () => {
 
 	const handleToggleChange = (e: any, newAlignment: any) => {
 		setTableViewType(newAlignment);
+		dispatch(setViewType(newAlignment))
+		dispatch(setAwardBidSelectedRecord([]));		
 	};
 
 	const openPreview = (files: any, index: number) => {

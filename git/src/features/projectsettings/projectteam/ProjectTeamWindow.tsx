@@ -98,6 +98,7 @@ import { Alert } from "@mui/material";
 import { RowHeightParams } from "ag-grid-community";
 import { addCookie, getCookie } from "./utils";
 import CustomTooltip from "features/budgetmanager/aggrid/customtooltip/CustomToolTip";
+import { amountFormatWithSymbol } from "app/common/userLoginUtils";
 
 const useStyles2: any = makeStyles((theme: any) =>
 	createStyles({
@@ -406,8 +407,7 @@ const ProjectTeamWindow = (props: any) => {
 			if (filterCompanies?.length > 0) {
 				let mapFields = filterCompanies.map((item: any) => ({
 					...item, displayField: item.name, isSuggested: true, color: item?.colorCode,
-					thumbnailUrl: item?.thumbnailUrl === "" ? CompanyIcon
-						: item?.thumbnailUrl
+					thumbnailUrl: item?.thumbnailUrl
 				}));
 				let filterData = companyOptions?.filter((item: any) => { return !mapFields?.some((value: any) => value?.id === item?.id) });
 				options.companyOptions = filterData;
@@ -1845,8 +1845,7 @@ const ProjectTeamWindow = (props: any) => {
 				...data,
 				color: data.colorCode,
 				displayField: data.name,
-				thumbnailUrl: (data?.thumbnailUrl === "" ?? false) ? CompanyIcon
-					: data?.thumbnailUrl
+				thumbnailUrl: data?.thumbnailUrl
 			});
 		});
 		return groupedList
@@ -2389,6 +2388,7 @@ const ProjectTeamWindow = (props: any) => {
 													toolpTipEle.style.display = "none";
 												}
 											}}
+											// showIconInField={true}
 										></SUIBaseDropdownSelector>
 									</div>
 								)}
@@ -3229,6 +3229,17 @@ const ProjectTeamWindow = (props: any) => {
 				}}>{params.data?.renewalRequired > 0 ? (params.data?.renewalRequired == 1 ? '1 day' : params.data?.renewalRequired + ' days') : ''}</span>; // class name is fieldname
 			},
 		},
+		{
+			headerName: "HOURLY RATE",
+			field: "hourlyRate",
+			minWidth: 160,
+			valueGetter: (params: any) => params?.data?.hourlyRate ? `${params?.data?.hourlyRate}` : '',
+			cellRenderer: (params: any) => {
+				 if(params?.data?.hourlyRate ?? false) {
+					return <span className={`pt-${params?.column?.colId}`}>{`\$${params?.data?.hourlyRate}`}</span>
+				 }
+			},
+		},
 		supplimentCol,
 	];
 	allColumns.forEach((item: any) => {
@@ -3297,6 +3308,7 @@ const ProjectTeamWindow = (props: any) => {
 		"tradeName",
 		"skills",
 		"workCategoryName",
+		"hourlyRate",
 		// "safetyStatus",
 		// "policyStatus",
 		// "certificateStatus",
@@ -4074,6 +4086,7 @@ const ProjectTeamWindow = (props: any) => {
 			})
 		};
 	};
+	console.log("appInfo Obj", appInfo);
 	return (
 		<>
 			<GridWindow
@@ -4090,16 +4103,16 @@ const ProjectTeamWindow = (props: any) => {
 				zIndex={100}
 				onClose={handleClose}
 				//isFullView={fullScreen}
-				presenceProps={{
-					presenceId: 'ProjectTeam-presence',
-					showBrena: false,
-					showLiveSupport: true,
-					showLiveLink: true,
-					showStreams: true,
-					showComments: true,
-					showChat: false,
-					hideProfile: false,
-				}}
+				// presenceProps={{
+				// 	presenceId: 'ProjectTeam-presence',
+				// 	showBrena: false,
+				// 	showLiveSupport: true,
+				// 	showLiveLink: true,
+				// 	showStreams: true,
+				// 	showComments: true,
+				// 	showChat: false,
+				// 	hideProfile: false,
+				// }}
 				tools={{
 					closable: !fullScreen,
 					resizable: !fullScreen,

@@ -1,27 +1,27 @@
 import './ChangeEventRequestWindow.scss';
 
-import {setCurrencySymbol, setServer} from 'app/common/appInfoSlice';
-import {isChangeEventClient, isChangeEventGC, isChangeEventSC} from 'app/common/userLoginUtils';
-import {useAppDispatch, useAppSelector, useHomeNavigation} from 'app/hooks';
-import {currency, isLocalhost, postMessage} from 'app/utils';
+import { setCurrencySymbol, setServer } from 'app/common/appInfoSlice';
+import { isChangeEventClient, isChangeEventGC, isChangeEventSC } from 'app/common/userLoginUtils';
+import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
+import { currency, isLocalhost, postMessage } from 'app/utils';
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
-import {appInfoData} from 'data/appInfo';
+import { appInfoData } from 'data/appInfo';
 import _ from 'lodash';
-import {memo, useMemo, useEffect, useState, useRef} from 'react';
-import {useLocation} from 'react-router-dom';
-import {triggerEvent} from 'utilities/commonFunctions';
-import {formatDate} from 'utilities/datetime/DateTimeUtils';
-import {stateMap, statusFilterOptions, fundingSourceMap} from './CERUtils';
+import { memo, useMemo, useEffect, useState, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
+import { triggerEvent } from 'utilities/commonFunctions';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import { stateMap, statusFilterOptions, fundingSourceMap } from './CERUtils';
 import ChangeEventRequestsForm from './content/form/ChangeEventRequestsForm';
-import {CERLeftButtons, CERRightButtons} from './content/toolbar/CERToolbar';
+import { CERLeftButtons, CERRightButtons } from './content/toolbar/CERToolbar';
 import ChangeEventRequestsLID from './details/ChangeEventRequestsLID';
 import {
 	getChangeEventList, setSelectedChangeEvents, setToast, setDriveFiles, setCurrentChangeEventId, setTab
 } from './stores/ChangeEventSlice';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
-import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import {AgGridReact} from 'ag-grid-react';
-import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
+import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
+import { AgGridReact } from 'ag-grid-react';
+import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import SUIAlert from 'sui-components/Alert/Alert';
 
 let defaultCERStatusFilter: any = [];
@@ -34,8 +34,8 @@ const ChangeEventRequestsWindow = (props: any) => {
 	const [appData] = useState(appInfoData);
 
 	const location = useLocation();
-	const {toast, sourceList} = useAppSelector((state) => state.changeEventRequest);
-	const {server, currencySymbol} = useAppSelector((state) => state.appInfo);
+	const { toast, sourceList } = useAppSelector((state) => state.changeEventRequest);
+	const { server, currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
@@ -52,16 +52,16 @@ const ChangeEventRequestsWindow = (props: any) => {
 	let contractFilter: any = {};
 	sourceList.map((el: any) => contractFilter[el.clientContract?.id] = el.clientContract?.title);
 
-	if(statusFilter) defaultCERStatusFilter = filters.status;
+	if (statusFilter) defaultCERStatusFilter = filters.status;
 
 	const gcGroupOptions = [
-		{text: 'Status', value: 'status'},
-		{text: 'Funding Source', value: 'fundingSource'},
-		{text: 'Client Contracts', value: 'clientContract.title'}
+		{ text: 'Status', value: 'status' },
+		{ text: 'Funding Source', value: 'fundingSource' },
+		{ text: 'Client Contracts', value: 'clientContract.title' }
 	];
 	const scGroupOptions = [
-		{text: 'Status', value: 'status'},
-		{text: 'Vendor Contracts', value: 'vendorContract.title'}
+		{ text: 'Status', value: 'status' },
+		{ text: 'Vendor Contracts', value: 'vendorContract.title' }
 	];
 
 	const tabEnum: any = {
@@ -78,17 +78,17 @@ const ChangeEventRequestsWindow = (props: any) => {
 	 */
 	useEffect(() => {
 		// const {search} = location;
-		if(queryParams?.size > 0) {
+		if (queryParams?.size > 0) {
 			// const params: any = new URLSearchParams(search);
 			setMaxByDefault(queryParams?.get('maximizeByDefault') === 'true');
 			setInline(queryParams?.get('inlineModule') === 'true');
 			setFullView(queryParams?.get('inlineModule') === 'true');
 
-			if(queryParams?.get('id')) {
+			if (queryParams?.get('id')) {
 				dispatch(setCurrentChangeEventId(queryParams?.get('id')));
 				setManualLIDOpen(true);
 
-				if(queryParams?.get("tab")) {
+				if (queryParams?.get("tab")) {
 					dispatch(setTab(tabEnum[queryParams?.get("tab")]));
 				}
 			}
@@ -109,23 +109,23 @@ const ChangeEventRequestsWindow = (props: any) => {
 	 * Dropdown APIs that supports adding a new record
 	 */
 	useEffect(() => {
-		if(server) {
+		if (server) {
 			dispatch(getChangeEventList());
 		}
 	}, [server]);
 
 	useEffect(() => {
-		if(localhost) {
+		if (localhost) {
 			dispatch(setServer(_.omit(appData, ['DivisionCost'])));
 			dispatch(setCurrencySymbol(currency['USD']));
 		} else {
-			if(!server) {
+			if (!server) {
 				window.onmessage = (event: any) => {
 					let data = event.data;
 					data = typeof (data) == 'string' ? JSON.parse(data) : data;
 					data = data.hasOwnProperty('args') && data.args[0] ? data.args[0] : data;
-					if(data) {
-						switch(data.event || data.evt) {
+					if (data) {
+						switch (data.event || data.evt) {
 							case 'hostAppInfo':
 								const structuredData = data.data;
 								dispatch(setServer(structuredData));
@@ -138,17 +138,17 @@ const ChangeEventRequestsWindow = (props: any) => {
 							case 'getdrivefiles':
 								try {
 									dispatch(setDriveFiles(data.data));
-								} catch(error) {
+								} catch (error) {
 									console.log('Error in adding Files from Drive:', error);
 								}
 								break;
 							case 'updateparticipants':
 								// console.log('updateparticipants', data)
-								triggerEvent('updateparticipants', {data: data.data, appType: data.appType});
+								triggerEvent('updateparticipants', { data: data.data, appType: data.appType });
 								break;
 							case 'updatecommentbadge':
 								// console.log('updatecommentbadge', data)
-								triggerEvent('updatecommentbadge', {data: data.data, appType: data.appType});
+								triggerEvent('updatecommentbadge', { data: data.data, appType: data.appType });
 								break;
 							case 'updatechildparticipants':
 								// console.log('updatechildparticipants', data)
@@ -160,7 +160,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 
 				postMessage({
 					event: 'hostAppInfo',
-					body: {iframeId: 'changeEventRequestsIframe', roomId: server && server.presenceRoomId, appType: 'ChangeEventRequests'}
+					body: { iframeId: 'changeEventRequestsIframe', roomId: server && server.presenceRoomId, appType: 'ChangeEventRequests' }
 				});
 			}
 		}
@@ -170,13 +170,13 @@ const ChangeEventRequestsWindow = (props: any) => {
 		// const columnsCopy = [...columns];
 		setActiveGroupKey(groupKey);
 		// console.log("activeMainGridGroupKey", groupKey, columnsCopy);
-		if(((groupKey ?? false) && groupKey !== "")) {
+		if (((groupKey ?? false) && groupKey !== "")) {
 			groupKeyValue.current = groupKey;
 			// columnsCopy.forEach((col: any) => {
 			// 	col.rowGroup = groupKey ? groupKey === col.field : false;
 			// 	setColumns(columnsCopy);
 			// });
-		} else if(groupKey ?? true) {
+		} else if (groupKey ?? true) {
 			groupKeyValue.current = null;
 			// columnsCopy.forEach((col: any) => {
 			// 	// console.log("status", col?.rowGroup);
@@ -189,29 +189,29 @@ const ChangeEventRequestsWindow = (props: any) => {
 
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props.node;
-		if(node.group) {
+		if (node.group) {
 			const colName = groupKeyValue?.current;
 			console.log("cellerender", colName, node?.group);
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if(colName === "status") {
+			if (colName === "status") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={stateMap[data?.status]?.text} colName={colName}
 						/>
 					</div>
 				);
-			} else if(colName === "fundingSource") {
+			} else if (colName === "fundingSource") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={data?.fundingSource} colName={colName}
 						/>
 					</div>
 				);
-			} else if(colName === "clientContract.title") {
+			} else if (colName === "clientContract.title") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={data?.clientContract?.title} colName={colName}
 						/>
@@ -258,7 +258,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 
 	const getContractFilters = (contractMap: any) => {
 		let list: any = [];
-		for(let id in contractMap) {
+		for (let id in contractMap) {
 			list.push({
 				text: contractMap[id],
 				key: id,
@@ -278,7 +278,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 
 	const handleStatusFilter = (statusFilters: any) => {
 		setFilters((prevFilters: any) => {
-			const consolidatedFilter = {...prevFilters, ...{status: statusFilters}};
+			const consolidatedFilter = { ...prevFilters, ...{ status: statusFilters } };
 			setDefaultFilters(consolidatedFilter);
 			return consolidatedFilter;
 		});
@@ -286,8 +286,8 @@ const ChangeEventRequestsWindow = (props: any) => {
 
 	const handleStatusColumnSort = (direction: any) => {
 		gridRef?.current?.columnApi?.applyColumnState({
-			state: [{colId: 'status', sort: direction}],
-			defaultState: {sort: null}
+			state: [{ colId: 'status', sort: direction }],
+			defaultState: { sort: null }
 		});
 	};
 
@@ -405,10 +405,10 @@ const ChangeEventRequestsWindow = (props: any) => {
 		minWidth: 300,
 		suppressMenu: true,
 		valueGetter: (params: any) => {
-			if(params.data?.budgetItems?.length) {
+			if (params.data?.budgetItems?.length) {
 				const values: any = [];
 				params?.data?.budgetItems?.map((obj: any) => {
-					if(obj?.name && obj?.costCode) values.push(`${obj?.name} - ${obj?.costCode}`);
+					if (obj?.name && obj?.costCode) values.push(`${obj?.name} - ${obj?.costCode}`);
 				});
 				return values;
 			}
@@ -468,7 +468,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 	const handleClose = () => {
 		postMessage({
 			event: 'closeiframe',
-			body: {iframeId: 'changeEventRequestsIframe', roomId: server && server.presenceRoomId, appType: 'ChangeEventRequests'}
+			body: { iframeId: 'changeEventRequestsIframe', roomId: server && server.presenceRoomId, appType: 'ChangeEventRequests' }
 		});
 	};
 
@@ -477,7 +477,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 	};
 
 	const handleIconClick = () => {
-		if(isInline) useHomeNavigation('changeEventRequestIframe', 'ChangeEventRequests');
+		if (isInline) useHomeNavigation('changeEventRequestIframe', 'ChangeEventRequests');
 	};
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
@@ -536,7 +536,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 			}}
 			toast={toastMessage}
 			content={{
-				headContent: isChangeEventGC() ? {regularContent: <ChangeEventRequestsForm />} : {},
+				headContent: isChangeEventGC() ? { regularContent: <ChangeEventRequestsForm /> } : {},
 				detailView: ChangeEventRequestsLID,
 				gridContainer: {
 					toolbar: {
@@ -575,7 +575,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 				onClose={() => {
 					postMessage({
 						event: 'closeiframe',
-						body: {iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests'}
+						body: { iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests' }
 					});
 				}}
 				contentText={'You Are Not Authorized'}
@@ -583,7 +583,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 				onAction={(e: any, type: string) => {
 					type == 'close' && postMessage({
 						event: 'closeiframe',
-						body: {iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests'}
+						body: { iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests' }
 					});
 				}}
 				showActions={false}

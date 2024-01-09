@@ -1,6 +1,5 @@
-import { isLocalhost } from 'app/utils';
-import { triggerEvent } from 'utilities/commonFunctions';
-import { ContactPerson, CompanyData, CompanyFiltersData } from 'data/bids/bidList';
+import {isLocalhost} from 'app/utils';
+import {ContactPerson, CompanyData, CompanyFiltersData} from 'data/bids/bidList';
 /**
  * This function fetches the list of Costcode dropdown optins
  */
@@ -10,15 +9,15 @@ export const fetchBudgetLineItemsData = async (appInfo: any) => {
 	// This is the ,mock api which contains same data of original api. 
 	// Once if we can read the project id and session token you can replace this with original api
 	let response;
-	if (!isLocalhost) response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/scheduling/projectschedule/GetBudgetLineItems?forBidPackage=true&sessionId=${appInfo?.sessionId}`, {
+	if(!isLocalhost) response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/scheduling/projectschedule/GetBudgetLineItems?forBidPackage=true&sessionId=${appInfo?.sessionId}`, {
 		method: 'POST',
-		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify({ "projectId": appInfo?.uniqueId }),
+		headers: {'content-type': 'application/json'},
+		body: JSON.stringify({"projectId": appInfo?.uniqueId}),
 	});
 	else {
 		response = await fetch('https://63e0a62465b57fe606467d2e.mockapi.io/api/v1/budgetLineItems');
 	}
-	if (!response.ok) {
+	if(!response.ok) {
 		const message = `API Request Error (${moduleName}): ${response.status}`;
 		throw new Error(message);
 	}
@@ -31,9 +30,9 @@ export const fetchBudgetLineItemsData = async (appInfo: any) => {
 
 export const fetchContactPersonsData = async (appInfo: any, companyid: any) => {
 	let response;
-	if (!isLocalhost) {
+	if(!isLocalhost) {
 		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/bids/${appInfo.uniqueId}/team/${companyid}?sessionId=${appInfo?.sessionId}`);
-		if (!response.ok) {
+		if(!response.ok) {
 			const message = `API Request Error (${moduleName}): ${response.status}`;
 			throw new Error(message);
 		}
@@ -49,9 +48,9 @@ export const fetchContactPersonsData = async (appInfo: any, companyid: any) => {
 
 export const fetchCompanyData = async (appInfo: any) => {
 	let response;
-	if (!isLocalhost) {
+	if(!isLocalhost) {
 		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/bids/${appInfo.uniqueId}/vendors?search=&sessionId=${appInfo?.sessionId}`);
-		if (!response.ok) {
+		if(!response.ok) {
 			const message = `API Request Error (${moduleName}): ${response.status}`;
 			throw new Error(message);
 		}
@@ -69,16 +68,16 @@ export const fetchCompanyData = async (appInfo: any) => {
 
 export const fetchTeammembersByProjectData = async (appInfo: any) => {
 	let response;
-	if (!isLocalhost) {
+	if(!isLocalhost) {
 		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/bids/${appInfo.uniqueId}/team?sessionId=${appInfo?.sessionId}`, {
 			method: 'GET',
-			headers: { 'content-type': 'application/json' }
+			headers: {'content-type': 'application/json'}
 		});
 	}
 	else {
 		response = await fetch('https://63e0a62465b57fe606467d2e.mockapi.io/api/v1/budgetLineItems');
 	}
-	if (!response.ok) {
+	if(!response.ok) {
 		const message = `API Request Error (${moduleName}): ${response.status}`;
 		throw new Error(message);
 	}
@@ -89,9 +88,9 @@ export const fetchTeammembersByProjectData = async (appInfo: any) => {
 
 export const fetchCompanyFilters = async (appInfo: any, name: any) => {
 	let response: any;
-	if (!isLocalhost) {
+	if(!isLocalhost) {
 		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetByName?name=${name}&sessionId=${appInfo?.sessionId}`);
-		if (!response.ok) {
+		if(!response.ok) {
 			const message = `API Request Error (${moduleName}): ${response.status}`;
 			throw new Error(message);
 		}

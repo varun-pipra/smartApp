@@ -60,7 +60,7 @@ export const VendorContractsGridData = {
       },
       "makeUpfrontPayment": true,
       "retainagePercentage": 10.00,
-      "noOfBudgetLineItems": 2,
+      "noOfBudgetLineItems": 0,
       "hasPaymentRetainage": true,
       "remainingAmount": 200000.00,
       "totalPaidToDate": null,
@@ -69,8 +69,10 @@ export const VendorContractsGridData = {
       "files": null,
       "bidPackage": {
           "id": "2f83e18f-7879-428f-9ea2-c0cfd8fb59f9",
-          "name": "0 AA"
+          "name": "0 AA",
+          "isAdhocBid": true
       },
+      contractFor: 2,
       "amount": 200000.00,
       "budgetLineItemsWithValidSOV": 1,
       "upfrontPaymentOption": "SplitEquallyOverAllScheduledPayments",

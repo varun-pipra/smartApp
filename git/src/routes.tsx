@@ -55,7 +55,6 @@ import ToolsEquipmentWindow from 'features/toolsandequipment/ToolsEquipmentWindo
 // Finance Apps
 import BudgetManagerWindow from 'features/budgetmanager/BudgetManagerWindow';
 import BMWMultiLevelDemo from 'features/budgetmanager/BMWMultiLevelDemo';
-import BudgetManagerWindowNew from 'features/budgetmanager1/BudgetManagerWindow1';
 
 import BidManagerWindow from 'features/bidmanager/BidManagerWindow';
 import BidResponseManagerWindow from 'features/bidresponsemanager/BidResponseManagerWindow';
@@ -91,7 +90,6 @@ const AppRoutes = () => {
 			<Route path='budget-manager' element={<BudgetManagerWindow />} >
 				<Route path='home' element={<BudgetManagerWindow fullScreen={true} />} />
 			</Route>
-			<Route path='bmw-new' element={<BudgetManagerWindowNew />} />
 			<Route path='bmw-ml-demo' element={<BMWMultiLevelDemo />} />
 			<Route path='bid-manager' element={<BidManagerWindow />} >
 				<Route path='home' element={<BidManagerWindow />} />

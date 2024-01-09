@@ -1,7 +1,7 @@
 import { Button, ButtonDesign, StandardListItem, ListSeparators } from '@ui5/webcomponents-react';
 import "@ui5/webcomponents-icons/dist/expense-report.js";
 import React from 'react';
-import { Stack, Typography, Divider, List, ListItem, ListItemText, ListItemIcon, Box } from '@mui/material';
+import { Stack, Typography, Divider, List, ListItem, ListItemText, ListItemIcon, Box, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import './General.scss';
 import IQToggle from 'components/iqtoggle/IQToggle';
 import CostCodeDropdown from "components/costcodedropdown/CostCodeDropdown";
@@ -113,7 +113,8 @@ const GeneralSettings = (props: any) => {
 	const updateSettings = (fromDataClone: any) => {
 		const payload = {
 			allowMultipleLineItems: fromDataClone?.allowMultipleLineItems ? fromDataClone?.allowMultipleLineItems : false,
-			allowMarkupFee: fromDataClone?.allowMarkupFee ? fromDataClone?.allowMarkupFee : false,			
+			allowMarkupFee: fromDataClone?.allowMarkupFee ? fromDataClone?.allowMarkupFee : false,	
+			providerSource: fromDataClone?.providerSource ? fromDataClone?.providerSource : 0,	
 			showBalance: fromDataClone?.showBalance ? fromDataClone?.showBalance : false,
 			showBudget: fromDataClone?.showBudget ? fromDataClone?.showBudget : false,
 			showCost: fromDataClone?.showCost ? fromDataClone?.showCost : false,
@@ -193,6 +194,19 @@ const GeneralSettings = (props: any) => {
 						</ListItemIcon>
 					</ListItem>
 				</List>
+			</Stack>
+			<Stack className='generalSettings-Sections'>
+				<Typography variant="h6" component="h6" className='budgetSetting-heading'>Provider Source</Typography>
+				<RadioGroup
+					row
+					aria-labelledby="demo-row-radio-buttons-group-label"
+					name="row-radio-buttons-group"
+					value={formData?.providerSource == 1 ? 'self' : 'trade'}
+        			onChange={(e) => { handleInputChange(e.target.value == 'self' ? 1 : 0, 'providerSource') }}
+				>
+					<FormControlLabel value="self" control={<Radio />} label="Self Perform" />
+					<FormControlLabel value="trade" control={<Radio />} label="Trade Partner" />
+				</RadioGroup>
 			</Stack>
 			<Divider />
 			<Stack className='BudgetSettings-Sections'>

@@ -39,7 +39,8 @@ const CommittedTransaction = (props: any) => {
 	};
 
 	const groupHandler = (group: string) => {
-		setGroupAndFilterData({ ...groupAndFilterData, group: group });
+		const data = group == null || group == 'undefined' ? 'None' : group;
+		setGroupAndFilterData({ ...groupAndFilterData, group: data });
 	};
 
 	const searchHandler = (searchText: string) => {

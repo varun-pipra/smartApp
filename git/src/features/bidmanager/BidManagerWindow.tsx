@@ -4,11 +4,11 @@ import './BidManagerWindow.scss';
 import {
 	getServer, setAppWindowMaximize, setCostUnitList, setCurrencySymbol, setFullView, setServer
 } from 'app/common/appInfoSlice';
-import { hideLoadMask, useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
-import { currency, isLocalhost, postMessage } from 'app/utils';
+import {hideLoadMask, useAppDispatch, useAppSelector, useHomeNavigation} from 'app/hooks';
+import {currency, isLocalhost, postMessage} from 'app/utils';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { appInfoData } from 'data/appInfo';
-import { setNewBidder, setNewCompany } from 'features/bidmanager/stores/BiddersSlice';
+import {appInfoData} from 'data/appInfo';
+import {setNewBidder, setNewCompany} from 'features/bidmanager/stores/BiddersSlice';
 import {
 	fetchBidPackageDetails, fetchCompanyList, getSelectedRecord, getShowContracts,
 	setBidId,
@@ -17,19 +17,20 @@ import {
 	setShowLineItemDetails,
 	setTab
 } from 'features/bidmanager/stores/BidManagerSlice';
-import { uploadReferenceFile } from 'features/bidmanager/stores/FilesAPI';
+import {uploadReferenceFile} from 'features/bidmanager/stores/FilesAPI';
 import ContractAttachments from 'features/supplementalcontracts/SupplementalContractsWindow';
-import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { triggerEvent } from 'utilities/commonFunctions';
+import {useEffect, useRef, useState} from 'react';
+import {useLocation} from 'react-router-dom';
+import {triggerEvent} from 'utilities/commonFunctions';
 
-import { IconButton } from '@mui/material';
+import {IconButton} from '@mui/material';
 
 import IQWindow from 'components/iqbasewindow/IQBaseWindow';
 import BidManagerContent from './bidmanagercontent/BidManagerContent';
-import { setUploadQueue } from './stores/FilesSlice';
+import {setUploadQueue} from './stores/FilesSlice';
 import SUIAlert from 'sui-components/Alert/Alert';
-import { isBidManager } from 'app/common/userLoginUtils';
+import {isBidManager} from 'app/common/userLoginUtils';
+import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
 
 const BidManagerWindow = () => {
 	const dispatch = useAppDispatch();
@@ -55,44 +56,47 @@ const BidManagerWindow = () => {
 	const queryParams: any = new URLSearchParams(location.search);
 
 	useEffect(() => {
-		const { pathname, search } = location;
-		if (pathname.includes('home')) {
+		const {pathname, search} = location;
+		if(pathname.includes('home')) {
 			setIsFullView(true);
 			dispatch(setFullView(true));
 		}
-		if (queryParams?.size > 0) {
+		if(queryParams?.size > 0) {
 			// const params: any = new URLSearchParams(search);
 			setMaxByDefault(queryParams?.get('maximizeByDefault') === 'true');
 			setInline(queryParams?.get('inlineModule') === 'true');
 			setIsFullView(queryParams?.get('inlineModule') === 'true');
 
-			if (queryParams?.get('id')) {
+			if(queryParams?.get('id')) {
 				dispatch(setBidId(queryParams?.get('id')));
 				dispatch(setShowLineItemDetails(true));
 
-				if (queryParams?.get('tab')) {
+				if(queryParams?.get('tab')) {
 					dispatch(setTab(tabEnum[queryParams?.get('tab')]));
 				}
 			} else hideLoadMask();
 		} else hideLoadMask();
 	}, []);
 
-	useEffect(() => { appInfoReference.current = appInfo }, [appInfo])
+	useEffect(() => {
+		appInfoReference.current = appInfo;
+		dispatch(checkBlockchainStatus('BidManager'));
+	}, [appInfo]);
 
 	useEffect(() => {
-		if (localhost) {
-			const { DivisionCost, ...others } = appData;
+		if(localhost) {
+			const {DivisionCost, ...others} = appData;
 			dispatch(setServer(others));
 			dispatch(setCurrencySymbol(currency['USD']));
 			dispatch(setCostUnitList(DivisionCost?.CostUnit));
 		} else {
-			if (!appInfo) {
+			if(!appInfo) {
 				window.onmessage = (event: any) => {
 					let data = event.data;
 					data = typeof (data) == 'string' ? JSON.parse(data) : data;
 					data = data.hasOwnProperty('args') && data.args[0] ? data.args[0] : data;
-					if (data) {
-						switch (data.event || data.evt) {
+					if(data) {
+						switch(data.event || data.evt) {
 							case 'hostAppInfo':
 								const structuredData = data.data;
 								dispatch(setServer(structuredData));
@@ -106,24 +110,24 @@ const BidManagerWindow = () => {
 							case 'getdrivefiles':
 								try {
 									dispatch(setUploadQueue(data.data));
-								} catch (error) {
+								} catch(error) {
 									console.log('Error in adding Bid Reference file from Drive', error);
 								}
 								break;
 							case 'updateparticipants':
-								triggerEvent('updateparticipants', { data: data.data, appType: data.appType });
+								triggerEvent('updateparticipants', {data: data.data, appType: data.appType});
 								break;
 							case 'updatecommentbadge':
-								triggerEvent('updatecommentbadge', { data: data.data, appType: data.appType });
+								triggerEvent('updatecommentbadge', {data: data.data, appType: data.appType});
 								break;
 							case 'updatechildparticipants':
 								dispatch(setPresenceData(data.data));
 								break;
 							case "useradded":
-								dispatch(setNewBidder({ contactPerson: data.userInfo?.[0] }));
+								dispatch(setNewBidder({contactPerson: data.userInfo?.[0]}));
 								break;
 							case "companyadded":
-								console.log("companyadded", appInfoReference.current, data)
+								console.log("companyadded", appInfoReference.current, data);
 								dispatch(fetchCompanyList(appInfoReference.current));
 								dispatch(setNewCompany(data.companyInfo));
 								break;
@@ -132,7 +136,7 @@ const BidManagerWindow = () => {
 				};
 				postMessage({
 					event: 'hostAppInfo',
-					body: { iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager' }
+					body: {iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager'}
 				});
 			}
 		}
@@ -141,7 +145,7 @@ const BidManagerWindow = () => {
 	const handleNewTab = () => {
 		postMessage({
 			event: 'openinnewtab',
-			body: { iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager' }
+			body: {iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager'}
 		});
 	};
 
@@ -158,15 +162,15 @@ const BidManagerWindow = () => {
 			};
 		});
 
-		uploadReferenceFile(appInfo, { referenceFiles: { add: files } }, bidPackage.id)
+		uploadReferenceFile(appInfo, {referenceFiles: {add: files}}, bidPackage.id)
 			.then((bidPackageItem: any) => {
 				dispatch(setSelectedRecord(bidPackageItem));
-				dispatch(fetchBidPackageDetails({ appInfo: appInfo, packageId: bidPackage?.id }));
+				dispatch(fetchBidPackageDetails({appInfo: appInfo, packageId: bidPackage?.id}));
 			});
 	};
 
 	const handleIconClick = () => {
-		if (isInline) useHomeNavigation('bidManagerIframe', 'BidManager');
+		if(isInline) useHomeNavigation('bidManagerIframe', 'BidManager');
 	};
 
 	const optionalTools = <>{!isFullView && <IQTooltip title='Open in new Tab' placement={'bottom'}>
@@ -225,10 +229,10 @@ const BidManagerWindow = () => {
 					// participants: [ appInfoData.currentUserInfo ]
 				}}
 				onClose={(event, reason) => {
-					if (reason && reason == 'closeButtonClick') {
+					if(reason && reason == 'closeButtonClick') {
 						postMessage({
 							event: 'closeiframe',
-							body: { iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager' }
+							body: {iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager'}
 						});
 					}
 				}}
@@ -248,7 +252,7 @@ const BidManagerWindow = () => {
 				onClose={() => {
 					postMessage({
 						event: 'closeiframe',
-						body: { iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager' }
+						body: {iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager'}
 					});
 				}}
 				contentText={"You Are Not Authorized"}
@@ -256,7 +260,7 @@ const BidManagerWindow = () => {
 				onAction={(e: any, type: string) => {
 					type == 'close' && postMessage({
 						event: 'closeiframe',
-						body: { iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager' }
+						body: {iframeId: 'bidManagerIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'BidManager'}
 					});
 				}}
 				showActions={false}

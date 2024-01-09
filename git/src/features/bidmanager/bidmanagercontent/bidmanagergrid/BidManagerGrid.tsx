@@ -7,11 +7,10 @@ import IQTooltip from 'components/iqtooltip/IQTooltip';
 import {
 	fetchBidPackageDetails, setSelectedNode, setSelectedRecord, setShowLineItemDetails
 } from 'features/bidmanager/stores/BidManagerSlice';
-import {fetchBiddersGriddata} from 'features/bidmanager/stores/BiddersSlice';
-import {setAwardBidDetailsData, setExpandedRows} from 'features/bidmanager/stores/awardBidSlice';
+import {setAwardBidDetailsData} from 'features/bidmanager/stores/awardBidSlice';
 import {
 	setActiveCompaniesList, setActiveMainGridFilters, setActiveMainGridDefaultFilters,
-	setActiveMainGridGroupKey, setGridData, setRefreshed, setSelectedRows
+	setActiveMainGridGroupKey, setRefreshed, setSelectedRows
 } from 'features/bidmanager/stores/gridSlice';
 import React, {memo, useEffect, useMemo, useRef, useState} from 'react';
 import SUIGrid from 'sui-components/Grid/Grid';
@@ -36,14 +35,10 @@ const BidManagerGrid = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const {bidId} = useAppSelector((state) => state.bidManager);
-	const {gridData, originalGridData, refreshed, liveData, activeMainGridGroupKey,
-		activeMainGridFilters, mainGridSearchText, activeMainGridDefaultFilters} = useAppSelector((state) => state.bidManagerGrid);
-	const {BiddersGridData} = useAppSelector((state) => state.bidders);
-	const {expandedRows} = useAppSelector((state) => state.awardBid);
+	const {gridData, originalGridData, liveData, activeMainGridGroupKey,
+		activeMainGridFilters, mainGridSearchText} = useAppSelector((state) => state.bidManagerGrid);
 	const containerStyle = useMemo(() => ({width: '100%', height: '100%'}), []);
 	const gridStyle = useMemo(() => ({height: '100%', width: '100%'}), []);
-	const {currencySymbol} = useAppSelector((state) => state.appInfo);
-	const [bidders, setBidders] = useState<any>([]);
 	const [gridApi, setGridApi] = useState<any>();
 	// const [statusFilter, setStatusFilters] = useState<any>({ids: [], names: []});
 	const [rowData, setRowData] = useState<any>([]);
@@ -54,6 +49,7 @@ const BidManagerGrid = (props: any) => {
 	const showLineItemDetails = useAppSelector((state) => state.bidManager.showLineItemDetails);
 	const selectedRecord = useAppSelector((state) => state.bidManager.selectedRecord);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
+	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 
 	useEffect(() => {
 		gridRef?.current?.api?.applyTransaction(liveData);
@@ -282,7 +278,10 @@ const BidManagerGrid = (props: any) => {
 				// checkbox: true,
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
+					const bcStatus = params.data?.blockChainStatus;
+					const showBCIcon = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(bcStatus) === -1);
 					return <>
+						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '9%', marginTop: '12px'}}></span>}
 						{/* <IQTooltip
 						title={'Scheduled'}
 						placement={'bottom'} arrow={true}
@@ -671,7 +670,7 @@ const BidManagerGrid = (props: any) => {
 export default memo(BidManagerGrid);
 
 export const CustomGroupHeader = memo((props: any) => {
-	const {iconCls, color,bgColor, baseCustomLine = false,showStatus = false, label, colName = '', ...rest} = props;
+	const {iconCls, color, bgColor, baseCustomLine = false, showStatus = false, label, colName = '', ...rest} = props;
 	return (
 		<div className="custom-group-header-cls" style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
 			{baseCustomLine && (
@@ -679,14 +678,14 @@ export const CustomGroupHeader = memo((props: any) => {
 			)}
 			{showStatus && (
 				<div
-				className='status'
-				style={{
-					color: color,
-					backgroundColor: bgColor
-				}}
-			>
-				<span className={`status-icon ${iconCls}`}></span> {label}{' '}
-			</div>
+					className='status'
+					style={{
+						color: color,
+						backgroundColor: bgColor
+					}}
+				>
+					<span className={`status-icon ${iconCls}`}></span> {label}{' '}
+				</div>
 			)}
 			{!showStatus && (
 				<span className="custom-group-header-label-cls">{label}</span>

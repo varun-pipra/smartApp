@@ -1,53 +1,50 @@
 import './BidManagerContent.scss';
 
-import { getServer } from 'app/common/appInfoSlice';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
+import {getServer} from 'app/common/appInfoSlice';
+import {useAppDispatch, useAppSelector} from 'app/hooks';
 import IQButton from 'components/iqbutton/IQButton';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import Toast from 'components/toast/Toast';
-import { SUIToast } from 'sui-components/Toast/Suitoast';
 import {
-	fetchBidPackageDetails, fetchBudgetLineItems, fetchCompanyList, fetchContactPersonsList,
-	fetchTeammembersByProject, getCompanyFilters, getSelectedRecord, getShowLineItemDetails,
+	fetchBidPackageDetails, fetchBudgetLineItems, fetchCompanyList, fetchTeammembersByProject, getCompanyFilters, getSelectedRecord, getShowLineItemDetails,
 	getToastMessage, getToastMessage2, setSelectedNode, setSelectedRecord, setShowLineItemDetails,
 	setToastMessage2
 } from 'features/bidmanager/stores/BidManagerSlice';
-import React, { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Award from 'resources/images/bidManager/Awarded.svg';
 import SUIAlert from 'sui-components/Alert/Alert';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 // Realtime imports
-import { initRTDocument } from 'utilities/realtime/Realtime';
-import { postMessage } from 'app/utils';
+import {postMessage} from 'app/utils';
 import {
 	ExpandLess, ExpandMore, Gavel, KeyboardArrowLeft, KeyboardArrowRight, PushPinOutlined as PushPin
 } from '@mui/icons-material';
-import { Alert, Box, IconButton, Stack } from '@mui/material';
+import {Box, IconButton, Stack} from '@mui/material';
 
-import { fetchVendorData } from '../../budgetmanager/operations/vendorInfoSlice';
-import { awardBidRTListener, bidQueryRTListener, mainGridRTListener } from '../BidManagerRT';
+import {fetchVendorData} from '../../budgetmanager/operations/vendorInfoSlice';
 import BidPackageLineItem from '../bidpackagedetails/BidPackageLineItem';
-import { updateBudget } from '../stores/awardBidAPI';
+import {updateBudget} from '../stores/awardBidAPI';
 import {
 	setAwardBidClick, setAwardBidDetailsData, setOpenUpdateBudgetDialog
 } from '../stores/awardBidSlice';
-import { patchBidPackage } from '../stores/gridAPI';
-import { fetchGridData } from '../stores/gridSlice';
+import {patchBidPackage} from '../stores/gridAPI';
+import {fetchGridData} from '../stores/gridSlice';
 import BidLineItemForm from './bidlineitemform/BidLineItemForm';
 import BidManagerGrid from './bidmanagergrid/BidManagerGrid';
 import BidToolbar from './bidmanagertoolbar/BidManagerToolbar';
+import {setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 
 const BidManagerContent = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
-	const { gridData, originalGridData } = useAppSelector((state) => state.bidManagerGrid);
-	const { selectedNode, selectedRecord, selectedTabName } = useAppSelector((state) => state.bidManager);
-	const { awardBidSelectedRecord, awardBidDetailData } = useAppSelector((state) => state.awardBid);
+	const {gridData, originalGridData} = useAppSelector((state) => state.bidManagerGrid);
+	const {selectedNode, selectedRecord, selectedTabName} = useAppSelector((state) => state.bidManager);
+	const {awardBidSelectedRecord, awardBidDetailData, viewType} = useAppSelector((state) => state.awardBid);
 
 	// Redux state extraction
 	const showRightPanel = useAppSelector(getShowLineItemDetails);
 	const lineItem: any = useAppSelector(getSelectedRecord);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 
 	// State declarations
 	const [collapsed, setCollapsed] = useState(false);
@@ -55,34 +52,36 @@ const BidManagerContent = (props: any) => {
 	const [showLeftButton, setShowLeftButton] = useState(false);
 	const [showRightButton, setShowRightButton] = useState(false);
 	const [api, setApi] = useState<any>('');
-	const [postBid, setPostBid] = useState<any>({ show: true, disable: true });
-	const [declineBid, setDeclineBid] = useState<any>({ show: true, disable: false });
-	const [awardBid, setAwardBid] = useState<any>({ show: false, award: { show: false, disable: true }, updateBudget: { show: false, disable: false } });
+	const [postBid, setPostBid] = useState<any>({show: true, disable: true});
+	const [declineBid, setDeclineBid] = useState<any>({show: true, disable: false});
+	const [awardBid, setAwardBid] = useState<any>({show: false, award: {show: false, disable: true}, updateBudget: {show: false, disable: false}});
 
-	const [toastMessage, setToastMessage] = useState<any>({ displayToast: false, message: '' });
-	const [RightPanel_ToastMessage, setRightPanel_ToastMessage] = useState<any>({ displayToast: false, message: '' });
+	const [toastMessage, setToastMessage] = useState<any>({displayToast: false, message: ''});
+	const [RightPanel_ToastMessage, setRightPanel_ToastMessage] = useState<any>({displayToast: false, message: ''});
 	const showToastMessage = useAppSelector(getToastMessage);
 	const showToastMessage2 = useAppSelector(getToastMessage2);
 	const [showAlert, setShowAlert] = useState<any>(false);
 	const gridRT = useRef<boolean>(false);
 	const [exampletoast, setexample] = useState<any>(true);
+	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+
 	useEffect(() => {
 		setTimeout(() => {
-			setToastMessage({ displayToast: false, message: '' });
+			setToastMessage({displayToast: false, message: ''});
 		}, 3000);
-		setToastMessage({ ...showToastMessage });
+		setToastMessage({...showToastMessage});
 	}, [showToastMessage]);
 
 	useEffect(() => {
-		if (showToastMessage2?.displayToast == true) {
-			setRightPanel_ToastMessage({ ...showToastMessage2 })
+		if(showToastMessage2?.displayToast == true) {
+			setRightPanel_ToastMessage({...showToastMessage2});
 		}
 	}, [showToastMessage2]);
 
 	useEffect(() => {
-		if (RightPanel_ToastMessage?.displayToast == true) {
+		if(RightPanel_ToastMessage?.displayToast == true) {
 			setTimeout(() => {
-				setRightPanel_ToastMessage({ displayToast: false, message: '' });
+				setRightPanel_ToastMessage({displayToast: false, message: ''});
 			}, 3000);
 		}
 	}, [RightPanel_ToastMessage]);
@@ -94,7 +93,7 @@ const BidManagerContent = (props: any) => {
 		dispatch(fetchVendorData(appInfo));
 		dispatch(fetchCompanyList(appInfo));
 		dispatch(fetchTeammembersByProject(appInfo));
-		dispatch(getCompanyFilters({ appInfo: appInfo, name: 'Diverse Supplier Categories' }));
+		dispatch(getCompanyFilters({appInfo: appInfo, name: 'Diverse Supplier Categories'}));
 		// Real time
 		// if (gridRT.current) return;
 		// else {
@@ -110,18 +109,18 @@ const BidManagerContent = (props: any) => {
 	}, []);
 
 	useEffect(() => {
-		setShowLeftButton(selectedNode?.firstChild ? true : false)
+		setShowLeftButton(selectedNode?.firstChild ? true : false);
 		setShowRightButton(selectedNode?.lastChild ? true : false);
 	}, [gridData, selectedNode, originalGridData]);
 
 	useEffect(() => {
-		setPostBid({ ...postBid, show: selectedTabName !== 'award-bids' && [0, 1, 2].includes(selectedRecord?.status) ? true : false, disable: selectedRecord?.status == 1 ? false : true })
-		setDeclineBid({ ...declineBid, show: [0, 1, 2].includes(selectedRecord?.status) ? false : selectedTabName !== 'award-bids' ? true : false })
+		setPostBid({...postBid, show: selectedTabName !== 'award-bids' && [0, 1, 2].includes(selectedRecord?.status) ? true : false, disable: selectedRecord?.status == 1 ? false : true});
+		setDeclineBid({...declineBid, show: [0, 1, 2].includes(selectedRecord?.status) ? false : selectedTabName !== 'award-bids' ? true : false});
 		setAwardBid({
 			...awardBid,
 			show: selectedTabName == 'award-bids' && selectedRecord?.status == 3 ? true : false,
-			award: { ...awardBid?.award, disable: awardBidSelectedRecord?.length > 0 && awardBidSelectedRecord[0]?.submissionStatus == 3 && awardBidDetailData?.bidAmount == awardBidDetailData?.totalBudget ? false : true }
-		})
+			award: {...awardBid?.award, disable: awardBidSelectedRecord?.length > 0 && awardBidSelectedRecord[0]?.submissionStatus == 3 && awardBidDetailData?.bidAmount == awardBidDetailData?.totalBudget ? false : true}
+		});
 	}, [selectedRecord, selectedTabName, awardBidSelectedRecord, awardBidDetailData]);
 
 	// Handler method definitions
@@ -130,7 +129,7 @@ const BidManagerContent = (props: any) => {
 		dispatch(setSelectedRecord({}));
 		postMessage({
 			event: "help",
-			body: { iframeId: "bidManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BidManager", isFromHelpIcon: false }
+			body: {iframeId: "bidManagerIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "BidManager", isFromHelpIcon: false}
 		});
 	};
 
@@ -140,9 +139,9 @@ const BidManagerContent = (props: any) => {
 
 	const handleLeftArrow = () => {
 		api.forEachNode(function (node: any) {
-			if (selectedNode?.rowIndex - 1 === node.rowIndex && node?.data !== undefined) {
+			if(selectedNode?.rowIndex - 1 === node.rowIndex && node?.data !== undefined) {
 				node.setSelected(true, true);
-				dispatch(fetchBidPackageDetails({ appInfo: appInfo, packageId: node?.data?.id }));
+				dispatch(fetchBidPackageDetails({appInfo: appInfo, packageId: node?.data?.id}));
 				dispatch(setSelectedNode(node));
 				dispatch(setAwardBidDetailsData({}));
 			}
@@ -151,9 +150,9 @@ const BidManagerContent = (props: any) => {
 
 	const handleRightArrow = () => {
 		api.forEachNode(function (node: any) {
-			if (selectedNode?.rowIndex + 1 === node?.rowIndex) {
+			if(selectedNode?.rowIndex + 1 === node?.rowIndex) {
 				node.setSelected(true, true);
-				dispatch(fetchBidPackageDetails({ appInfo: appInfo, packageId: node?.data?.id }));
+				dispatch(fetchBidPackageDetails({appInfo: appInfo, packageId: node?.data?.id}));
 				dispatch(setSelectedNode(node));
 				dispatch(setAwardBidDetailsData({}));
 			}
@@ -161,15 +160,21 @@ const BidManagerContent = (props: any) => {
 	};
 
 	const handlePostBid = () => {
-		patchBidPackage(appInfo, selectedRecord?.id, { status: 3 }).then((response: any) => {
+		patchBidPackage(appInfo, selectedRecord?.id, {status: 3}).then((response: any) => {
 			dispatch(fetchGridData(appInfo));
-			dispatch(setToastMessage2({ displayToast: true, message: 'Bid Posted Successfully' }));
+			dispatch(setToastMessage2({displayToast: true, message: 'Bid Posted Successfully'}));
 			dispatch(setSelectedRecord(response));
+			if(blockchainEnabled) {
+				dispatch(setShowBlockchainDialog(true));
+			}
 		});
 	};
 
 	const handleAwardBid = () => {
 		dispatch(setAwardBidClick(true));
+		if(blockchainEnabled) {
+			dispatch(setShowBlockchainDialog(true));
+		}
 	};
 
 	const handleUpdateBudget = () => {
@@ -179,15 +184,17 @@ const BidManagerContent = (props: any) => {
 
 	const handleAlert = (type: string) => {
 		type == 'close' && setShowAlert(false);
-		if (type == 'yes') {
+		if(type == 'yes') {
 			updateBudget(appInfo, selectedRecord?.id, awardBidDetailData?.bidderUID, (response: any) => {
 				dispatch(setAwardBidDetailsData(response));
 			});
-			setRightPanel_ToastMessage({ displayToast: true, message: 'Budget updated successfully and Bid can now be awarded to the Vendor' });
+			setRightPanel_ToastMessage({displayToast: true, message: 'Budget updated successfully and Bid can now be awarded to the Vendor'});
 		}
 
 		setShowAlert(false);
 	};
+
+	const disableBlockchainActionButtons = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(selectedRecord?.blockChainStatus) === -1);
 
 	return <>
 		<Box className='bid-manager-content'>
@@ -201,7 +208,7 @@ const BidManagerContent = (props: any) => {
 						{collapsed === true ? <ExpandMore fontSize='small' /> : <ExpandLess fontSize='small' />}
 					</IconButton>
 					{!collapsed && <IconButton className={`header-button ${pinned === true ? 'btn-focused' : ''}`} aria-label={pinned === true ? 'Pinned' : 'Not Pinned'} onClick={() => setPinned(pPinned => !pPinned)}>
-						{<PushPin fontSize='small' className={`pin ${pinned === true ? 'focused' : ''}`} {...(pinned === true ? { color: 'primary' } : {})} />}
+						{<PushPin fontSize='small' className={`pin ${pinned === true ? 'focused' : ''}`} {...(pinned === true ? {color: 'primary'} : {})} />}
 					</IconButton>}
 				</div>
 			</div>
@@ -228,7 +235,7 @@ const BidManagerContent = (props: any) => {
 		</Box>
 		{showRightPanel && (
 			<SUIDrawer
-				PaperProps={{ style: { position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a' } }}
+				PaperProps={{style: {position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a'}}}
 				anchor='right'
 				variant='permanent'
 				elevation={8}
@@ -237,6 +244,7 @@ const BidManagerContent = (props: any) => {
 				<Stack className='rightpanel-content-section'>
 					<BidPackageLineItem
 						close={onRightPanelClose}
+						showBCInfo={disableBlockchainActionButtons}
 					/>
 				</Stack>
 				<Stack direction='row' className='rightpanel-footer' >
@@ -272,7 +280,7 @@ const BidManagerContent = (props: any) => {
 					}
 					{
 						postBid?.show && <IQButton
-							disabled={postBid?.disable}
+							disabled={postBid?.disable || disableBlockchainActionButtons}
 							className='btn-post-bid'
 							color='green'
 							onClick={handlePostBid}
@@ -281,7 +289,7 @@ const BidManagerContent = (props: any) => {
 						</IQButton>
 					}
 					{
-						awardBid?.show && awardBidSelectedRecord[0]?.submissionStatus == 3 &&
+						awardBid?.show && awardBidSelectedRecord[0]?.submissionStatus == 3 && viewType == 'grid' &&
 						<Stack direction='row' spacing={2}>
 							{awardBidSelectedRecord?.length ? <div className='estimated-bid-cls'>
 								<span className='common-icon-info-white'></span>
@@ -289,12 +297,12 @@ const BidManagerContent = (props: any) => {
 								{awardBidDetailData?.bidAmount == awardBidDetailData?.totalBudget ?
 									<span className='text'> Estimated Bid Value of {currencySymbol} {awardBidDetailData?.bidAmount?.toLocaleString('en-US')} matches Budget Value</span> :
 									awardBidDetailData?.bidAmount > awardBidDetailData?.totalBudget ?
-										<span className='text'>Estimated Bid Value of {currencySymbol} {awardBidDetailData?.bidAmount?.toLocaleString('en-US')} is greater than projected Budget value (  {<p style={{ color: 'red' }}>{`${currencySymbol} ${(awardBidDetailData?.bidAmount - awardBidDetailData?.totalBudget)?.toLocaleString('en-US')}`}</p>})</span>
-										: <span className='text'>Estimated Bid Value of {currencySymbol} {awardBidDetailData?.bidAmount?.toLocaleString('en-US')} is lesser than projected Budget value ( {<p style={{ color: 'green' }}>{`${currencySymbol} ${(awardBidDetailData?.totalBudget - awardBidDetailData?.bidAmount)?.toLocaleString('en-US')}`}</p>})</span>
+										<span className='text'>Estimated Bid Value of {currencySymbol} {awardBidDetailData?.bidAmount?.toLocaleString('en-US')} is greater than projected Budget value (  {<p style={{color: 'red'}}>{`${currencySymbol} ${(awardBidDetailData?.bidAmount - awardBidDetailData?.totalBudget)?.toLocaleString('en-US')}`}</p>})</span>
+										: <span className='text'>Estimated Bid Value of {currencySymbol} {awardBidDetailData?.bidAmount?.toLocaleString('en-US')} is lesser than projected Budget value ( {<p style={{color: 'green'}}>{`${currencySymbol} ${(awardBidDetailData?.totalBudget - awardBidDetailData?.bidAmount)?.toLocaleString('en-US')}`}</p>})</span>
 								}
 								{/* </span> */}
 								{awardBidDetailData?.bidAmount !== awardBidDetailData?.totalBudget && <IQButton
-									disabled={declineBid?.disable}
+									disabled={declineBid?.disable || disableBlockchainActionButtons}
 									className='btn-award-update'
 									// color='secondary'
 									onClick={handleUpdateBudget}>
@@ -306,11 +314,11 @@ const BidManagerContent = (props: any) => {
 						</Stack>
 					}
 					{
-						awardBid?.show && <IQButton
-							disabled={awardBid?.award?.disable}
+						awardBid?.show && viewType == 'grid' && <IQButton
+							disabled={awardBid?.award?.disable || disableBlockchainActionButtons}
 							className='btn-post-bid award-bid-cls'
 							color='green'
-							startIcon={<Box component='img' src={Award} style={{ height: '20px', width: '20px' }} />}
+							startIcon={<Box component='img' src={Award} style={{height: '20px', width: '20px'}} />}
 							onClick={handleAwardBid}>
 							AWARD BID
 						</IQButton>

@@ -4,28 +4,29 @@ import './ClientContractsWindow.scss';
 import {
 	getServer, setAppWindowMaximize, setCostUnitList, setCurrencySymbol, setFullView, setServer
 } from 'app/common/appInfoSlice';
-import { useAppDispatch, useAppSelector, useHomeNavigation, hideLoadMask } from 'app/hooks';
-import { currency, isLocalhost, postMessage } from 'app/utils';
+import {useAppDispatch, useAppSelector, useHomeNavigation, hideLoadMask} from 'app/hooks';
+import {currency, isLocalhost, postMessage} from 'app/utils';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { appInfoData } from 'data/appInfo';
-import { setPresenceData } from 'features/bidmanager/stores/BidManagerSlice';
+import {appInfoData} from 'data/appInfo';
+import {setPresenceData} from 'features/bidmanager/stores/BidManagerSlice';
 import ContractAttachments from 'features/supplementalcontracts/SupplementalContractsWindow';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import {useEffect, useState} from 'react';
+import {useLocation} from 'react-router-dom';
 import SUIAlert from 'sui-components/Alert/Alert';
-import { triggerEvent } from 'utilities/commonFunctions';
+import {triggerEvent} from 'utilities/commonFunctions';
 
-import { IconButton } from '@mui/material';
-import { addContractFiles } from './stores/tabs/contractfiles/CCContractFilesTabAPI';
+import {IconButton} from '@mui/material';
+import {addContractFiles} from './stores/tabs/contractfiles/CCContractFilesTabAPI';
 import IQBaseWindow from 'components/iqbasewindow/IQBaseWindow';
 import ClientContractsContent from './clientcontractscontent/ClientContractsContent';
 import {
 	getSelectedRecord, getShowContractAttachments, setShowContractAttachments,
 	getClientContractDetails, setTab, setContractId, setShowLineItemDetails
 } from './stores/ClientContractsSlice';
-import { setAdditionalFiles, setStandardFiles, setContractFilesCount, getStandardFiles } from './stores/tabs/contractfiles/CCContractFilesTabSlice';
-import { isUserGCForCC } from './utils';
+import {setAdditionalFiles, setStandardFiles, setContractFilesCount, getStandardFiles} from './stores/tabs/contractfiles/CCContractFilesTabSlice';
+import {isUserGCForCC} from './utils';
+import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
 
 const ClientContractsWindow = () => {
 	const dispatch = useAppDispatch();
@@ -59,8 +60,8 @@ const ClientContractsWindow = () => {
 			children: {
 				type: "checkbox",
 				items: [
-					{ text: 'Client Contract', id: 'ClientContract', key: 'ClientContract', value: 'ClientContract', },
-					{ text: 'General', id: 'General', key: 'General', value: 'General', },
+					{text: 'Client Contract', id: 'ClientContract', key: 'ClientContract', value: 'ClientContract', },
+					{text: 'General', id: 'General', key: 'General', value: 'General', },
 				],
 			},
 		},
@@ -68,22 +69,22 @@ const ClientContractsWindow = () => {
 	const queryParams: any = new URLSearchParams(location.search);
 
 	useEffect(() => {
-		const { pathname, search } = location;
-		if (pathname.includes('home')) {
+		const {pathname, search} = location;
+		if(pathname.includes('home')) {
 			setIsFullView(true);
 			dispatch(setFullView(true));
 		}
-		if (queryParams?.size > 0) {
+		if(queryParams?.size > 0) {
 			// const params: any = new URLSearchParams(search);
 			setMaxByDefault(queryParams?.get('maximizeByDefault') === 'true');
 			setInline(queryParams?.get('inlineModule') === 'true');
 			setIsFullView(queryParams?.get('inlineModule') === 'true');
 
-			if (queryParams?.get('id')) {
+			if(queryParams?.get('id')) {
 				dispatch(setContractId(queryParams?.get('id')));
 				dispatch(setShowLineItemDetails(true));
 
-				if (queryParams?.get('tab')) {
+				if(queryParams?.get('tab')) {
 					dispatch(setTab(tabEnum[queryParams?.get('tab')]));
 				}
 			} else hideLoadMask();
@@ -91,18 +92,18 @@ const ClientContractsWindow = () => {
 	}, [location]);
 
 	useEffect(() => {
-		if (localhost) {
+		if(localhost) {
 			dispatch(setServer(_.omit(appData, ['DivisionCost'])));
 			dispatch(setCurrencySymbol(currency['USD']));
 			dispatch(setCostUnitList(appData?.DivisionCost?.CostUnit));
 		} else {
-			if (!appInfo) {
+			if(!appInfo) {
 				window.onmessage = (event: any) => {
 					let data = event.data;
 					data = typeof (data) == 'string' ? JSON.parse(data) : data;
 					data = data.hasOwnProperty('args') && data.args[0] ? data.args[0] : data;
-					if (data) {
-						switch (data.event || data.evt) {
+					if(data) {
+						switch(data.event || data.evt) {
 							case 'hostAppInfo':
 								const structuredData = data.data;
 								dispatch(setServer(structuredData));
@@ -117,17 +118,17 @@ const ClientContractsWindow = () => {
 							case 'getdrivefiles':
 								try {
 									setDriveFileQueue(data.data);
-								} catch (error) {
+								} catch(error) {
 									console.log('Error in adding Bid Reference file from Drive', error);
 								}
 								break;
 							case 'updateparticipants':
 								// console.log('updateparticipants', data)
-								triggerEvent('updateparticipants', { data: data.data, appType: data.appType });
+								triggerEvent('updateparticipants', {data: data.data, appType: data.appType});
 								break;
 							case 'updatecommentbadge':
 								// console.log('updatecommentbadge', data)
-								triggerEvent('updatecommentbadge', { data: data.data, appType: data.appType });
+								triggerEvent('updatecommentbadge', {data: data.data, appType: data.appType});
 								break;
 							case 'updatechildparticipants':
 								// console.log('updatechildparticipants', data)
@@ -138,11 +139,15 @@ const ClientContractsWindow = () => {
 				};
 				postMessage({
 					event: 'hostAppInfo',
-					body: { iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts' }
+					body: {iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts'}
 				});
 			}
 		}
 	}, [localhost, appData]);
+
+	useEffect(() => {
+		dispatch(checkBlockchainStatus('ClientContracts'));
+	}, [appInfo]);
 
 	const saveContractAttachments = (contracts: any) => {
 		// const structuredFiles = contracts.map((file: any) => {
@@ -166,7 +171,7 @@ const ClientContractsWindow = () => {
 		// 	});
 		const uniqueDocumentIds = new Set(standardFiles?.map((file: any) => file?.documentId));
 		const filteredContracts = contracts?.filter((contract: any) => !uniqueDocumentIds.has(contract?.documentId));
-		if (filteredContracts.length > 0) {
+		if(filteredContracts.length > 0) {
 			const structuredFiles = filteredContracts.map((file: any) => {
 				return {
 					type: 'Standard',
@@ -182,11 +187,11 @@ const ClientContractsWindow = () => {
 				.then((res: any) => {
 					dispatch(setStandardFiles(res?.additional));
 					dispatch(setContractFilesCount((res?.standard?.length || 0) + (res?.additional?.length || 0)));
-					dispatch(getClientContractDetails({ appInfo: appInfo, contractId: currentContract.id }));
+					dispatch(getClientContractDetails({appInfo: appInfo, contractId: currentContract.id}));
 				});
 		}
 		else {
-			console.log('else')
+			console.log('else');
 		}
 	};
 
@@ -206,12 +211,12 @@ const ClientContractsWindow = () => {
 			.then((res: any) => {
 				dispatch(setAdditionalFiles(res?.additional));
 				dispatch(setContractFilesCount((res?.standard?.length || 0) + (res?.additional?.length || 0)));
-				dispatch(getClientContractDetails({ appInfo: appInfo, contractId: currentContract.id }));
+				dispatch(getClientContractDetails({appInfo: appInfo, contractId: currentContract.id}));
 			});
 	};
 
 	useEffect(() => {
-		if (driveFileQueue?.length > 0) {
+		if(driveFileQueue?.length > 0) {
 			saveAdditionalFilesFromDrive(appInfo, [...driveFileQueue]);
 			setDriveFileQueue([]);
 		}
@@ -222,14 +227,14 @@ const ClientContractsWindow = () => {
 	const handleHelp = () => {
 		postMessage({
 			event: 'help',
-			body: { iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts' }
+			body: {iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts'}
 		});
 	};
 
 	const handleNewTab = () => {
 		postMessage({
 			event: 'openinnewtab',
-			body: { iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts' }
+			body: {iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts'}
 		});
 	};
 
@@ -238,7 +243,7 @@ const ClientContractsWindow = () => {
 	};
 
 	const handleIconClick = () => {
-		if (isInline) useHomeNavigation('clientContractsIframe', 'ClientContracts');
+		if(isInline) useHomeNavigation('clientContractsIframe', 'ClientContracts');
 	};
 
 	const optionalTools = <>{
@@ -306,10 +311,10 @@ const ClientContractsWindow = () => {
 					// participants: [ appInfoData.currentUserInfo ]
 				}}
 				onClose={(event, reason) => {
-					if (reason && reason == 'closeButtonClick') {
+					if(reason && reason == 'closeButtonClick') {
 						postMessage({
 							event: 'closeiframe',
-							body: { iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts' }
+							body: {iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts'}
 						});
 					}
 
@@ -334,7 +339,7 @@ const ClientContractsWindow = () => {
 				onClose={() => {
 					postMessage({
 						event: 'closeiframe',
-						body: { iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts' }
+						body: {iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts'}
 					});
 				}}
 				contentText={"You Are Not Authorized"}
@@ -342,7 +347,7 @@ const ClientContractsWindow = () => {
 				onAction={(e: any, type: string) => {
 					type == 'close' && postMessage({
 						event: 'closeiframe',
-						body: { iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts' }
+						body: {iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts'}
 					});
 				}}
 				showActions={false}

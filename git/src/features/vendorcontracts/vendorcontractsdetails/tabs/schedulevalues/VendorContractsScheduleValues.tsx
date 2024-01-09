@@ -20,13 +20,15 @@ import { addPaymenForSov, createScheduleOfValues, deleteAllScheduleOfValues, del
 import { errorMsg, errorStatus, getAmountAlignment, isUserGC } from "utilities/commonutills";
 import { setSelectedRecord } from "features/vendorcontracts/stores/VendorContractsSlice";
 import { getValuesOfAllEntries, tiles } from "./utils";
-import { getVendorContractsList } from "features/vendorcontracts/stores/gridSlice";
+import { getBudgetItemsByPackage, getVendorContractsList } from "features/vendorcontracts/stores/gridSlice";
 import { setUnlockedSov } from "features/vendorcontracts/stores/ScheduleOfValuesSlice";
 import { getContractDetailsById } from 'features/vendorcontracts/stores/VendorContractsSlice';
 import Toast from "components/toast/Toast";
 import { PaymentStatus } from "utilities/vendorContracts/enums";
 import { formatDate } from "utilities/datetime/DateTimeUtils";
 import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
+import { AddBudgetLineItemButton } from "features/clientContracts/clientcontractsdetails/tabs/schedulevalues/ClientContractsScheduleValues";
+import BudgetManagerRO from "sui-components/BudgetManager/BudgetManager";
 
 const VendorContractsScheduleValues = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -36,6 +38,7 @@ const VendorContractsScheduleValues = (props: any) => {
 	const { selectedRecord, contractDetailsGetCall } = useAppSelector((state) => state.vendorContracts);
 	const { budgetItems } = useAppSelector((state) => state.vendorContractsGrid);
 	const { loginUserData } = useAppSelector((state) => state.vendorContracts);
+	const { budgetManagerData } = useAppSelector(state => state.cCSov);
 
 	const [toggleChecked, setToggleChecked] = React.useState<boolean>(true);
 	const [sovUnlocked, setSovUnlocked] = React.useState<boolean>(false);
@@ -62,6 +65,9 @@ const VendorContractsScheduleValues = (props: any) => {
 	const [toastMsg, setToastMsg] = useState<any>("")
 	const [toast, setToast] = useState<any>({ show: false, message: '' });
 	const cellValueChangedRef = useRef<any>(false);
+	const [openBudgetPicker, setOpenBudgetPicker] = useState<any>(false);
+	const [availableBudgetItems, setAvailableBudgetItems] = useState<any>([])
+
 
 	React.useEffect(() => {
 		toast?.show && setTimeout(() => {
@@ -69,9 +75,17 @@ const VendorContractsScheduleValues = (props: any) => {
 		}, 5000)
 	}, [toast?.show])
 
+	React.useEffect(() => {
+		const list: any = []
+		budgetManagerData?.map((budget: any) => {
+			if ((budget?.Vendors?.length == 0 || budget?.Vendors?.map((vendor: any) => vendor?.id)?.includes(selectedRecord?.vendor?.id)) && budget?.providerSource == 0) list.push(budget)
+		})
+		setAvailableBudgetItems([...list])
+	}, [budgetManagerData])
+
 	const workItemsExtraColumns = [
 		{ headerName: 'Work Item', dataKey: 'label', name: 'label', width: '60%', showCol: true, showRenderColVal: false },
-		{ name: "status", showIcon: true, dataKey: "status", width: '15%', showValueOnTop: true},
+		{ name: "status", showIcon: true, dataKey: "status", width: '15%', showValueOnTop: true },
 		{ name: "pagination", width: '15%', colWidth: '5%', showCol: true, showRenderColVal: true },
 		{ headerName: 'Bid Value', dataKey: 'bidValue', name: 'amount', width: '125px', align: 'left', colWidth: '10%', showCol: true, showRenderColVal: false },
 		{ headerName: 'Change Order Amount', dataKey: 'changeOrderAmt', name: 'amount', width: '240px', align: 'right', showCol: true, colWidth: '17.5%', showRenderColVal: false },
@@ -465,8 +479,8 @@ const VendorContractsScheduleValues = (props: any) => {
 							{amountFormatWithSymbol(newRecRef.current?.balanceAmount)}
 							{newRecRef.current?.balanceAmount && <span className="totalAmount">
 								{" "}
-								of 
-								{" "} 
+								of
+								{" "}
 								{amountFormatWithSymbol(selectedBudgetItem?.bidValue)}
 							</span>}
 						</div>
@@ -478,8 +492,8 @@ const VendorContractsScheduleValues = (props: any) => {
 							</span>
 							<span className="totalAmount">
 								{" "}
-								of 
-								{" "}  
+								of
+								{" "}
 								{amountFormatWithSymbol(selectedBudgetItem?.bidValue)}
 							</span>
 						</div>
@@ -986,9 +1000,9 @@ const VendorContractsScheduleValues = (props: any) => {
 						options={options || []}
 						handleInputChange={(val: any) => { handleChange(val) }}
 						showExtraColumns={true}
-						showDescription={true}						
+						showDescription={true}
 						isDropDownPosition={true}
-						// columnBasedOptions={['ActivePendingSOVUpdate']?.includes(selectedRecord?.status)}
+					// columnBasedOptions={['ActivePendingSOVUpdate']?.includes(selectedRecord?.status)}
 					></WorkItemsDropdown>
 				</div>
 				<div className="vc-schedule-values_unit">
@@ -1122,15 +1136,7 @@ const VendorContractsScheduleValues = (props: any) => {
 					<div className="vc-schedule-values_auto-pay-switch">
 						Auto Create Pay Applications
 						<IQTooltip title={`Auto Create Pay Applications `} arrow={true}>
-							<Box
-								component="img"
-								alt="Info icon"
-								src={infoicon}
-								className="image"
-								width={12}
-								height={12}
-								style={{ marginLeft: "4px", marginRight: 10 }}
-							/>
+						<span className="common-icon-Project-Info"></span>
 						</IQTooltip>
 						<Stack direction="row">
 							<IQToggle
@@ -1147,166 +1153,222 @@ const VendorContractsScheduleValues = (props: any) => {
 						</Stack>
 					</div>
 				</div>
-				{WorkItemsBar}
-				<div className="vc-schedule-values_headers">
-					<b>How would you like to Pay</b>
-				</div>
-				<SUISelectionTiles
-					tilesData={tilesData}
-					readOnly={['Draft', 'ReadyToSubmit',].includes(selectedRecord?.status) || (['ActiveUnlockedPendingSOVUpdate']?.includes(selectedRecord?.status) && selectedBudgetItem?.hasChangeOrder) ? false : true}
-					selectedTile={(tile: any) => onSelectedTileChange(tile)}
-				></SUISelectionTiles>
-				<div className="vc-schedule-values_buttons-wrapper">
-					{['ActiveUnlocked', 'AwaitingAcceptanceUnlocked', 'ActiveUnlockedPendingSOVUpdate'].includes(selectedRecord?.status) && sovUnlocked && (
-						<div className="vc-schedule-values_buttons-wrapper-progress">
-							{/* Updates to Schedule of Values in progress ... */}
-						</div>
-					)}
-					{isUserGC(appInfo) && ['ActiveUnlocked', 'Active', 'AwaitingAcceptanceUnlocked', 'ActiveUnlockedPendingSOVUpdate'].includes(selectedRecord?.status) && !sovUnlocked ? (
-						<Button
-							className="vc-schedule-values_buttons-wrapper-btn"
-							variant="outlined"
-							onClick={() => setSovUnlocked(true)}
-							startIcon={<span className='common-icon-lock-fill'></span>}
-							disabled={selectedRecord?.status == 'Active' ? true : false}
-							sx={{
-								"&.Mui-disabled": {
-									color: "#febb8f !important",
-									border: "1px solid #febb8f !important",
-								},
-							}}
-						>
-							UNLOCK SCHEDULE OF VALUE
-						</Button>
-					) : null
-					}
-				</div>
+				{selectedRecord?.contractFor == 2 && ['Draft', 'ReadyToPost']?.includes(selectedRecord?.status) && (
+					<div className="add-budget-btn">
+						<p>Associate Budget Line Items To This Contract</p>
+						<AddBudgetLineItemButton variant="contained" onClick={() => setOpenBudgetPicker(true)} >
+							+ Add/Manage Budget Line Item
+						</AddBudgetLineItemButton>
+					</div>
+				)}
+				{selectedRecord?.contractFor == 2 && !selectedRecord?.noOfBudgetLineItems ? 
+					<div className="add-budget-watermark">
+					<div className="add-budget-watermark-wrap">
+							<span className={"common-icon-schedule-values"} ></span>
+							<span className="doc-text-clr">Click + to add the Budget Line Items</span>
+							</div>
+					</div>
 
-				{(!activeTile.recordId || activeTile?.recordId === 1) && (
-					<div style={{ width: "100%", height: "300px" }}  className="sov-grid-cls">
-						<SUILineItem
-							headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...percentHeaders, ...statusColumn] : percentHeaders}
-							// headers={percentHeaders}
-							data={tableData[selectedBudgetItem?.id]?.payments ? tableData[selectedBudgetItem?.id]?.payments : []}
-							onAdd={(value: any, updatedRecords: any) =>
-								onGridRecordAdd(value, updatedRecords)
-							}
-							onRemove={(value: any, updatedRecords: any) =>
-								onGridRecordRemove(value, updatedRecords)
-							}
-							addRowPosition={"bottom"}
-							newRecord={newRecord}
-							actionheaderprop={{
-								minWidth: 80,
-								maxWidth: 80,
-							}}
-							readOnly={props.readOnly}
-							pinnedTopRowData={pinnedTopData}
-							hasPinnedTopRow={pinnedTopData?.length}
-							deleteConfirmationRequired={true}
-						/>
-					</div>
-				)}
-				{activeTile?.recordId === 2 && (
-					<div style={{ width: "100%", height: "200px" }}>
-						<SUILineItem
-							headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...unitHeaders, ...statusColumn] : unitHeaders}
-							data={tableData[selectedBudgetItem?.id]?.payments ? tableData[selectedBudgetItem?.id]?.payments : []}
-							onAdd={(value: any, updatedRecords: any) =>
-								onGridRecordAdd(value, updatedRecords)
-							}
-							onRemove={(value: any, updatedRecords: any) =>
-								onGridRecordRemove(value, updatedRecords)
-							}
-							addRowPosition={"bottom"}
-							newRecord={newRecord}
-							actionheaderprop={{
-								minWidth: 80,
-								maxWidth: 80,
-							}}
-							readOnly={props.readOnly}
-							pinnedTopRowData={pinnedTopData}
-							hasPinnedTopRow={pinnedTopData?.length}
-							deleteConfirmationRequired={true}
-						/>
-					</div>
-				)}
-				{activeTile?.recordId === 3 && (
-					<div style={{ width: "100%", height: "200px" }}>
-						<SUILineItem
-							headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...dollarHeaders, ...statusColumn] : dollarHeaders}
-							// headers={dollarHeaders}
-							data={tableData[selectedBudgetItem?.id]?.payments ? tableData[selectedBudgetItem?.id]?.payments : []}
-							onAdd={(value: any, updatedRecords: any) =>
-								onGridRecordAdd(value, updatedRecords)
-							}
-							onRemove={(value: any, updatedRecords: any) =>
-								onGridRecordRemove(value, updatedRecords)
-							}
-							addRowPosition={"bottom"}
-							newRecord={newRecord}
-							actionheaderprop={{
-								minWidth: 80,
-								maxWidth: 80,
-							}}
-							readOnly={props.readOnly}
-							pinnedTopRowData={pinnedTopData}
-							hasPinnedTopRow={pinnedTopData?.length}
-							deleteConfirmationRequired={true}
-						/>
-					</div>
-				)}
-
-				{activeTile?.recordId === 4 && (
-					<>
+					: <div>
+						{WorkItemsBar}
 						<div className="vc-schedule-values_headers">
-							<b>
-								Select an Interval Frequency for the Pay Application to process
-								the payment:
-							</b>
+							<b>How would you like to Pay</b>
 						</div>
-						<SUIPayIntervalFrequency readOnly={props?.readOnly} defaultData={tableData[selectedBudgetItem?.id]} onChange={handleThroughData} endDate={selectedRecord?.endDate}></SUIPayIntervalFrequency>
-					</>
-				)}
-				{
-					showAlert && <SUIAlert
-						open={showAlert}
-						onClose={() => {
-							setShowAlert(false);
-						}}
-						contentText={
-							showErrorMsg || showDuplicateMsg ?
-								<div>
-									<span>{toastMsg}</span>
-									<div style={{ textAlign: 'right', marginTop: '10px' }}>
-										<Button
-											className="cancel-cls"
-											style={{
-												backgroundColor: '#666',
-												color: '#fff',
-												padding: '12px',
-												height: '37px',
-												borderRadius: '2px',
-												marginRight: '0px',
-												boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
-												display: 'initial'
-											}}
-											onClick={(e: any) => {
-												setShowAlert(false); setShowErrorMsg(false); setShowDuplicateMsg(false);
-											}}>OK</Button>
-									</div>
+						<SUISelectionTiles
+							tilesData={tilesData}
+							readOnly={['Draft', 'ReadyToSubmit',].includes(selectedRecord?.status) || (['ActiveUnlockedPendingSOVUpdate']?.includes(selectedRecord?.status) && selectedBudgetItem?.hasChangeOrder) ? false : true}
+							selectedTile={(tile: any) => onSelectedTileChange(tile)}
+						></SUISelectionTiles>
+						<div className="vc-schedule-values_buttons-wrapper">
+							{['ActiveUnlocked', 'AwaitingAcceptanceUnlocked', 'ActiveUnlockedPendingSOVUpdate'].includes(selectedRecord?.status) && sovUnlocked && (
+								<div className="vc-schedule-values_buttons-wrapper-progress">
+									{/* Updates to Schedule of Values in progress ... */}
 								</div>
-								: <span>Changing the Payout type will remove the already defined SOV values.<br /><br /> Are you sure want to continue?</span>
+							)}
+							{isUserGC(appInfo) && ['ActiveUnlocked', 'Active', 'AwaitingAcceptanceUnlocked', 'ActiveUnlockedPendingSOVUpdate'].includes(selectedRecord?.status) && !sovUnlocked ? (
+								<Button
+									className="vc-schedule-values_buttons-wrapper-btn"
+									variant="outlined"
+									onClick={() => setSovUnlocked(true)}
+									startIcon={<span className='common-icon-lock-fill'></span>}
+									disabled={selectedRecord?.status == 'Active' ? true : false}
+									sx={{
+										"&.Mui-disabled": {
+											color: "#febb8f !important",
+											border: "1px solid #febb8f !important",
+										},
+									}}
+								>
+									UNLOCK SCHEDULE OF VALUE
+								</Button>
+							) : null
+							}
+						</div>
+
+						{(!activeTile.recordId || activeTile?.recordId === 1) && (
+							<div style={{ width: "100%", height: "300px" }} className="sov-grid-cls">
+								<SUILineItem
+									headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...percentHeaders, ...statusColumn] : percentHeaders}
+									// headers={percentHeaders}
+									data={tableData[selectedBudgetItem?.id]?.payments ? tableData[selectedBudgetItem?.id]?.payments : []}
+									onAdd={(value: any, updatedRecords: any) =>
+										onGridRecordAdd(value, updatedRecords)
+									}
+									onRemove={(value: any, updatedRecords: any) =>
+										onGridRecordRemove(value, updatedRecords)
+									}
+									addRowPosition={"bottom"}
+									newRecord={newRecord}
+									actionheaderprop={{
+										minWidth: 80,
+										maxWidth: 80,
+									}}
+									readOnly={props.readOnly}
+									pinnedTopRowData={pinnedTopData}
+									hasPinnedTopRow={pinnedTopData?.length}
+									deleteConfirmationRequired={true}
+								/>
+							</div>
+						)}
+						{activeTile?.recordId === 2 && (
+							<div style={{ width: "100%", height: "200px" }}>
+								<SUILineItem
+									headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...unitHeaders, ...statusColumn] : unitHeaders}
+									data={tableData[selectedBudgetItem?.id]?.payments ? tableData[selectedBudgetItem?.id]?.payments : []}
+									onAdd={(value: any, updatedRecords: any) =>
+										onGridRecordAdd(value, updatedRecords)
+									}
+									onRemove={(value: any, updatedRecords: any) =>
+										onGridRecordRemove(value, updatedRecords)
+									}
+									addRowPosition={"bottom"}
+									newRecord={newRecord}
+									actionheaderprop={{
+										minWidth: 80,
+										maxWidth: 80,
+									}}
+									readOnly={props.readOnly}
+									pinnedTopRowData={pinnedTopData}
+									hasPinnedTopRow={pinnedTopData?.length}
+									deleteConfirmationRequired={true}
+								/>
+							</div>
+						)}
+						{activeTile?.recordId === 3 && (
+							<div style={{ width: "100%", height: "200px" }}>
+								<SUILineItem
+									headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...dollarHeaders, ...statusColumn] : dollarHeaders}
+									// headers={dollarHeaders}
+									data={tableData[selectedBudgetItem?.id]?.payments ? tableData[selectedBudgetItem?.id]?.payments : []}
+									onAdd={(value: any, updatedRecords: any) =>
+										onGridRecordAdd(value, updatedRecords)
+									}
+									onRemove={(value: any, updatedRecords: any) =>
+										onGridRecordRemove(value, updatedRecords)
+									}
+									addRowPosition={"bottom"}
+									newRecord={newRecord}
+									actionheaderprop={{
+										minWidth: 80,
+										maxWidth: 80,
+									}}
+									readOnly={props.readOnly}
+									pinnedTopRowData={pinnedTopData}
+									hasPinnedTopRow={pinnedTopData?.length}
+									deleteConfirmationRequired={true}
+								/>
+							</div>
+						)}
+
+						{activeTile?.recordId === 4 && (
+							<>
+								<div className="vc-schedule-values_headers">
+									<b>
+										Select an Interval Frequency for the Pay Application to process
+										the payment:
+									</b>
+								</div>
+								<SUIPayIntervalFrequency readOnly={props?.readOnly} defaultData={tableData[selectedBudgetItem?.id]} onChange={handleThroughData} endDate={selectedRecord?.endDate}></SUIPayIntervalFrequency>
+							</>
+						)}
+						{
+							showAlert && <SUIAlert
+								open={showAlert}
+								onClose={() => {
+									setShowAlert(false);
+								}}
+								contentText={
+									showErrorMsg || showDuplicateMsg ?
+										<div>
+											<span>{toastMsg}</span>
+											<div style={{ textAlign: 'right', marginTop: '10px' }}>
+												<Button
+													className="cancel-cls"
+													style={{
+														backgroundColor: '#666',
+														color: '#fff',
+														padding: '12px',
+														height: '37px',
+														borderRadius: '2px',
+														marginRight: '0px',
+														boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+														display: 'initial'
+													}}
+													onClick={(e: any) => {
+														setShowAlert(false); setShowErrorMsg(false); setShowDuplicateMsg(false);
+													}}>OK</Button>
+											</div>
+										</div>
+										: <span>Changing the Payout type will remove the already defined SOV values.<br /><br /> Are you sure want to continue?</span>
+								}
+								title={showErrorMsg || showDuplicateMsg ? 'Warning' : 'Confirmation'}
+								onAction={(e: any, type: string) => ChangePayOutType(type)}
+								showActions={showErrorMsg || showDuplicateMsg ? false : true}
+							/>}
+						{
+							toast?.show && <Toast message={toast?.message} interval={5000} />
 						}
-						title={showErrorMsg || showDuplicateMsg ? 'Warning' : 'Confirmation'}
-						onAction={(e: any, type: string) => ChangePayOutType(type)}
-						showActions={showErrorMsg || showDuplicateMsg ? false : true}
-					/>}
-				{
-					toast?.show && <Toast message={toast?.message} interval={5000} />
+					</div>
 				}
 
 			</div>
+			{
+				openBudgetPicker && <BudgetManagerRO data={availableBudgetItems}
+					defaultRecords={budgetItems?.map((row: any) => row?.id)}
+					onAdd={(rows: any) => {
+						const existedIds: any = budgetItems?.map((row: any) => row?.id);
+						const newlyAddedItems = rows?.filter((row: any) => !existedIds?.includes(row?.id))
+						console.log("existedIds", existedIds, newlyAddedItems)
+
+						newlyAddedItems?.map((item:any, index:number) => {
+							console.log("item", item);
+							createScheduleOfValues(appInfo, selectedRecord?.id, item?.id, { type: 'PercentComplete' }, (response: any) => {
+								if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
+								else {
+									console.log("adhocccc", response) 
+									response?.scheduleOfValues?.map((obj: any) => {
+										if (obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({ ...tableData, [selectedBudgetItem?.id]: { ...obj } })
+									})
+									if(newlyAddedItems?.length == index+1) dispatch(setSelectedRecord(response))
+								}
+							})
+						})
+						newlyAddedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id }))
+					}}
+					alertTitle={'Warning'}
+					alertText={<span>
+						<span>Adding/Removing budget line items for the vendor contract will affect the Original Contract Amount</span>
+						<br/>
+						<span> and Schedule of Value calculations for the selected items.</span>
+						<br/><br/>
+						<span>Do you wish to continue?</span>
+						
+					</span>}
+					disableRowsKey={'vendorContract'}
+					// allowMarkupFee={settingsData?.allowMarkupFee}					
+					// getBudgetValue={(value: any) => { setBudgetValue(value); }}
+					onClose={(val: any) => setOpenBudgetPicker(val)} />
+			}
 		</>
 	);
 };

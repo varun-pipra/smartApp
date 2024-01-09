@@ -767,7 +767,7 @@ const CCBillingSchedule = (props: any) => {
 					<div className="cc-schedule-values_auto-pay-switch">
 						Auto Create Pay Applications
 						<IQTooltip title={`Auto Create Pay Applications `} arrow={true} >
-							<Box component='img' alt='Info icon' src={infoicon} className='image' width={12} height={12} style={{ marginLeft: '4px', marginRight: 10 }} />
+						<span className="common-icon-Project-Info"></span>
 						</IQTooltip>
 						<Stack direction='row'>
 							<IQToggle

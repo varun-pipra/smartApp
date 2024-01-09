@@ -182,7 +182,8 @@ const SUIGrid = (props: TableGridProps) => {
 					addMarkupFee: payloadObj?.addMarkupFee,
 					markupFeeType: payloadObj?.markupFeeType,
 					markupFeeAmount: payloadObj?.markupFeeAmount,
-					markupFeePercentage: payloadObj?.markupFeePercentage
+					markupFeePercentage: payloadObj?.markupFeePercentage,
+					providerSource: payloadObj?.providerSource									
 				};
 				console.log('Payloaddd', payload);
 				updateBudgetLineItem(appInfo, payloadObj.id, payload, (response: any) => {
@@ -704,7 +705,7 @@ const SUIGrid = (props: TableGridProps) => {
 				onRowDragEnd={props.onRowDragEnd}
 				overlayNoRowsTemplate={props.pinnedTopRowData?.length > 0 ? '<span></span>' :
 					`<div class='no-rows-msg'>
-						<span class='${rowMessageIcon ? rowMessageIcon : 'common-icon-No-Item-Available'}'></span>
+						<span class='${rowMessageIcon ? rowMessageIcon + ' icon-modify' : 'common-icon-No-Item-Available'}'></span>
 						<div class='empty-rows-mark'>${rowMessageHeading ? rowMessageHeading : emptyMsg}</div>
 							${nowRowsMsg ? nowRowsMsg : ''}
 					</div>`

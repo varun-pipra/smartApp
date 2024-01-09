@@ -25,6 +25,8 @@ export const ViewBuilderData: any = [
 						field: "approvedBudgetChange",
 					},
 					{ headerName: "Revised Budget", hide: false, field: "revisedBudget" },
+					{ headerName: "Provider Source", hide: false, field: "providerSource" },
+					
 					{
 						headerName: "Transaction Amount",
 						hide: false,

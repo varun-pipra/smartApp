@@ -3,25 +3,25 @@ import './ClientPayapplicationWindow.scss';
 import {
 	getServer, setCostUnitList, setCurrencySymbol, setServer
 } from 'app/common/appInfoSlice';
-import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
-import { currency, isLocalhost, postMessage } from 'app/utils';
+import {useAppDispatch, useAppSelector, useHomeNavigation} from 'app/hooks';
+import {currency, isLocalhost, postMessage} from 'app/utils';
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { appInfoData } from 'data/appInfo';
+import {appInfoData} from 'data/appInfo';
 import CustomHeader from 'features/bidmanager/bidmanagercontent/bidmanagergrid/CustomHeader';
-import { getClientCompanies } from 'features/clientContracts/stores/ClientContractsSlice';
+import {getClientCompanies} from 'features/clientContracts/stores/ClientContractsSlice';
 import _ from 'lodash';
-import { useEffect, useMemo, useState, useRef, memo } from 'react';
-import { useLocation } from 'react-router-dom';
+import {useEffect, useMemo, useState, useRef, memo} from 'react';
+import {useLocation} from 'react-router-dom';
 import SUIAlert from 'sui-components/Alert/Alert';
-import { triggerEvent } from 'utilities/commonFunctions';
+import {triggerEvent} from 'utilities/commonFunctions';
 import {
 	vendorPayAppsPaymentStatus, vendorPayAppsPaymentStatusColors, vendorPayAppsPaymentStatusFilterOptions, vendorPayAppsPaymentStatusIcons,
 	vendorPayAppsPaymentStatusOptions
 } from 'utilities/vendorPayApps/enums';
 
-import { formatDate } from '@fullcalendar/react';
-import { Button } from '@mui/material';
+import {formatDate} from '@fullcalendar/react';
+import {Button} from '@mui/material';
 
 import ClientPayApplicationsForm from './clientpayapplicationscontent/clientpayapplicationsform/ClientPayApplicationsForm';
 import ClientPayAppToolbarLeftButtons from './clientpayapplicationscontent/toolbarbuttons/LeftToolbarButtons';
@@ -31,12 +31,13 @@ import {
 	getClientPayAppDetailsById, getToastMessage, setSelectedRecord,
 	setShowLineItemDetails, setToastMessage, setCPayAppId, setTab
 } from './stores/ClientPayAppsSlice';
-import { getClientPayAppsList, setSelectedRows } from './stores/GridSlice';
-import { isUserGCForCPA } from './utils';
-import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
+import {getClientPayAppsList, setSelectedRows} from './stores/GridSlice';
+import {isUserGCForCPA} from './utils';
+import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
-import { AgGridReact } from 'ag-grid-react';
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {AgGridReact} from 'ag-grid-react';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
+import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultCPAStatusFilter: any = [];
@@ -50,8 +51,8 @@ const ClientPayApplicationsWindow = (props: any) => {
 	const [localhost] = useState(isLocalhost);
 	const [appData] = useState(appInfoData);
 	const appInfo = useAppSelector(getServer);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
-	const { gridData, gridOriginalData } = useAppSelector((state) => state.clientPayAppsGrid);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
+	const {gridData, gridOriginalData} = useAppSelector((state) => state.clientPayAppsGrid);
 	const [statusFilters, setStatusFilters] = useState<any>(false);
 	const ToastMessage = useAppSelector(getToastMessage);
 	const [showToastMessage, setShowToastMessage] = useState<any>('');
@@ -68,11 +69,12 @@ const ClientPayApplicationsWindow = (props: any) => {
 	const [gridSearchText, setGridSearchText] = useState<any>('');
 	const [selectedGroup, setSelectedGroup] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
+	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 
 	const groupOptions = [
-		{ text: 'Payment Status', value: 'status' },
-		{ text: 'Contracts', value: 'contract.name' },
-		{ text: 'Clients', value: 'client.name' },
+		{text: 'Payment Status', value: 'status'},
+		{text: 'Contracts', value: 'contract.name'},
+		{text: 'Clients', value: 'client.name'},
 	];
 
 	let gridRef = useRef<AgGridReact>();
@@ -109,7 +111,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 		},
 	];
 
-	if (statusFilter) defaultCPAStatusFilter = mainGridFilters.status;
+	if(statusFilter) defaultCPAStatusFilter = mainGridFilters.status;
 
 	const [filters, setFilters] = useState<any>(filterOptions);
 	const [groups, setGroups] = useState<any>(groupOptions);
@@ -129,11 +131,11 @@ const ClientPayApplicationsWindow = (props: any) => {
 		let contractItem = filtersCopy.find((rec: any) => rec.value === 'contract');
 
 		const clientVendors: any = Array.from(new Map((gridData || []).map((item: any) =>
-			[item?.client?.id, { text: item?.client?.name, key: item?.client?.id, value: item?.client?.id }])).values());
+			[item?.client?.id, {text: item?.client?.name, key: item?.client?.id, value: item?.client?.id}])).values());
 		clientItem.children.items = clientVendors;
 
 		const uniqueContracts: any = Array.from(new Map((gridData || []).map((item: any) =>
-			[item?.contract?.id, { text: item?.contract?.name, key: item?.contract?.id, value: item?.contract?.id }])).values());
+			[item?.contract?.id, {text: item?.contract?.name, key: item?.contract?.id, value: item?.contract?.id}])).values());
 		contractItem.children.items = uniqueContracts;
 		setFilters([...filtersCopy]);
 	}, [gridData]);
@@ -149,8 +151,8 @@ const ClientPayApplicationsWindow = (props: any) => {
 	const FilterBy = (data: any, filterValues: any) => {
 		const gridDataCopy = [...data];
 		let filteredData = gridDataCopy;
-		if (!filterValues?.status) setStatusFilters({ ids: [], names: [] });
-		if (filterValues?.status?.length > 0) {
+		if(!filterValues?.status) setStatusFilters({ids: [], names: []});
+		if(filterValues?.status?.length > 0) {
 			filteredData = gridDataCopy.filter((rec: any) => {
 				return filterValues?.status?.includes(rec.status);
 			});
@@ -160,16 +162,16 @@ const ClientPayApplicationsWindow = (props: any) => {
 				statusIds.push(ele);
 				statusNames.push(vendorPayAppsPaymentStatus[ele]);
 			});
-			setStatusFilters({ ids: [...statusIds], names: [...statusNames] });
-		} else if (Object.keys(filterValues).length === 0 || (filterValues?.status?.length === 0 ?? false)) {
-			setStatusFilters({ ids: [], names: [] });
+			setStatusFilters({ids: [...statusIds], names: [...statusNames]});
+		} else if(Object.keys(filterValues).length === 0 || (filterValues?.status?.length === 0 ?? false)) {
+			setStatusFilters({ids: [], names: []});
 		};
-		if (filterValues?.client?.length > 0) {
+		if(filterValues?.client?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return filterValues?.client?.includes(rec?.client?.id);
 			});
 		}
-		if (filterValues?.contract?.length > 0) {
+		if(filterValues?.contract?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return filterValues?.contract?.includes(rec?.contract?.id);
 			});
@@ -179,23 +181,23 @@ const ClientPayApplicationsWindow = (props: any) => {
 
 	const onGroupingChange = (groupKey: any) => {
 		const columnsCopy = [...columns];
-		if (((groupKey ?? false) && groupKey !== '')) {
+		if(((groupKey ?? false) && groupKey !== '')) {
 			groupKeyValue.current = groupKey;
-		} else if (groupKey ?? true) {
+		} else if(groupKey ?? true) {
 			groupKeyValue.current = null;
 		};
 		setSelectedGroup(groupKey);
 	};
 
 	const onFilterChange = (activeFilters: any) => {
-		if (activeFilters) {
+		if(activeFilters) {
 			let filterObj = activeFilters;
 			Object.keys(filterObj).filter((item) => {
-				if (filterObj[item]?.length === 0) {
+				if(filterObj[item]?.length === 0) {
 					delete filterObj[item];
 				};
 			});
-			if (!_.isEqual(mainGridFilters, filterObj)) {
+			if(!_.isEqual(mainGridFilters, filterObj)) {
 				setMainGridFilters(filterObj);
 			};
 		};
@@ -204,35 +206,35 @@ const ClientPayApplicationsWindow = (props: any) => {
 	useEffect(() => {
 		const gridDataCopy = [...gridData];
 		let data: any;
-		if (mainGridFilters && Object.keys(mainGridFilters)?.length > 0) {
+		if(mainGridFilters && Object.keys(mainGridFilters)?.length > 0) {
 			data = FilterBy(gridDataCopy, mainGridFilters);
-			if (gridSearchText !== '') {
+			if(gridSearchText !== '') {
 				let SearchGridData = onGridSearch(data);
 				setRowData(SearchGridData);
 			} else {
 				setRowData(data);
 			};
-		} else if (gridSearchText !== '') {
+		} else if(gridSearchText !== '') {
 			let SearchGridData = onGridSearch(gridDataCopy);
 			setRowData(SearchGridData);
-			setStatusFilters({ ids: [], names: [] });
+			setStatusFilters({ids: [], names: []});
 		} else {
 			setRowData([...gridDataCopy]);
-			setStatusFilters({ ids: [], names: [] });
+			setStatusFilters({ids: [], names: []});
 		};
 	}, [mainGridFilters, gridSearchText, gridData]);
 
 	const queryParams: any = new URLSearchParams(location.search);
 	useEffect(() => {
-		if (queryParams?.size > 0) {
+		if(queryParams?.size > 0) {
 			setMaxByDefault(queryParams?.get('maximizeByDefault') === 'true');
 			setInline(queryParams?.get('inlineModule') === 'true');
 			setFullView(queryParams?.get('inlineModule') === 'true');
-			if (queryParams?.get('id')) {
+			if(queryParams?.get('id')) {
 				dispatch(setCPayAppId(queryParams?.get('id')));
 				dispatch(setShowLineItemDetails(true));
 
-				if (queryParams?.get('tab')) {
+				if(queryParams?.get('tab')) {
 					dispatch(setTab(tabEnum[queryParams?.get('tab')]));
 				}
 			}
@@ -241,7 +243,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 
 	useEffect(() => {
 		setShowToastMessage(ToastMessage);
-		setTimeout(() => { setShowToastMessage(''); dispatch(setToastMessage('')); }, 3000);
+		setTimeout(() => {setShowToastMessage(''); dispatch(setToastMessage(''));}, 3000);
 	}, [ToastMessage]);
 
 	useEffect(() => {
@@ -249,27 +251,28 @@ const ClientPayApplicationsWindow = (props: any) => {
 		const groupsCopy = [...groups];
 		let statusItem = filtersCopy.find((rec: any) => rec.value === 'status');
 		let groupItem = groupsCopy.find((rec: any) => rec.value === "status");
-		if (appInfo && !isUserGCForCPA(appInfo)) {
+		if(appInfo && !isUserGCForCPA(appInfo)) {
 			statusItem.text = 'Response Status';
 			groupItem.text = 'Response Status';
 		}
+		dispatch(checkBlockchainStatus('ClientPayApplication'));
 		dispatch(getClientPayAppsList(appInfo));
 		dispatch(getClientCompanies(appInfo));
 	}, [appInfo]);
 
 	useEffect(() => {
-		if (localhost) {
+		if(localhost) {
 			dispatch(setServer(_.omit(appData, ['DivisionCost'])));
 			dispatch(setCurrencySymbol(currency['USD']));
 			dispatch(setCostUnitList(appData?.DivisionCost?.CostUnit));
 		} else {
-			if (!appInfo) {
+			if(!appInfo) {
 				window.onmessage = (event: any) => {
 					let data = event.data;
 					data = typeof (data) == 'string' ? JSON.parse(data) : data;
 					data = data.hasOwnProperty('args') && data.args[0] ? data.args[0] : data;
-					if (data) {
-						switch (data.event || data.evt) {
+					if(data) {
+						switch(data.event || data.evt) {
 							case 'hostAppInfo':
 								const structuredData = data.data;
 								dispatch(setServer(structuredData));
@@ -281,27 +284,27 @@ const ClientPayApplicationsWindow = (props: any) => {
 								// dispatch(setUploadedFilesFromLocal(localUploadedFiles));
 								break;
 							case 'updateparticipants':
-								triggerEvent('updateparticipants', { data: data.data, appType: data.appType });
+								triggerEvent('updateparticipants', {data: data.data, appType: data.appType});
 								break;
 							case 'updatecommentbadge':
-								triggerEvent('updatecommentbadge', { data: data.data, appType: data.appType });
+								triggerEvent('updatecommentbadge', {data: data.data, appType: data.appType});
 								break;
 						}
 					}
 				};
 				postMessage({
 					event: 'hostAppInfo',
-					body: { iframeId: 'clientPayIframe', roomId: appInfo && appInfo.presenceRoomId, appType: appType }
+					body: {iframeId: 'clientPayIframe', roomId: appInfo && appInfo.presenceRoomId, appType: appType}
 				});
 			}
 		}
 	}, [localhost, appData]);
 
 	const onClick = (values: any) => {
-		setActiveMainGridDefaultFilters({ ...mainGridFilters, status: [...values?.ids] });
-		if (values?.ids?.length) {
+		setActiveMainGridDefaultFilters({...mainGridFilters, status: [...values?.ids]});
+		if(values?.ids?.length) {
 			let data = gridOriginalData.map((row: any) => {
-				if (values?.ids?.includes(row?.status)) return row;
+				if(values?.ids?.includes(row?.status)) return row;
 				return;
 			});
 			data = data.filter(function (element: any) {
@@ -309,14 +312,14 @@ const ClientPayApplicationsWindow = (props: any) => {
 			});
 			setRowData(data);
 		} else {
-			setStatusFilters({ ids: [], names: [] });
+			setStatusFilters({ids: [], names: []});
 			setRowData(gridOriginalData);
 		}
 	};
 
 	const handleStatusFilter = (statusFilters: any) => {
 		setMainGridFilters((prevFilters: any) => {
-			const consolidatedFilter = { ...prevFilters, ...{ status: statusFilters } };
+			const consolidatedFilter = {...prevFilters, ...{status: statusFilters}};
 			setActiveMainGridDefaultFilters(consolidatedFilter);
 			return consolidatedFilter;
 		});
@@ -324,8 +327,8 @@ const ClientPayApplicationsWindow = (props: any) => {
 
 	const handleStatusColumnSort = (direction: any) => {
 		gridRef?.current?.columnApi?.applyColumnState({
-			state: [{ colId: 'status', sort: direction }],
-			defaultState: { sort: null }
+			state: [{colId: 'status', sort: direction}],
+			defaultState: {sort: null}
 		});
 	};
 
@@ -413,7 +416,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 											params?.data?.status
 											]
 										}
-										style={{ color: 'white' }}
+										style={{color: 'white'}}
 									/>
 								}
 								// startIcon={<Box component='img' src={StatusIcons[params?.data?.status]} style={{ height: '16px', width: '16px' }} />}
@@ -506,47 +509,47 @@ const ClientPayApplicationsWindow = (props: any) => {
 	const handleClose = () => {
 		postMessage({
 			event: 'closeiframe',
-			body: { iframeId: iframeId, roomId: appInfo && appInfo.presenceRoomId, appType: appType }
+			body: {iframeId: iframeId, roomId: appInfo && appInfo.presenceRoomId, appType: appType}
 		});
 	};
 
 	const onFirstDataRendered = () => {
 		const params = new URLSearchParams(window.location.search);
-		if (params.has('id')) {
+		if(params.has('id')) {
 			const selectedRecId = params.get('id');
 			const selectedRec = rowData.find((rec: any) => rec.id === selectedRecId);
 			setManualLIDOpen(true);
 			dispatch(setSelectedRecord(selectedRec));
-			dispatch(getClientPayAppDetailsById({ appInfo: appInfo, id: selectedRecId }));
+			dispatch(getClientPayAppDetailsById({appInfo: appInfo, id: selectedRecId}));
 		}
 	};
 
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props.node;
-		if (node.group) {
+		if(node.group) {
 			const colName = groupKeyValue?.current;
 			console.log('cellerender', colName, node?.group);
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if (colName === 'status') {
+			if(colName === 'status') {
 				return (
-					<div style={{ display: 'flex' }}>
+					<div style={{display: 'flex'}}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={vendorPayAppsPaymentStatus[data?.status]} colName={colName}
 						/>
 					</div>
 				);
-			} else if (colName === 'contract.name') {
+			} else if(colName === 'contract.name') {
 				console.log('contract', colName);
 				return (
-					<div style={{ display: 'flex' }}>
+					<div style={{display: 'flex'}}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={data?.contract?.name} colName={colName}
 						/>
 					</div>
 				);
-			} else if (colName === 'client.name') {
+			} else if(colName === 'client.name') {
 				return (
-					<div style={{ display: 'flex' }}>
+					<div style={{display: 'flex'}}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={data?.client?.name} colName={colName}
 						/>
@@ -567,7 +570,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 	}, []);
 
 	const handleIconClick = () => {
-		if (isInline) useHomeNavigation(iframeId, appType);
+		if(isInline) useHomeNavigation(iframeId, appType);
 	};
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
@@ -622,7 +625,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 			}}
 			toast={showToastMessage}
 			content={{
-				headContent: { regularContent: <ClientPayApplicationsForm /> },
+				headContent: {regularContent: <ClientPayApplicationsForm />},
 				detailView: ClientPayApplicationsLID,
 				gridContainer: {
 					toolbar: {
@@ -663,7 +666,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 				onClose={() => {
 					postMessage({
 						event: 'closeiframe',
-						body: { iframeId: iframeId, roomId: appInfo && appInfo.presenceRoomId, appType: 'clientPayApp' }
+						body: {iframeId: iframeId, roomId: appInfo && appInfo.presenceRoomId, appType: 'clientPayApp'}
 					});
 				}}
 				contentText={'You Are Not Authorized'}
@@ -671,7 +674,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 				onAction={(e: any, type: string) => {
 					type == 'close' && postMessage({
 						event: 'closeiframe',
-						body: { iframeId: iframeId, roomId: appInfo && appInfo.presenceRoomId, appType: 'clientPayApp' }
+						body: {iframeId: iframeId, roomId: appInfo && appInfo.presenceRoomId, appType: 'clientPayApp'}
 					});
 				}}
 				showActions={false}

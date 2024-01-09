@@ -22,6 +22,13 @@
             display: flex;
             align-items: center;
             gap: 0.2em;
+            .common-icon-Project-Info {
+                cursor: pointer;
+                &:before {
+                    font-size: 20px;
+                    color: #333;
+                }
+            }
         }
     }
     &_unit {
@@ -100,6 +107,45 @@
         .common-icon-lock-fill {
             margin-top: -5px;
             font-size: 22px !important;
+        }
+    }
+    .add-budget-watermark {
+        border: 1px solid #d9d9d9;
+        border-radius: 4px;
+        background-color: #fff;
+        height: 348px;
+        margin-top: 20px;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        .add-budget-watermark-wrap {
+            border: 1px dashed #d9d9d9;
+            border-radius: 8px;
+            text-align: center;
+            display: grid;
+            padding: 10px;
+            .common-icon-standard-contract:before {
+                font-size: 36px;
+                color: #999;
+            }
+            .common-icon-schedule-values {
+                line-height: 1.2;
+                &:before {
+                    font-size: 55px;
+                    color: #999;
+                }
+            }
+            .doc-text-clr {
+                color: #9F9F9F;
+                font-size: 13px;
+                line-height: 1.4;
+                margin-top: 8px;
+            }
+        }
+    }
+    .add-budget-btn {
+        button {
+            font-size: 14px;
         }
     }
 }

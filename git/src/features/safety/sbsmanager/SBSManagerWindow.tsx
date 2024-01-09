@@ -433,6 +433,14 @@ const SBSManagerWindow = (props: any) => {
         break;
       }
       case "supplemental": {
+        postMessage({
+          event: "opensupplementalinfo",
+          body: {
+            iframeId: iframeID,
+            appType: appType,
+            dataEntity: 9,
+          },
+        });
         break;
       }
       case "dynamicHeatMap": {

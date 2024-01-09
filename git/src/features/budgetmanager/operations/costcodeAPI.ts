@@ -62,19 +62,20 @@ export const fetchCostCodeAndTypeDropdownData = async (appInfo: any, name: strin
 	// This is the ,mock api which contains same data of original api. 
 	// Once if we can read the project id and session token you can replace this with original api
 	let response;
-	if (!isLocalhost) response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetListByNameGroupforBudget?name=${name}&sessionId=${appInfo?.sessionId}`);
+	if (!isLocalhost) { 
+		if(name) response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetListByNameGroupforBudget?name=${name}&sessionId=${appInfo?.sessionId}`);
+	}
 	else {
 		response = await fetch('https://63e0a62465b57fe606467d2e.mockapi.io/api/v1/costCodeOptions', {
 			headers: {
 				"x-api-key": "PMAK-62cdcdcdc696447f8ebe5958-4e1696b00ae09e46fde6936f46ab906da6"
 			},
-		}
-		);
+		});
 	}
-	if (!response.ok) {
-		const message = `API Request Error (${moduleName}): ${response.status}`;
+	if (!response?.ok) {
+		const message = `API Request Error (${moduleName}): ${response?.status}`;
 		throw new Error(message);
 	}
-	const responseData = await response.json();
+	const responseData = await response?.json();
 
-	return isLocalhost ? DivisionCostCodeDropdownData : responseData;};
+	return isLocalhost ? DivisionCostCodeDropdownData : responseData ?? [];};

@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?uamryt');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?uamryt#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?uamryt') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?uamryt') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?uamryt##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?bcoihw');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?bcoihw#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?bcoihw') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?bcoihw') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?bcoihw##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -27,6 +27,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-hourly-rate {
+  &:before {
+    content: $common-icon-hourly-rate; 
+  }
+}
 .common-icon-accept {
   &:before {
     content: $common-icon-accept; 

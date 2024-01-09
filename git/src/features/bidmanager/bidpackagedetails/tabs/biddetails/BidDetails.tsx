@@ -590,10 +590,14 @@ const BidDetails = (props: any) => {
 							id="dueData"
 							type='number'
 							InputProps={{
+								inputProps: {min: 0},
 								startAdornment: (
 									<CalendarMonthIcon fontSize={primaryIconSize} sx={{ color: globalStyles.primaryColor, marginRight: '10px' }} />
 								)
 							}}
+							onKeyDown={(evt) =>
+								(evt.key === "-" || evt.key === "+") && evt.preventDefault()
+							}
 							name='countdownEmails'
 							variant="standard"
 							value={bidDetailsFormData?.countdownEmails}
@@ -627,10 +631,14 @@ const BidDetails = (props: any) => {
 							id="postingBid"
 							type='number'
 							InputProps={{
+								inputProps: {min: 0},
 								startAdornment: (
 									<CalendarMonthIcon fontSize={primaryIconSize} sx={{ color: globalStyles.primaryColor, marginRight: '10px' }} />
 								)
 							}}
+							onKeyDown={(evt) =>
+								(evt.key === "-" || evt.key === "+") && evt.preventDefault()
+							}
 							name='intendToBidCountdown'
 							variant="standard"
 							value={bidDetailsFormData?.intendToBidCountdown}

@@ -1,0 +1,70 @@
+.block-chain-auth-modal {
+    .MuiDialog-container {
+        .MuiDialogContent-root {
+            border-top: 0px solid rgba(0, 0, 0, 0.12);
+            border-bottom: 0px solid rgba(0, 0, 0, 0.12);
+        }
+        .MuiPaper-root {
+            max-width: 800px;
+            border-radius: 1px;
+            .MuiButtonBase-root {
+                top: 2px;
+                .MuiSvgIcon-root {
+                    width: 1em;
+                    height: 1em;
+                }
+            }
+        }
+    }
+    &_body {
+        background-image: url(/resources/images/Blockchain-bg.png);
+        background-size: 100%;
+        background-repeat: no-repeat;
+        display: block;
+        min-height: 333px;
+        padding: 25px;
+        color: #fff;
+        background-position: 0px -50px;
+    }
+    &_title {
+        padding: 0 !important;
+        font-size: 20px !important;
+        background-color: #1a1a1a;
+    }
+    &_body-box-steps {
+        // display: flex;
+        //justify-content: flex-start;
+        //align-items: center;
+        margin: 30px 42px 48px 42px;
+        color: #000;
+    }
+    &_body-box {
+        margin-top: 30px;
+    }
+    &_body-box-header {
+        font-weight: bold;
+        font-size: 18px;
+    }
+    &_body-desc {
+        font-size: 18px;
+    }
+    &_body-note {
+        font-style: italic;
+        font-size: 14px;
+        width: 85%;
+        line-height: 1.4;
+        color: #ccc;
+    }
+    &_body-device-txt {
+        font-weight: bold;
+    }
+    &_body-box-steps-center {
+        margin: 16px 50px;
+        line-height: 1.7;
+        font-size: 18px;
+    }
+    .MuiDialog-container .MuiPaper-root .MuiDialogTitle-root.block-chain-auth-modal_title {
+        color: white !important;
+        padding: 2px 20px 4px 20px !important;
+    }
+}

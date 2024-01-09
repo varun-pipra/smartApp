@@ -20,9 +20,6 @@
             }
         }
     }
-}
-
-.time-log-window {
     .tl-toolbar-btn {
         margin-left: 20px !important;
         padding: 0px 8px !important;
@@ -44,5 +41,23 @@
         border-left: 1px solid #d9d9d9 !important;
         padding: 0px;
         height: 22px;
+    }
+    .no-rows-msg {
+        border: 0px dotted #d9d9d9;
+        background-color: transparent;
+        .common-icon-No-Item-Available {
+            background-image: url(/resources/images/time-log-watermark.png);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            width: 400px;
+            height: 204px;
+            display: block;
+        }
+        .common-icon-No-Item-Available:before {
+            content: "";
+        }
+        .empty-rows-mark {
+            color: #666;
+        }
     }
 }

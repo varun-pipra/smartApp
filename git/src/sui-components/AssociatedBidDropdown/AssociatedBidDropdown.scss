@@ -1,0 +1,74 @@
+.ad-hoc-bid-input-btn-box {
+    display: flex;
+    margin: 2px 20px 10px 32px;
+    .MuiInputBase-root {
+        &:before {
+            border: 1px solid #ccc !important;
+            border-radius: 4px;
+            height: 30px;
+        }
+        &:after {
+            border-bottom: 0px solid #1976d2;
+        }
+    }
+    .MuiInputBase-root {
+        .MuiInputBase-input {
+            padding: 4px 8px 4px 8px;
+            font-size: 15px !important;
+        }
+    }
+    .add-btn-cls {
+        min-width: 30px;
+        height: 30px;
+        background-color: transparent !important;
+        border-radius: 50%;
+        span {
+            font-size: 24px;
+        }
+    }
+    .MuiFormHelperText-root {
+        color: red !important;
+        font-size: 12px;
+        &:before {
+            content: "\ea63";
+            font-family: "common-webfont";
+            font-size: 18px;
+            float: left;
+            line-height: 0.9;
+            margin-right: 1px;
+        }
+    }
+}
+
+.award-bid-select-menu-item {
+    margin-left: 15px !important;
+    &.Mui-selected {
+        font-weight: normal !important;
+    }
+}
+
+.award-bid-sub-header,
+.adhoc-bid-sub-header {
+    font-weight: 600 !important;
+}
+
+.award-bid-select-list-options {
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+.award-bid-select-menu-item-hidden {
+    display: none !important;
+}
+
+.award-bid-empty-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 20px;
+    &_title {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+}

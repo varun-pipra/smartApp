@@ -11,12 +11,12 @@ import Collapse from 'resources/images/common/UpArrow.svg';
 import Expand from 'resources/images/common/DownArrow.svg';
 
 // Project files and internal support import
-import IQTooltip from 'components/iqtooltip/IQTooltip';
 
 export interface IQDynamicPropsHeadContentProps {
 	collapsibleContent?: React.ReactNode;
 	regularContent?: React.ReactNode;
-	};
+	showBCInfo?: boolean;
+};
 
 export interface DynamicPageProps extends BoxProps {
 	pinned?: boolean;
@@ -65,36 +65,36 @@ const DynamicPage = ({pinned, showPinned, collapsed, showCollapsed, headContent,
 	};
 
 	return <Box className={`dynamic-page${className ? ` ${className}` : ''}`} {...boxProps}>
-      {!isHeadEmpty ? <div className='dynamic-page-head'>
-          <div className='head-content-box'>
-            {/* <div className={`head-collapsible-content${isCollapsed === true ? ' collapsed' : ''}`}>
+		{!isHeadEmpty ? <div className='dynamic-page-head'>
+			<div className='head-content-box'>
+				{/* <div className={`head-collapsible-content${isCollapsed === true ? ' collapsed' : ''}`}>
 					{headContent?.collapsibleContent || ''}
 				</div>
 				<div className='head-non-collapsible-content'>
 					{headContent?.regularContent || ''}
 				</div> */}
-            {isCollapsed === true ? <div className='head-content'>
-                {headContent?.collapsibleContent || ''}
-              </div> : <div className='head-content'>
-                {headContent?.regularContent || ''}
-              </div>}
-          </div>
-          <div className='head-control-box'>
-            {mergedProps?.showCollapsed === true ? <IconButton className={`header-button`} aria-label={isCollapsed === true ? 'Expand' : 'Collapse'} onClick={handleCollapse}>
-                <img src={isCollapsed === true ? Expand : Collapse} />
-              </IconButton> : ''}
-            {(mergedProps?.showPinned === true && !isCollapsed) ? <IconButton className={`header-button ${isPinned === true ? 'btn-focused' : ''}`} aria-label={isPinned === true ? 'Pinned' : 'Not Pinned'} onClick={handlePinning}>
-                <img src={isPinned === true ? Pinned : UnPinned} />
-              </IconButton> : ''}
-        </div>
-      </div> : ''}
-      <div className='dynamic-page-body'>
-        {<div className="dynamic-loading-container">
-            <div className="dynamic-loading-indicator"></div>
-          </div>}
-        {bodyContent || ''}
-      </div>
-    </Box>;
+				{isCollapsed === true ? <div className='head-content'>
+					{headContent?.collapsibleContent || ''}
+				</div> : <div className='head-content'>
+					{headContent?.regularContent || ''}
+				</div>}
+			</div>
+			<div className='head-control-box'>
+				{mergedProps?.showCollapsed === true ? <IconButton className={`header-button`} aria-label={isCollapsed === true ? 'Expand' : 'Collapse'} onClick={handleCollapse}>
+					<img src={isCollapsed === true ? Expand : Collapse} />
+				</IconButton> : ''}
+				{(mergedProps?.showPinned === true && !isCollapsed) ? <IconButton className={`header-button ${isPinned === true ? 'btn-focused' : ''}`} aria-label={isPinned === true ? 'Pinned' : 'Not Pinned'} onClick={handlePinning}>
+					<img src={isPinned === true ? Pinned : UnPinned} />
+				</IconButton> : ''}
+			</div>
+		</div> : ''}
+		<div className='dynamic-page-body'>
+			{<div className="dynamic-loading-container">
+				<div className="dynamic-loading-indicator"></div>
+			</div>}
+			{bodyContent || ''}
+		</div>
+	</Box>;
 };
 
 export default memo(DynamicPage);

@@ -1,27 +1,27 @@
-import {Avatar, AvatarSize} from '@ui5/webcomponents-react';
-import {ColDef} from 'ag-grid-enterprise';
-import React, {useEffect, useMemo, useState} from 'react';
+import { Avatar, AvatarSize } from '@ui5/webcomponents-react';
+import { ColDef } from 'ag-grid-enterprise';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import './VCTransactionGrid.scss';
 
-import {getCurrencySymbol, getServer} from 'app/common/appInfoSlice';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
-import {postMessage} from 'app/utils';
-import {fetchTransactions, getModifiedTransactions} from 'features/vendorcontracts/stores/tabs/transactions/TransactionTabSlice';
+import { getCurrencySymbol, getServer } from 'app/common/appInfoSlice';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { postMessage } from 'app/utils';
+import { fetchTransactions, getModifiedTransactions } from 'features/vendorcontracts/stores/tabs/transactions/TransactionTabSlice';
 import SUIGrid from 'sui-components/Grid/Grid';
-import {formatDate} from 'utilities/datetime/DateTimeUtils';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 
 interface TransactionGridProps {
 	groupAndFilterData?: any;
 };
 
-const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
+const VCTransactionGrid = ({ groupAndFilterData }: TransactionGridProps) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const currency = useAppSelector(getCurrencySymbol);
 	const records = useAppSelector(getModifiedTransactions);
-	const {selectedRecord} = useAppSelector(state => state.vendorContracts);
+	const { selectedRecord } = useAppSelector(state => state.vendorContracts);
 	const [selectedId, setSelectedId] = useState<any>();
 
 	useEffect(() => {
@@ -29,28 +29,29 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 	}, [selectedRecord]);
 
 	useEffect(() => {
-		if(selectedId)
-			dispatch(fetchTransactions({'appInfo': appInfo, contractId: selectedId}));
+		if (selectedId)
+			dispatch(fetchTransactions({ 'appInfo': appInfo, contractId: selectedId }));
 	}, [selectedId]);
 
 	useEffect(() => {
-		if(groupAndFilterData) {
-			if(groupAndFilterData.group) {
-				const updatedColDefs: ColDef[] = columns.map((colDef: any, index) => {
-					if(colDef.field === groupAndFilterData.group) {
-						return {...colDef, rowGroup: true, hide: false, };
-					} return {...colDef, pinned: ''};
-				});
-				setColumns(updatedColDefs);
+		let updatedColumns: any = [...columns].map((rec: any) => {
+			if (groupAndFilterData.group) {
+				return {
+					...rec,
+					rowGroup: rec.field === groupAndFilterData.group,
+					pinned: rec.field === groupAndFilterData.group ? 'left' : '',
+				};
+			} else {
+				return { ...rec, rowGroup: false };
 			}
-			else {setColumns(headers);}
-		}
+		});
+		setColumns(updatedColumns);
 	}, [groupAndFilterData]);
 
 	const onRowClick = (e: any, index: number) => {
 		const selectedRowData: any = records[index];
-		if(selectedRowData.smartItemId !== null) {
-			postMessage({event: 'openitem', body: {smartItemId: selectedRowData.smartItemId}});
+		if (selectedRowData.smartItemId !== null) {
+			postMessage({ event: 'openitem', body: { smartItemId: selectedRowData.smartItemId } });
 		}
 	};
 
@@ -72,7 +73,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 				</div> : '';
 			},
 			valueGetter: (params: any) => {
-				if(params.node.group && !params.node.footer) {
+				if (params.node.group && !params.node.footer) {
 					const groupKey = params.node.key;
 					const currentRecord = params?.node?.childrenAfterGroup?.[0]?.data;
 
@@ -87,7 +88,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 			aggFunc: 'sum',
 			type: 'rightAligned',
 			cellRenderer: (params: any) => {
-				if(params.node.footer || params.node.level > 0 || !params.node.expanded)
+				if (params.node.footer || params.node.level > 0 || !params.node.expanded)
 					return <div className='right-align'>
 						{amountFormatWithSymbol(params.value)}
 					</div>;
@@ -107,14 +108,14 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 			field: 'actualStartDate',
 			menuTabs: [],
 			cellRenderer: (params: any) => {
-				return params.value ? formatDate(params.value, {year: 'numeric', month: '2-digit', day: '2-digit'}) : '';
+				return params.value ? formatDate(params.value, { year: 'numeric', month: '2-digit', day: '2-digit' }) : '';
 			}
 		}, {
 			headerName: 'Actual End Date',
 			field: 'actualEndDate',
 			menuTabs: [],
 			cellRenderer: (params: any) => {
-				return params.value ? formatDate(params.value, {year: 'numeric', month: '2-digit', day: '2-digit'}) : '';
+				return params.value ? formatDate(params.value, { year: 'numeric', month: '2-digit', day: '2-digit' }) : '';
 			}
 		}, {
 			headerName: 'Unit of Measure',
@@ -127,7 +128,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 				</div>;
 			},
 			valueGetter: (params: any) => {
-				if(params.node.group && !params.node.footer) {
+				if (params.node.group && !params.node.footer) {
 					const groupKey = params.node.key;
 					const currentRecord = params?.node?.childrenAfterGroup?.[0]?.data;
 
@@ -145,7 +146,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 				</div> : '';
 			},
 			valueGetter: (params: any) => {
-				if(params.node.group && !params.node.footer) {
+				if (params.node.group && !params.node.footer) {
 					const groupKey = params.node.key;
 					const currentRecord = params?.node?.childrenAfterGroup?.[0]?.data;
 
@@ -164,7 +165,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 				</div> : '';
 			},
 			valueGetter: (params: any) => {
-				if(params.node.group && !params.node.footer) {
+				if (params.node.group && !params.node.footer) {
 					const currentRecord = params?.node?.childrenAfterGroup?.[0]?.data;
 					return (currentRecord?.budgetItem?.quantity || 0);
 				} else return (params?.data?.estimatedQuantity || 0);
@@ -193,7 +194,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 				</div> : '';
 			},
 			valueGetter: (params: any) => {
-				if(params.node.group && !params.node.footer) {
+				if (params.node.group && !params.node.footer) {
 					const currentRecord = params?.node?.childrenAfterGroup?.[0]?.data;
 					return (currentRecord?.budgetItem?.budgetAmount || 0);
 				} else return (params?.data?.estimatedAmount || 0);
@@ -212,7 +213,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 				</div> : '';
 			},
 			valueGetter: (params: any) => {
-				if(params.node.leafGroup && !params.node.footer) {
+				if (params.node.leafGroup && !params.node.footer) {
 					return (params.node.aggData?.actualQuantity || 0);
 				} else return (params?.data?.actualQuantity || 0);
 			}
@@ -229,7 +230,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 				</div> : '';
 			},
 			valueGetter: (params: any) => {
-				if(params.node.leafGroup && !params.node.footer) {
+				if (params.node.leafGroup && !params.node.footer) {
 					return (params.node.aggData?.actualCost || 0);
 				} else return (params?.data?.actualCost || 0);
 			}
@@ -250,18 +251,18 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 			cellRenderer: 'agGroupCellRenderer',
 			onCellClicked: (cell: any) => {
 				// console.log('cell', cell);
-				const {smartapp, id} = cell.data;
-				if(id) {
-					postMessage({event: 'openitem', body: {smartItemId: id}});
+				const { smartapp, id } = cell.data;
+				if (id) {
+					postMessage({ event: 'openitem', body: { smartItemId: id } });
 				}
 			},
 			cellRendererParams: {
 				innerRenderer: (cell: any) => {
-					if(!cell.data) {
+					if (!cell.data) {
 						const isFooter = cell?.node?.footer;
 						const isRootLevel = cell?.node?.level === -1;
-						if(isFooter) {
-							if(isRootLevel) {
+						if (isFooter) {
+							if (isRootLevel) {
 								return 'Summary';
 							}
 							return `Subtotal`;
@@ -269,13 +270,13 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 							return `${cell?.value}`;
 						}
 					}
-					if(cell.node.group) {
+					if (cell.node.group) {
 						return <div className='bold-font'>{cell.value}</div>;
 					} else {
-						const {name, board, smartapp} = cell.data;
+						const { name, board, smartapp } = cell.data;
 						const initials = name?.split('-')[0];
 
-						const image = smartapp.id ? <img src={`${appInfo?.hostUrl}/EnterpriseDesktop/Dashboard/Shortcut.mvc/GetAppThumbnailUrl?appId=${smartapp.id}&size=2&sessionId=${appInfo?.sessionId}`} style={{height: '24px', width: '24px'}} /> :
+						const image = smartapp.id ? <img src={`${appInfo?.hostUrl}/EnterpriseDesktop/Dashboard/Shortcut.mvc/GetAppThumbnailUrl?appId=${smartapp.id}&size=2&sessionId=${appInfo?.sessionId}`} style={{ height: '24px', width: '24px' }} /> :
 							<Avatar colorScheme={'Accent10'} initials={initials} size={AvatarSize.XS}></Avatar>;
 
 						return <div className='blue-color mouse-pointer vertical-center-align'>
@@ -286,7 +287,7 @@ const VCTransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 				}
 			},
 			valueGetter: (params: any) => {
-				if(params.node.group) {
+				if (params.node.group) {
 					return params.data?.budgetLineItem || '';
 				} else return params.data?.name || '';
 			}

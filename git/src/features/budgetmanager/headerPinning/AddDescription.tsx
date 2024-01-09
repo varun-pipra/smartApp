@@ -64,7 +64,8 @@ export const AddDescription = ({ value, showicon = true }: AddDescriptionProps) 
 				equipmentModel: selectedRow?.equipmentModel,
 				equipmentManufacturer: selectedRow?.equipmentManufacturer,
 				equipmentManufacturerId: selectedRow?.equipmentManufacturerId,
-				equipmentCatalogId: selectedRow?.equipmentCatalogId
+				equipmentCatalogId: selectedRow?.equipmentCatalogId,
+				providerSource: selectedRow?.providerSource				
 			}
 
 			updateBudgetLineItem(appInfo, selectedRow.id, payload, (response: any) => {

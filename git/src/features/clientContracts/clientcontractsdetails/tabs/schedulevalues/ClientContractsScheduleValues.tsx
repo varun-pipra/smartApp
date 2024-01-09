@@ -36,7 +36,7 @@ const OpenBudgetManagerButton = styled(Button)({
 		backgroundColor: "#ed7532",
 	},
 });
-const AddBudgetLineItemButton = styled(Button)({
+export const AddBudgetLineItemButton = styled(Button)({
 	padding: "6px 12px",
 	textTransform: "none",
 	lineHeight: 2.5,

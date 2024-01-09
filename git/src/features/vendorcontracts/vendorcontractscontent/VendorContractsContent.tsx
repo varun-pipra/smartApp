@@ -34,6 +34,7 @@ import Toast from 'components/toast/Toast';
 import {initRTDocument} from 'utilities/realtime/Realtime';
 import {mainGridRTListener} from '../VendorContractsRT';
 import {SUIToast} from 'sui-components/Toast/Suitoast';
+import {setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 
 const VendorContractsContent = ({gridRef, ...props}: any) => {
 	const dispatch = useAppDispatch();
@@ -71,6 +72,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 	const {changeEventsList} = useAppSelector((state) => state?.changeEvents);
 	const [showLockSuccessMsg, setShowLockSuccessMsg] = React.useState<any>({show: false, msg1: '', msg2: ''});
 	const [showAlertForPendingCompliance, setShowAlertForPendingCompliance] = React.useState<any>({show: false, message: '', type: ''});
+	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 
 	// Effect definitions
 	React.useEffect(() => {
@@ -218,6 +220,9 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 	};
 
 	const handlePostChangeAndLockAction = (type: any) => {
+		if(blockchainEnabled) {
+			dispatch(setShowBlockchainDialog(true));
+		}
 		setShowAlert({
 			show: true, type: type, message:
 				<span>The changes made to the contract will be posted as a new change event and notified to the vendor.<br /><br /> Would you like to go ahead and re post the contract?</span>
@@ -258,6 +263,9 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 		response?.type == 'decline' ? declineContract(appInfo, selectedRecord?.id, payload, afterItemAction)
 			: response?.type == 'revise' ? reviseContract(appInfo, selectedRecord?.id, payload, afterItemAction) : acceptContract(appInfo, selectedRecord?.id, {signature: response?.signature}, afterItemAction);
 		setContractDialog({...contractDialog, show: false});
+		if(blockchainEnabled) {
+			dispatch(setShowBlockchainDialog(true));
+		}
 	};
 	const handleAlert = (type: string) => {
 		if(type == 'yes') {
@@ -318,6 +326,8 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 		});
 	};
 
+	const disableBlockchainActionButtons = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(selectedRecord?.blockChainStatus) === -1);
+
 	return <>
 		<Box className='bid-manager-content'>
 			{isUserGC(appInfo) ?
@@ -351,7 +361,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 				open={false}
 			>
 				<Stack className='rightpanel-content-section'>
-					<VendorContractsLineItem close={() => {rightPanelClose();}} />
+					<VendorContractsLineItem close={() => {rightPanelClose();}} showBCInfo={disableBlockchainActionButtons} />
 				</Stack>
 				{selectedRecord?.status == 'ActivePendingSOVUpdate' && isUserGC(appInfo) && <SUIToast
 					message={
@@ -410,7 +420,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 
 						{
 							cancelAndLock?.show && <IQButton
-								disabled={cancelAndLock?.disable}
+								disabled={cancelAndLock?.disable || disableBlockchainActionButtons}
 								className='btn-cancel-contract'
 								color="inherit"
 								onClick={handleCancelAndLock}
@@ -421,7 +431,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 						}
 						{
 							lockContract?.show && <IQButton
-								disabled={lockContract?.disable}
+								disabled={lockContract?.disable || disableBlockchainActionButtons}
 								className='btn-post-contract  lock-post-btn'
 								// color='white'
 								// variant={'outlined'}
@@ -435,7 +445,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 
 						{
 							unlockContract?.show && <IQButton
-								disabled={unlockContract?.disable}
+								disabled={unlockContract?.disable || disableBlockchainActionButtons}
 								className='btn-post-contract'
 								// color='white'
 								onClick={handleUnlock}
@@ -470,7 +480,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 						}												 */}
 						{
 							lockContract?.show && <IQButton
-								disabled={lockContract?.disable}
+								disabled={lockContract?.disable || disableBlockchainActionButtons}
 								className='btn-post-contract'
 								// color='white'
 								onClick={() => handleRouteForApproval(false)}

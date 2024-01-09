@@ -27,6 +27,7 @@ import {isUserGCForCC} from '../utils';
 import {SUIToast} from 'sui-components/Toast/Suitoast';
 import {getCCChangeEventsList} from 'features/clientContracts/stores/CCChangeEventsSlice';
 import {fetchSettings} from 'features/budgetmanager/operations/settingsSlice';
+import {setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 
 const ClientContractsContent = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -67,6 +68,7 @@ const ClientContractsContent = (props: any) => {
 	}, []);
 	const responseTypeObj: any = {'Accepted': 2, 'Declined': 0, 'SentBackForRevision': 1, 'LockedAndPosted': 2};
 	const showToastMessage = useAppSelector(getToastMessage);
+	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 
 	React.useEffect(() => {
 		setTimeout(() => {
@@ -199,6 +201,9 @@ const ClientContractsContent = (props: any) => {
 	};
 
 	const handlePostChangeAndLockAction = (type: any) => {
+		if(blockchainEnabled) {
+			dispatch(setShowBlockchainDialog(true));
+		}
 		setShowAlert({
 			show: true, type: type, message:
 				<span>The changes made to the contract will be posted as a new change event and notified to the vendor.<br /><br /> Would you like to go ahead and re post the contract?</span>
@@ -237,6 +242,9 @@ const ClientContractsContent = (props: any) => {
 		response?.type == 'decline' ? declineContract(appInfo, selectedRecord?.id, payload, afterItemAction)
 			: response?.type == 'revise' ? reviseContract(appInfo, selectedRecord?.id, payload, afterItemAction) : acceptContract(appInfo, selectedRecord?.id, {signature: response?.signature}, afterItemAction);
 		setContractDialog({...contractDialog, show: false});
+		if(blockchainEnabled) {
+			dispatch(setShowBlockchainDialog(true));
+		}
 	};
 	const handleAlert = (type: string) => {
 		if(type == 'yes') {
@@ -267,6 +275,9 @@ const ClientContractsContent = (props: any) => {
 			body: {iframeId: "clientContractsIframe", roomId: appInfo && appInfo.presenceRoomId, appType: "ClientContracts", isFromHelpIcon: false}
 		});
 	};
+
+	const disableBlockchainActionButtons = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(selectedRecord?.blockChainStatus) === -1);
+
 	return <>
 		<Box className='bid-manager-content'>
 			{isUserGCForCC(appInfo) ?
@@ -302,7 +313,7 @@ const ClientContractsContent = (props: any) => {
 				open={false}
 			>
 				<Stack className='rightpanel-content-section'>
-					<ClientContractsLineItem close={() => {rightPanelClose();}} />
+					<ClientContractsLineItem close={() => {rightPanelClose();}} showBCInfo={disableBlockchainActionButtons} />
 				</Stack>
 				{selectedRecord?.status == 'ActivePendingSOVUpdate' && isUserGCForCC(appInfo) && <SUIToast
 					message={
@@ -353,7 +364,7 @@ const ClientContractsContent = (props: any) => {
 					<div className='footer-button-container'>
 						{
 							cancelAndLock?.show && <IQButton
-								disabled={cancelAndLock?.disable}
+								disabled={cancelAndLock?.disable || disableBlockchainActionButtons}
 								className='btn-cancel-contract'
 								color="inherit"
 								onClick={handleCancelAndLock}
@@ -363,7 +374,7 @@ const ClientContractsContent = (props: any) => {
 						}
 						{
 							lockContract?.show && <IQButton
-								disabled={lockContract?.disable}
+								disabled={lockContract?.disable || disableBlockchainActionButtons}
 								className='btn-post-contract lock-post-btn'
 								variant={'outlined'}
 								onClick={handleLockAndPostContractAction}
@@ -374,7 +385,7 @@ const ClientContractsContent = (props: any) => {
 
 						{
 							unlockContract?.show && <IQButton
-								disabled={unlockContract?.disable}
+								disabled={unlockContract?.disable || disableBlockchainActionButtons}
 								className='btn-post-contract'
 								onClick={handleUnlock}
 							>
@@ -393,7 +404,7 @@ const ClientContractsContent = (props: any) => {
 						} */}
 						{
 							lockContract?.show && <IQButton
-								disabled={lockContract?.disable}
+								disabled={lockContract?.disable || disableBlockchainActionButtons}
 								className='btn-post-contract'
 								onClick={handleRoutForApproval}
 							>
@@ -404,7 +415,7 @@ const ClientContractsContent = (props: any) => {
 							SCActions?.show && <>
 								{
 									SCActions?.decline?.show && <IQButton
-										disabled={SCActions?.decline?.disable}
+										disabled={SCActions?.decline?.disable || disableBlockchainActionButtons}
 										className='btn-cancel-contract'
 										onClick={() => setContractDialog({show: true, type: 'decline'})}
 									>
@@ -413,7 +424,7 @@ const ClientContractsContent = (props: any) => {
 								}
 								{
 									SCActions?.revise?.show && <IQButton
-										disabled={SCActions?.revise?.disable}
+										disabled={SCActions?.revise?.disable || disableBlockchainActionButtons}
 										className='btn-save-changes'
 										variant="outlined"
 										onClick={() => setContractDialog({show: true, type: 'revise'})}
@@ -423,7 +434,7 @@ const ClientContractsContent = (props: any) => {
 								}
 								{
 									SCActions?.accept?.show && <IQButton
-										disabled={SCActions?.accept?.disable}
+										disabled={SCActions?.accept?.disable || disableBlockchainActionButtons}
 										className='btn-post-contract'
 										onClick={() => setContractDialog({show: true, type: 'sign'})}
 									>

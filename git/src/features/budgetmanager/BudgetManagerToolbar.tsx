@@ -217,6 +217,18 @@ const BudgetManagerToolbar = (props: any) => {
 				type: "checkbox",
 				items: []
 			},
+		},
+		{
+			text: "Provider Source",
+			value: 'providerSource',
+			key: 'providerSource',
+			children: {
+				type: "checkbox",
+				items: [
+					{text: "Self Perform", id: '1', value: '1', key: '1'},
+					{text: "Trade Partner", id: '2', value: '0', key: '0'},
+				]
+			},
 		}
 	];
 
@@ -548,11 +560,11 @@ const getGroupMenuOptions = () => {
 		value: 'Vendors',
 		iconCls: ''
 	},
-		// {
-		// 	text: 'Status',
-		// 	value: 'status',
-		// 	iconCls: ''
-		// }
+	{
+		text: 'Provider Source',
+		value: 'providerSource',
+		iconCls: ''
+	}
 	];
 };
 const getViewFilters = () => {

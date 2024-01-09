@@ -66,6 +66,7 @@ export const gridData = {
 			"markupFeePercentage": null,
 			"markupFeeAmount": 1000,
 			allowMarkupFee: true,
+			providerSource: 1,
 		},
 		{
 			"id": "9e9e21d0-a1e4-4e04-8643-003c55952352",
@@ -339,7 +340,8 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+			"costCodeGroup": null,
+			providerSource: 0,			
 		},
 		{
 			"id": "0004ac7c-c555-487f-8fd7-02d878bf5028",

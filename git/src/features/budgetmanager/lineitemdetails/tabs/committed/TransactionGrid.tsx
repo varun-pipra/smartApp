@@ -1,8 +1,8 @@
-import React, {useMemo, useState} from 'react';
-import {ColDef} from 'ag-grid-enterprise';
-import {Box, Button, Badge} from '@mui/material';
-import {Avatar, AvatarSize} from '@ui5/webcomponents-react';
-import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
+import React, { useMemo, useState } from 'react';
+import { ColDef } from 'ag-grid-enterprise';
+import { Box, Button, Badge } from '@mui/material';
+import { Avatar, AvatarSize } from '@ui5/webcomponents-react';
+import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import BalanceModification from 'resources/images/budgetManager/BalanceModification.svg';
 import BudgetModification from 'resources/images/budgetManager/BudgetModification.svg';
 import DirectCost from 'resources/images/budgetManager/DirectCost.png';
@@ -12,11 +12,11 @@ import TransferOut from 'resources/images/budgetManager/TransferOut.svg';
 import './TransactionGrid.scss';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 
-import {postMessage} from 'app/utils';
-import {getTransactionTypeText, stringToUSDateTime} from 'utilities/commonFunctions';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
-import {getServer, getCurrencySymbol} from 'app/common/appInfoSlice';
-import {fetchTransactionsData, getFilteredRecords} from 'features/budgetmanager/operations/transactionsSlice';
+import { postMessage } from 'app/utils';
+import { getTransactionTypeText, stringToUSDateTime } from 'utilities/commonFunctions';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { getServer, getCurrencySymbol } from 'app/common/appInfoSlice';
+import { fetchTransactionsData, getFilteredRecords } from 'features/budgetmanager/operations/transactionsSlice';
 import SUIGrid from 'sui-components/Grid/Grid';
 import FilePin from "resources/images/budgetManager/Group.svg";
 var tinycolor = require('tinycolor2');
@@ -26,13 +26,13 @@ interface TransactionGridProps {
 }
 
 // const TransactionGrid = (props: TransactionGridProps) => {
-const TransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
+const TransactionGrid = ({ groupAndFilterData }: TransactionGridProps) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const currency = useAppSelector(getCurrencySymbol);
 	const records = useAppSelector(getFilteredRecords);
-	const {selectedRow} = useAppSelector(state => state.rightPanel);
-
+	const { selectedRow } = useAppSelector(state => state.rightPanel);
+	const groupKeyValue = React.useRef<any>(null);
 	const headers: ColDef[] = [{
 		headerName: 'Item Name',
 		field: 'name',
@@ -42,18 +42,18 @@ const TransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 		// maxWidth: 200,
 		menuTabs: [],
 		onCellClicked: (event: any) => {
-			if(event.data?.smartItemId) {
-				postMessage({event: 'openitem', body: {smartItemId: event.data?.smartItemId}});
+			if (event.data?.smartItemId) {
+				postMessage({ event: 'openitem', body: { smartItemId: event.data?.smartItemId } });
 			}
 		},
 		cellRenderer: (params: any) => {
 			const initials = params.data?.name?.split('-')[0];
-			const image = params.data?.smartAppId ? <img src={`${appInfo?.hostUrl}/EnterpriseDesktop/Dashboard/Shortcut.mvc/GetAppThumbnailUrl?appId=${params.data?.smartAppId}&size=2&sessionId=${appInfo?.sessionId}`} style={{height: '32px', width: '32px'}} /> :
+			const image = params.data?.smartAppId ? <img src={`${appInfo?.hostUrl}/EnterpriseDesktop/Dashboard/Shortcut.mvc/GetAppThumbnailUrl?appId=${params.data?.smartAppId}&size=2&sessionId=${appInfo?.sessionId}`} style={{ height: '32px', width: '32px' }} /> :
 				params.data?.stageName !== 'Summary' ? <Avatar colorScheme={'Accent10'} initials={initials} size={AvatarSize.XS}></Avatar> : '';
 			return params.data && (<div className={`app-items-cell-contentt ${params.value && params.data.stageName ? 'clickablee' : ''}`}>
 				{image}&nbsp;
 				<IQTooltip title={params.data?.smartItemId ? 'App Item' : getTransactionTypeText(params.data.transactionType)} placement={"bottom"} arrow={true}>
-					<span className='txn-name-tag' style={{color: params.data?.smartAppId ? '#059CDF' : ''}}>{params.value}</span>
+					<span className='txn-name-tag' style={{ color: params.data?.smartAppId ? '#059CDF' : '' }}>{params.value}</span>
 				</IQTooltip>
 			</div>
 			);
@@ -99,8 +99,8 @@ const TransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 		// type: "currency",
 		menuTabs: [],
 		cellRenderer: (params: any) => {
-			let styleOpts = {style: {color: (Number(params.value?.toString()?.replaceAll(",", ""))) >= 0 ? '' : 'red'}};
-			if(params.node.footer || params.node.level > 0 || !params.node.expanded) {
+			let styleOpts = { style: { color: (Number(params.value?.toString()?.replaceAll(",", ""))) >= 0 ? '' : 'red' } };
+			if (params.node.footer || params.node.level > 0 || !params.node.expanded) {
 				return <div className='right-align' {...styleOpts}>
 					{amountFormatWithSymbol(params?.value)}
 				</div>;
@@ -116,8 +116,8 @@ const TransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 		// type: "currency",
 		menuTabs: [],
 		cellRenderer: (params: any) => {
-			let styleOpts = params?.data?.stageName == 'Summary' ? {style: {color: (Number(getSelectedRowData()?.balance?.toString()?.replaceAll(",", ""))) >= 0 ? '#008000c2' : 'red'}} : {style: {color: (Number(params.value?.toString()?.replaceAll(",", ""))) >= 0 ? '#008000c2' : 'red'}};
-			if(params.node.footer || params.node.level > 0 || !params.node.expanded) {
+			let styleOpts = params?.data?.stageName == 'Summary' ? { style: { color: (Number(getSelectedRowData()?.balance?.toString()?.replaceAll(",", ""))) >= 0 ? '#008000c2' : 'red' } } : { style: { color: (Number(params.value?.toString()?.replaceAll(",", ""))) >= 0 ? '#008000c2' : 'red' } };
+			if (params.node.footer || params.node.level > 0 || !params.node.expanded) {
 				return <div className='right-align' {...styleOpts}>
 					{params?.data?.stageName == 'Summary' ? amountFormatWithSymbol(getSelectedRowData()?.balance) : amountFormatWithSymbol(params.value)}
 				</div>;
@@ -141,7 +141,7 @@ const TransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 		rowGroup: false,
 		// maxWidth: 150,
 		menuTabs: [],
-		cellStyle: {'text-overflow': 'ellipsis', 'white-space': 'nowrap', 'overflow': 'hidden', 'padding': 0},
+		cellStyle: { 'text-overflow': 'ellipsis', 'white-space': 'nowrap', 'overflow': 'hidden', 'padding': 0 },
 		cellRenderer: (params: any) => {
 			return <div className='auto-wrapped-ellipsis'>{params.value}</div>;
 		}
@@ -152,7 +152,7 @@ const TransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 		minWidth: 150,
 		// maxWidth: 150,
 		menuTabs: [],
-		cellStyle: {'text-overflow': 'ellipsis', 'white-space': 'nowrap', 'overflow': 'hidden', 'padding': 0},
+		cellStyle: { 'text-overflow': 'ellipsis', 'white-space': 'nowrap', 'overflow': 'hidden', 'padding': 0 },
 		cellRenderer: (params: any) => {
 			return <div className='auto-wrapped-ellipsis'>{params.value}</div>;
 		}
@@ -211,23 +211,23 @@ const TransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 	// }, [selectedRow]);
 
 	React.useEffect(() => {
-		if(groupAndFilterData) {
-			if(groupAndFilterData.group) {
+		if (groupAndFilterData) {
+			if (groupAndFilterData.group) {
 				const updatedColDefs: ColDef[] = columns.map((colDef: any, index) => {
 					// console.log("groupAndFilterData", groupAndFilterData);
-					if(colDef.field === groupAndFilterData.group) {
-						return {...colDef, rowGroup: true, hide: false, };
-					} return {...colDef, pinned: '', rowGroup: false};
+					if (colDef.field === groupAndFilterData.group) {
+						return { ...colDef, rowGroup: true, hide: false, };
+					} return { ...colDef, pinned: '', rowGroup: false };
 				});
 				setColumns(updatedColDefs);
 
 			}
-			else {setColumns(headers);}
+			else { setColumns(headers); }
 		}
 	}, [groupAndFilterData]);
 
 	const getSelectedRowData = () => {
-		const {selectedRow} = useAppSelector(state => state.rightPanel);
+		const { selectedRow } = useAppSelector(state => state.rightPanel);
 		return selectedRow;
 	};
 
@@ -243,39 +243,38 @@ const TransactionGrid = ({groupAndFilterData}: TransactionGridProps) => {
 		return typeObj[type];
 	};
 
+	React.useEffect(() => {
+
+		if (((groupAndFilterData.group ?? false) && groupAndFilterData.group !== "")) {
+			groupKeyValue.current = groupAndFilterData.group;
+		} else if (groupAndFilterData.group ?? true) {
+			groupKeyValue.current = null;
+		};
+	}, [groupAndFilterData.group]);
+
 	const groupRowRendererParams = useMemo(() => {
 		return {
 			innerRenderer: (params: any) => {
-				return <div className="group-type-header">
-					<img className="group-type-img" src={getImageBasedonType(params.value)} />
-					{getTransactionTypeText(params.value)}
-				</div>;
+				const node = params.node;
+				if (node.group) {
+					const colName = groupKeyValue?.current || groupAndFilterData?.group;
+					if (colName == 'transactionType') {
+						return <div className="group-type-header">
+							<img className="group-type-img" src={getImageBasedonType(params.value)} />
+							{getTransactionTypeText(params.value)}
+						</div>
+					}
+					else if (colName == 'vendor.name') {
+						return <div className="group-type-header">{params.value}</div>
+					}
+				}
 
 			}
 		};
-	}, []);
+	}, [groupAndFilterData?.group]);
 
 	return (
-		// <Grid
-		// 	className='committed-txn ag-theme-alpine'
-		// 	rowHeight={45}
-		// 	headerHeight={35}
-		// 	gridOptions={{
-		// 		tooltipShowDelay: 0,
-		// 		columnDefs: columns,
-		// 		defaultColDef: {
-		// 			flex: 1,
-		// 			minWidth: 190,
-		// 			sortable: true,
-		// 			resizable: true,
-		// 		}
-		// 	}}
-		// 	rowData={records}
-		// 	getRowId={(params) => params.data.id}
-		// 	animateRows={true}
-		// 	groupDefaultExpanded={-1}
-		// />
-		// <div className="transaction-grid-cls">
+
 		<SUIGrid
 			headers={columns}
 			data={records}

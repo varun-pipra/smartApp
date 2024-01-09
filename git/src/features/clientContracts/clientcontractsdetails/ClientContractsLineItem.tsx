@@ -1,8 +1,8 @@
-import { Fragment, useEffect, useRef, useState } from 'react';
-import { hideLoadMask, useAppDispatch, useAppSelector } from 'app/hooks';
-import { postMessage } from 'app/utils';
-import { Button, IconButton, TextField } from '@mui/material';
-import { Close, ExpandMore, ExpandLess, PushPinOutlined as PushPin } from '@mui/icons-material';
+import {Fragment, useEffect, useRef, useState} from 'react';
+import {hideLoadMask, useAppDispatch, useAppSelector} from 'app/hooks';
+import {postMessage} from 'app/utils';
+import {Button, IconButton, TextField} from '@mui/material';
+import {Close, ExpandMore, ExpandLess, PushPinOutlined as PushPin} from '@mui/icons-material';
 import IQObjectPage from 'components/iqobjectpage/IQObjectPage';
 import './ClientContractsLineItem.scss';
 import PresenceManager from 'utilities/presence/PresenceManager.js';
@@ -11,44 +11,46 @@ import CCBillingSchedule from './tabs/billingschedule/CCBillingSchedule';
 
 import 'utilities/presence/PresenceManager.css';
 
-import { getServer } from 'app/common/appInfoSlice';
+import {getServer} from 'app/common/appInfoSlice';
 import ClientContractDetails from './tabs/clientcontractdetails/ClientContractDetails';
 import CommittedTransaction from './tabs/transactions/CCCommittedTransaction';
 import ForecastTransactions from './tabs/forecast/ForecastTransactions';
 import ChangeEvents from './tabs/changeevents/CCChangeEvents';
 import PaymentLedger from './tabs/paymentledger/CCPaymentLedger';
-import { vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons, vendorContractsResponseStatus, vendorContractsResponseStatusColors, vendorContractsResponseStatusIcons } from 'utilities/vendorContracts/enums';
-import { getClientContractDetails, getSelectedRecord, getUserRoleDetails, getClientCompanies } from 'features/clientContracts/stores/ClientContractsSlice';
+import {vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons, vendorContractsResponseStatus, vendorContractsResponseStatusColors, vendorContractsResponseStatusIcons} from 'utilities/vendorContracts/enums';
+import {getClientContractDetails, getSelectedRecord, getUserRoleDetails, getClientCompanies} from 'features/clientContracts/stores/ClientContractsSlice';
 import ClientContractFiles from './tabs/clientcontractfiles/ClientContractFiles';
-import { getAmountAlignment } from 'utilities/commonutills';
-import { updateClientContractDetails } from '../stores/gridAPI';
-import { stringToUSDateTime2 } from 'utilities/commonFunctions';
-import { getClientContractsList } from '../stores/gridSlice';
-import { getClientContractsForecasts, getForecastsCount } from '../stores/ForecastsSlice';
-import { fetchTransactions, getTransactionCount } from '../stores/tabs/transactions/TransactionTabSlice';
-import { getContractFilesCount } from '../stores/tabs/contractfiles/CCContractFilesTabSlice';
-import { isUserGCForCC } from '../utils';
-import { getCCPaymentLedgerList, getPaymentLedgerCount } from '../stores/PaymentLedgerSlice';
-import { getCCChangeEventsList } from '../stores/CCChangeEventsSlice';
-import { amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
+import {getAmountAlignment} from 'utilities/commonutills';
+import {updateClientContractDetails} from '../stores/gridAPI';
+import {stringToUSDateTime2} from 'utilities/commonFunctions';
+import {getClientContractsList} from '../stores/gridSlice';
+import {getClientContractsForecasts, getForecastsCount} from '../stores/ForecastsSlice';
+import {fetchTransactions, getTransactionCount} from '../stores/tabs/transactions/TransactionTabSlice';
+import {getContractFilesCount} from '../stores/tabs/contractfiles/CCContractFilesTabSlice';
+import {isUserGCForCC} from '../utils';
+import {getCCPaymentLedgerList, getPaymentLedgerCount} from '../stores/PaymentLedgerSlice';
+import {getCCChangeEventsList} from '../stores/CCChangeEventsSlice';
+import {amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
+import BlockchainIB from 'features/common/informationBubble/BlockchainIB';
 
 const tinycolor = require('tinycolor2');
 
 export interface headerprops {
 	close: () => void;
+	showBCInfo: boolean;
 }
 
 const ClientContractsLineItem = (props: headerprops) => {
 	const dispatch = useAppDispatch();
 	const presenceId = 'clientcontract-lineitem-presence';
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 	const appInfo = useAppSelector(getServer);
 	const contractLineItem: any = useAppSelector(getSelectedRecord);
-	const { contractId, tab } = useAppSelector((state) => state.clientContracts);
+	const {contractId, tab} = useAppSelector((state) => state.clientContracts);
 	const forecastsCount = useAppSelector(getForecastsCount);
-	const { unLockedSov } = useAppSelector((state) => state.cCBillingSchedule);
+	const {unLockedSov} = useAppSelector((state) => state.cCBillingSchedule);
 	const payMentLedgerCount = useAppSelector(getPaymentLedgerCount);
-	const { changeEventsCount } = useAppSelector((state) => state.ccChangeEvents);
+	const {changeEventsCount} = useAppSelector((state) => state.ccChangeEvents);
 	// Use State 
 	const presenceRef = useRef(false);
 	const [collapsed, setCollapsed] = useState(false);
@@ -71,36 +73,36 @@ const ClientContractsLineItem = (props: headerprops) => {
 		setTabSelected(value);
 	};
 	useEffect(() => {
-		if (tabSelected) {
+		if(tabSelected) {
 			help(false);
 		}
 	}, [tabSelected]);
 
 	const onScroll = (value: any) => {
-		if (pinned == false) {
+		if(pinned == false) {
 			setCollapsed(value);
 		}
 	};
 
-	useEffect(() => { presenceRef.current = false; }, [contractLineItem]);
-	useEffect(() => { setTitle(contractLineItem?.title); }, [contractLineItem?.title]);
+	useEffect(() => {presenceRef.current = false;}, [contractLineItem]);
+	useEffect(() => {setTitle(contractLineItem?.title);}, [contractLineItem?.title]);
 
 	useEffect(() => {
-		if (presenceRef.current) return;
+		if(presenceRef.current) return;
 		presenceRef.current = true;
 		renderPresence();
 	}, [contractLineItem]);
 
 	useEffect(() => {
-		if (contractId) {
-			const payload = { appInfo: appInfo, packageId: contractId },
+		if(contractId) {
+			const payload = {appInfo: appInfo, packageId: contractId},
 				callList: Array<any> = [
 					dispatch(getClientContractDetails(payload)),
 					dispatch(getUserRoleDetails(appInfo)),
 					dispatch(getClientCompanies(appInfo)),
 					dispatch(fetchTransactions(payload)),
-					dispatch(getCCPaymentLedgerList({ appInfo: appInfo, id: contractId })),
-					dispatch(getCCChangeEventsList({ appInfo: appInfo, id: contractId })),
+					dispatch(getCCPaymentLedgerList({appInfo: appInfo, id: contractId})),
+					dispatch(getCCChangeEventsList({appInfo: appInfo, id: contractId})),
 					dispatch(getClientContractsForecasts(payload))
 				];
 
@@ -127,12 +129,12 @@ const ClientContractsLineItem = (props: headerprops) => {
 	};
 
 	const addPresenceListener = (presenceManager: any) => {
-		if (presenceManager && presenceManager.control) {
+		if(presenceManager && presenceManager.control) {
 			let participantCtrl = presenceManager.control;
 			participantCtrl.addEventListener('livelinkbtnclick', function (e: any) {
 				postMessage({
 					event: 'launchcommonlivelink',
-					body: { iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem' },
+					body: {iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem'},
 					data: participantCtrl.getParticipants()
 				});
 			});
@@ -142,35 +144,35 @@ const ClientContractsLineItem = (props: headerprops) => {
 			participantCtrl.addEventListener('streambuttonclick', function (e: any) {
 				postMessage({
 					event: 'launchcommonstream',
-					body: { iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem' },
+					body: {iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem'},
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('commentbuttonclick', function (e: any) {
 				postMessage({
 					event: 'launchcommoncomment',
-					body: { iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem' },
+					body: {iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem'},
 					data: participantCtrl.getParticipants()
 				});
 			});
 			participantCtrl.addEventListener('presencecountclick', function (e: any) {
 				let participantsjson = participantCtrl.getParticipants(),
 					participantids = [];
-				if (participantsjson) {
-					for (var i = 0; i < participantsjson.length; i++) {
+				if(participantsjson) {
+					for(var i = 0;i < participantsjson.length;i++) {
 						participantids.push((participantsjson[i].userid));
 					}
 				}
 				postMessage({
 					event: 'launchlivechat',
-					body: { iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem' },
-					livechatData: { participantsIds: participantids }
+					body: {iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem'},
+					livechatData: {participantsIds: participantids}
 				});
 			});
 			participantCtrl.addEventListener('presenceuserclick', function (e: any) {
 				postMessage({
 					event: 'launchcontactcard',
-					body: { iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem' },
+					body: {iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem'},
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -182,7 +184,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 			participantCtrl.addEventListener('presenceuserhover', function (e: any) {
 				postMessage({
 					event: 'launchcontactcard',
-					body: { iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem' },
+					body: {iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem'},
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -192,20 +194,20 @@ const ClientContractsLineItem = (props: headerprops) => {
 				});
 			});
 			document.addEventListener('updateparticipants', function (event: any) {
-				console.log('updateparticipants', event.detail)
-				if (participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
+				console.log('updateparticipants', event.detail);
+				if(participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
 					return;
 				}
-				if (event.detail.appType === 'ClientContractsLineItem') {
+				if(event.detail.appType === 'ClientContractsLineItem') {
 					// console.log('Right panel presence',event);
 					participantCtrl.updateParticipants(event.detail.data);
 				}
 			});
 			document.addEventListener('updatecommentbadge', function (event: any) {
-				if (participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
+				if(participantCtrl && participantCtrl.id && !(document.getElementById(participantCtrl.id))) {
 					return;
 				}
-				if (event.detail.appType === 'ClientContractsLineItem') {
+				if(event.detail.appType === 'ClientContractsLineItem') {
 					let chatCount = event.detail.data,
 						animation = (chatCount.eventType === 'commentReceived') ? true : false;
 					participantCtrl.setButtonBadge('comment', chatCount.count, animation);
@@ -213,7 +215,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 			});
 			postMessage({
 				event: 'joinroom',
-				body: { iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem', roomTitle: contractLineItem?.title }
+				body: {iframeId: 'clientContractsIframe', roomId: contractLineItem?.id, appType: 'ClientContractsLineItem', roomTitle: contractLineItem?.title}
 			});
 			return;
 		}
@@ -223,13 +225,13 @@ const ClientContractsLineItem = (props: headerprops) => {
 	};
 	const help = (isFromHelpIcon: any) => {
 		console.log('useref', tabid.current);
-		const body = { iframeId: "clientContractsIframe", roomId: contractLineItem?.id, appType: "ClientContractsLineItem", tabName: tabid.current, isFromHelpIcon: isFromHelpIcon }
-		console.log('help', body)
+		const body = {iframeId: "clientContractsIframe", roomId: contractLineItem?.id, appType: "ClientContractsLineItem", tabName: tabid.current, isFromHelpIcon: isFromHelpIcon};
+		console.log('help', body);
 		postMessage({
 			event: "help",
 			body: body
 		});
-	}
+	};
 	const tabConfig = [
 		{
 			tabId: 'contract-details',
@@ -292,7 +294,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 		<div className='Client-lineitem-detail-panel'>
 			<div className='details-header'>
 				{isUserGCForCC(appInfo) && ['ActiveUnlocked', 'AwaitingAcceptanceUnlocked', 'Draft', 'ReadyToSubmit'].includes(contractLineItem?.status) ? <TextField className='textField' variant='outlined' value={title}
-					onChange={(e: any) => setTitle(e.target?.value)} onBlur={(e) => { updateClientContractDetails(appInfo, contractLineItem?.id, { title: title }, (response: any) => { dispatch(getClientContractsList(appInfo)); }); }} />
+					onChange={(e: any) => setTitle(e.target?.value)} onBlur={(e) => {updateClientContractDetails(appInfo, contractLineItem?.id, {title: title}, (response: any) => {dispatch(getClientContractsList(appInfo));});}} />
 					: <span className='textField'>{contractLineItem?.title || ''}</span>
 				}
 				<IconButton className='closebutton' aria-label='Close Right Pane' onClick={() => props.close()}>
@@ -300,6 +302,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 				</IconButton>
 			</div>
 			<div className='presence-section'>
+				{props.showBCInfo && <BlockchainIB />}
 				<div className='presence-tools'>
 					{[presenceTools].map((presenceTool: any) => presenceTool)}
 				</div>
@@ -309,7 +312,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 					<div className='kpi-horizontal-container'>
 						<span className='kpi-tile'><span className='kpi-name'>Contract Amount</span><span className='bold'>{currencySymbol} <span className='amount'>{amountFormatWithOutSymbol(contractLineItem?.totalAmount)}</span></span></span>
 						<span className='kpi-tile'><span className='kpi-name'>Change Order Amount</span><span className='bold'>{currencySymbol} <span className='amount'>{amountFormatWithOutSymbol(contractLineItem?.changeOrderAmount)}</span></span></span>
-						<span className='kpi-tile'><span className='kpi-name'>Remaining Amount</span><span className='bold'>{currencySymbol} <span className={`amount`} style={{ backgroundColor: Number(contractLineItem?.remainingAmount) >= 0 ? '#c9e59f' : '#f7adad' }}>{amountFormatWithOutSymbol(contractLineItem?.remainingAmount)}</span></span></span>
+						<span className='kpi-tile'><span className='kpi-name'>Remaining Amount</span><span className='bold'>{currencySymbol} <span className={`amount`} style={{backgroundColor: Number(contractLineItem?.remainingAmount) >= 0 ? '#c9e59f' : '#f7adad'}}>{amountFormatWithOutSymbol(contractLineItem?.remainingAmount)}</span></span></span>
 					</div>
 					:
 					<div className='kpi-vertical-container'>
@@ -319,7 +322,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 							<Button
 								disabled
 								variant='contained'
-								startIcon={<span className={isUserGCForCC(appInfo) ? vendorContractsStatusIcons[contractLineItem?.status] : vendorContractsResponseStatusIcons[contractLineItem?.status]} style={{ color: 'white' }} />}
+								startIcon={<span className={isUserGCForCC(appInfo) ? vendorContractsStatusIcons[contractLineItem?.status] : vendorContractsResponseStatusIcons[contractLineItem?.status]} style={{color: 'white'}} />}
 								style={{
 									backgroundColor: `${isUserGCForCC(appInfo) ? vendorContractsStatusColors[contractLineItem?.status] : vendorContractsResponseStatusColors[contractLineItem?.status]}`,
 									color: tinycolor(vendorContractsStatusColors[contractLineItem?.status] ? vendorContractsStatusColors[contractLineItem?.status] : vendorContractsResponseStatusColors[contractLineItem?.status]).isDark() ? 'white' : 'black',
@@ -337,7 +340,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 						<span className='kpi-right-container'>
 							<span className='kpi-name'>Contract Amount <span className='bold'>{currencySymbol}</span></span><span className='bold amount'>{amountFormatWithOutSymbol(contractLineItem?.totalAmount)}</span>
 							<span className='kpi-name'>Change Order Amount <span className='bold'>{currencySymbol}</span></span><span className='bold amount'>{amountFormatWithOutSymbol(contractLineItem?.changeOrderAmount)}</span>
-							<span className='kpi-name'>Remaining Amount <span className='bold'>{currencySymbol}</span></span><span className='bold amount' style={{ backgroundColor: Number(contractLineItem?.remainingAmount) >= 0 ? '#c9e59f' : '#f7adad' }}>{amountFormatWithOutSymbol(contractLineItem?.remainingAmount)}</span>
+							<span className='kpi-name'>Remaining Amount <span className='bold'>{currencySymbol}</span></span><span className='bold amount' style={{backgroundColor: Number(contractLineItem?.remainingAmount) >= 0 ? '#c9e59f' : '#f7adad'}}>{amountFormatWithOutSymbol(contractLineItem?.remainingAmount)}</span>
 						</span >
 					</div >}
 				<div className='header-buttons-container'>
@@ -345,11 +348,11 @@ const ClientContractsLineItem = (props: headerprops) => {
 						{collapsed === true ? <ExpandMore fontSize='small' /> : <ExpandLess fontSize='small' />}
 					</IconButton>
 					{!collapsed && <IconButton className={`header-button ${pinned === true ? 'btn-focused' : ''}`} aria-label={pinned === true ? 'Pinned' : 'Not Pinned'} onClick={() => setPinned(pPinned => !pPinned)}>
-						{<PushPin fontSize='small' className={`pin ${pinned === true ? 'focused' : ''}`} {...(pinned === true ? { color: 'primary' } : {})} />}
+						{<PushPin fontSize='small' className={`pin ${pinned === true ? 'focused' : ''}`} {...(pinned === true ? {color: 'primary'} : {})} />}
 					</IconButton>}
 				</div>
 			</div >
-			<div className='tab-panel-container' style={{ maxHeight: (collapsed ? 'calc(100% - 9.75em)' : 'calc(100% - 12.5em)') }}>
+			<div className='tab-panel-container' style={{maxHeight: (collapsed ? 'calc(100% - 9.75em)' : 'calc(100% - 12.5em)')}}>
 				<IQObjectPage
 					tabs={tabConfig}
 					defaultTabId={tab}

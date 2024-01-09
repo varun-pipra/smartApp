@@ -1,0 +1,22 @@
+.bubble-box {
+	display: flex;
+	align-items: center;
+	gap: 1em;
+
+	padding: 1em;
+	background-color: #fdf5cd;
+	border: 1px solid #fbeca5;
+	border-radius: 0.2em;
+
+	.icon {
+		font-size: 2em;
+
+		&::before {
+			color: #cfa22a;
+		}
+	}
+
+	.text {
+		font-size: 12px;
+	}
+}

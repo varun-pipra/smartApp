@@ -281,7 +281,7 @@ const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 			</>,
 			leftNode: <>
 				{
-					clientResponse?.show && changeRequestDetails?.responses && <ContractorResponse
+					<ContractorResponse
 						text={responseTextObj?.[clientResponse?.type]}
 						contractorName={changeRequestDetails?.responses?.[changeRequestDetails?.responses?.length - 1]?.by?.displayName}
 						respondedOn={changeRequestDetails?.responses?.[changeRequestDetails?.responses?.length - 1]?.on}

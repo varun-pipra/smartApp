@@ -21,6 +21,7 @@ import infoicon from "resources/images/common/infoicon.svg";
 import ProjectTeamRolesTooltip from 'features/projectsettings/projectteam/projectteamcontent/RolesTootip/ProjectTeamRolesTooltip';
 import { getRoles } from 'utilities/projectteam/enums';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
+import { amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
 const useStyles: any = makeStyles((theme: any) =>
 	createStyles({
 		menuPaper: {
@@ -89,6 +90,7 @@ const UserDetails = (props: any) => {
 	const [resetBarcode, setResetBarcode] = React.useState<any>();
 	const { selectedMembers } = useAppSelector((state: any) => state.ptGridData);
 	const [rolesTooltipData, setRolesTooltipData] = React.useState({});
+	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	React.useEffect(() => {
 		if (userdata?.trade?.objectId) {
 			dispatch(fetchCategoriesData({ appInfo: appInfo, tradeId: userdata?.trade?.objectId }))
@@ -120,7 +122,8 @@ const UserDetails = (props: any) => {
 			rtlsId: userdata?.rtlsId,
 			gpsTagId: userdata?.gpsTagId,
 			defaultLocation: userdata?.defaultLocation,
-			levelId: userdata?.levelId
+			levelId: userdata?.levelId,
+			hourlyRate: userdata?.hourlyRate
 		});
 	}, [userdata])
 	useEffect(() => {
@@ -229,8 +232,7 @@ const UserDetails = (props: any) => {
 			if (filterCompanies.length > 0) {
 				let mapFields = filterCompanies.map((item: any) => ({
 					...item, displayField: item.name, isSuggested: true, color: item?.colorCode,
-					thumbnailUrl: item?.thumbnailUrl === "" ? CompanyIcon
-						: item?.thumbnailUrl
+					thumbnailUrl: item?.thumbnailUrl
 				}));
 				let filterData = companyOptions?.filter((item: any) => { return !mapFields?.some((value: any) => value?.id === item?.id) });
 				setCompanyOptions(filterData);
@@ -273,8 +275,7 @@ const UserDetails = (props: any) => {
 				if (tradeData.length > 0) {
 					let mapFields = tradeData.map((item: any) => ({
 						...item, displayField: item.name, isSuggested: true, color: item?.colorCode,
-						thumbnailUrl: item?.thumbnailUrl === "" ? CompanyIcon
-							: item?.thumbnailUrl
+						thumbnailUrl: item?.thumbnailUrl
 					}));
 					setSuggestTradeValues(mapFields);
 				}
@@ -289,8 +290,7 @@ const UserDetails = (props: any) => {
 				...data,
 				color: data.colorCode,
 				displayField: data.name,
-				thumbnailUrl: (data?.thumbnailUrl === "" ?? false) ? CompanyIcon
-					: data?.thumbnailUrl
+				thumbnailUrl:data?.thumbnailUrl
 			});
 		});
 		return groupedList
@@ -371,8 +371,7 @@ const UserDetails = (props: any) => {
 			if (filterCompanies.length > 0) {
 				let mapFields = filterCompanies.map((item: any) => ({
 					...item, displayField: item.name, isSuggested: true, color: item?.colorCode,
-					thumbnailUrl: item?.thumbnailUrl === "" ? CompanyIcon
-						: item?.thumbnailUrl
+					thumbnailUrl: item?.thumbnailUrl
 				}));
 				let filterData = companyOptions?.filter((item: any) => { return !mapFields?.some((value: any) => value?.id === item?.id) });
 				setCompanyOptions(filterData);
@@ -422,6 +421,10 @@ const UserDetails = (props: any) => {
 			dispatch(fetchCategoriesData({ appInfo: appInfo, tradeId: value[0]?.objectId }))
 			const selectedTrade = { color: value[0]['color'], id: value[0]?.objectId, name: value[0]?.name };
 			updateddata = { ...user, [name]: { color: value[0]['color'], id: value[0]?.objectId, displayField: value[0]?.name } };
+			if(value?.length === 0 || value?.[0]?.length === 0) {
+				updateddata = { ...updateddata, ['workCategory']: null};
+			};
+			updateddata = { ...updateddata, ['hourlyRate']: null };
 			filterCompanyValues(value);
 			fetchPendingDocsApiCall(updateddata);
 			let safetyCredFrame = getSafetyCredIFrame();
@@ -434,12 +437,17 @@ const UserDetails = (props: any) => {
 		} else if (name == 'skills') {
 			updateddata = { ...user, [name]: value }
 			fetchPendingDocsApiCall(updateddata)
+		} else if(name === 'workCategory') {
+			updateddata = { ...user, [name]: value };
+			let GetRatePerHour = (CategoriesData || [])?.find((x:any) => x.id === value)?.trades?.filter((item:any) => item.name === user?.trade?.displayField);
+			updateddata = { ...updateddata, ['hourlyRate']: GetRatePerHour?.[0]?.defaultHourlyRate };
 		} else {
 			updateddata = { ...user, [name]: value }
 		};
 		setUser(updateddata);
 		setDynamicClose(!dynamicClose);
 	};
+	console.log('user deatils', user);
 	const handlePhoneChange = (name: any, value: any) => {
 		let updateddata;
 		const reg = new RegExp(/[\+?\d-() ]+/);
@@ -611,7 +619,7 @@ const UserDetails = (props: any) => {
 	});
 	return (<div className='ProjectTeam-userDetails'>
 		<Grid container direction={'row'} spacing={3}>
-			<Grid item sm={11.9}>
+			<Grid item sm={11.8}>
 				{user?.firstName && <SUIEmailSelector
 					emailOptions={EmailData}
 					selectedEmailList={(values: any) => { handleOnChange("cCEmails", values) }}
@@ -724,9 +732,10 @@ const UserDetails = (props: any) => {
 					dynamicClose={dynamicClose}
 					enforcedRelationship={isEnForced}
 					moduleName={"userDetails"}
+					showIconInField={true}
 				></SUIBaseDropdownSelector>
 			</Grid>
-			<Grid item sm={5.9}>
+			<Grid item sm={5.7}>
 				<InputLabel className='inputlabel' >Trade</InputLabel>
 				<SUIBaseDropdownSelector
 					value={[user?.trade]}
@@ -753,7 +762,11 @@ const UserDetails = (props: any) => {
 					moduleName={"userDetails"}
 				></SUIBaseDropdownSelector>
 			</Grid>
-			<Grid item sm={5.8} style={{ opacity: (isOnlyCompanyManager) ? 0.5 : 1, pointerEvents: (isOnlyCompanyManager) ? 'none' as React.CSSProperties["pointerEvents"] : '' as React.CSSProperties["pointerEvents"]}}>
+			<Grid item sm={0.2} style={{paddingLeft : 0 }} className='roles-section-cls'>
+			<InputLabel className='inputlabel' ></InputLabel>
+				<span className='common-icon-Project-Info'></span>
+			</Grid>
+			<Grid item sm={5.7} style={{ opacity: (isOnlyCompanyManager) ? 0.5 : 1, pointerEvents: (isOnlyCompanyManager) ? 'none' as React.CSSProperties["pointerEvents"] : '' as React.CSSProperties["pointerEvents"]}}>
 				<SmartDropDown
 					options={getRoleOptions()}
 					LeftIcon={<span className='common-icon-Approval-Role userdetails_icons userdetails_icon_Color' />}
@@ -806,6 +819,46 @@ const UserDetails = (props: any) => {
 			</Grid>
 			<Grid item sm={5.9}>
 				<SmartDropDown
+					disabled={CategoriesData?.length === 0 || !user?.trade?.displayField}
+					LeftIcon={<span className='common-icon-work-category userdetails_icons'></span>}
+					options={getCategoriesOptions()}
+					dropDownLabel="Work Category"
+					isSearchField={false}
+					required={false}
+					outSideOfGrid={true}
+					selectedValue={user?.workCategory}
+					isFullWidth
+					handleChange={(value: any) => handleOnChange('workCategory', value)}
+					displayEmpty={true}
+					Placeholder={'Select'}
+					showColumnHeader={false}
+					hideNoRecordMenuItem={true}
+					menuProps={classes.menuPaper}
+				/>
+			</Grid>
+			<Grid item sm={5.9}>
+				<InputLabel className='inputlabel'>Hourly Rate</InputLabel>
+				<TextField
+					id="hourlyRate"
+					className='hourly-rate-cls'
+					fullWidth
+					disabled={CategoriesData?.length === 0 || !user?.trade?.displayField}
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position='start'>
+								<span className='common-icon-hourly-rate userdetails_icons' />
+								<span style={{marginLeft : '6px',lineHeight: '0.8', color: CategoriesData?.length === 0 || !user?.trade?.displayField ? '#999' : '#333333' }}>$</span>
+							</InputAdornment>
+						)
+					}}
+					name='hourlyRate'
+					variant="standard"
+					value={amountFormatWithOutSymbol(user?.hourlyRate)}
+					onChange={(e: any) => handleOnChange('hourlyRate', e.target?.value)}
+				/>
+			</Grid>
+			<Grid item sm={11.6}>
+				<SmartDropDown
 					options={getSkillsOptions()}
 					LeftIcon={<span className='common-icon-orgconsole-skills-certs userdetails_icons userdetails_icon_Color' />}
 					dropDownLabel="Skills"
@@ -830,23 +883,9 @@ const UserDetails = (props: any) => {
 					dynamicClose={dynamicClose}
 				/>
 			</Grid>
-			<Grid item sm={5.9}>
-				<SmartDropDown
-					LeftIcon={<span className='common-icon-work-category userdetails_icons'></span>}
-					options={getCategoriesOptions()}
-					dropDownLabel="Work Category"
-					isSearchField={false}
-					required={false}
-					outSideOfGrid={true}
-					selectedValue={user?.workCategory}
-					isFullWidth
-					handleChange={(value: any) => handleOnChange('workCategory', value)}
-					displayEmpty={true}
-					Placeholder={'Select'}
-					showColumnHeader={false}
-					hideNoRecordMenuItem={true}
-					menuProps={classes.menuPaper}
-				/>
+			<Grid item sm={0.1} style={{paddingLeft : 0 }} className='roles-section-cls'>
+			<InputLabel className='inputlabel' ></InputLabel>
+				<span className='common-icon-Project-Info'></span>
 			</Grid>
 			<Grid item sm={5.9}>
 				<SmartDropDown

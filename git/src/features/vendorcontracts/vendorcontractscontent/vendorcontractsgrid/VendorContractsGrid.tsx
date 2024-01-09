@@ -35,6 +35,7 @@ const VendorContractsGrid = (props: any) => {
 	const [filteredRecords, setFilteredRecords] = React.useState<any>([]);
 	const [aliasOriginalGridData, setAliasOriginalGridData] = useState(gridOriginalData);
 	const showLineItemDetails = useAppSelector((state) => state.vendorContracts.showLineItemDetails);
+	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 
 	if(statusFilter) defaultVCStatusFilter = activeMainGridFilters.status;
 
@@ -119,6 +120,11 @@ const VendorContractsGrid = (props: any) => {
 		if(activeMainGridFilters?.sovType?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return isFound(rec, 'type', activeMainGridFilters?.sovType);
+			});
+		}
+		if(activeMainGridFilters?.bidPackage?.length > 0) {
+			filteredData = filteredData.filter((rec: any) => {
+				return activeMainGridFilters?.bidPackage?.includes(rec?.bidPackage?.name);
 			});
 		}
 		return filteredData;
@@ -212,7 +218,10 @@ const VendorContractsGrid = (props: any) => {
 			cellRendererParams: {
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
+					const bcStatus = params.data?.blockChainStatus;
+					const showBCIcon = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(bcStatus) === -1);
 					return <>
+						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '9%', marginTop: '12px'}}></span>}
 						{params?.data?.hasChangeOrder && <IQTooltip
 							title={'Schedule Of Values of the Contract to be updated due to recent approval of the Change Event Request.'}
 							placement={'bottom'}

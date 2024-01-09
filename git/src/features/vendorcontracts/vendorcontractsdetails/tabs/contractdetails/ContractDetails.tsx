@@ -410,7 +410,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 					<div className='contract-info-data-box'>
 						<span className="common-icon-bid-lookup"></span>
 						<DynamicTooltip
-							title={isUserGC(appInfo) ? <GetGridAsChild /> : null}
+							title={isUserGC(appInfo) && selectedRecord?.contractFor != 2 ? <GetGridAsChild /> : null}
 							placement="top-start"
 							sx={{
 								"& .MuiTooltip-tooltip": {
@@ -419,7 +419,7 @@ const ContractDetails = (props: ContractDetailsProps) => {
 							}}
 
 						>
-							<span className={isUserGC(appInfo) ? 'contract-info-data hotlink' : 'contract-info-data'}>{formData?.bidPackage?.name}</span>
+							<span className={isUserGC(appInfo) && selectedRecord?.contractFor != 2 ? 'contract-info-data hotlink' : 'contract-info-data'}>{formData?.bidPackage?.name}</span>
 						</DynamicTooltip>
 						{/* <span className='contract-info-data contract-bid-pack-lbl'>Wind 1 Painting and Interior</span> */}
 					</div>

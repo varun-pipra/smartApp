@@ -110,45 +110,18 @@
        
     }
     .dynamic-page-body {
-        #change-Event-Details {
+        #details {
             height: fit-content !important;
 		}
-		#budget-line-items
-		{
-			height: fit-content !important;
-		}
-		#reference-files{
-			height: fit-content !important;
-		}
-		#Links{
-			height: fit-content !important;
+		#links{
+			height: 100% !important;
 		}
 	}
-    .changeeventbutton {
-        height: 34px;
-        font-weight: bold;
-    }
-    .btn-reject {
-        background-color: gray;
-        color: white;
-    }
+   
     .footer {
         .footer-right {
-            .ce-buttons {
-                // background-color: #059cdf;
-            }
-            .reject.ce-buttons {
+            .sendback-buttons{
                 background-color: #666;
-            }
-            .revise-resubmit.ce-buttons {
-                border: 1px solid #059cdf;
-                background-color: transparent;
-                color: #059cdf;
-            }
-            .revise-resubmit-contained.ce-buttons {
-                border: 1px solid #059cdf;
-                background-color: #059cdf;
-                color: white;
             }
         }
     }

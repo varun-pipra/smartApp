@@ -1,5 +1,5 @@
-import React from 'react';
-import { TextField, InputLabel } from '@mui/material';
+import React, {useEffect, useState} from 'react';
+import { TextField, InputLabel, Button } from '@mui/material';
 import InputIcon from 'react-multi-date-picker/components/input_icon';
 
 import './VendorContractsForm.scss';
@@ -16,7 +16,8 @@ import { createVendorContracts } from '../../stores/gridAPI';
 import { makeStyles, createStyles } from '@mui/styles';
 import { errorMsg, errorStatus } from 'utilities/commonutills';
 import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
-
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AssociatedBidDropdown from 'sui-components/AssociatedBidDropdown/AssociatedBidDropdown';
 
 const defaultFormData = {
 	title: '',
@@ -39,6 +40,7 @@ const VendorContractsForm = (props: any) => {
 
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
+	const { gridData } = useAppSelector(state=> state.vendorContractsGrid)
 
 	// Local state vaiables
 
@@ -49,13 +51,33 @@ const VendorContractsForm = (props: any) => {
 	const BidLookupData = useAppSelector(getBidLookupData);
 	const CompanyData = useAppSelector(getCompanyData);
 	const [lookUpData, setLookUpData] = React.useState<any>([]);
-	// Effects
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const classes = useStyles();
 	const [companyOptions, setCompanyOptions] = React.useState<any>([]);
+	const filterRef = React.useRef();
+	const [isAdhocBid, setIsAdhocBid] = React.useState<boolean>(false);	
+	const [bidNamesList, setBidNamesList] = useState<any>([]);
+	
+
+	// Effects
+	useEffect(() => {
+		let bidsList: any = [];
+		(gridData || []).forEach((rec: any) => {
+		  if (rec.bidPackage?.name && !bidsList.includes(rec.bidPackage?.name)) {
+			bidsList.push(rec.bidPackage.name?.toLowerCase());
+		  }
+		});
+		BidLookupData?.map((data: any) => {
+			if(!bidsList.includes(data?.name)) bidsList.push(data?.name?.toLowerCase());
+		});
+		setBidNamesList(bidsList);
+	  }, [gridData, BidLookupData]);
+	
+
 	// onchange methods
 
 	const handleOnChange = (value: any, name: any) => {
+		console.log("valuee", name, value)
 		const formDataClone = { ...formData, [name]: value };
 
 		if (name == 'startDate' && formDataClone.startDate != '') {
@@ -85,12 +107,29 @@ const VendorContractsForm = (props: any) => {
 			dispatch(setSelectedVendorInCreateForm(value[0]['objectId']));
 			dispatch(getBidLookup({ appInfo: appInfo, objectId: value[0]['objectId'] }));
 		}
+		else if (name == 'bidLookup') {
+			console.log("bbidLookup", value)
+			if(value?.isAdhoc) setIsAdhocBid(true); 
+			else setIsAdhocBid(false);
+		}
+
 		else {
 			setDisableAddButoon(formDataClone?.title !== '' && formDataClone?.vendor?.length > 0 && formDataClone?.amount !== '' ? false : true);
 		}
 
 		setFormData(formDataClone);
 	};
+	const stopPropagation = (e:any) => {
+		switch (e.key) {
+		  case "ArrowDown":
+		  case "ArrowUp":
+		  case "Home":
+		  case "End":
+			break;
+		  default:
+			e.stopPropagation();
+		}
+	  };
 
 	React.useEffect(() => {
 		if (BidLookupData) {
@@ -98,19 +137,21 @@ const VendorContractsForm = (props: any) => {
 			BidLookupData?.map((data: any) => {
 				array.push({ id: data.id, label: data.name, value: data.id });
 			});
-			setLookUpData(array);
+			setLookUpData([...array]);
 		}
 
 	}, [BidLookupData]);
 
 	React.useEffect(() => {
-		if (formData.bidLookup != '') {
+		if (formData.bidLookup != '' && !isAdhocBid) {
 			BidLookupData?.map((data: any) => {
-				if (data.id == formData.bidLookup[0]) {
+				if (data.id == formData.bidLookup?.id) {
 					setFormData({ ...formData, amount: data.estimatedBudget });
 				}
 			});
 		}
+		else setFormData({ ...formData, amount: 0 });
+		
 	}, [formData.bidLookup]);
 
 	React.useEffect(() => {
@@ -147,13 +188,16 @@ const VendorContractsForm = (props: any) => {
 			startDate: formData.startDate != '' ? formData?.startDate : null,
 			endDate: formData.endDate != '' ? formData?.endDate : null,
 			bidPackage: {
-				id: formData.bidLookup[0]
+				id: isAdhocBid ? null : formData.bidLookup?.id,
+				name: formData.bidLookup?.label,
+				// If required send this key
+				// isAdhoc: isAdhocBid
 			},
 			vendor: {
 				id: formData.vendor[0]['id']
 			}
 		};
-		// console.log('payload', payload)
+		console.log('payload', payload)
 		createVendorContracts(appInfo, payload).then((response: any) => {
 			console.log("error resp", response);
 			if (errorStatus?.includes(response?.status)) dispatch(setToastMessage({ displayToast: true, message: errorMsg }));
@@ -215,19 +259,26 @@ const VendorContractsForm = (props: any) => {
 			></SUIBaseDropdownSelector>
 		</div>
 		<div className='bid-lookup-field'>
-			<InputLabel className='inputlabel' >Bid Lookup</InputLabel>
-			<SmartDropDown
+			<InputLabel className='inputlabel' required sx={{
+				'& .MuiFormLabel-asterisk': {
+					color: 'red'
+				}
+			}} >Associated Bid</InputLabel>
+			{/* <SmartDropDown
 				LeftIcon={<span className="common-icon-bid-lookup"> </span>}
 				options={lookUpData ? lookUpData : []}
 				outSideOfGrid={true}
 				isSearchField={false}
 				isFullWidth
 				Placeholder={'Select'}
+				useNestedOptions={true}
+				filterRef={filterRef}
 				// selectedValue={formData.curve}
 				menuProps={classes.menuPaper}
 				isMultiple={false}
 				handleChange={(value: any) => handleOnChange(value, 'bidLookup')}
-			/>
+			/> */}
+			<AssociatedBidDropdown onSelectionChange={(rec: any)=> handleOnChange(rec, 'bidLookup')} options={lookUpData ? lookUpData : []} bidNamesList={bidNamesList}></AssociatedBidDropdown>
 		</div>
 		<div className='amount-field'>
 			<InputLabel required className='inputlabel' sx={{

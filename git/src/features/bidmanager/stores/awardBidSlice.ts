@@ -13,6 +13,7 @@ export interface AwardBidProps {
 	expandedRows: any;
 	files: Array<any>;
 	activeAwardBidFilters: any;
+	viewType: string;
 };
 
 const initialState: AwardBidProps = {
@@ -24,6 +25,7 @@ const initialState: AwardBidProps = {
 	expandedRows: [],
 	files: [],
 	activeAwardBidFilters: {},
+	viewType: 'grid'
 };
 
 export const fetchAwardBidDetailsData = createAsyncThunk<any, any>(
@@ -56,6 +58,9 @@ export const awardBidSlice = createSlice({
 		},
 		setActiveAwardBidFilters: (state, action: PayloadAction<any>) => {
 			state.activeAwardBidFilters = action.payload;
+		},
+		setViewType: (state, action: PayloadAction<any>) => {
+			state.viewType = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
@@ -90,6 +95,6 @@ const formatSupportiveFileList = (list: Array<any>) => {
 	return formattedList;
 };
 
-export const { setAwardBidSelectedRecord, setAwardBidClick, setAwardBidDetailsData, setOpenUpdateBudgetDialog, setExpandedRows, setActiveAwardBidFilters } = awardBidSlice.actions;
+export const { setAwardBidSelectedRecord, setAwardBidClick, setAwardBidDetailsData, setOpenUpdateBudgetDialog, setExpandedRows, setActiveAwardBidFilters, setViewType } = awardBidSlice.actions;
 
 export default awardBidSlice.reducer;
