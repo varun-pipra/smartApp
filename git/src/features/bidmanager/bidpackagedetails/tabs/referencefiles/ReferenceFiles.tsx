@@ -7,23 +7,174 @@ import {uploadReferenceFile} from 'features/bidmanager/stores/FilesAPI';
 import {
 	getFileObject, getUploadQueue, setUploadQueue
 } from 'features/bidmanager/stores/FilesSlice';
-import {useEffect, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import DocUploader from 'sui-components/DocUploader/DocUploader';
 import {fileDownload} from 'app/hooks';
 
+import SUIGrid from "sui-components/Grid/Grid";
+import { getSMList, getSpecBookPages } from 'features/field/specificationmanager/stores/SpecificationManagerSlice';
+import IQButton from 'components/iqbutton/IQButton';
+import './ReferenceFiles.scss'
+import AddSpecificationsDialog from './AddSepcDialog/AddSpecificationsDialog'
+import IconButton from "@mui/material/IconButton";
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import SpecDocViewer from './SpecificationDocviewer/SpecDocViewer';
+import IQTooltip from 'components/iqtooltip/IQTooltip';
 export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
+	const specColumns =  [
+		{
+		  headerName: "Spec Number",
+		//   pinned: "left",
+		  field: "number",
+		  cellClass: "sm-number",
+		  cellRenderer: "agGroupCellRenderer",
+		  sort: "asc",
+		  checkboxSelection: true,
+		  headerCheckboxSelection: true,
+		  resizable: true,
+		  minWidth: 200,
+		},
+		{
+		  headerName: "Spec Section Title",
+		//   pinned: "left",
+		  field: "title",
+		  cellClass: "sm-title",
+		  resizable: true,
+		  minWidth: 350,
+		},
+		{
+		  headerName: "Spec Book",
+		  field: "specBook",
+		  minWidth: 150,
+		  suppressMenu: true,
+		  resizable: true,
+		  cellClass: "sm-specBookName",
+		  keyCreator: (params: any) => params.data?.specBook?.fileName || "None",
+		  valueGetter: (params: any) => `${params?.data?.specBook?.fileName}`
+		},
+		{
+		  headerName: "Division",
+		  field: "division",
+		  cellClass: "sm-division",
+		  minWidth: 250,
+		//   rowGroup: true,
+		  resizable: true,
+		  suppressMenu: true,
+		  keyCreator: (params: any) => params.data.division && `${params.data.division.number} - ${params.data.division.text}` || "None",
+		  valueGetter: (params: any) => {
+			const division = params?.data?.division;
+			if (
+			  division &&
+			  division.number !== undefined &&
+			  division.text !== undefined
+			) {
+			  return `${division.number} - ${division.text}`;
+			}
+		  },
+		},
+	
+		{
+		  headerName: "Pages",
+		  field: "pages",
+		  cellClass: "sm-pages",
+		  minWidth: 120,
+		  suppressMenu: true,
+		  resizable: true,
+		  cellStyle: { color: "#059cdf" },
+		  valueGetter: (params: any) => params?.data?.startPage ? `${params?.data?.startPage} - ${params?.data?.endPage}` : 'NA'
+		},
+		{
+			headerName: "File",
+			field: "file",
+			cellClass: "sm-pages",
+			minWidth: 120,
+			suppressMenu: true,
+			resizable: true,
+			cellStyle: { color: "#059cdf" },
+			cellRenderer:(params:any)=>{
+			  return(<span>
+				<IconButton aria-label="Close"
+						 onClick={()=> handelFileClick(params?.data)}
+						 >
+					<FileCopyIcon/>
+					</IconButton>
+	  
+			  </span>)
+		  }
+		}
+	  ]
+	  const headers = useMemo(() => specColumns, []);
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const bidPackage = useAppSelector(getSelectedRecord);
 	const fileObject = useAppSelector(getFileObject);
 	const fileQueue = useAppSelector(getUploadQueue);
+	const [selected, setSelected] = useState<any>([]);
+	const [specModifiedList, setSpecModifiedList] = useState<Array<any>>([]);
+	const [openAddSpecDlg , setOpenAddSpecDlg] = useState(false)
+	const { SMData , specBookpages} = useAppSelector((state) => state.specificationManager);
+	const [openSpecDocViewer,setOpenSpecDocViewer] = useState(false);
+    const [specBookPagesData, setSpecBookPagesData] = useState({});
+	const [sepcSelectedRecord,setSepcSelectedRecord] = useState({});
+	const {sepcSelectedRecordInAddSpecDlg} = useAppSelector((state) => state.bidManager);
 
+	useEffect(() => {
+		if(specBookpages.hasOwnProperty('totalCount')){
+		  setSpecBookPagesData(specBookpages);
+		  setOpenSpecDocViewer(true)
+		}
+	}, [specBookpages]);
+
+	useEffect(()=>{
+		setSepcSelectedRecord(sepcSelectedRecordInAddSpecDlg)
+	},[sepcSelectedRecordInAddSpecDlg])
+
+	useEffect(()=>{
+	if(appInfo){
+		dispatch(getSMList());
+	}
+	},[appInfo])
+
+	useEffect(() => {
+	if(SMData?.length > 0) {
+		// findAndUpdateFiltersData('specs', SMData, "division", true, "text", true, "number");
+		// findAndUpdateFiltersData('specs', SMData, "bidPackageName");
+		// findAndUpdateFiltersData('specs', SMData, "specBook", true, "displayName");
+		const data: any = SMData.map((item: any) => ({
+			...item, pages: `${item.startPage} - ${item.endPage}`,
+			bidPackageValue: item.bidPackageName === null || item.bidPackageName === '' ? 'NA' : item.bidPackageName
+		}));
+		setSpecModifiedList(data);
+		// setSpecRowData(data);
+	} else {
+		setSpecModifiedList([]);
+		// setSpecRowData([]);
+	}
+}, [SMData]);
+	
 	let typeVariable: any;
+
+	const handelFileClick = (data:any) => {
+		setSepcSelectedRecord(data)
+        console.log(data.specBook.id ,'data');
+        let payload = {
+          id: data.specBook.id?.specBook?.id,
+        };
+        dispatch(getSpecBookPages(payload));
+        // setOpenSpecDocViewer(true)
+      }
+
 
 	const addContractDocs = (type: any) => {
 		setFileType(getTypeValue(type));
 		dispatch(setShowContracts(true));
 	};
+
+	const rowSelected = (sltdRows: any) => {
+		const selectedRowData = sltdRows.api.getSelectedRows();
+		
+		setSelected(selectedRowData);
+	  };
 
 	const [fileType, setFileType] = useState<number>();
 
@@ -68,6 +219,7 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 	};
 
 	const saveReferenceFiles = (formattedList: any) => {
+		console.log(formattedList,'formattedList')
 		uploadReferenceFile(appInfo, {referenceFiles: formattedList}, bidPackage?.id)
 			.then((bidPackageItem: any) => {
 				typeVariable = undefined;
@@ -101,6 +253,11 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 		return modifiedList;
 	};
 
+	const closeSpecDocViewer=()=>{
+		console.log('false')
+		setOpenSpecDocViewer(false)
+	}
+
 	useEffect(() => {
 		if(fileQueue && fileQueue.length > 0) {
 			saveReferenceFiles({add: constructList(fileQueue, true)});
@@ -114,6 +271,15 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 	};
 
 	return <div className='referenceFile'>
+		{openAddSpecDlg ? (
+				<AddSpecificationsDialog
+					open={true}
+					closeAddSpec={() => setOpenAddSpecDlg(false)}
+					onAddRecord={(data:any)=>saveReferenceFiles(data)}
+				/>
+			) : (
+				<></>
+			)}
 		<div className='header-text'>Reference Files</div>
 		<DocUploader
 			width={'1070px'}
@@ -146,20 +312,48 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 			showDownloadButton={true}
 			fileDownload={(data: any) => {download(data, 'Files');}}
 		></DocUploader>
-		<DocUploader
-			width={'1070px'}
-			height={'200px'}
-			folderType='SpecBooks'
-			docLabel={'Specifications'}
-			btnLabel={'Add Specifications'}
-			onImageClick={openPreview}
-			onImageDelete={deleteImage}
-			imgData={fileObject.specs}
-			readOnly={readOnly}
-			onProjectFile={(type: any) => {typeVariable = 20; openDrive(type);}}
-			localFileClick={(data: any) => {typeVariable = 20; localFileUpload(data);}}
-			showDownloadButton={true}
-			fileDownload={(data: any) => {download(data, 'SpecBooks');}}
-		></DocUploader>
+		<div className='doc-uploadd-header'>
+			<span className="doc-lbl-hdr-bold">Specifications</span>
+		</div>
+		<div className='specifications-container'>
+			<IQButton
+				className='specifications-add-btn'
+				// sx={{ height: '2.5em' }}
+			// disabled={isBudgetLocked ? true : disableAddButton ? true : false}
+			onClick={()=>setOpenAddSpecDlg(true)}
+			>
+			<span style={{marginRight: '6px',fontSize: '19px'}} className='common-icon-Add'></span><span> Add Specifications</span>
+			</IQButton>
+			<div className="icon-section">
+            <IQTooltip title="Delete" placement="bottom">
+              <IconButton
+                className="ref-delete-btn"
+                disabled={selected.length === 0}
+                // onClick={() => {
+                //   onSelectedFilesDelete();
+                // }}
+              >
+                <span className="common-icon-delete"></span>
+              </IconButton>
+            </IQTooltip>
+          </div>
+		</div>
+		<div className="grid">
+        <SUIGrid
+          headers={headers}
+          data={specModifiedList}
+          rowSelected={(e: any) => rowSelected(e)}
+          getRowId={(record: any) => record.data.id}
+        />
+      </div>
+		{ openSpecDocViewer ?(
+			<SpecDocViewer
+				 specBookPagesData={specBookPagesData} 
+				 selectedRecord={sepcSelectedRecord} 
+				 closeSpecDocViewer={closeSpecDocViewer}
+				//  sepcSelectedRecord={}
+				 />):<>
+			</>
+		}
 	</div>;
 };
