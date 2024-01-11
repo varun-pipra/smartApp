@@ -1104,7 +1104,7 @@ const ProjectTeamApplicationsLID = ({data, iframeEventData, ...props}: IQGridWin
 				id: selectedUserData.objectId,
 				isUser: true,
 				thumbnailId: userImage,
-				hourlyRate : parseFloat(userDetails?.hourlyRate?.replace(/,/g, ''))
+				hourlyRate : typeof userDetails?.hourlyRate === 'string' ? parseFloat(userDetails?.hourlyRate?.replace(/,/g, '')) : parseFloat(userDetails?.hourlyRate)
 			};
 			console.log('save Click', Payload);
 

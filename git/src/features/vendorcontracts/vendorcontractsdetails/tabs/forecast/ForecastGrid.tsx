@@ -1,14 +1,11 @@
-import React, { useMemo, useState } from 'react';
-import { AgGridReact as Grid } from 'ag-grid-react';
+import React, { useMemo, useState, useRef, useCallback } from 'react';
 import { ColDef } from 'ag-grid-enterprise';
 import { Box, Button, Badge } from '@mui/material';
 import { FilePresent } from '@mui/icons-material';
 import { Avatar, AvatarSize } from '@ui5/webcomponents-react';
-
 import './ForecastGrid.scss';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
-
 import { formatDate } from 'utilities/datetime/DateTimeUtils';
 import { postMessage, isLocalhost } from 'app/utils';
 import Dispatch from 'resources/images/budgetManager/Dispatch.svg';
@@ -16,8 +13,6 @@ import PlannerIcon from 'resources/images/budgetManager/PlannerTag.svg';
 import convertDateToDisplayFormat, { getTransactionTypeText } from 'utilities/commonFunctions';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { getServer, getCurrencySymbol } from 'app/common/appInfoSlice';
-import { fetchForecastData, getFilteredRecords } from 'features/budgetmanager/operations/forecastSlice';
-import CustomTooltip from 'features/budgetmanager/aggrid/customtooltip/CustomToolTip';
 import SUIGrid from "sui-components/Grid/Grid";
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 
@@ -27,6 +22,7 @@ interface ForecastGridProps {
 	groupAndFilterData?: any;
 }
 const ForecastGrid = (props: ForecastGridProps) => {
+	const { groupAndFilterData } = props;
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const currency = useAppSelector(getCurrencySymbol);
@@ -47,20 +43,73 @@ const ForecastGrid = (props: ForecastGridProps) => {
 		}
 	};
 
-	React.useEffect(() => { setRowData(forecasts) }, [rowData, forecasts]);
+	React.useEffect(() => { setRowData(forecasts) }, [forecasts]);
+
+	React.useEffect(() => {
+		let updatedColumns: any = [...columns].map((rec: any) => {
+			if (groupAndFilterData.group != 'None') {
+				return {
+					...rec,
+					rowGroup: rec.field === groupAndFilterData.group,
+					pinned: rec.field === groupAndFilterData.group ? 'left' : '',
+					hide: rec.field === groupAndFilterData.group || rec.field == 'name' ? true : false,
+				};
+			} else if (groupAndFilterData.group == 'None') {
+				return {
+					...rec,
+					rowGroup: false,
+					hide: rec.field === "budgetItem.budgetAmount" ? true : false
+				};
+			} else {
+				return { ...rec, };
+			}
+		});
+		setColumns(updatedColumns);
+	}, [groupAndFilterData]);
 
 	const headers: ColDef[] = [
 		{
 			headerName: 'Item Name',
-			field: 'budgetLineItem',
+			field: 'name',
 			pinned: 'left',
 			hide: true,
-			rowGroup: true
-		}, {
+			rowGroup: true,
+			menuTabs: [],
+			cellRenderer: (params: any) => {
+
+				return params.value;
+			},
+		},
+		{
+			headerName: 'Budget Line Item',
+			field: 'budgetLineItem',
+			pinned: 'left',
+			menuTabs: [],
+			hide: true,
+			rowGroup: false,
+			cellRenderer: (params: any) => {
+				if (!params.data) {
+					const isFooter = params?.node?.footer;
+					const isRootLevel = params?.node?.level === -1;
+					if (isFooter) {
+						if (isRootLevel) {
+							return <span style={{ fontWeight: 'bold' }}>Summary</span>;
+						}
+					} else {
+						return `${params?.value}`;
+					}
+				}
+				else {
+					return params.value;
+				}
+			},
+		},
+		{
 			headerName: 'Budget Amount',
 			field: 'budgetItem.budgetAmount',
 			maxWidth: 140,
 			menuTabs: [],
+			hide: false,
 			cellRenderer: (params: any) => {
 				return (params.node.group && !params.node.footer) ? <div className='right-align'>
 					{amountFormatWithSymbol(params.value)}
@@ -70,7 +119,6 @@ const ForecastGrid = (props: ForecastGridProps) => {
 				if (params.node.group && !params.node.footer) {
 					const groupKey = params.node.key;
 					const currentRecord = params?.node?.childrenAfterGroup?.[0]?.data;
-
 					return (currentRecord?.budgetItem?.budgetAmount || 0);
 				}
 			}
@@ -205,6 +253,9 @@ const ForecastGrid = (props: ForecastGridProps) => {
 		}
 
 	}
+
+	const [columns, setColumns] = React.useState<ColDef[]>(headers);
+
 	const autoGroupColumnDef = useMemo<ColDef>(() => {
 		return {
 			headerName: "Item Name",
@@ -220,7 +271,7 @@ const ForecastGrid = (props: ForecastGridProps) => {
 				if (id && type == 'App Item') {
 					postMessage({ event: 'openitem', body: { smartItemId: id } });
 				}
-				else if (['Work Tag', 'Planner Tag', 'Summary Tag'].includes(type) && schedule?.id && board?.id &&  id) {
+				else if (['Work Tag', 'Planner Tag', 'Summary Tag'].includes(type) && schedule?.id && board?.id && id) {
 					postMessage({ event: 'opentagproperties', body: { scheduleUid: schedule?.id, boardUid: board?.id, tagUid: id } });
 				}
 			},
@@ -232,25 +283,15 @@ const ForecastGrid = (props: ForecastGridProps) => {
 		};
 	}, []);
 
-	const [columns, setColumns] = React.useState<ColDef[]>(headers);
-
-	const groupRowRendererParams = useMemo(() => {
-		return {
-			innerRenderer: (params: any) => {
-				return <div className="group-type-header">
-					{params.value}
-				</div>
-			}
-		}
-	}, []);
-
 	return (
-		<SUIGrid headers={columns}
+		<SUIGrid
+			headers={columns}
 			data={rowData}
 			grouped={true}
-			groupRowRendererParams={groupRowRendererParams}
+			getRowId={(params: any) => params.data.id}
+			nowRowsMsg={'<div>No records to display</div>'}
+			groupDefaultExpanded={1}
 			autoGroupColumnDef={autoGroupColumnDef}
-			getRowId={(params: any) => params.data?.id}
 		/>
 	)
 };

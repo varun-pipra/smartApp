@@ -84,7 +84,10 @@
                     }
                 }
             }
-        }
+		}
+		.ag-ltr .ag-sort-indicator-icon{
+			display: none !important;
+		}
         .bold-font {
             font-weight: bold;
         }

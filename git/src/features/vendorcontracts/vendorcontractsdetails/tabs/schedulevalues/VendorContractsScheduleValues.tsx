@@ -16,7 +16,7 @@ import { Button } from "@mui/material";
 //import { Lock, FileCopy } from "@mui/icons-material";
 import "./VendorContractsScheduleValues.scss";
 import { getServer } from "app/common/appInfoSlice";
-import { addPaymenForSov, createScheduleOfValues, deleteAllScheduleOfValues, deleteScheduleOfValue, updateScheduleOfValues, updateScheduleOfValuesThroughDate } from "features/vendorcontracts/stores/ScheduleOfValuesAPI";
+import { addPaymenForSov, createScheduleOfValues, deleteAllScheduleOfValues, deleteBudgetItem, deleteScheduleOfValue, updateScheduleOfValues, updateScheduleOfValuesThroughDate } from "features/vendorcontracts/stores/ScheduleOfValuesAPI";
 import { errorMsg, errorStatus, getAmountAlignment, isUserGC } from "utilities/commonutills";
 import { setSelectedRecord } from "features/vendorcontracts/stores/VendorContractsSlice";
 import { getValuesOfAllEntries, tiles } from "./utils";
@@ -1337,8 +1337,14 @@ const VendorContractsScheduleValues = (props: any) => {
 					defaultRecords={budgetItems?.map((row: any) => row?.id)}
 					onAdd={(rows: any) => {
 						const existedIds: any = budgetItems?.map((row: any) => row?.id);
+						const rowIds: any = rows?.map((row: any) => row?.id);						
 						const newlyAddedItems = rows?.filter((row: any) => !existedIds?.includes(row?.id))
-						console.log("existedIds", existedIds, newlyAddedItems)
+						const removedItems = existedIds?.filter((id:string) => !rowIds?.includes(id));
+						console.log("existedIds", existedIds, removedItems,newlyAddedItems)
+
+						removedItems?.map((removedId:string) => {
+							deleteBudgetItem(appInfo, selectedRecord?.id, removedId, (response:any) => {})
+						})
 
 						newlyAddedItems?.map((item:any, index:number) => {
 							console.log("item", item);
@@ -1353,7 +1359,7 @@ const VendorContractsScheduleValues = (props: any) => {
 								}
 							})
 						})
-						newlyAddedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id }))
+						newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id }))
 					}}
 					alertTitle={'Warning'}
 					alertText={<span>

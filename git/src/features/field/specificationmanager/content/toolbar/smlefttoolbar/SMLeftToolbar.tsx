@@ -43,7 +43,7 @@ export const SMLeftButtons = memo((props: any) => {
   const [selectedFile, setSelectedFile] = useState<any>({});
   const [specDlgData, setSpecDlgData] = useState<any>({});
   const [uuidForSpec, setUUIDForSpec] = useState(rtHelperIns.getUuid());
-  const { selectedRecsData , unpublishedCount, specStartNewSession} = useAppSelector((state) => state.specificationManager);
+  const { selectedRecsData , unpublishedCount, specStartNewSession, showExtractSpecAI} = useAppSelector((state) => state.specificationManager);
   const disableField = selectedRecsData?.length > 0;
   const handleOpen = () => {
     setOpen(true);
@@ -239,7 +239,11 @@ export const SMLeftButtons = memo((props: any) => {
           </IconButton>
         </IQTooltip>
         <IQTooltip title="Edit" placement="bottom">
-          <IconButton data-action="edit" onClick={() => handleEditClick()} disabled={!disableField}>
+          <IconButton
+            data-action="edit"
+            onClick={() => handleEditClick()}
+            disabled={!disableField}
+          >
             <span className="common-icon-feather-edit" />
           </IconButton>
         </IQTooltip>
@@ -273,13 +277,15 @@ export const SMLeftButtons = memo((props: any) => {
           // disabled={!disableField}
         /> */}
 
-         <IQButton
-          className="smart-spec-left-spec-ai"
-          startIcon={<span className="common-icon-brena" />}
-          onClick={onItemClick}
-        >
-          Extract Specs. AI
-        </IQButton>
+        {showExtractSpecAI && (
+          <IQButton
+            className="smart-spec-left-spec-ai"
+            startIcon={<span className="common-icon-brena" />}
+            onClick={onItemClick}
+          >
+            Extract Specs. AI
+          </IQButton>
+        )}
 
         <input
           multiple

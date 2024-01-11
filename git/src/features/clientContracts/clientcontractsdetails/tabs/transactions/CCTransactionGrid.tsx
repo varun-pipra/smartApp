@@ -46,20 +46,29 @@ const CCTransactionGrid = ({ groupAndFilterData }: TransactionGridProps) => {
 			dispatch(fetchTransactions({ 'appInfo': appInfo, contractId: selectedId }));
 	}, [selectedId]);
 
-	useEffect(() => {
-		if (groupAndFilterData) {
-			if (groupAndFilterData.group) {
-				const updatedColDefs: ColDef[] = columns.map((colDef: any, index) => {
-					if (colDef.field === groupAndFilterData.group) {
-						return { ...colDef, rowGroup: true, hide: false, }
-					} return { ...colDef, pinned: '' };
-				})
-				setColumns(updatedColDefs);
 
+	useEffect(() => {
+		let updatedColumns: any = [...columns].map((rec: any) => {
+			if (groupAndFilterData.group != 'None') {
+				return {
+					...rec,
+					rowGroup: rec.field === groupAndFilterData.group,
+					pinned: rec.field === groupAndFilterData.group ? 'left' : '',
+					hide: rec.field === groupAndFilterData.group || rec.field == 'name' ? true : false,
+				};
+			} else if (groupAndFilterData.group == 'None') {
+				return {
+					...rec,
+					rowGroup: false,
+					hide: rec.field === "budgetItem.budgetAmount" ? true : false
+				};
+			} else {
+				return { ...rec, };
 			}
-			else { setColumns(headers) }
-		}
-	}, [groupAndFilterData])
+		});
+		setColumns(updatedColumns);
+	}, [groupAndFilterData]);
+
 
 	const onRowClick = (e: any, index: number) => {
 		const selectedRowData: any = records[index];
@@ -71,11 +80,36 @@ const CCTransactionGrid = ({ groupAndFilterData }: TransactionGridProps) => {
 	const headers: ColDef[] = [
 		{
 			headerName: 'Item Name',
-			field: 'budgetLineItem',
+			field: 'name',
 			pinned: 'left',
 			hide: true,
 			rowGroup: true
-		}, {
+		},
+		{
+			headerName: 'Budget Line Item',
+			field: 'budgetLineItem',
+			pinned: 'left',
+			menuTabs: [],
+			hide: true,
+			rowGroup: false,
+			cellRenderer: (params: any) => {
+				if (!params.data) {
+					const isFooter = params?.node?.footer;
+					const isRootLevel = params?.node?.level === -1;
+					if (isFooter) {
+						if (isRootLevel) {
+							return <span style={{ fontWeight: 'bold' }}>Summary</span>;
+						}
+					} else {
+						return `${params?.value}`;
+					}
+				}
+				else {
+					return params.value;
+				}
+			},
+		},
+		{
 			headerName: 'Budget Amount',
 			field: 'budgetItem.budgetAmount',
 			maxWidth: 140,

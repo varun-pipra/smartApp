@@ -349,6 +349,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 	};
 
 	const filterHandler = (filters: any) => {
+		console.log("filterHandler", filters)
 		mySearch.current = true;
 		if (_.isEmpty(filters)) setFilters({});
 		else setFilters(filters);
@@ -461,7 +462,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 					// onSettingsChange={handleSettings}
 					// onViewFilterChange={handleViewFilter}
 					// onSearchChange={searchHandler}
-					onFilterChange={filterHandler}
+					onFilterChange={(filters:any) => filterHandler(filters)}
 					filterAllowSubMenu={false}
 				/>
 			</div>
@@ -489,22 +490,41 @@ const getFilterMenuOptions = () => {
 		{
 			text: 'All',
 			value: 'all',
-			key: 'all'
+			key: 'all',
+			children: {
+				type: "checkbox",
+				items: [],
+			},
 		},
 		{
 			text: 'Contracted',
 			value: 'contracted',
-			key: 'contracted'
+			key: 'contracted',
+			children: {
+				type: "checkbox",
+				items: [],
+			},
 		},
 		{
 			text: 'Not Contracted',
 			value: 'notContracted',
-			key: 'notContracted'
+			key: 'notContracted',
+			children: {
+				type: "checkbox",
+				items: [],
+			},
 		},
 		{
 			text: 'Provider Source',
 			value: 'providerSource',
-			key: 'providerSource'
+			key: 'providerSource',
+			children: {
+				type: "checkbox",
+				items: [
+					{text: "Self Perform", id: '1', value: '1', key: '1'},
+					{text: "Trade Partner", id: '2', value: '0', key: '0'},
+				],
+			},
 		},
 	];
 };

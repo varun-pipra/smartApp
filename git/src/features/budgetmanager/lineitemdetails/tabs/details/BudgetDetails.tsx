@@ -227,7 +227,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 			setFormData({...formData, 'division': costCodeTuple[0], 'costCode': costCodeTuple[1]});
 		} 
 		else if(name === 'providerSource') {
-			setAlert({show: true, type: 'Confirmation', msg: `Are you sure want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}`});			
+			setAlert({show: true, type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}`});			
 
 		} else {
 			// if (name == 'markupFeeAmount' && Number(value) > formData?.originalAmount) setAlert({ show: true, msg: 'Amount Should Not be greater then Original Amount.' });

@@ -140,3 +140,26 @@ export const deleteScheduleOfValue = async (appInfo: any, contractId:any, budget
 		}
 	}
 };
+
+export const deleteBudgetItem = async (appInfo: any, contractId:any, budgetItemId:any, callback?: any) => {
+	let response: any;
+	console.log("budget item delete")
+	if (!isLocalhost) {
+		if(contractId && budgetItemId) {
+
+			response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/projects/${appInfo?.uniqueId}/finance/vendorcontracts/${contractId}/budgetlineitem/${budgetItemId}?sessionId=${appInfo?.sessionId}`, {
+			method: 'DELETE',
+			headers: { 'content-type': 'application/json' },
+			// body: JSON.stringify(body),
+
+			});
+			if (!response.ok) {
+				const message = `API Request Error (${moduleName}): ${response.status}`;
+				return response							
+				throw new Error(message);
+			}
+			// const data = await response.json();
+			callback && callback(response);
+		}
+	}
+};

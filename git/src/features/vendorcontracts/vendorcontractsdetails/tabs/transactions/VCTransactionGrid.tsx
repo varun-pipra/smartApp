@@ -35,14 +35,21 @@ const VCTransactionGrid = ({ groupAndFilterData }: TransactionGridProps) => {
 
 	useEffect(() => {
 		let updatedColumns: any = [...columns].map((rec: any) => {
-			if (groupAndFilterData.group) {
+			if (groupAndFilterData.group != 'None') {
 				return {
 					...rec,
 					rowGroup: rec.field === groupAndFilterData.group,
 					pinned: rec.field === groupAndFilterData.group ? 'left' : '',
+					hide: rec.field === groupAndFilterData.group || rec.field == 'name' ? true : false,
+				};
+			} else if (groupAndFilterData.group == 'None') {
+				return {
+					...rec,
+					rowGroup: false,
+					hide: rec.field === "budgetItem.budgetAmount" ? true : false
 				};
 			} else {
-				return { ...rec, rowGroup: false };
+				return { ...rec, };
 			}
 		});
 		setColumns(updatedColumns);
@@ -58,11 +65,36 @@ const VCTransactionGrid = ({ groupAndFilterData }: TransactionGridProps) => {
 	const headers: ColDef[] = [
 		{
 			headerName: 'Item Name',
-			field: 'budgetLineItem',
+			field: 'name',
 			pinned: 'left',
 			hide: true,
 			rowGroup: true
-		}, {
+		},
+		{
+			headerName: 'Budget Line Item',
+			field: 'budgetLineItem',
+			pinned: 'left',
+			menuTabs: [],
+			hide: true,
+			rowGroup: false,
+			cellRenderer: (params: any) => {
+				if (!params.data) {
+					const isFooter = params?.node?.footer;
+					const isRootLevel = params?.node?.level === -1;
+					if (isFooter) {
+						if (isRootLevel) {
+							return <span style={{ fontWeight: 'bold' }}>Summary</span>;
+						}
+					} else {
+						return `${params?.value}`;
+					}
+				}
+				else {
+					return params.value;
+				}
+			},
+		},
+		{
 			headerName: 'Budget Amount',
 			field: 'budgetItem.budgetAmount',
 			maxWidth: 140,

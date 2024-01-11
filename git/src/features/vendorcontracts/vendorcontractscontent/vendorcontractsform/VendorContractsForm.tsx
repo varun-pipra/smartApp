@@ -57,6 +57,8 @@ const VendorContractsForm = (props: any) => {
 	const filterRef = React.useRef();
 	const [isAdhocBid, setIsAdhocBid] = React.useState<boolean>(false);	
 	const [bidNamesList, setBidNamesList] = useState<any>([]);
+	const [clearAdhocBid, setClearAdhocBid] = useState<any>(false);
+	
 	
 
 	// Effects
@@ -106,15 +108,18 @@ const VendorContractsForm = (props: any) => {
 		else if (name == 'vendor') {
 			dispatch(setSelectedVendorInCreateForm(value[0]['objectId']));
 			dispatch(getBidLookup({ appInfo: appInfo, objectId: value[0]['objectId'] }));
+			setClearAdhocBid(true);						
 		}
 		else if (name == 'bidLookup') {
 			console.log("bbidLookup", value)
+			setClearAdhocBid(false);									
 			if(value?.isAdhoc) setIsAdhocBid(true); 
 			else setIsAdhocBid(false);
 		}
 
 		else {
 			setDisableAddButoon(formDataClone?.title !== '' && formDataClone?.vendor?.length > 0 && formDataClone?.amount !== '' ? false : true);
+			setClearAdhocBid(false);			
 		}
 
 		setFormData(formDataClone);
@@ -204,6 +209,7 @@ const VendorContractsForm = (props: any) => {
 			else {
 				setDisableAddButoon(true);
 				setFormData(defaultFormData);
+				setClearAdhocBid(true);
 				// dispatch(getVendorContractsList(appInfo));
 				dispatch(setToastMessage({ displayToast: true, message: 'New Vendor Contract created successfully' }));
 			}
@@ -278,7 +284,7 @@ const VendorContractsForm = (props: any) => {
 				isMultiple={false}
 				handleChange={(value: any) => handleOnChange(value, 'bidLookup')}
 			/> */}
-			<AssociatedBidDropdown onSelectionChange={(rec: any)=> handleOnChange(rec, 'bidLookup')} options={lookUpData ? lookUpData : []} bidNamesList={bidNamesList}></AssociatedBidDropdown>
+			<AssociatedBidDropdown onSelectionChange={(rec: any)=> handleOnChange(rec, 'bidLookup')} options={lookUpData ? lookUpData : []} bidNamesList={bidNamesList} clearSelectedValue={clearAdhocBid}></AssociatedBidDropdown>
 		</div>
 		<div className='amount-field'>
 			<InputLabel required className='inputlabel' sx={{
@@ -290,7 +296,7 @@ const VendorContractsForm = (props: any) => {
 			<TextField
 				id='name'
 				fullWidth
-				placeholder={'Contract Amount'}
+				placeholder={'Enter Amount'}
 				InputProps={{
 					startAdornment: (
 						<span className="common-icon-contract-amount"> </span>
@@ -300,7 +306,7 @@ const VendorContractsForm = (props: any) => {
 				}}
 				name='name'
 				variant='standard' //currencySymbol
-				value={`${formData?.amount ? amountFormatWithSymbol(formData?.amount) : 'Contract Amount'}`}
+				value={`${formData?.amount ? amountFormatWithSymbol(formData?.amount) : 'Enter Amount'}`}
 
 				onChange={(e: any) => handleOnChange(e.target.value, 'amount')}
 			/>

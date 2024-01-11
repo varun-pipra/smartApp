@@ -1,4 +1,4 @@
-.committed-transaction-box {
+.vc-committed-transaction-box {
     height: 100%;
     width: 100%;
     display: flex;
@@ -53,17 +53,18 @@
     }
     .committed-transaction-list {
 		flex: 4;
-
-		.ag-row-group {
-			.ag-cell {
-				.ag-row-group {
-					.ag-group-value {
-						font-weight: bold;
+		.sui-grid{
+			.ag-row-group {
+				.ag-cell {
+					.ag-row-group {
+						background: #fff !important;
+						.ag-group-value {
+							font-weight: bold;
+						}
 					}
 				}
 			}
 		}
-
 		.bold-font {
 			font-weight: bold;
 		}
@@ -90,5 +91,11 @@
 			width: 100%;
 			text-align: center;
 		}
-    }
+	}
+	.ag-full-width-container .ag-row-group-expanded .ag-cell-wrapper.ag-row-group, .ag-full-width-container .ag-row-group-contracted .ag-cell-wrapper.ag-row-group {
+		background: #ffffff !important;
+		.ag-group-value{
+			font-weight: bold;
+		}
+	}
 }

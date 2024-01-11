@@ -1,0 +1,30 @@
+    .iq-date-range-comp {
+        display: grid;
+        .iq-dates-container-cls {
+            display: flex;
+            gap : 10px;
+            margin: 10px;
+            .rmdp-container {
+                margin-right: 12px;
+                max-width: 132px;
+            }
+        }
+        
+        .iq-date-range-footer-cls {
+            display: flex;
+            justify-content: right;
+            gap : 10px;
+            padding: 10px;
+            margin-top: 10px;
+            .cancel-btn {
+                border: 1px solid #666 !important;
+                color: #666;
+                margin-right: 10px;
+            }
+            .apply-btn {
+                background-color: #059cdf !important;
+                color: #fff;
+                border-color: #059cdf !important;
+            }
+        }
+    }

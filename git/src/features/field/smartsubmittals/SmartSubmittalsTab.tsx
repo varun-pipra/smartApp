@@ -25,6 +25,7 @@ import {
 	setSSRightPanelData,
 	setSelectedRecord,
 	setSelectedRecordsData,
+	setShowManageSubmittalsAI,
 } from "./stores/SmartSubmitalSlice";
 import {fetchSmartSubmitalDetailGridList} from "./stores/SmarSubmitalAPI";
 import SSBrenaWindow from "./smartsubmittalbrena/SSBrenaWindow";
@@ -61,7 +62,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 		"divisionSubmitalType"
 	);
 	const [currentSelectedDetailIndex, setCurrentSelectedDetailIndex] = useState('');
-
+	const nonGroupCols = ['submittalStatus', 'type'];
 	const CustomCellRenderer = (params: any) => {
 		let statusClr;
 		let parentRec = params?.node?.level == 1;
@@ -113,15 +114,15 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 			},
 			{
 				headerName: "Submittal Status",
-				field: "status",
+				field: "submittalStatus",
 				pinned: "left",
 				minWidth: 250,
 				hide: true,
 				show: false,
 				keyCreator: (params: any) =>
-					((params.data?.sectionStatus ?? params.data?.status) &&
-						(getSubmittalsStatusLabel(params.data?.sectionStatus) ??
-							getSubmittalsStatusLabel(params.data?.status))) ||
+					((params.data?.status ?? params.data?.sectionStatus) &&
+						(getSubmittalsStatusLabel(params.data?.status) ??
+							getSubmittalsStatusLabel(params.data?.sectionStatus))) ||
 					"None",
 				cellRenderer: (params: any) => {
 					const status = params?.data?.status;
@@ -195,7 +196,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 				minWidth: 250,
 				suppressMenu: true,
 				resizable: true,
-				keyCreator: (params: any) => params.data?.status || "None",
+				valueGetter: (params: any) => params.data?.sectionStatus
 			},
 			{
 				headerName: "Spec Section Name",
@@ -312,7 +313,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 		var groupingMenu = [
 			{text: "Division  ", value: "division"},
 			{text: "Submittal Type  ", value: "type"},
-			{text: "Submittal Status ", value: "status"},
+			{text: "Submittal Status ", value: "submittalStatus"},
 			{text: "Spec Section", value: "sectionTitle"},
 			{text: "Bid Package", value: "bidPackageName"},
 			{text: "Division & Spec Section", value: "divisionSubmitalType"},
@@ -429,7 +430,10 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 	 * Dropdown APIs that supports adding a new record
 	 */
 	useEffect(() => {
-		if(server) dispatch(getSubmittalType());
+		if(server) {
+			dispatch(getSubmittalType());
+			dispatch(setShowManageSubmittalsAI(server.showBrena));
+		}
 		if(defaultType && server)
 			dispatch(getSmartSubmitalGridList({type: defaultType}));
 	}, [server]);
@@ -524,6 +528,10 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 							case "updatechildparticipants":
 								// console.log('updatechildparticipants', data)
 								// dispatch(setPresenceData(data.data));
+								break;
+							case "showBrena":
+								console.log('showBrena', data);
+								dispatch(setShowManageSubmittalsAI(data.data));
 								break;
 						}
 					}
@@ -731,7 +739,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 	const onGroupingChange = useCallback((groupValue: any) => {
 		let updatedColumns: any;
 		setDefaultGroupValue(groupValue);
-		if((groupValue ?? false) && groupValue !== "") {
+		if((groupValue ?? false) && groupValue !== "" && !nonGroupCols?.includes(groupValue)) {
 			setDefaultType((prev: any) => {
 				if(prev === "none") {
 					dispatch(setSelectedRecordsData([]));
@@ -748,13 +756,13 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 				else return {...rec, rowGroup: false, sort: null, hide: false};
 			});
 			setColDefs(updatedColumns);
-		} else if(groupValue === undefined) {
+		} else if(groupValue === undefined || nonGroupCols?.includes(groupValue)) {
 			dispatch(setSelectedRecordsData([]));
 			setDefaultType("none");
 			let updatedColumns: any = [...colDefs].map((rec: any) => {
+				if(rec?.key === "colorDiv") return {...rec, rowGroup: false, sort: null, hide: true};
 				if(rec.show) return {...rec, rowGroup: false, hide: true};
-				else if(!rec.show)
-					return {...rec, hide: false, rowGroup: false, sort: null};
+				else if(!rec.show) return {...rec, hide: false, rowGroup: (rec.field === groupValue), sort: null};
 				else return {...rec, rowGroup: false, hide: true};
 			});
 			setColDefs(updatedColumns);
@@ -796,7 +804,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 		});
 	};
 	const CustomGroupHeader = memo((props: any) => {
-		const {label, params, childCount, level, ...rest} = props;
+		const {label, params, childCount, level,groupName, ...rest} = props;
 		const width = 500;
 		const style = {width: width, minWidth: width, maxWidth: width};
 		return (
@@ -808,9 +816,11 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 					<span>{label} </span>
 					<span>{`(${childCount})`}</span>
 				</div>
-				<div style={{width: "3%"}}>
-					<CustomCellRenderer params={params} />
-				</div>
+				{!nonGroupCols?.includes(groupName) && (
+					<div style={{width: "3%"}}>
+						<CustomCellRenderer params={params} />
+					</div>
+				)}
 			</div>
 		);
 	});
@@ -825,6 +835,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 						label={node?.key}
 						childCount={node?.allChildrenCount}
 						level={node?.level}
+						groupName={node.field}
 					/>
 				</>
 			);

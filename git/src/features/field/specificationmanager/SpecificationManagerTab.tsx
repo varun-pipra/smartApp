@@ -26,6 +26,7 @@ import {
   setSpecStartNewSession,
   setChangedSMDetailsValue,
   setEnableSaveButton,
+  setShowExtractSpecAI
 } from "./stores/SpecificationManagerSlice";
 import SpecificationManagerLID from "./details/SpecficationManagerLID";
 import React from "react";
@@ -195,6 +196,7 @@ const SpecificationManagerTab = ({activeTab, ...props} : SpecManagerWindowProps)
       dispatch(fetchGridData(server));
       dispatch(getDivisionList());
       dispatch(getUnpublishedCount());
+      dispatch(setShowExtractSpecAI(server.showBrena));
       return () => {};
     }
   }, [server]);
@@ -296,6 +298,10 @@ const SpecificationManagerTab = ({activeTab, ...props} : SpecManagerWindowProps)
               case "updatechildparticipants":
                 // console.log('updatechildparticipants', data)
                 // dispatch(setPresenceData(data.data));
+                break;
+              case "showBrena":
+                console.log('showBrena', data);
+                dispatch(setShowExtractSpecAI(data.data));
                 break;
             }
           }

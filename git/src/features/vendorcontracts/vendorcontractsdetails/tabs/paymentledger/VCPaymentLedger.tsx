@@ -1,19 +1,19 @@
-import React, {useState, useMemo} from 'react';
-import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
-import {Box, Button} from '@mui/material';
+import React, { useState, useMemo } from 'react';
+import { useAppDispatch, useAppSelector, useHotLink } from 'app/hooks';
+import { Box, Button } from '@mui/material';
 
 import './VCPaymentLedger.scss';
 
-import {ColDef} from 'ag-grid-community';
+import { ColDef } from 'ag-grid-community';
 import SUIGrid from 'sui-components/Grid/Grid';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
-import {formatDate} from 'utilities/datetime/DateTimeUtils';
-import {getVCPaymentLedgerList} from 'features/vendorcontracts/stores/PaymentLedgerSlice';
-import {getServer} from 'app/common/appInfoSlice';
-import {vendorPayAppsPaymentStatus, vendorPayAppsPaymentStatusFilterOptions, vendorPayStatus} from 'utilities/vendorPayApps/enums';
-import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import {amountFormatWithSymbol, amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import { getVCPaymentLedgerList } from 'features/vendorcontracts/stores/PaymentLedgerSlice';
+import { getServer } from 'app/common/appInfoSlice';
+import { vendorPayAppsPaymentStatus, vendorPayAppsPaymentStatusFilterOptions, vendorPayStatus } from 'utilities/vendorPayApps/enums';
+import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
+import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
 // import TypeMenu from './typeMenu/TypeMenu';
 var tinycolor = require('tinycolor2');
 
@@ -21,10 +21,10 @@ const VCPaymentLedger = (props: any) => {
 	const dispatch = useAppDispatch();
 	const [data, setData] = useState<Array<any>>([]);
 	const [toatlPaidAmount, setTotalPaidAmount] = useState<number>(0);
-	const {currencySymbol} = useAppSelector((state) => state.appInfo);
+	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const appInfo = useAppSelector(getServer);
-	const {selectedRecord} = useAppSelector((state) => state.vendorContracts);
-	const {paymentLedgerList} = useAppSelector((state) => state.vCPaymentLedger);
+	const { selectedRecord } = useAppSelector((state) => state.vendorContracts);
+	const { paymentLedgerList } = useAppSelector((state) => state.vCPaymentLedger);
 	const [rowData, setRowData] = React.useState<any>(paymentLedgerList);
 	const [filteredRecords, setFilteredRecords] = React.useState<any>([]);
 	const [searchText, setSearchText] = React.useState<any>('');
@@ -33,7 +33,7 @@ const VCPaymentLedger = (props: any) => {
 	const groupKeyValue = React.useRef<any>(null);
 
 	const groupOptions = [
-		{text: "Payment Status", value: "status"},
+		{ text: "Payment Status", value: "status" },
 	];
 
 	const filterOptions = [
@@ -52,7 +52,7 @@ const VCPaymentLedger = (props: any) => {
 
 	React.useEffect(() => {
 		// console.log("payment ledger");
-		dispatch(getVCPaymentLedgerList({appInfo: appInfo, id: selectedRecord?.id}));
+		dispatch(getVCPaymentLedgerList({ appInfo: appInfo, id: selectedRecord?.id }));
 	}, [selectedRecord]);
 
 	React.useEffect(() => {
@@ -108,7 +108,6 @@ const VCPaymentLedger = (props: any) => {
 			pinned: 'left',
 			minWidth: 320,
 			cellRenderer: (params: any) => {
-				console.log("status", params);
 				const status = params?.data?.status;
 				const stateConstant = vendorPayStatus[status];
 				const stageIndicator = <IQTooltip title={status?.length > 11 ? status : ''}>
@@ -130,7 +129,7 @@ const VCPaymentLedger = (props: any) => {
 			suppressMenu: true,
 			aggFunc: 'sum',
 			cellRenderer: (params: any) => {
-				if(params.node.footer || params.node.level > 0 || !params.node.expanded) {
+				if (params.node.footer || params.node.level > 0 || !params.node.expanded) {
 					return (
 						<div className='right-align'>
 							{amountFormatWithSymbol(params.value)}
@@ -149,7 +148,7 @@ const VCPaymentLedger = (props: any) => {
 			maxWidth: 145,
 			aggFunc: 'sum',
 			cellRenderer: (params: any) => {
-				if(params.node.footer || params.node.level > 0 || !params.node.expanded) {
+				if (params.node.footer || params.node.level > 0 || !params.node.expanded) {
 					return (
 						<div className='right-align'>
 							{amountFormatWithSymbol(params.value)}
@@ -165,7 +164,7 @@ const VCPaymentLedger = (props: any) => {
 			maxWidth: 180,
 			aggFunc: 'sum',
 			cellRenderer: (params: any) => {
-				if(params.node.footer || params.node.level > 0 || !params.node.expanded) {
+				if (params.node.footer || params.node.level > 0 || !params.node.expanded) {
 					return (
 						<div className='right-align'>
 							{amountFormatWithSymbol(params.value)}
@@ -181,7 +180,7 @@ const VCPaymentLedger = (props: any) => {
 			minWidth: 200,
 			aggFunc: 'sum',
 			cellRenderer: (params: any) => {
-				if(params.node.footer || params.node.level > 0 || !params.node.expanded) {
+				if (params.node.footer || params.node.level > 0 || !params.node.expanded) {
 					return (
 						<div className='right-align'>
 							{amountFormatWithSymbol(params.value)}
@@ -195,7 +194,7 @@ const VCPaymentLedger = (props: any) => {
 			suppressMenu: true,
 			maxWidth: 145,
 			cellRenderer: (params: any) => {
-				if(params.node.footer || params.node.level > 0 || !params.node.expanded)
+				if (params.node.footer || params.node.level > 0 || !params.node.expanded)
 					return <div className='right-align'>
 						{amountFormatWithSymbol(params.value)}
 					</div>;
@@ -206,7 +205,7 @@ const VCPaymentLedger = (props: any) => {
 			suppressMenu: true,
 			maxWidth: 150,
 			cellRenderer: (params: any) => {
-				return params.value ? formatDate(params.value, {year: 'numeric', month: '2-digit', day: '2-digit'}) : '';
+				return params.value ? formatDate(params.value, { year: 'numeric', month: '2-digit', day: '2-digit' }) : '';
 			}
 		}, {
 			headerName: 'PO Number',
@@ -253,11 +252,11 @@ const VCPaymentLedger = (props: any) => {
 			suppressMenu: true,
 			cellRendererParams: {
 				innerRenderer: (cell: any) => {
-					if(!cell.data) {
+					if (!cell.data) {
 						const isFooter = cell?.node?.footer;
 						const isRootLevel = cell?.node?.level === -1;
-						if(isFooter) {
-							if(isRootLevel) {
+						if (isFooter) {
+							if (isRootLevel) {
 								return 'Summary';
 							}
 							return `Subtotal`;
@@ -265,10 +264,10 @@ const VCPaymentLedger = (props: any) => {
 							return `${cell?.value}`;
 						}
 					}
-					if(cell.node.group) {
+					if (cell.node.group) {
 						return <div className='bold-font'>{cell.value}</div>;
 					} else {
-						const {status} = cell.data;
+						const { status } = cell.data;
 						const stateConstant = vendorPayStatus[(status)];
 						const stageIndicator = <IQTooltip title={status.length > 11 ? status : ''}>
 							<Button disabled
@@ -280,13 +279,13 @@ const VCPaymentLedger = (props: any) => {
 								}}><span className={`payment-status-icon ${stateConstant?.icon}`}></span>{stateConstant?.text}</Button>
 						</IQTooltip>;
 						return <div className='vertical-center-align'>
-							<span style={{paddingRight: '5em'}}>{cell.value}</span>{stageIndicator}
+							<span style={{ paddingRight: '5em' }}>{cell.value}</span>{stageIndicator}
 						</div>;
 					}
 				}
 			},
 			valueGetter: (cell: any) => {
-				if(cell.node.group) {
+				if (cell.node.group) {
 					return cell.data?.budgetLineItem || '';
 				} else return cell.data?.code || '';
 			}
@@ -296,14 +295,14 @@ const VCPaymentLedger = (props: any) => {
 	const handleGroupChange = (groupKey: any) => {
 		const columnsCopy = [...columns];
 		// console.log("activeMainGridGroupKey", groupKey, columnsCopy);
-		if(((groupKey ?? false) && groupKey !== "")) {
+		if (((groupKey ?? false) && groupKey !== "")) {
 			// setGroupKey(activeMainGridGroupKey);
 			groupKeyValue.current = groupKey;
 			columnsCopy.forEach((col: any) => {
 				col.rowGroup = groupKey ? groupKey === col.field : false;
 				setColumns(columnsCopy);
 			});
-		} else if(groupKey ?? true) {
+		} else if (groupKey ?? true) {
 			groupKeyValue.current = null;
 			columnsCopy.forEach((col: any) => {
 				// console.log("status", col?.rowGroup);
@@ -315,7 +314,7 @@ const VCPaymentLedger = (props: any) => {
 	};
 
 	const handleOnSearchChange = (text: any) => {
-		if(paymentLedgerList?.length && text && text !== ' ') {
+		if (paymentLedgerList?.length && text && text !== ' ') {
 			setSearchText(text);
 			const filteredIds = filteredRecords?.map((obj: any) => obj?.id);
 			const firstResult = paymentLedgerList.filter((obj: any) => {
@@ -329,7 +328,7 @@ const VCPaymentLedger = (props: any) => {
 	const handleFilterChange = (filters: any) => {
 		let filteredData: any = [...paymentLedgerList];
 		// console.log("handleFilterChange", filters, filteredData);
-		if(filters?.status?.length > 0) {
+		if (filters?.status?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return filters?.status?.includes(rec?.status);
 			});
@@ -340,13 +339,13 @@ const VCPaymentLedger = (props: any) => {
 
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props.node;
-		if(node.group) {
+		if (node.group) {
 			const colName = groupKeyValue?.current;
 			// console.log("cellerender", colName, node?.group);
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if(colName === "status") {
+			if (colName === "status") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={vendorPayAppsPaymentStatus[data?.status]} colName={colName}
 						/>
@@ -375,7 +374,7 @@ const VCPaymentLedger = (props: any) => {
 				<span className='kpi-item-tile'>
 					<div className='kpi-label'>Upfront Payment</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
+						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
 						<span className='kpi-value'>
 							{amountFormatWithSymbol(selectedRecord?.upfrontPaymentAmount)}
 						</span>
@@ -384,7 +383,7 @@ const VCPaymentLedger = (props: any) => {
 				<span className='kpi-item-tile'>
 					<div className='kpi-label'>Payment Retainage</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
+						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
 						<span className='kpi-value'>
 							{selectedRecord?.retainagePercentage ? `${amountFormatWithOutSymbol(selectedRecord?.retainagePercentage)} ${'%'}` : ''}
 						</span>
@@ -393,7 +392,7 @@ const VCPaymentLedger = (props: any) => {
 				<span className='kpi-item-tile'>
 					<div className='kpi-label'>Total Amount Paid</div>
 					<div className='kpi-field-container'>
-						<span className='common-icon-Budgetcalculator' style={{fontSize: '1.25rem'}}></span>
+						<span className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></span>
 						<span className='kpi-value'>
 							{amountFormatWithSymbol(toatlPaidAmount)}
 						</span>
@@ -405,7 +404,7 @@ const VCPaymentLedger = (props: any) => {
 			{/* <IQButton color='blue'>
 				+ Create Pay Application
 			</IQButton> */}
-			<IQSearch sx={{height: '2em', width: '16rem'}}
+			<IQSearch sx={{ height: '2em', width: '16rem' }}
 				groups={groupOptions}
 				filters={filters}
 				onSearchChange={(text: string) => handleOnSearchChange(text)}

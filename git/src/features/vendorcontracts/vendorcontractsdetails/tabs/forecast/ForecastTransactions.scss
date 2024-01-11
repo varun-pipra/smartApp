@@ -1,4 +1,4 @@
-.forecast-transaction-box {
+.vc-forecast-transaction-box {
     height: 100%;
     width: 100%;
     display: flex;
@@ -86,7 +86,9 @@
 				}
 			}
 		}
-		
+		.ag-ltr .ag-sort-indicator-icon{
+			display: none !important;
+		}
 		.bold-font {
 			font-weight: bold;
 		}
@@ -113,5 +115,11 @@
 			width: 100%;
 			text-align: center;
 		}
-    }
+	}
+	.ag-full-width-container .ag-row-group-expanded .ag-cell-wrapper.ag-row-group, .ag-full-width-container .ag-row-group-contracted .ag-cell-wrapper.ag-row-group {
+		background: #ffffff !important;
+		.ag-group-value{
+			font-weight: bold;
+		}
+	}
 }

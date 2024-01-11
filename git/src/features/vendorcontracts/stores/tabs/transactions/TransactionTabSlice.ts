@@ -43,7 +43,8 @@ export const vendorTransactionsTabData = createSlice({
 			state.originalTransactions = transactions.map((txn: any) => {
 				return {
 					...txn, ...{
-						budgetLineItem: `${txn.budgetItem.name} - ${txn.budgetItem.division} - ${txn.budgetItem.costCode}`
+						// budgetLineItem: `${txn.budgetItem.name} - ${txn.budgetItem.division} - ${txn.budgetItem.costCode}`
+						budgetLineItem: `${txn.budgetItem.name ? txn.budgetItem.name : ""} ${txn.budgetItem.division ? " - " + txn.budgetItem.division : ""} ${txn.budgetItem.costCode ? " - " + txn.budgetItem.costCode : ""}`
 					}
 				};
 			});

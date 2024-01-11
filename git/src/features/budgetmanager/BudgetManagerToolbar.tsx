@@ -72,11 +72,15 @@ const BudgetManagerToolbar = (props: any) => {
 	const [locations, setLocations] = useState<any>([]);
 	const [gridRefreshed, setGridRefreshed] = useState<any>(false);
 	const [vendors, setVendors] = useState<any>([]);
+	const [divisions, setDivisions] = useState<any>([]);
+	const [costCodeList, setCostCodeList] = useState<any>([]);
 
 	useEffect(() => {
 		if(originalGridApiData?.length > 0) {
 			let locationRecords: any = [];
 			let vendorRecords : any = [];
+			let costCodeUniqueRecords: any = [];
+			let divisionUniqueRecords: any = [];
 			originalGridApiData.forEach((rec: any) => {
 				if(rec.locations?.length > 0) {
 					rec.locations.forEach((item: any) => {
@@ -92,9 +96,21 @@ const BudgetManagerToolbar = (props: any) => {
 						}
 					});
 				}
+				if (rec.costCode) {
+					if(costCodeUniqueRecords.findIndex((item: any)=> item === rec.costCode) === -1) {
+						costCodeUniqueRecords.push(rec.costCode);
+					}
+				}
+				if (rec.division) {
+					if(divisionUniqueRecords.findIndex((item: any)=> item === rec.division) === -1) {
+						divisionUniqueRecords.push(rec.division);
+					}
+				}
 			});
 			setLocations(locationRecords);
 			setVendors(vendorRecords);
+			setDivisions(divisionUniqueRecords.sort());
+			setCostCodeList(costCodeUniqueRecords.sort());
 		}
 	}, [originalGridApiData]);
 
@@ -105,13 +121,23 @@ const BudgetManagerToolbar = (props: any) => {
 
 	const filterOptions = [
 		{
-			text: "Division / Cost Code",
+			text: "Cost Code",
 			value: "costCode",
 			key: "costCode",
 			// iconCls: "common-icon-Safety-Onboarding-Flyer",
 			children: {
 				type: "checkbox",
-				items: costCodeDivisionOpts,
+				items: [],
+			},
+		},
+		{
+			text: "Division",
+			value: "division",
+			key: "division",
+			// iconCls: "common-icon-Safety-Onboarding-Flyer",
+			children: {
+				type: "checkbox",
+				items: [],
 			},
 		},
 		{
@@ -237,6 +263,7 @@ const BudgetManagerToolbar = (props: any) => {
 	useEffect(() => {
 		const filtersCopy = [...filters];
 		let costCodeItem = filtersCopy.find((rec: any) => rec?.value === "costCode");
+		let divisionItem = filtersCopy.find((rec: any) => rec?.value === "division");
 		let costTypeItem = filtersCopy.find((rec: any) => rec?.value === "costType");
 		let bidItem = filtersCopy.find((rec: any) => rec?.value === "bidPackage");
 		let vendorItem = filtersCopy.find((rec: any) => rec?.value === "vendorContract");
@@ -261,8 +288,25 @@ const BudgetManagerToolbar = (props: any) => {
 				key: opt.id
 			};
 		});
+		const divisionsOptions = (divisions || []).map((opt: any) => {
+			return {
+				text: opt,
+				id: opt,
+				value: opt,
+				key: opt
+			};
+		});
+		const costCodeOptions = (costCodeList || []).map((opt: any) => {
+			return {
+				text: opt,
+				id: opt,
+				value: opt,
+				key: opt
+			};
+		});
 		// console.log("costTypeOpts", costTypeOpts, costTypeOptions, costCodeDivisionOpts, costCodeDivisionOptions);
-		costCodeItem.children.items = costCodeDivisionOptions;
+		costCodeItem.children.items = costCodeOptions;
+		divisionItem.children.items = divisionsOptions;
 		costTypeItem.children.items = costTypeOptions;
 		bidItem.children.items = bidPackagesList;
 		vendorItem.children.items = vendorContractsList;
@@ -270,7 +314,7 @@ const BudgetManagerToolbar = (props: any) => {
 		locationItem.children.items = locationOptions;
 		vendorsItem.children.items = vendorsOptions;
 		setFilters(filtersCopy);
-	}, [bidPackagesList, vendorContractsList, clientContractsList, costTypeOpts, costCodeDivisionOpts, locations, vendors]);
+	}, [bidPackagesList, vendorContractsList, clientContractsList, costTypeOpts, costCodeDivisionOpts, locations, vendors, divisions, costCodeList]);
 
 	useEffect(() => {
 		selectedRows.length > 0 ? setDisableDelete(false) : setDisableDelete(true);

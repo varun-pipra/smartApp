@@ -378,64 +378,65 @@ export const CheckboxListMenu = (props: {name: string, selection: any, items: Ar
       {menuItems?.map((item: any, index) => {
         const labelId = `checkbox-list-${item?.value}-${index}`;
 
-        return (
-          <div>
-            {!item?.hidden && (
-              <ListItem
-                key={`listitem-${item?.value}-${index}`}
-                className={
-                  props.selection?.indexOf(item?.value) > -1
-                    ? "menu-selected"
-                    : ""
-                }
-              >
-                <ListItemButton
-                  key={`listitembutton-${item?.value}-${index}`}
-                  dense
-                  disableRipple
-                  role={undefined}
-                  data-value={item?.value}
-                  onClick={onItemClick}
-                >
-                  <ListItemIcon key={`listitem-icon-${item?.value}-${index}`}>
-                    <Checkbox
-                      key={`listitem-checkbox-${item?.value}-${index}`}
-                      edge="start"
-                      tabIndex={-1}
-                      disableRipple
-                      checked={selection.indexOf(item?.value) > -1}
-                      inputProps={{ "aria-labelledby": labelId }}
-                    />
-                  </ListItemIcon>
-                  {(item?.basecustomline ?? false) && (
-                    <div
-                      className="base-custom-line"
-                      style={{ backgroundColor: `#${item.color}` }}
-                    ></div>
-                  )}
-                  {item.iconCls && (
-                    <ListItemIcon
-                      key={`iqmenu-item-icon-${item.value}-${index}`}
-                    >
-                      <span
-                        className={item.iconCls}
-                        style={{ color: item.color }}
-                      ></span>
-                    </ListItemIcon>
-                  )}
-                  <ListItemText id={labelId} primary={item?.text} />
-                </ListItemButton>
-              </ListItem>
-            )}
-          </div>
-        );
-      })}
+		return <div>
+			  {!item?.hidden && (
+				<ListItem
+				  key={`listitem-${item?.value}-${index}`}
+				  className={
+					props.selection?.indexOf(item?.value) > -1
+					  ? "menu-selected"
+					  : ""
+				  }
+				>
+				  <ListItemButton
+					key={`listitembutton-${item?.value}-${index}`}
+					dense
+					disableRipple
+					role={undefined}
+					data-value={item?.value}
+					onClick={onItemClick}
+				  >
+					<ListItemIcon key={`listitem-icon-${item?.value}-${index}`}>
+					  <Checkbox
+						key={`listitem-checkbox-${item?.value}-${index}`}
+						edge="start"
+						tabIndex={-1}
+						disableRipple
+						checked={selection.indexOf(item?.value) > -1}
+						inputProps={{ "aria-labelledby": labelId }}
+					  />
+					</ListItemIcon>
+					{(item?.basecustomline ?? false) && (
+					  <div
+						className="base-custom-line"
+						style={{ backgroundColor: `#${item.color}` }}
+					  ></div>
+					)}
+					{item.iconCls && (
+					  <ListItemIcon
+						key={`iqmenu-item-icon-${item.value}-${index}`}
+					  >
+						<span
+						  className={item.iconCls}
+						  style={{ color: item.color }}
+						></span>
+					  </ListItemIcon>
+					)}
+					<ListItemText id={labelId} primary={item?.text} />
+				  </ListItemButton>
+				  {item?.children?.type === 'custom' && (
+						<PopoverSelect open={true} options={[item]} allowSubMenu={true} defaultValue={{}} className={'no-border'}/>
+				)}
+				</ListItem>
+			  )}
+			</div>
+		})}
     </MenuList>
   ) : null;
 };
 
 export const PopoverSelect = (props: any) => {
-	const {open, options, ...rest} = props;
+	const {open, options,className, ...rest} = props;
 	const [anchor, setAnchor] = useState();
 	let popperSx = {zIndex: 9999};
 	if(props.menuProps?.sx) popperSx = Object.assign(popperSx, props.menuProps.sx);
@@ -450,7 +451,7 @@ export const PopoverSelect = (props: any) => {
 	};
 
 	return (
-		<MenuList className='user-menu-items'>
+		<MenuList className={`user-menu-items${className ? ` ${className}` : ''}`}>
 			{options?.map((el: any, index: number) => {
 				const hasSubMenu = props.allowSubMenu && (el.children?.items?.length > 0 || el.children?.length > 0);
 				const subMenuNode = hasSubMenu ? getSubMenuNodeByType(el.value, el.children, props.defaultValue[(el.value)], handleChange) : undefined;

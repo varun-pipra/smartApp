@@ -14,25 +14,27 @@ import {
 	fetchUserImage, setOpenBudgetTransferForm,
 	setOpenCostForm, setOpenTransactionList, setSelectedRowData
 } from 'features/budgetmanager/operations/rightPanelSlice';
-import { getForecastList, setFilteredRecords } from 'features/budgetmanager/operations/forecastSlice';
 import _ from 'lodash';
 import { getMinMaxDrawerStatus, setMinMaxDrawerStatus } from 'features/vendorcontracts/stores/VendorContractsSlice';
-import { getVendorContractsForecasts, setForecasts } from 'features/vendorcontracts/stores/ForecastsSlice';
+import { getVendorContractsForecasts, setForecasts, getForecastList, getOrginalForecastList } from 'features/vendorcontracts/stores/ForecastsSlice';
 import { getServer } from 'app/common/appInfoSlice';
-import { amountFormatWithSymbol ,amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
+import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
 
 const ForecastTransactions = (props: any) => {
 	const dispatch = useAppDispatch();
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const { selectedRecord } = useAppSelector(state => state.vendorContracts);
-	const appInfo = useAppSelector(getServer);	
+	const appInfo = useAppSelector(getServer);
 	// const { lineItem } = useAppSelector(state => state.gridData);
 	const [searchText, setSearchText] = React.useState('');
 	const [filters, setFilters] = React.useState({});
-	const forecastList = useAppSelector(getForecastList);
+	const [filterOptions, setFilterOptions] = React.useState(getFilterMenuOptions());
+	const [budgetlineitem, setBudgetLineItem] = React.useState([]);
+	const orginalForecastList = useAppSelector(getOrginalForecastList);
 	const [kpiFieldsData, setKpiFieldsData] = React.useState<any>(selectedRecord);
-	const [groupAndFilterData, setGroupAndFilterData] = React.useState<any>({ group: 'None', filter: [] });
+	const [groupAndFilterData, setGroupAndFilterData] = React.useState<any>({ group: 'budgetLineItem', filter: [] });
 	const minMaxStatus: any = useAppSelector(getMinMaxDrawerStatus);
+
 	const gridIcon = useMemo<React.ReactElement>(() => {
 		return <div className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>
 	}, []);
@@ -41,20 +43,37 @@ const ForecastTransactions = (props: any) => {
 		return <div className='common-icon-maximise' style={{ fontSize: '1.25rem' }}></div>
 	}, []);
 
-	const groupHandler = (group: string) => {
-		// console.log(group);
-		setGroupAndFilterData({ ...groupAndFilterData, group: group });
-	};
-	// React.useEffect(() => {
-	// 	setKpiFieldsData(selectedRecord);
-	// }, [selectedRecord]);
+
+	React.useEffect(() => {
+		let uniqueVendors: any = [];
+		orginalForecastList?.map((item: any) => {
+			item?.budgetLineItem && !uniqueVendors?.map((a: any) => a.value)?.includes(item?.budgetLineItem) && uniqueVendors.push({
+				text: item?.budgetLineItem,
+				key: item?.budgetLineItem,
+				value: item?.budgetLineItem
+			});
+		});
+		setBudgetLineItem(uniqueVendors);
+	}, [orginalForecastList]);
+
+	React.useEffect(() => {
+		const filtersCopy = [...filterOptions];
+		let vendorItem = filtersCopy.find((rec: any) => rec.value === "budgetLineItem");
+		if (vendorItem) vendorItem.children.items = budgetlineitem;
+		setFilterOptions(filtersCopy);
+	}, [budgetlineitem]);
+
 
 	React.useEffect(() => {
 		dispatch(getVendorContractsForecasts({ 'appInfo': appInfo, contractId: selectedRecord?.id })).then((response) => {
 			setKpiFieldsData(response?.payload)
-			// dispatch(setForecasts(response?.payload))
 		});
-	}, [selectedRecord]);	
+	}, [selectedRecord]);
+
+	const groupHandler = (group: string) => {
+		const data = group == null || group == 'undefined' ? 'None' : group;
+		setGroupAndFilterData({ ...groupAndFilterData, group: data });
+	};
 
 	const searchHandler = (searchText: string) => {
 		setSearchText(searchText);
@@ -66,39 +85,36 @@ const ForecastTransactions = (props: any) => {
 	};
 
 	React.useEffect(() => {
-		const filteredList = filterAction(forecastList, filters, searchText);
-		dispatch(setFilteredRecords(filteredList));
-	}, [searchText, filters, forecastList]);
+		const filteredList = filterAction(orginalForecastList, filters, searchText);
+		dispatch(setForecasts(filteredList));
+	}, [searchText, filters, orginalForecastList]);
 
 	const filterAction = (list: Array<any>, filters: any = {}, searchText: string = '') => {
 		let filteredTransactions = [...list];
-
-		if (!_.isEmpty(filters.transactionType) || searchText) {
-			const exp = searchText ? new RegExp(searchText, 'gi') : undefined;
+		if (!_.isEmpty(filters.budgetLineItem)) {
 			filteredTransactions = filteredTransactions.filter((item) => {
-			
-				const typeText = item.type == 'Planner Tag' ? 'Summary Tag' : item.type
-				const vendorName = item.vendor ? item.vendor.name : '';
-				return (filters.transactionType.length === 0 || filters.transactionType.includes(typeText))
-					&& (!exp || (exp && (exp.test(item.name)
-						|| exp.test(item.stageName)
-						|| exp.test(typeText)
-						|| exp.test(vendorName))));
+				const budgetLineItem = item.budgetLineItem ? item.budgetLineItem : '';
+				return (filters.budgetLineItem.includes(item.budgetLineItem) || filters?.budgetLineItem.length === 0);
 			});
 		}
-
+		if (searchText) {
+			const filteredIds = orginalForecastList?.map((obj: any) => obj?.id);
+			filteredTransactions = filteredTransactions.filter((obj: any) => {
+				return filteredIds?.includes(obj?.id) && JSON.stringify(obj)?.toLowerCase()?.includes(searchText?.toLowerCase());
+			});
+		}
 		return filteredTransactions;
 	};
 
-	const onMaximizeForecast = ()=>{
-		dispatch(setMinMaxDrawerStatus({ minMax:true, forecast:true, transactions:false}));
+	const onMaximizeForecast = () => {
+		dispatch(setMinMaxDrawerStatus({ minMax: true, forecast: true, transactions: false }));
 	}
 
-	return <Box className='forecast-transaction-box'>
+	return <Box className='vc-forecast-transaction-box'>
 		<div className='forecast-transaction-header'>
 			<div className='title-action'>
 				<span className='title'>Forecast Transactions </span>
-				{!minMaxStatus.minMax && (<span style={{cursor:'pointer'}} onClick={onMaximizeForecast}> {maximizeIcon}</span>)}
+				{!minMaxStatus.minMax && (<span style={{ cursor: 'pointer' }} onClick={onMaximizeForecast}> {maximizeIcon}</span>)}
 			</div>
 			<div className='forecast-kpi-fields'>
 				<span className='kpi-item-tile'>
@@ -136,10 +152,11 @@ const ForecastTransactions = (props: any) => {
 			<div className='search-action'>
 				<IQSearch sx={{ height: '2em', width: '16rem' }}
 					groups={getGroupMenuOptions()}
-					filters={getFilterMenuOptions()}
+					filters={filterOptions}
 					onGroupChange={groupHandler}
 					onSearchChange={searchHandler}
 					onFilterChange={filterHandler}
+					defaultGroups={'budgetLineItem'}
 				/>
 			</div>
 		</div >
@@ -153,29 +170,19 @@ export default ForecastTransactions;
 
 const getGroupMenuOptions = () => {
 	return [{
-		text: 'Transactions Type',
-		value: 'type'
+		text: 'Budget Line Item',
+		value: 'budgetLineItem'
 	}];
 };
 
 const getFilterMenuOptions = () => {
 	return [{
-		text: 'All Transaction',
-		value: 'transactionType',
-		key: 'stageName',
+		text: 'Budget Line Item',
+		key: 'budgetLineItem',
+		value: 'budgetLineItem',
 		children: {
-            type: 'checkbox',
-            items: [{
-                text: 'Direct Cost',
-                value: 'Direct Cost'
-            }, {
-                text: 'Modifications',
-                value: 'Modification'
-			},
-			{
-                text: 'Refunds',
-                value: 'Refund'
-			},]
+			type: 'checkbox',
+			items: []
 		}
-	}];
+	}]
 };

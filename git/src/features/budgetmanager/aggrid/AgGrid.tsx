@@ -1607,7 +1607,8 @@ const TableGrid = (props: TableGridProps) => {
 				item.originalAmount?.toString()?.match(regex) ||
 				item.equipmentManufacturer?.match(regex) || item.equipmentModel?.match(regex))))
 				&& (_.isEmpty(selectedFilters) || (!_.isEmpty(selectedFilters)
-					&& (_.isEmpty(selectedFilters.costCode) || selectedFilters.costCode?.length === 0 || selectedFilters.costCode?.indexOf(item.division) > -1)
+					&& (_.isEmpty(selectedFilters.costCode) || selectedFilters.costCode?.length === 0 || selectedFilters.costCode?.indexOf(item.costCode) > -1)
+					&& (_.isEmpty(selectedFilters.division) || selectedFilters.division?.length === 0 || selectedFilters.division?.indexOf(item.division) > -1)
 					&& (_.isEmpty(selectedFilters.costType) || selectedFilters.costType?.length === 0 || selectedFilters.costType?.indexOf(item.costType) > -1)
 					&& (_.isEmpty(selectedFilters.curve) || selectedFilters.curve?.length === 0 || selectedFilters.curve?.indexOf(item.curve?.toString()) > -1)
 					&& (_.isEmpty(selectedFilters.bidPackage) || selectedFilters.bidPackage?.length === 0 || selectedFilters.bidPackage?.indexOf(item.bidPackage?.id) > -1)

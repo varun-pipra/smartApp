@@ -1,31 +1,32 @@
 import React from 'react';
-import {AgGridReact} from 'ag-grid-react';
+import { AgGridReact } from 'ag-grid-react';
 import './TimeLogWindow.scss';
 
-import {setCurrencySymbol, setServer} from 'app/common/appInfoSlice';
-import {useAppDispatch, useAppSelector, useHomeNavigation} from 'app/hooks';
-import {currency, isLocalhost, postMessage} from 'app/utils';
+import { setCurrencySymbol, setServer } from 'app/common/appInfoSlice';
+import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
+import { currency, isLocalhost, postMessage } from 'app/utils';
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
-import {appInfoData} from 'data/appInfo';
+import { appInfoData } from 'data/appInfo';
 import _ from 'lodash';
-import {memo, useMemo, useEffect, useState, useRef, useCallback} from 'react';
-import {useLocation} from 'react-router-dom';
-import {triggerEvent} from 'utilities/commonFunctions';
-import {formatDate} from 'utilities/datetime/DateTimeUtils';
+import { memo, useMemo, useEffect, useState, useRef, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
+import { triggerEvent } from 'utilities/commonFunctions';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
 import SUIAlert from 'sui-components/Alert/Alert';
 import AddTimeLogForm from './AddTimeLogForm';
-import {timelogStatusMap} from './TimeLogConstants';
+import { timelogStatusMap } from './TimeLogConstants';
 import CustomFilterHeader from '../gridHelper/CustomFilterHeader';
-import {TLLeftButtons, TLRightButtons} from './toolbar/TimeLogToolbar';
-import {timelogList} from 'data/timelog/TimeLogData';
+import { TLLeftButtons, TLRightButtons } from './toolbar/TimeLogToolbar';
+import { timelogList } from 'data/timelog/TimeLogData';
 import TimeLogLID from './details/TimeLogLID';
 import { Avatar, Button } from '@mui/material';
-import {findAndUpdateFiltersData} from 'features/safety/sbsmanager/utils';
+import { findAndUpdateFiltersData } from 'features/safety/sbsmanager/utils';
 import moment from "moment";
-import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
+import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
 import { setSelectedTimeLog } from './stores/TimeLogSlice';
 import { getTimeLogStatus } from 'utilities/timeLog/enums';
+import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 
 let defaultTimeLogStatusFilter: any = [];
 
@@ -38,7 +39,7 @@ const TimeLogWindow = (props: any) => {
 	const [appData] = useState(appInfoData);
 
 	const location = useLocation();
-	const {server} = useAppSelector((state) => state.appInfo);
+	const { server } = useAppSelector((state) => state.appInfo);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
@@ -53,10 +54,10 @@ const TimeLogWindow = (props: any) => {
 	const [columns, setColumns] = useState([]);
 	const [rowData, setRowData] = useState<Array<any>>([]);
 	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
-	const dateTimeFields = ['startDate','endDate','startTime','endTime'];
+	const dateTimeFields = ['startDate', 'endDate', 'startTime', 'endTime'];
 	let gridRef = useRef<AgGridReact>();
 
-	if(statusFilter) defaultTimeLogStatusFilter = filters.status;
+	if (statusFilter) defaultTimeLogStatusFilter = filters.status;
 
 	const groupOptions = [{
 		text: 'Users', value: 'users'
@@ -96,15 +97,15 @@ const TimeLogWindow = (props: any) => {
 	 */
 	useEffect(() => {
 		// const {search} = location;
-		if(queryParams?.size > 0) {
+		if (queryParams?.size > 0) {
 			setMaxByDefault(queryParams?.get('maximizeByDefault') === 'true');
 			setInline(queryParams?.get('inlineModule') === 'true');
 
-			if(queryParams?.get('id')) {
+			if (queryParams?.get('id')) {
 				//
 				setManualLIDOpen(true);
 
-				if(queryParams?.get("tab")) {
+				if (queryParams?.get("tab")) {
 					//
 				}
 			}
@@ -125,24 +126,24 @@ const TimeLogWindow = (props: any) => {
 	 * Dropdown APIs that supports adding a new record
 	 */
 	useEffect(() => {
-		if(server) {
+		if (server) {
 			// dispatch(getChangeEventList());
 			dispatch(getAppsList());
 		}
 	}, [server]);
 
 	useEffect(() => {
-		if(localhost) {
+		if (localhost) {
 			dispatch(setServer(_.omit(appData, ['DivisionCost'])));
 			dispatch(setCurrencySymbol(currency['USD']));
 		} else {
-			if(!server) {
+			if (!server) {
 				window.onmessage = (event: any) => {
 					let data = event.data;
 					data = typeof (data) == 'string' ? JSON.parse(data) : data;
 					data = data.hasOwnProperty('args') && data.args[0] ? data.args[0] : data;
-					if(data) {
-						switch(data.event || data.evt) {
+					if (data) {
+						switch (data.event || data.evt) {
 							case 'hostAppInfo':
 								const structuredData = data.data;
 								dispatch(setServer(structuredData));
@@ -155,17 +156,17 @@ const TimeLogWindow = (props: any) => {
 							case 'getdrivefiles':
 								try {
 									// dispatch(setDriveFiles(data.data));
-								} catch(error) {
+								} catch (error) {
 									console.log('Error in adding Files from Drive:', error);
 								}
 								break;
 							case 'updateparticipants':
 								// console.log('updateparticipants', data)
-								triggerEvent('updateparticipants', {data: data.data, appType: data.appType});
+								triggerEvent('updateparticipants', { data: data.data, appType: data.appType });
 								break;
 							case 'updatecommentbadge':
 								// console.log('updatecommentbadge', data)
-								triggerEvent('updatecommentbadge', {data: data.data, appType: data.appType});
+								triggerEvent('updatecommentbadge', { data: data.data, appType: data.appType });
 								break;
 							case 'updatechildparticipants':
 								// console.log('updatechildparticipants', data)
@@ -177,7 +178,7 @@ const TimeLogWindow = (props: any) => {
 
 				postMessage({
 					event: 'hostAppInfo',
-					body: {iframeId: iFrameId, roomId: server && server.presenceRoomId, appType: appType}
+					body: { iframeId: iFrameId, roomId: server && server.presenceRoomId, appType: appType }
 				});
 			}
 		}
@@ -185,13 +186,13 @@ const TimeLogWindow = (props: any) => {
 
 	const onGroupingChange = (groupKey: any) => {
 		const columnsCopy: any = [...headers];
-		if(((groupKey ?? false) && groupKey !== "")) {
+		if (((groupKey ?? false) && groupKey !== "")) {
 			groupKeyValue.current = groupKey;
 			columnsCopy.forEach((col: any) => {
 				col.rowGroup = groupKey ? groupKey === col.field : false;
 				setColumns(columnsCopy);
 			});
-		} else if(groupKey ?? true) {
+		} else if (groupKey ?? true) {
 			groupKeyValue.current = null;
 			columnsCopy.forEach((col: any) => {
 				col.rowGroup = false;
@@ -202,33 +203,34 @@ const TimeLogWindow = (props: any) => {
 
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props.node;
-		if(node.group) {
+		if (node.group) {
 			const colName = groupKeyValue?.current;
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if(colName === 'smartItem') return (
-					<div style={{display: 'flex'}} className='status-column'>
-						{data?.smartItem?.iconUrl ? 
-							<img
-									src={data?.smartItem?.iconUrl}
-									alt="Avatar"
-									style={{ width: "24px", height: "24px", padding: "1px" }}
-									className="base-custom-img"
-								/> : <Avatar 
-								sx={{ backgroundColor: `#${data?.color}` ?? '#fff', 
-										width: "24px", 
-										height: "24px", 
-										padding: "1px", 
-										marginRight: '10px', 
-										fontSize: '13px' 
+			if (colName === 'smartItem') return (
+				<div style={{ display: 'flex' }} className='status-column'>
+					{data?.smartItem?.iconUrl ?
+						<img
+							src={data?.smartItem?.iconUrl}
+							alt="Avatar"
+							style={{ width: "24px", height: "24px", padding: "1px" }}
+							className="base-custom-img"
+						/> : <Avatar
+							sx={{
+								backgroundColor: `#${data?.color}` ?? '#fff',
+								width: "24px",
+								height: "24px",
+								padding: "1px",
+								marginRight: '10px',
+								fontSize: '13px'
 							}}>{data?.smartItem?.name?.toUpperCase()}</Avatar>
-						}
-						<span className="custom-group-header-label-cls">{data?.smartItem?.name || ""}</span>
-					</div>
-				);
+					}
+					<span className="custom-group-header-label-cls">{data?.smartItem?.name || ""}</span>
+				</div>
+			);
 			else return (
-					<div className="custom-group-header-cls" style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
-						<span className="custom-group-header-label-cls">{node?.key || ""}</span>
-					</div>
+				<div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+					<span className="custom-group-header-label-cls">{node?.key || ""}</span>
+				</div>
 			);
 		};
 	};
@@ -254,45 +256,46 @@ const TimeLogWindow = (props: any) => {
 		return list.filter((item: any) => {
 			const regex = new RegExp(search, "gi");
 			const searchVal = Object.keys(item).some((field) => {
-				if(Array.isArray(item[field])) {
-					if(item[field]?.length > 0) {
-						for(let i = 0;i < item[field].length;i++) {
+				if (Array.isArray(item[field])) {
+					if (item[field]?.length > 0) {
+						for (let i = 0; i < item[field].length; i++) {
 							return Object.keys(item?.[field]?.[i])?.some((objField) => {
 								return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
 							});
 						}
 					} else return false;
-				} else if((item[field] ?? false) && typeof item[field] === "object") {
+				} else if ((item[field] ?? false) && typeof item[field] === "object") {
 					return Object.keys(item?.[field])?.some((objField) => {
 						return item?.[field]?.[objField]?.toString()?.match(regex);
 					});
 				} else return item?.[field]?.toString()?.match(regex);
 			});
 			const filterVal = (_.isEmpty(selectedFilters) || (!_.isEmpty(selectedFilters)
-			&& (_.isEmpty(selectedFilters?.apps) || selectedFilters?.apps?.length === 0 || selectedFilters?.apps?.indexOf(item.smartItem.name) > -1)
-			&& (_.isEmpty(selectedFilters?.companies) || selectedFilters?.companies?.length === 0 || selectedFilters?.companies?.indexOf(item.company) > -1)
-			&& (_.isEmpty(selectedFilters?.conflicting) || selectedFilters?.conflicting?.length === 0 || selectedFilters?.conflicting?.indexOf(item?.conflicting)) > -1)
-			&& (_.isEmpty(selectedFilters?.createdBy) || selectedFilters?.createdBy?.length === 0 || selectedFilters?.createdBy?.indexOf(item.createdBy?.name) > -1)
-			&& (_.isEmpty(selectedFilters?.location) || selectedFilters?.location?.length === 0 || selectedFilters?.location?.indexOf(item?.location)) > -1)
-			&& (_.isEmpty(selectedFilters?.sbs) || selectedFilters?.sbs?.length === 0 || selectedFilters?.sbs?.indexOf(item.sbs) > -1)
-			&& (_.isEmpty(selectedFilters?.source) || selectedFilters?.source?.length === 0 || selectedFilters?.source?.indexOf(item?.source) > -1)
-			&& (_.isEmpty(selectedFilters?.workTeam) || selectedFilters?.workTeam?.length === 0 || selectedFilters?.workTeam?.indexOf(item?.workTeam) > -1)
-			&& (_.isEmpty(selectedFilters?.status) || selectedFilters?.status?.length === 0 || selectedFilters?.status?.indexOf(item.status) > -1);
+				&& (_.isEmpty(selectedFilters?.apps) || selectedFilters?.apps?.length === 0 || selectedFilters?.apps?.indexOf(item.smartItem.name) > -1)
+				&& (_.isEmpty(selectedFilters?.companies) || selectedFilters?.companies?.length === 0 || selectedFilters?.companies?.indexOf(item.company) > -1)
+				&& (_.isEmpty(selectedFilters?.conflicting) || selectedFilters?.conflicting?.length === 0 || selectedFilters?.conflicting?.indexOf(item?.conflicting)) > -1)
+				&& (_.isEmpty(selectedFilters?.createdBy) || selectedFilters?.createdBy?.length === 0 || selectedFilters?.createdBy?.indexOf(item.createdBy?.name) > -1)
+				&& (_.isEmpty(selectedFilters?.location) || selectedFilters?.location?.length === 0 || selectedFilters?.location?.indexOf(item?.location)) > -1)
+				&& (_.isEmpty(selectedFilters?.sbs) || selectedFilters?.sbs?.length === 0 || selectedFilters?.sbs?.indexOf(item.sbs) > -1)
+				&& (_.isEmpty(selectedFilters?.source) || selectedFilters?.source?.length === 0 || selectedFilters?.source?.indexOf(item?.source) > -1)
+				&& (_.isEmpty(selectedFilters?.workTeam) || selectedFilters?.workTeam?.length === 0 || selectedFilters?.workTeam?.indexOf(item?.workTeam) > -1)
+				&& (_.isEmpty(selectedFilters?.status) || selectedFilters?.status?.length === 0 || selectedFilters?.status?.indexOf(item.status) > -1);
 			// && (_.isEmpty(selectedFilters?.dateRange) || selectedFilters?.dateRange?.length === 0 || selectedFilters?.dateRange?.indexOf(item?.dateRange)) > -1;
 
 			return searchVal && filterVal;
 		});
 	};
-	
+
 	useEffect(() => {
 		if (search || selectedFilters) {
-		  const data = searchAndFilter([...modifiedList]);
-		  setRowData(data);
+			const data = searchAndFilter([...modifiedList]);
+			setRowData(data);
 		}
-	  }, [search, selectedFilters]);
+	}, [search, selectedFilters]);
+
 	const handleStatusFilter = (statusFilters: any) => {
 		setSelectedFilters((prevFilters: any) => {
-			const consolidatedFilter = {...prevFilters, ...{status: statusFilters}};
+			const consolidatedFilter = { ...prevFilters, ...{ status: statusFilters } };
 			setDefaultFilters(consolidatedFilter);
 			return consolidatedFilter;
 		});
@@ -300,9 +303,17 @@ const TimeLogWindow = (props: any) => {
 
 	const handleStatusColumnSort = (direction: any) => {
 		gridRef?.current?.columnApi?.applyColumnState({
-			state: [{colId: 'status', sort: direction}],
-			defaultState: {sort: null}
+			state: [{ colId: 'status', sort: direction }],
+			defaultState: { sort: null }
 		});
+	};
+
+	const handleApplyDatesFilter = (dates:any) => {
+		setSelectedFilters({...selectedFilters, dateRange: dates});
+	};
+	
+	const handleClearDatesFilter = () => {
+		setSelectedFilters({...selectedFilters, dateRange: undefined});
 	};
 
 	/**
@@ -316,8 +327,8 @@ const TimeLogWindow = (props: any) => {
 		field: 'timeSegmentId',
 		pinned: 'left',
 		suppressMenu: true,
-		checkboxSelection: (params:any) => {
-			if(!!params?.node?.footer) return false;
+		checkboxSelection: (params: any) => {
+			if (!!params?.node?.footer) return false;
 			else return true;
 		},
 		headerCheckboxSelection: true,
@@ -355,26 +366,33 @@ const TimeLogWindow = (props: any) => {
 		field: 'entryFor',
 		pinned: 'left',
 		aggFunc: (params: any) => {
-			if(!params.rowNode?.key) {
-				return 	'Summary';
-			} 	return 	`Sub Total - ${params.rowNode?.key}`;
+			if (!params.rowNode?.key) {
+				return 'Summary';
+			} return `Sub Total - ${params.rowNode?.key}`;
 		}
-	}, {
+	},
+	// {
+	// 	headerName: 'Date Range',
+	// 	field: 'dateRange',
+	// 	pinned: 'left',
+	// 	valueGetter: (params: any) => params?.data?.dateRange,
+	// },
+	 {
 		headerName: 'Company',
 		field: 'company'
 	}, {
 		headerName: 'Start Date',
 		field: 'startDate',
-		keyCreator: (params :any) => {
+		keyCreator: (params: any) => {
 			let now = moment.utc(new Date());
-				let lastContact = moment.utc(params?.data.endDate);
-				let days = now.diff(lastContact, 'days');
-				let label = '';
-				if(days >= 2) {
-					label = moment.utc(lastContact).fromNow(); // '2 days ago' etc.
-				};
-				label = lastContact.calendar().split(' ')[0];
-				return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${label})`) || "None";
+			let lastContact = moment.utc(params?.data.endDate);
+			let days = now.diff(lastContact, 'days');
+			let label = '';
+			if (days >= 2) {
+				label = moment.utc(lastContact).fromNow(); // '2 days ago' etc.
+			};
+			label = lastContact.calendar().split(' ')[0];
+			return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${label})`) || "None";
 		},
 		valueGetter: (params: any) => `${moment.utc(params?.data?.startDate).format('DD/MM/YYYY')}`,
 	}, {
@@ -394,12 +412,12 @@ const TimeLogWindow = (props: any) => {
 		field: 'duration',
 		aggFunc: (params: any) => {
 			let sum = 0;
-			params.values.forEach((time:any) => {
-			  let a = time.split(":");
-			  let calculate = +a[0] * 60 * 60 + +a[1] * 60;
-			  sum += calculate;
+			params.values.forEach((time: any) => {
+				let a = time.split(":");
+				let calculate = +a[0] * 60 * 60 + +a[1] * 60;
+				sum += calculate;
 			});
-			if(moment(new Date(sum * 1000))?.isValid()) {
+			if (moment(new Date(sum * 1000))?.isValid()) {
 				let finalCnt = new Date(sum * 1000)?.toISOString();
 				return finalCnt?.substr(11, 5);
 				// return finalCnt?.substr(11, 2)+"Hrs"+" "+ finalCnt?.substr(14, 2)+"Mins";
@@ -460,16 +478,18 @@ const TimeLogWindow = (props: any) => {
 		field: 'timeLogId',
 		keyCreator: (params: any) => params?.data?.timeLogId || "None"
 	}], []);
-	(headers || [])?.forEach((item:any) => {
-		if(dateTimeFields?.includes(item?.field)) {
-			item.cellRenderer =  (params: any) => {
-				if(!!params?.node?.footer) return null;
+
+	(headers || [])?.forEach((item: any) => {
+		if (dateTimeFields?.includes(item?.field)) {
+			item.cellRenderer = (params: any) => {
+				if (!!params?.node?.footer) return null;
 				else return (
 					<>{params.value}</>
 				);
 			}
 		};
 	});
+
 	let filterOptions = useMemo(() => {
 	var filterMenu = [{
 		text: 'Users',
@@ -568,6 +588,23 @@ const TimeLogWindow = (props: any) => {
 				text: 'Future',
 				key: 'future',
 				value: 'future'
+			},{
+				text: "Custom",
+				value: "custom",
+				key: "custom",
+				keyValue: "custom",
+				children: {
+				type: "custom",
+				component: <CustomDateRangeFilterComp 
+					dates={{
+						startDate : selectedFilters?.dateRange?.startDate,
+						endDate : selectedFilters?.dateRange?.endDate,
+					}} 
+					handleApplyDatesFilter={handleApplyDatesFilter}
+					handleClearDatesFilter= {handleClearDatesFilter}
+					/>,
+				items: [{}],
+			 }
 			}]
 		}
 	}, {
@@ -589,7 +626,7 @@ const TimeLogWindow = (props: any) => {
 	const handleClose = () => {
 		postMessage({
 			event: 'closeiframe',
-			body: {iframeId: iFrameId, roomId: server && server.presenceRoomId, appType: appType}
+			body: { iframeId: iFrameId, roomId: server && server.presenceRoomId, appType: appType }
 		});
 	};
 
@@ -598,34 +635,72 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const handleIconClick = () => {
-		if(isInline) useHomeNavigation(iFrameId, appType);
+		if (isInline) useHomeNavigation(iFrameId, appType);
 	};
 
 	const onFirstDataRendered = useCallback((params: any) => {
 		gridRef.current = params;
 		setColumns(headers);
 	}, []);
+
 	useEffect(() => {
-		if(search || filters) {
+		if (search || filters) {
 			const data = searchAndFilter([...modifiedList]);
 			setRowData(data);
 		}
 	}, [search, filters]);
+
 	const GenerateFilters = () => {
-			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "workTeam"));
-			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "company"));
-			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "source"));
-			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "sbs"));
-			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "location"));
-			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "createdBy", true, "name"));
-			setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "smartItem", true, "name"));
+		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "workTeam"));
+		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "company"));
+		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "source"));
+		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "sbs"));
+		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "location"));
+		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "createdBy", true, "name"));
+		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "smartItem", true, "name"));
+	};
+	const GetDateRangeFilterData = (data:any) => {
+		const todayDate = new Date();
+		const startDayOfPrevWeek = moment(todayDate).subtract(1, 'week').startOf('week');
+		const lastDayOfPrevWeek = moment(todayDate).subtract(1, 'week').endOf('week');
+
+		const startDayOfThisWeek = moment(todayDate).add(1, 'week').startOf('week');
+		const lastDayOfThisWeek = moment(todayDate).add(1, 'week').endOf('week');
+		
+		const startDayOfPrevMonth = moment(todayDate).subtract(1, 'month').startOf('month');
+		const lastDayOfPrevMonth = moment(todayDate).subtract(1, 'month').endOf('month');
+
+		const startDayOfThisMonth = moment(todayDate).add(1, 'month').startOf('month');
+		const lastDayOfThisMonth = moment(todayDate).add(1, 'month').endOf('month');
+
+		const todayStart = moment().startOf('day');
+		const todayEnd = moment().endOf('day');
+		const yesterdayStart = moment().subtract(1, 'days').startOf('day');
+		const yesterdayEnd = moment().subtract(1, 'days').endOf('day');
+		const actualDate = moment(data?.endDate);
+		
+			 if(moment(actualDate).isBetween(startDayOfPrevWeek, lastDayOfPrevWeek)) return 'lastWeek';
+		else if(moment(actualDate).isBetween(startDayOfThisWeek, lastDayOfThisWeek)) return 'thisWeek';
+		
+		else if(moment(actualDate).isBetween(startDayOfThisMonth, lastDayOfThisMonth)) return 'thisMonth';
+		else if(moment(actualDate).isBetween(startDayOfPrevMonth, lastDayOfPrevMonth)) return 'lastMonth';
+
+		else if(moment(actualDate).isBetween(yesterdayStart, yesterdayEnd)) return 'yesterday';
+		else if(moment(actualDate).isBetween(todayStart, todayEnd)) return 'today';
+
+		else return 'future';
 	};
 	React.useEffect(() => {
 		if(timelogList.length > 0) {
-			setModifiedList(timelogList);
-			setRowData(timelogList);
+
+			let data = timelogList.map((item:any, index:any) => ({
+				...item,
+				dateRange : GetDateRangeFilterData(item)
+			}));
+			setRowData(data);
+			setModifiedList(data);
 			GenerateFilters();
-		} else if(timelogList.length === 0) {
+		} else if (timelogList.length === 0) {
 			setModifiedList([]);
 			setRowData([]);
 			GenerateFilters();
@@ -680,7 +755,7 @@ const TimeLogWindow = (props: any) => {
 			}}
 			toast={toastMessage}
 			content={{
-				headContent: {regularContent: <AddTimeLogForm />},
+				headContent: { regularContent: <AddTimeLogForm /> },
 				detailView: TimeLogLID,
 				gridContainer: {
 					toolbar: {

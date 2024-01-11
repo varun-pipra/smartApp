@@ -16,6 +16,7 @@ export interface SmartSubmitalState {
   rightPanelUpdated?:boolean;
   rightPanelNavCount?:any;
   rightPanelNavFlag?:any;
+  showManageSubmittalsAI?:boolean;
 }
 
 const initialState: SmartSubmitalState = {
@@ -32,8 +33,8 @@ const initialState: SmartSubmitalState = {
   ssRightPanelData:{},
   rightPanelUpdated:false,
   rightPanelNavCount: {startPage: 0,endPage: 0},
-  rightPanelNavFlag: 0
-
+  rightPanelNavFlag: 0,
+  showManageSubmittalsAI:true,
 };
 export const getSmartSubmitalGridList = createAsyncThunk<any, any>(
   "smartSubmitalList",
@@ -83,6 +84,9 @@ const smartSubmitalSlice = createSlice({
     setRightPanelNavCount: (state, action: PayloadAction<any>) => {
       state.rightPanelNavCount = action.payload;
     },
+    setShowManageSubmittalsAI: (state, action: PayloadAction<any>) => {
+      state.showManageSubmittalsAI = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -125,7 +129,8 @@ export const {
   setSSRightPanelData,
   setRightPanelUpdated,
   setRightPanelNavCount,
-  setRightPanelNavFlag
+  setRightPanelNavFlag,
+  setShowManageSubmittalsAI
 } = smartSubmitalSlice.actions;
 
 export default smartSubmitalSlice.reducer;

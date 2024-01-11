@@ -220,6 +220,10 @@ const SBSManagerWindow = (props: any) => {
                 console.log('smartitemlink data', data);
                 setSmartItemLink(data)
                 break;
+              case "savesupplementalinfo":
+                console.log('savesupplementalinfo data', data);
+                dispatch(getSBSGridList());
+                break;                
             }
           }
         };

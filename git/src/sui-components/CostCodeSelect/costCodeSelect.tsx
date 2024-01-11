@@ -170,7 +170,7 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 	}
 	const handleSearchClear = () => {
 		setSearch('');
-		setItems(filteredData ? filteredData : []);
+		setItems(options ? options : [])
 	}
 
 	// Changing the FilterIDs to required format

@@ -56,272 +56,162 @@ export const ForecastData = [
 ]
 
 export const ForecastApiData = {
-	"forecastBalance": 28900.00,
-	"forecastContract": 180000.00,
+	"forecastBalance": -31330500,
+	"forecastContract": 69500,
 	"totalPendingRefund": null,
-	"totalPendingChangeOrder": 0.00,
-	"totalPendingTransactions": 120000.00,
+	"totalPendingChangeOrder": 0,
+	"totalPendingTransactions": 15700000,
 	"forecasts": [
 		{
-			"id": "560591be-5341-4e90-add3-6a98f6bc2d73",
-			"forecastQuantity": 50,
-			"name": "Finishes",
+			"id": "026221c7-ef06-4ba5-8cf2-6d44d9aba60d",
+			"forecastQuantity": 3,
+			"name": "00 Masonry",
 			"type": "Summary Tag",
-			"date": "2023-05-28T00:00:00Z",
-			"actualQuantity": 25,
-			"actualCost": 25000.00000,
-			"forecastAmount": 50000.00000,
+			"date": "2023-06-25T00:00:00Z",
+			"actualQuantity": null,
+			"actualCost": 0,
+			"forecastAmount": 15000000,
 			"actualEndDate": null,
-			"balance": 50000.00000,
+			"balance": 0,
 			"actualStartDate": null,
-			"projectedEndDate": "2023-06-03T00:00:00Z",
-			"projectedStartDate": "2023-05-28T00:00:00Z",
+			"projectedEndDate": "2023-07-01T00:00:00Z",
+			"projectedStartDate": "2023-06-25T00:00:00Z",
 			"board": {
 				"id": "36dc5d58-eb9c-4d35-9038-9865de0f07bf",
 				"name": "budget rollups"
 			},
-			"budgetItem": {
-				"id": "8e8ae8d4-ae1c-4f35-b738-4f1b921e5933",
-				"name": "00025",
-				"costType": "L - Labor",
-				"costCode": "Ceiling Suspension 9120",
-				"division": "09 - Finishes",
-				"unitCost": 1000.00,
-				"bidValue": 4500.00,
-				"unitOfMeasure": "Hours",
-				"budgetAmount": 100000.00,
-				"estimatedEndDate": "2023-05-10T00:00:00Z",
-				"estimatedStartDate": "2023-05-10T00:00:00Z"
-			},
 			"smartapp": null,
 			"schedule": {
 				"id": "8005485e-179a-45ec-9485-24420e356c54",
 				"name": "Plan View"
+			},
+			"budgetItem": {
+				"budgetAmount": 0,
+				"name": "00056",
+				"id": "5728a944-442c-4a69-aef0-7a4304ea5599",
+				"quantity": null,
+				"costType": null,
+				"costCode": null,
+				"division": null,
+				"unitCost": null,
+				"description": null,
+				"unitOfMeasure": null,
+				"estimatedEndDate": null,
+				"estimatedStartDate": null
 			}
 		},
 		{
-			"id": "560591be-5341-4e90-add3-6a98f6bc2d73",
-			"forecastQuantity": 50,
-			"name": "Finishes",
+			"id": "b2cc04a8-d257-46d1-ae7c-992e479aebdc",
+			"forecastQuantity": 3,
+			"name": "57 CC Rool up",
 			"type": "Summary Tag",
-			"date": "2023-05-28T00:00:00Z",
-			"actualQuantity": 25,
-			"actualCost": 25000.00000,
-			"forecastAmount": 50000.00000,
+			"date": "2023-07-09T00:00:00Z",
+			"actualQuantity": null,
+			"actualCost": 0,
+			"forecastAmount": 600000,
 			"actualEndDate": null,
-			"balance": 50000.00000,
+			"balance": 0,
 			"actualStartDate": null,
-			"projectedEndDate": "2023-06-03T00:00:00Z",
-			"projectedStartDate": "2023-05-28T00:00:00Z",
+			"projectedEndDate": "2023-07-15T00:00:00Z",
+			"projectedStartDate": "2023-07-09T00:00:00Z",
 			"board": {
 				"id": "36dc5d58-eb9c-4d35-9038-9865de0f07bf",
 				"name": "budget rollups"
 			},
-			"budgetItem": {
-				"id": "8e8ae8d4-ae1c-4f35-b738-4f1b921e5933",
-				"name": "00025",
-				"costType": "L - Labor",
-				"costCode": "Ceiling Suspension 9120",
-				"division": "09 - Finishes",
-				"unitCost": 1000.00,
-				"bidValue": 3421.00,
-				"unitOfMeasure": "Hours",
-				"budgetAmount": 100000.00,
-				"estimatedEndDate": "2023-05-10T00:00:00Z",
-				"estimatedStartDate": "2023-05-10T00:00:00Z"
-			},
 			"smartapp": null,
 			"schedule": {
 				"id": "8005485e-179a-45ec-9485-24420e356c54",
 				"name": "Plan View"
-			}
-		},
-		{
-			"id": "560591be-5341-4e90-add3-6a98f6bc2d73",
-			"forecastQuantity": 50,
-			"name": "Finishes",
-			"type": "Summary Tag",
-			"date": "2023-05-28T00:00:00Z",
-			"actualQuantity": 25,
-			"actualCost": 25000.00000,
-			"forecastAmount": 50000.00000,
-			"actualEndDate": null,
-			"balance": 50000.00000,
-			"actualStartDate": null,
-			"projectedEndDate": "2023-06-03T00:00:00Z",
-			"projectedStartDate": "2023-05-28T00:00:00Z",
-			"board": {
-				"id": "36dc5d58-eb9c-4d35-9038-9865de0f07bf",
-				"name": "budget rollups"
 			},
 			"budgetItem": {
-				"id": "8e8ae8d4-ae1c-4f35-b738-4f1b921e5933",
-				"name": "00025",
-				"costType": "L - Labor",
-				"costCode": "Ceiling Suspension 9120",
-				"division": "09 - Finishes",
-				"unitCost": 1000.00,
-				"bidValue": 100000.00,
-				"unitOfMeasure": "Hours",
-				"budgetAmount": 100000.00,
-				"estimatedEndDate": "2023-05-10T00:00:00Z",
-				"estimatedStartDate": "2023-05-10T00:00:00Z"
-			},
-			"smartapp": null,
-			"schedule": {
-				"id": "8005485e-179a-45ec-9485-24420e356c54",
-				"name": "Plan View"
-			}
-		},
-		{
-			"id": "2a12d498-b739-4a6b-a1f6-67e3882f614c",
-			"forecastQuantity": 50,
-			"name": "Forecasts-1",
-			"type": "Summary Tag",
-			"date": "2023-05-07T00:00:00Z",
-			"actualQuantity": null,
-			"actualCost": 0.00000,
-			"forecastAmount": 50000.00000,
-			"actualEndDate": null,
-			"balance": 50000.00000,
-			"actualStartDate": null,
-			"projectedEndDate": "2023-05-13T00:00:00Z",
-			"projectedStartDate": "2023-05-07T00:00:00Z",
-			"board": {
-				"id": "46205b2e-8aa2-45d5-ae03-3f4c971cf0d2",
-				"name": "Budget Manager"
-			},
-			"budgetItem": {
-				"id": "8e8ae8d4-ae1c-4f35-b738-4f1b921e5933",
-				"name": "00025",
-				"costType": "L - Labor",
-				"costCode": "Ceiling Suspension 9120",
-				"division": "09 - Finishes",
-				"unitCost": 1000.00,
-				"bidValue": 4500.00,
-				"unitOfMeasure": "Hours",
-				"budgetAmount": 100000.00,
-				"estimatedEndDate": "2023-05-10T00:00:00Z",
-				"estimatedStartDate": "2023-05-10T00:00:00Z"
-			},
-			"smartapp": null,
-			"schedule": {
-				"id": "8005485e-179a-45ec-9485-24420e356c54",
-				"name": "Plan View"
-			}
-		},
-		{
-			"id": "2a12d498-b739-4a6b-a1f6-67e3882f614c",
-			"forecastQuantity": 50,
-			"name": "Forecasts-1",
-			"type": "Summary Tag",
-			"date": "2023-05-07T00:00:00Z",
-			"actualQuantity": null,
-			"actualCost": 0.00000,
-			"forecastAmount": 50000.00000,
-			"actualEndDate": null,
-			"balance": 50000.00000,
-			"actualStartDate": null,
-			"projectedEndDate": "2023-05-13T00:00:00Z",
-			"projectedStartDate": "2023-05-07T00:00:00Z",
-			"board": {
-				"id": "46205b2e-8aa2-45d5-ae03-3f4c971cf0d2",
-				"name": "Budget Manager"
-			},
-			"budgetItem": {
-				"id": "8e8ae8d4-ae1c-4f35-b738-4f1b921e5933",
-				"name": "00025",
-				"costType": "L - Labor",
-				"costCode": "Ceiling Suspension 9120",
-				"division": "09 - Finishes",
-				"unitCost": 1000.00,
-				"bidValue": 3421.00,
-				"unitOfMeasure": "Hours",
-				"budgetAmount": 100000.00,
-				"estimatedEndDate": "2023-05-10T00:00:00Z",
-				"estimatedStartDate": "2023-05-10T00:00:00Z"
-			},
-			"smartapp": null,
-			"schedule": {
-				"id": "8005485e-179a-45ec-9485-24420e356c54",
-				"name": "Plan View"
-			}
-		},
-		{
-			"id": "2a12d498-b739-4a6b-a1f6-67e3882f614c",
-			"forecastQuantity": 50,
-			"name": "Forecasts-1",
-			"type": "Summary Tag",
-			"date": "2023-05-07T00:00:00Z",
-			"actualQuantity": null,
-			"actualCost": 0.00000,
-			"forecastAmount": 50000.00000,
-			"actualEndDate": null,
-			"balance": 50000.00000,
-			"actualStartDate": null,
-			"projectedEndDate": "2023-05-13T00:00:00Z",
-			"projectedStartDate": "2023-05-07T00:00:00Z",
-			"board": {
-				"id": "46205b2e-8aa2-45d5-ae03-3f4c971cf0d2",
-				"name": "Budget Manager"
-			},
-			"budgetItem": {
-				"id": "8e8ae8d4-ae1c-4f35-b738-4f1b921e5933",
-				"name": "00025",
-				"costType": "L - Labor",
-				"costCode": "Ceiling Suspension 9120",
-				"division": "09 - Finishes",
-				"unitCost": 1000.00,
-				"bidValue": 100000.00,
-				"unitOfMeasure": "Hours",
-				"budgetAmount": 100000.00,
-				"estimatedEndDate": "2023-05-10T00:00:00Z",
-				"estimatedStartDate": "2023-05-10T00:00:00Z"
-			},
-			"smartapp": null,
-			"schedule": {
-				"id": "8005485e-179a-45ec-9485-24420e356c54",
-				"name": "Plan View"
-			}
-		},
-		{
-			"id": "c97ea18c-518a-4237-ab5c-ad8e34486aa3",
-			"forecastQuantity": 200,
-			"name": "Finish E 200",
-			"type": "App Item",
-			"date": "2023-06-01T00:00:00Z",
-			"actualQuantity": null,
-			"actualCost": 0.00000,
-			"forecastAmount": 20000.00000,
-			"actualEndDate": null,
-			"balance": 60000.00000,
-			"actualStartDate": null,
-			"projectedEndDate": "2023-06-01T00:00:00Z",
-			"projectedStartDate": "2023-06-01T00:00:00Z",
-			"board": {
-				"id": "bed999c0-acd7-49ed-8ed7-768a197b1eeb",
-				"name": "Budget Dispatch"
-			},
-			"budgetItem": {
-				"id": "72f7c510-2495-48d0-a7ac-df6466081600",
-				"name": "00038",
-				"costType": "E - Equipment",
-				"costCode": "Drywall 9250",
-				"division": "09 - Finishes",
-				"unitCost": 100.00,
-				"bidValue": 81600.00,
-				"unitOfMeasure": "ea",
-				"budgetAmount": 80000.00,
+				"budgetAmount": 45000,
+				"name": "00057",
+				"id": "3190074d-2829-4ee5-849e-b74d73c4a254",
+				"quantity": null,
+				"costType": "SVC - Professional Services",
+				"costCode": "Masonry Restoration and Cleaning 4500",
+				"division": "04 - Masonry",
+				"unitCost": 200000,
+				"description": null,
+				"unitOfMeasure": "Years",
 				"estimatedEndDate": "2023-07-31T00:00:00Z",
-				"estimatedStartDate": "2023-06-01T00:00:00Z"
+				"estimatedStartDate": "2023-06-30T00:00:00Z"
+			}
+		},
+		{
+			"id": "688b488f-cc81-4aaa-831f-36e46e4982f9",
+			"forecastQuantity": 100,
+			"name": "30 Mar - Masonry Supplies",
+			"type": "Summary Tag",
+			"date": "2023-06-25T00:00:00Z",
+			"actualQuantity": null,
+			"actualCost": 0,
+			"forecastAmount": 100000,
+			"actualEndDate": null,
+			"balance": 0,
+			"actualStartDate": null,
+			"projectedEndDate": "2023-07-01T00:00:00Z",
+			"projectedStartDate": "2023-06-25T00:00:00Z",
+			"board": {
+				"id": "36dc5d58-eb9c-4d35-9038-9865de0f07bf",
+				"name": "budget rollups"
 			},
-			"smartapp": {
-				"id": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
-				"name": "Tasks"
-			},
+			"smartapp": null,
 			"schedule": {
 				"id": "8005485e-179a-45ec-9485-24420e356c54",
 				"name": "Plan View"
+			},
+			"budgetItem": {
+				"budgetAmount": 24500,
+				"name": "00058",
+				"id": "d00c9b42-8b76-40e6-a0f5-d2c5d40af89f",
+				"quantity": null,
+				"costType": "E - Equipment",
+				"costCode": "Brick Masonry Supplies 4331",
+				"division": "04 - Masonry",
+				"unitCost": 1000,
+				"description": null,
+				"unitOfMeasure": "ea",
+				"estimatedEndDate": "2023-07-31T00:00:00Z",
+				"estimatedStartDate": "2023-06-30T00:00:00Z"
+			}
+		},
+		{
+			"id": "688b488f-cc81-4aaa-881f-36e46e4982f6",
+			"forecastQuantity": 100,
+			"name": "40 Mar - Masonry Supplies",
+			"type": "Summary Tag",
+			"date": "2023-06-25T00:00:00Z",
+			"actualQuantity": null,
+			"actualCost": 0,
+			"forecastAmount": 100000,
+			"actualEndDate": null,
+			"balance": 0,
+			"actualStartDate": null,
+			"projectedEndDate": "2023-07-01T00:00:00Z",
+			"projectedStartDate": "2023-06-25T00:00:00Z",
+			"board": {
+				"id": "36dc5d58-eb9c-4d35-9038-9865de0f07bf",
+				"name": "budget rollups"
+			},
+			"smartapp": null,
+			"schedule": {
+				"id": "8005485e-179a-45ec-9485-24420e356c54",
+				"name": "Plan View"
+			},
+			"budgetItem": {
+				"budgetAmount": 24500,
+				"name": "00058",
+				"id": "d00c9b42-8b76-40e6-a0f5-d2c5d40af89f",
+				"quantity": null,
+				"costType": "E - Equipment",
+				"costCode": "Brick Masonry Supplies 4331",
+				"division": "04 - Masonry",
+				"unitCost": 1000,
+				"description": null,
+				"unitOfMeasure": "ea",
+				"estimatedEndDate": "2023-07-31T00:00:00Z",
+				"estimatedStartDate": "2023-06-30T00:00:00Z"
 			}
 		}
 	]

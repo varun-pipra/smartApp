@@ -13,7 +13,7 @@ export const SSLeftToolbar = memo((props:any) => {
   const [isOpen, setOpen] = useState(false);
   const [color, setColor] = useState(false);
   const [openTooltip, setOpenTooltip] = useState(true);
-  const { selectedRecordsData } = useAppSelector((state:any) => state.smartSubmittals);
+  const { selectedRecordsData, showManageSubmittalsAI } = useAppSelector((state:any) => state.smartSubmittals);
   const disabledField = ((defaultType === 'default') && selectedRecordsData?.length > 0);
   const handleOpen = () => {
     setOpen(true);
@@ -49,7 +49,10 @@ export const SSLeftToolbar = memo((props:any) => {
   return (
     <div className="sm-left-toolbar-cont">
       <IQTooltip title="Refresh" placement="bottom">
-        <IconButton aria-label="Refresh Spec Manager" onClick={() => handleRefresh()}>
+        <IconButton
+          aria-label="Refresh Spec Manager"
+          onClick={() => handleRefresh()}
+        >
           <span className="common-icon-refresh"></span>
         </IconButton>
       </IQTooltip>
@@ -79,18 +82,23 @@ export const SSLeftToolbar = memo((props:any) => {
         </IconButton>
       </IQTooltip> */}
       <IQTooltip title="Delete" placement="bottom">
-        <IconButton aria-label="Delete Bid response Line Item" disabled={!disabledField}>
+        <IconButton
+          aria-label="Delete Bid response Line Item"
+          disabled={!disabledField}
+        >
           <span className="common-icon-delete"></span>
         </IconButton>
       </IQTooltip>
-      <IQButton
-        className="smart-submital-left-spec-ai"
-        startIcon={<span className="common-icon-brena" />}
-        onClick={handleExtractSpecsAI}
-        disabled={!disabledField}
-      >
-        Manage Submittals.AI
-      </IQButton>
+      {showManageSubmittalsAI && (
+        <IQButton
+          className="smart-submital-left-spec-ai"
+          startIcon={<span className="common-icon-brena" />}
+          onClick={handleExtractSpecsAI}
+          disabled={!disabledField}
+        >
+          Manage Submittals.AI
+        </IQButton>
+      )}
       {isOpen && <SSMittalLeftForm arrow={true} onClose={handleClose} />}
     </div>
   );

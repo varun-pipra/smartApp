@@ -7,6 +7,7 @@ export interface VendorContractsForecastsProps {
 	loading: boolean;
 	kpiData: any;
 	forecasts: any;
+	orginalForecasts: any;
 	forecastsCount: number;
 
 }
@@ -15,6 +16,7 @@ const initialState: VendorContractsForecastsProps = {
 	loading: false,
 	kpiData: {},
 	forecasts: [],
+	orginalForecasts: [],
 	forecastsCount: 0,
 
 
@@ -49,7 +51,14 @@ export const clientContractsForecastSlice = createSlice({
 				state.forecasts = forecasts.map((txn: any) => {
 					return {
 						...txn, ...{
-							budgetLineItem: `${txn.budgetItem.name} - ${txn.budgetItem.division} - ${txn.budgetItem.costCode}`
+							budgetLineItem: `${txn.budgetItem.name ? txn.budgetItem.name : ""} ${txn.budgetItem.division ? " - " + txn.budgetItem.division : ""} ${txn.budgetItem.costCode ? " - " + txn.budgetItem.costCode : ""}`
+						}
+					};
+				});
+				state.orginalForecasts = forecasts.map((txn: any) => {
+					return {
+						...txn, ...{
+							budgetLineItem: `${txn.budgetItem.name ? txn.budgetItem.name : ""} ${txn.budgetItem.division ? " - " + txn.budgetItem.division : ""} ${txn.budgetItem.costCode ? " - " + txn.budgetItem.costCode : ""}`
 						}
 					};
 				});
@@ -62,6 +71,8 @@ export const clientContractsForecastSlice = createSlice({
 });
 
 export const { setForecasts } = clientContractsForecastSlice.actions;
+export const getForecastList = (state: RootState) => state.cCForecasts.forecasts;
+export const getOrginalForecastList = (state: RootState) => state.cCForecasts.orginalForecasts;
 export const getForecastsCount = (state: RootState) => state.cCForecasts.forecastsCount;
 
 

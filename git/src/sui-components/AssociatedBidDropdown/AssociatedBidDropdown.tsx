@@ -34,6 +34,14 @@ const AssociatedBidDropdown = (props: any) => {
   const onOpenChange = () => {
     setMenuOpen(!menuOpen);
   };
+
+  useEffect(()=>{
+    if(props?.clearSelectedValue) {
+      setSelectedValue("");
+      setAdhocBidName('');
+    }    
+
+  }, [props?.clearSelectedValue])
   useEffect(() => {
     if (menuOpen && selectedValue) {
       if (options.length > 0) {
@@ -105,6 +113,9 @@ const AssociatedBidDropdown = (props: any) => {
       >
         <ListSubheader className="award-bid-sub-header">
           Awarded Bids
+          <span className="award-bids-modal-header_close" onClick={()=> setMenuOpen(false)}>
+              +
+            </span>
         </ListSubheader>
         {options?.length > 0 && (
           <div className="award-bid-select-list-options">
@@ -133,7 +144,7 @@ const AssociatedBidDropdown = (props: any) => {
         )}
         {options.length === 0 && (
           <div className="award-bid-empty-view">
-            <div className="award-bid-empty-view_icon"></div>
+            <div className="common-icon-bid-lookup"></div>
             <div className="award-bid-empty-view_title">
               No Awarded Bids Found
             </div>

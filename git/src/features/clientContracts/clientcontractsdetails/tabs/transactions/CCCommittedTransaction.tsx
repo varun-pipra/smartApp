@@ -12,15 +12,17 @@ import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
 import TypeMenu from './typeMenu/TypeMenu';
 import TransactionGrid from './CCTransactionGrid';
-// import { getMinMaxDrawerStatus, setMinMaxDrawerStatus } from 'features/vendorcontracts/stores/VendorContractsSlice';
-import { getKpiData, getOriginalTransactions, setModifiedTransactions } from 'features/vendorcontracts/stores/tabs/transactions/TransactionTabSlice';
+import { getKpiData, getOriginalTransactions, setModifiedTransactions } from 'features/clientContracts/stores/tabs/transactions/TransactionTabSlice';
 import { getMinMaxDrawerStatus, setMinMaxDrawerStatus } from 'features/clientContracts/stores/ClientContractsSlice';
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+
 const CCCommittedTransaction = (props: any) => {
 	const dispatch = useAppDispatch();
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [searchText, setSearchText] = useState('');
 	const [filters, setFilters] = useState({});
+	const [filterOptions, setFilterOptions] = React.useState(getFilterMenuOptions());
+	const [budgetlineitem, setBudgetLineItem] = React.useState([]);
 	const kpiData = useAppSelector(getKpiData);
 	const originalTransactions = useAppSelector(getOriginalTransactions);
 	const [groupAndFilterData, setGroupAndFilterData] = React.useState<any>({ group: 'None', filter: [] });
@@ -38,6 +40,30 @@ const CCCommittedTransaction = (props: any) => {
 		props.transactiondata(values)
 	};
 
+	React.useEffect(() => {
+		let uniqueVendors: any = [];
+		originalTransactions?.map((item: any) => {
+			item?.budgetLineItem && !uniqueVendors?.map((a: any) => a.value)?.includes(item?.budgetLineItem) && uniqueVendors.push({
+				text: item?.budgetLineItem,
+				key: item?.budgetLineItem,
+				value: item?.budgetLineItem
+			});
+		});
+		setBudgetLineItem(uniqueVendors);
+	}, [originalTransactions]);
+
+	React.useEffect(() => {
+		const filtersCopy = [...filterOptions];
+		let vendorItem = filtersCopy.find((rec: any) => rec.value === "budgetLineItem");
+		if (vendorItem) vendorItem.children.items = budgetlineitem;
+		setFilterOptions(filtersCopy);
+	}, [budgetlineitem]);
+
+	useEffect(() => {
+		const filteredList: any = filterAction(originalTransactions || [], filters, searchText);
+		dispatch(setModifiedTransactions(filteredList));
+	}, [searchText, filters, originalTransactions]);
+
 	const groupHandler = (group: string) => {
 		setGroupAndFilterData({ ...groupAndFilterData, group: group });
 	};
@@ -47,35 +73,25 @@ const CCCommittedTransaction = (props: any) => {
 	};
 
 	const filterHandler = (filters: any) => {
-		// console.log("filters", filters);
-		if (_.isEmpty(filters.transactionType)) setFilters({ transactionType: [] });
+		if (_.isEmpty(filters.budgetLineItem)) setFilters({ budgetLineItem: [] });
 		else setFilters(filters);
 	};
 
-	useEffect(() => {
-		const filteredList: any = filterAction(originalTransactions || [], filters, searchText);
-		dispatch(setModifiedTransactions(filteredList));
-	}, [searchText, filters, originalTransactions]);
 
 	const filterAction = (list: Array<any>, filters: any = {}, searchText: string = '') => {
 		let filteredTransactions = [...list];
-
-		if (!_.isEmpty(filters.transactionType) || searchText) {
-			const exp = searchText ? new RegExp(searchText, 'gi') : undefined;
+		if (!_.isEmpty(filters.budgetLineItem)) {
 			filteredTransactions = filteredTransactions.filter((item) => {
-				const typeText = getTransactionTypeText(item.transactionType);
-				const vendorName = item.vendor ? item.vendor.name : '';
-				// console.log("filtersssss", filters, typeText, searchText, exp)
-
-				return (filters.transactionType.includes(typeText) || filters?.transactionType.length === 0)
-					&& (!exp || (exp && (exp.test(item.name)
-						|| exp.test(item.stageName)
-						|| exp.test(typeText)
-						|| exp.test(vendorName)
-						|| exp.test(item.invoicePONumber))));
+				const budgetLineItem = item.budgetLineItem ? item.budgetLineItem : '';
+				return (filters.budgetLineItem.includes(item.budgetLineItem) || filters?.budgetLineItem.length === 0);
 			});
 		}
-
+		if (searchText) {
+			const filteredIds = originalTransactions?.map((obj: any) => obj?.id);
+			filteredTransactions = filteredTransactions.filter((obj: any) => {
+				return filteredIds?.includes(obj?.id) && JSON.stringify(obj)?.toLowerCase()?.includes(searchText?.toLowerCase());
+			});
+		}
 		return filteredTransactions;
 	};
 
@@ -132,10 +148,11 @@ const CCCommittedTransaction = (props: any) => {
 				<div></div>
 				<IQSearch sx={{ height: '2em', width: '16rem' }}
 					groups={getGroupMenuOptions()}
-					filters={getFilterMenuOptions()}
+					filters={filterOptions}
 					onGroupChange={groupHandler}
 					onSearchChange={searchHandler}
 					onFilterChange={filterHandler}
+					defaultGroups={'budgetLineItem'}
 				/>
 			</div>
 		</div>
@@ -151,9 +168,6 @@ const getGroupMenuOptions = () => {
 	return [{
 		text: 'Budget Line Item',
 		value: 'budgetLineItem'
-	}, {
-		text: 'Trade',
-		value: 'trade'
 	}];
 };
 
@@ -164,24 +178,7 @@ const getFilterMenuOptions = () => {
 		value: 'budgetLineItem',
 		children: {
 			type: 'checkbox',
-			items: [{
-				text: '0001 - General Contracts - 01 - Airports - Equipment',
-				value: '00027'
-			}]
+			items: []
 		}
-	}, {
-		text: 'Trade',
-		key: 'trade',
-		value: 'trade',
-		children: {
-			type: 'checkbox',
-			items: [{
-				text: 'Masonary',
-				value: 136879
-			}, {
-				text: 'Woodwork',
-				value: 136880
-			}]
-		}
-	}]
+	},]
 };

@@ -25,7 +25,9 @@
         }
     }
 }
-
+.no-border {
+    border: none !important;
+}
 .user-menu-items {
     // menuItems
     border: 1px solid #ddd;

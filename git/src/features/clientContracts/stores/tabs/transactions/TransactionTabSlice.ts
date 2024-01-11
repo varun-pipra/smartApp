@@ -1,7 +1,7 @@
-import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from 'app/store';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from 'app/store';
 
-import {fetchClientContractTransactions} from './TransactionTabAPI';
+import { fetchClientContractTransactions } from './TransactionTabAPI';
 
 export interface VCTransactionsTabState {
 	loading: boolean;
@@ -19,12 +19,12 @@ const initialState: VCTransactionsTabState = {
 	originalTransactions: []
 };
 
-export const fetchTransactions = createAsyncThunk<any, any>('transactions', async ({appInfo, contractId}) => {
+export const fetchTransactions = createAsyncThunk<any, any>('transactions', async ({ appInfo, contractId }) => {
 	const response = await fetchClientContractTransactions(appInfo, contractId);
 	return response;
 });
 
-export const vendorTransactionsTabData = createSlice({
+export const clientTransactionsTabData = createSlice({
 	name: 'clientTransactionsTabData',
 	initialState,
 	reducers: {
@@ -36,13 +36,14 @@ export const vendorTransactionsTabData = createSlice({
 		builder.addCase(fetchTransactions.pending, (state) => {
 			state.loading = true;
 		}).addCase(fetchTransactions.fulfilled, (state, action) => {
-			const {transactions, ...everythingElse} = action.payload;
+			const { transactions, ...everythingElse } = action.payload;
 			state.kpiData = everythingElse;
 			state.transactionCount = transactions?.length || 0;
 			state.originalTransactions = transactions.map((txn: any) => {
 				return {
 					...txn, ...{
-						budgetLineItem: `${txn.budgetItem.name} - ${txn.budgetItem.division} - ${txn.budgetItem.costCode}`
+						// budgetLineItem: `${txn.budgetItem.name} - ${txn.budgetItem.division} - ${txn.budgetItem.costCode}`
+						budgetLineItem: `${txn.budgetItem.name ? txn.budgetItem.name : ""} ${txn.budgetItem.division ? " - " + txn.budgetItem.division : ""} ${txn.budgetItem.costCode ? " - " + txn.budgetItem.costCode : ""}`
 					}
 				};
 			});
@@ -52,11 +53,11 @@ export const vendorTransactionsTabData = createSlice({
 	}
 });
 
-export const {setModifiedTransactions} = vendorTransactionsTabData.actions;
+export const { setModifiedTransactions } = clientTransactionsTabData.actions;
 
-export const getKpiData = (state: RootState) => state.vendorTransactionsTabData.kpiData;
-export const getModifiedTransactions = (state: RootState) => state.vendorTransactionsTabData.modifiedTransactions;
-export const getOriginalTransactions = (state: RootState) => state.vendorTransactionsTabData.originalTransactions;
-export const getTransactionCount = (state: RootState) => state.vendorTransactionsTabData.transactionCount;
+export const getKpiData = (state: RootState) => state.clientTransactionsTabData.kpiData;
+export const getModifiedTransactions = (state: RootState) => state.clientTransactionsTabData.modifiedTransactions;
+export const getOriginalTransactions = (state: RootState) => state.clientTransactionsTabData.originalTransactions;
+export const getTransactionCount = (state: RootState) => state.clientTransactionsTabData.transactionCount;
 
-export default vendorTransactionsTabData.reducer;
+export default clientTransactionsTabData.reducer;
