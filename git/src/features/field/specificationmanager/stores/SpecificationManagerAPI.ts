@@ -61,7 +61,7 @@ export const fetchSpecBookPages = async (payload: any) => {
 		const responseData = await response.json();
 		return responseData || {};
 	}
-	return specBookPages;
+	return {...specBookPages, id:Math.random()};
 };
 
 export const fetchSpecSectionById = async (payload: any) => {

@@ -1,0 +1,42 @@
+.iq-fileupload-field {
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+
+	.item-row {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+
+		&.input {
+			height: 3em;
+			border: 1px solid #a4a4a4;
+			border-radius: 3px;
+		}
+
+		.tag-container {
+			width: inherit;
+			padding: 2px;
+			display: flex;
+			align-items: self-start;
+			justify-content: center;
+
+			.placeholder {
+				padding-left: 0.5em;
+    			color: rgba(0,0,0,0.5);
+			}
+
+			.MuiChip-root {
+				width: fit-content;
+				height: 100%;
+				border-radius: 3px;
+			}
+		}
+
+		.MuiButton-root {
+			padding: 2em;
+			border-radius: 3px;
+			border: 1px solid skyblue;
+		}
+	}
+}

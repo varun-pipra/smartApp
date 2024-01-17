@@ -157,7 +157,7 @@ const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
 								secondaryAction: <ArrowRight />
 							} : {
 								onClick: (e: any) => {
-									if(props.allowSubMenu) {
+									if (props.allowSubMenu && !el.isWithoutSubMenu) {
 										if(el.value === 'none') {
 											setSelectionKeys([]);
 											props.onChange && props.onChange({}, 'None');
@@ -215,7 +215,7 @@ const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
 
 export default IQIconButtonMenu;
 
-const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, selected: any, changeHandler:any, isSearchField?: boolean): ReactNode => {
+const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, selected?: any, changeHandler?:any, isSearchField?: boolean): ReactNode => {
 	let subMenuNodes: ReactNode = <></>;
 
 	switch(child.type ?? name) {
@@ -377,7 +377,13 @@ export const CheckboxListMenu = (props: {name: string, selection: any, items: Ar
       )}
       {menuItems?.map((item: any, index) => {
         const labelId = `checkbox-list-${item?.value}-${index}`;
-
+		const hasSubMenu = item.children?.items?.length > 0;
+		const subMenuNode = hasSubMenu ? getSubMenuNodeByType(item.value, item.children) : undefined;
+		const MenuListItem = hasSubMenu ? IQMenuListItem : ListItem;
+		const secondaryActionProp = hasSubMenu ? {
+			menu: subMenuNode,
+			secondaryAction: <ArrowRight />
+		} : null;
 		return <div>
 			  {!item?.hidden && (
 				<ListItem
@@ -424,9 +430,17 @@ export const CheckboxListMenu = (props: {name: string, selection: any, items: Ar
 					)}
 					<ListItemText id={labelId} primary={item?.text} />
 				  </ListItemButton>
-				  {item?.children?.type === 'custom' && (
-						<PopoverSelect open={true} options={[item]} allowSubMenu={true} defaultValue={{}} className={'no-border'}/>
-				)}
+				  {item?.children?.items?.length && (
+						<MenuListItem
+						key={`iqmenu-item-${item.value}-${index}`}
+						className={
+							selection && selection.indexOf(item.value) > -1
+								? "menu-selected"
+								: ""
+						}
+						{...secondaryActionProp}
+					/>
+				  )}
 				</ListItem>
 			  )}
 			</div>
@@ -496,7 +510,6 @@ export const PopoverSelect = (props: any) => {
 								<span className={el.iconCls}></span>
 							</ListItemIcon>
 						)}
-
 						<ListItemText key={`iqmenu-item-text-${el.value}-${index}`}>
 							{el.text}
 						</ListItemText>

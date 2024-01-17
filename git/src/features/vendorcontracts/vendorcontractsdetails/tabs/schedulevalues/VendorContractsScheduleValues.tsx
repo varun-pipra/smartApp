@@ -1342,8 +1342,10 @@ const VendorContractsScheduleValues = (props: any) => {
 						const removedItems = existedIds?.filter((id:string) => !rowIds?.includes(id));
 						console.log("existedIds", existedIds, removedItems,newlyAddedItems)
 
-						removedItems?.map((removedId:string) => {
-							deleteBudgetItem(appInfo, selectedRecord?.id, removedId, (response:any) => {})
+						removedItems?.map((removedId:string, index:number) => {
+							deleteBudgetItem(appInfo, selectedRecord?.id, removedId, (response:any) => {
+								if(removedItems?.length == index+1) newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id }))										
+							})
 						})
 
 						newlyAddedItems?.map((item:any, index:number) => {
@@ -1355,11 +1357,12 @@ const VendorContractsScheduleValues = (props: any) => {
 									response?.scheduleOfValues?.map((obj: any) => {
 										if (obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({ ...tableData, [selectedBudgetItem?.id]: { ...obj } })
 									})
-									if(newlyAddedItems?.length == index+1) dispatch(setSelectedRecord(response))
+									if(newlyAddedItems?.length == index+1) { dispatch(setSelectedRecord(response)) 
+										newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id }))										
+									}
 								}
 							})
 						})
-						newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id }))
 					}}
 					alertTitle={'Warning'}
 					alertText={<span>
@@ -1371,6 +1374,7 @@ const VendorContractsScheduleValues = (props: any) => {
 						
 					</span>}
 					disableRowsKey={'vendorContract'}
+					moduleName={'VendorContracts'}
 					// allowMarkupFee={settingsData?.allowMarkupFee}					
 					// getBudgetValue={(value: any) => { setBudgetValue(value); }}
 					onClose={(val: any) => setOpenBudgetPicker(val)} />

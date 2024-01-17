@@ -21,6 +21,7 @@ export interface AppInfoState {
 	detailInfoSelectionIndex?: any;
 	toggleBlockchainAuthModal?: boolean;
 	showSettingsPanel?: boolean;
+	customDatesRange?:any;
 };
 
 const initialState: AppInfoState = {
@@ -40,7 +41,11 @@ const initialState: AppInfoState = {
 	isAppMaximized: false,
 	detailInfoSelectionIndex: '',
 	toggleBlockchainAuthModal: false,
-	showSettingsPanel: false
+	showSettingsPanel: false,
+	customDatesRange : {
+		startDate : '',
+		endDate : ''
+	}
 };
 
 export const appInfoSlice = createSlice({
@@ -113,13 +118,16 @@ export const appInfoSlice = createSlice({
 		},
 		setShowSettingsPanel: (state, action: PayloadAction<boolean>) => {
 			state.showSettingsPanel = action.payload;
-		}
+		},
+		setCustomDatesRange: (state, action: PayloadAction<any>) => {
+			state.customDatesRange = action.payload;
+		},
 	}
 });
 
 export const {setServer, setCostCodeList, setCostTypeList, setCostUnitList, setCostCodeDivisionList, setCurrencySymbol,
 	setCurrencyCode, setAppWindowMaximize, setFullView, setEnableAddBtn, setSketchIns, setSketchMarkup, setSketchPageInfo,
-	setIsAppMaximized, setDetailInfoSelectionIndex, setShowSettingsPanel, setToggleBlockchainAuthModal} = appInfoSlice.actions;
+	setIsAppMaximized, setDetailInfoSelectionIndex, setShowSettingsPanel, setToggleBlockchainAuthModal, setCustomDatesRange} = appInfoSlice.actions;
 
 export const getServer = (state: RootState) => state.appInfo.server;
 export const getCostCodeList = (state: RootState) => state.appInfo.costCodeList;
@@ -134,5 +142,6 @@ export const getSketchMarkup = (state: RootState) => state.appInfo.sketchMarkup;
 export const getSketchPageInfo = (state: RootState) => state.appInfo.sketchPageInfo;
 export const getCurrentDetailInfoSelectionIndex = (state: RootState) => state.appInfo.detailInfoSelectionIndex;
 export const getShowSettingsPanel = (state: RootState) => state.appInfo.showSettingsPanel;
+export const getCustomDatesRange = (state: RootState) => state.appInfo.customDatesRange;
 
 export default appInfoSlice.reducer;

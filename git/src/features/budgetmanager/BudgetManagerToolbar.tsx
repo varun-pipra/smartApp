@@ -47,6 +47,7 @@ import SUIAlert from "sui-components/Alert/Alert";
 import {getBidStatusIdFromText, statusFilterOptions} from "utilities/bid/enums";
 import {vendorContractsStatusFilterOptions} from "utilities/vendorContracts/enums";
 import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
+import BudgetImporter from "./import/BudgetImporter";
 
 const BudgetManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -72,13 +73,14 @@ const BudgetManagerToolbar = (props: any) => {
 	const [locations, setLocations] = useState<any>([]);
 	const [gridRefreshed, setGridRefreshed] = useState<any>(false);
 	const [vendors, setVendors] = useState<any>([]);
+	const [isImportVisible, setImportVisible] = useState<boolean>(false);
 	const [divisions, setDivisions] = useState<any>([]);
 	const [costCodeList, setCostCodeList] = useState<any>([]);
 
 	useEffect(() => {
 		if(originalGridApiData?.length > 0) {
 			let locationRecords: any = [];
-			let vendorRecords : any = [];
+			let vendorRecords: any = [];
 			let costCodeUniqueRecords: any = [];
 			let divisionUniqueRecords: any = [];
 			originalGridApiData.forEach((rec: any) => {
@@ -88,8 +90,8 @@ const BudgetManagerToolbar = (props: any) => {
 							locationRecords.push(item);
 						}
 					});
-				} 
-				if (rec.Vendors?.length > 0) {
+				}
+				if(rec.Vendors?.length > 0) {
 					rec.Vendors.forEach((item: any) => {
 						if(vendorRecords.findIndex((obj: any) => obj.id === item.id) === -1) {
 							vendorRecords.push(item);
@@ -395,6 +397,15 @@ const BudgetManagerToolbar = (props: any) => {
 							<span className="common-icon-delete"></span>
 						</IconButton>
 					</IQTooltip>
+					<IQTooltip title="Import" placement={"bottom"}>
+						<IconButton
+							aria-label="Import Budget Items"
+							// disabled={disableDelete}
+							onClick={() => setImportVisible(true)}
+						>
+							<span className="common-icon-Importui-appcls"></span>
+						</IconButton>
+					</IQTooltip>
 				</>
 			</div>
 			<div key="toolbar-search" className="toolbar-item-wrapper search-wrapper">
@@ -453,7 +464,7 @@ const BudgetManagerToolbar = (props: any) => {
 					</IconButton>
 				</IQTooltip> */}
 			</div>
-			{openImportCSVPopup ? (
+			{/* {openImportCSVPopup ? (
 				<ImportCSVData
 					open={true}
 					onClose={() => {
@@ -465,7 +476,8 @@ const BudgetManagerToolbar = (props: any) => {
 				/>
 			) : (
 				<></>
-			)}
+			)} */}
+			{isImportVisible && <BudgetImporter onClose={() => setImportVisible(false)} />}
 			{openSettingPopup && (
 				<SUIDrawer
 					PaperProps={{

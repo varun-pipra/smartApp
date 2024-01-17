@@ -136,6 +136,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
 		presenceProps: {
 			presenceId: 'SBSManager-LineItem-presence',
 			showLiveSupport: true,
+			showPrint: true,
 			showLiveLink: false,
 			showStreams: true,
 			showComments: false,

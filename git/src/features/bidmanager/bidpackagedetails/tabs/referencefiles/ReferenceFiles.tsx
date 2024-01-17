@@ -114,7 +114,7 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 	const [openSpecDocViewer,setOpenSpecDocViewer] = useState(false);
     const [specBookPagesData, setSpecBookPagesData] = useState({});
 	const [sepcSelectedRecord,setSepcSelectedRecord] = useState({});
-	const {sepcSelectedRecordInAddSpecDlg} = useAppSelector((state) => state.bidManager);
+	const {specSelectedRecInAddSpecDlg} = useAppSelector((state) => state.bidManager);
 
 	useEffect(() => {
 		if(specBookpages.hasOwnProperty('totalCount')){
@@ -124,8 +124,8 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 	}, [specBookpages]);
 
 	useEffect(()=>{
-		setSepcSelectedRecord(sepcSelectedRecordInAddSpecDlg)
-	},[sepcSelectedRecordInAddSpecDlg])
+		setSepcSelectedRecord(specSelectedRecInAddSpecDlg)
+	},[specSelectedRecInAddSpecDlg])
 
 	useEffect(()=>{
 	if(appInfo){

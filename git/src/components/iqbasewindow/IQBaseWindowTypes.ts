@@ -12,6 +12,7 @@ export interface IQBaseWindowToolsProp {
 export interface IQBaseWindowPresenceProp {
 	presenceId?: any;
 	showBrena?: boolean;
+	showPrint?:boolean;
 	showLiveSupport?: boolean;
 	showLiveLink?: boolean;
 	showStreams?: boolean;

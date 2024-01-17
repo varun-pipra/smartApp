@@ -117,6 +117,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 			domElementId: presenceId,
 			initialconfig: {
 				'showLiveSupport': true,
+				'showPrint': true,
 				'showLiveLink': false,
 				'showStreams': true,
 				'showComments': false,

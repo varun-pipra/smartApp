@@ -4,6 +4,7 @@ import IQSelect from 'components/iqselect/IQSelect';
 import Location from 'features/common/locationfield/LocationField';
 import {hideLoadMask} from 'app/hooks';
 import {TextField, IconButton} from '@mui/material';
+import IQFileUploadField from 'components/iqfileuploadfield/IQFileUploadField';
 
 const options = [{name: 'UK'}, {name: 'USA'}, {name: 'USA'}, {name: 'USA'}, {name: 'USA'}, {name: 'USA'}, {name: 'USA'}, {name: 'USA'}, {name: 'USA'}];
 
@@ -11,6 +12,13 @@ export default () => {
 	useEffect(() => {
 		hideLoadMask();
 	}, []);
+
+	return <IQFileUploadField
+		label='Select File to Import'
+		placeholder='Note: Supported file .xlsx or .xls'
+		onFileChange={() => {}}
+	/>;
+
 	// return <FieldContainer className='common-icon-eraser'>
 	// 	<Select placeholder='Select'>
 	// 		<optgroup label="Swedish Cars">
@@ -23,15 +31,15 @@ export default () => {
 	// 		</optgroup>
 	// 	</Select>
 	// </FieldContainer>;
-	return <IQSelect
-		// label='Country'
-		// inputProps={{ placeholder: 'Select' }}
-		placeholder='Select'
-		MenuProps={{sx: {height: '10em'}}}
-		displayField='name'
-		valueField='name'
-		options={options}
-	/>;
+	// return <IQSelect
+	// 	// label='Country'
+	// 	// inputProps={{ placeholder: 'Select' }}
+	// 	placeholder='Select'
+	// 	MenuProps={{sx: {height: '10em'}}}
+	// 	displayField='name'
+	// 	valueField='name'
+	// 	options={options}
+	// />;
 
 	// const [ value, setValue ] = useState<any>([ 3, 72 ]);
 	// const [ inputValue, setInputValue ] = useState<any>([ "1st Floor - SmartApp B1", "ADA SINGLE - LEVEL 2 - Android BIM File" ]);

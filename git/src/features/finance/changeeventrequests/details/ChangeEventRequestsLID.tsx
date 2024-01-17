@@ -308,6 +308,7 @@ const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 		presenceProps: {
 			presenceId: 'ChangeEventRequests-LineItem-presence',
 			showLiveSupport: true,
+			showPrint: true,
 			showLiveLink: false,
 			showStreams: true,
 			showComments: false,

@@ -17,7 +17,7 @@ import { Box, InputLabel, Stack } from '@mui/material';
 const Grouping = ({ data, groupKey, onResponseClick, readOnly }: any) => {
 	var tinycolor = require('tinycolor2');
 	// Group the data by companyName
-	const groupedData = data?.reduce((groups: any, item: any) => {
+	const groupedData = data && data?.reduce((groups: any, item: any) => {
 		const groupValue = item[groupKey];
 		if (!groups[groupValue]) {
 			groups[groupValue] = [];
@@ -85,8 +85,8 @@ const BidQueries = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const { BidQueriesData } = useAppSelector((state) => state.bidQueries);
-	const [queriesData, setQueriesData] = useState([]);
-	const [aliasQueriesData, setAliasQueriesData] = useState([]);
+	const [queriesData, setQueriesData] = useState<any>([]);
+	const [aliasQueriesData, setAliasQueriesData] = useState<any>([]);
 	const [query, setQuery] = useState<any>();
 	const { selectedRecord } = useAppSelector((state) => state.bidResponseManager);
 	const [group, setGroup] = useState<any>({
@@ -143,6 +143,7 @@ const BidQueries = (props: any) => {
 				companyName: data?.queryBy?.companyName,
 				companyThumbnail: data?.queryBy?.companyThumbnail,
 				privacy: data?.queryResponse?.isPrivate ? 0 : 1,
+				privacyduplicate: data?.queryResponse?.isPrivate == false ? 'Public' : 'Private',
 				isReply: status,
 				responseName: data?.queryResponse?.responseBy?.firstName + ' ' + data?.queryResponse?.responseBy?.lastName,
 				responseTimestamp: formatDate(data?.queryResponse?.responseDate),
@@ -177,8 +178,8 @@ const BidQueries = (props: any) => {
 	};
 
 	const handleOnSearchChange = (searchText: string) => {
-		if (queriesData.length && searchText !== '') {
-			const firstResult = queriesData.filter((obj: any) => {
+		if (searchText !== '') {
+			const firstResult = aliasQueriesData.length > 0 && aliasQueriesData.filter((obj: any) => {
 				return JSON.stringify(obj).toLowerCase().includes(searchText.toLowerCase());
 			});
 			setQueriesData(firstResult);

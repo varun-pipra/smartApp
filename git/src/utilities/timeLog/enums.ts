@@ -9,3 +9,16 @@ export const getTimeLogStatus = (value: any) => {
 	};
 	return types[value];
 };
+
+export const getTimeLogDateRange = (value: any) => {
+	const types: any = {
+		'today': "Today",
+		'yesterday': "Yesterday",
+		'lastWeek': "Last Week",
+		'thisWeek': "This Week",
+		'thisMonth': 'This Month',
+		'lastMonth': 'Last Month',
+		'future': 'Future'
+	};
+	return types[value];
+};

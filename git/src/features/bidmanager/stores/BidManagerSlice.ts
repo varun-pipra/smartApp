@@ -23,7 +23,7 @@ export interface BidManagerState {
 	showToastMessage: any;
 	showToastMessage2: any;
 	showContracts: boolean;
-	sepcSelectedRecordInAddSpecDlg:any;
+	specSelectedRecInAddSpecDlg:any;
 };
 
 const initialState: BidManagerState = {
@@ -43,7 +43,7 @@ const initialState: BidManagerState = {
 	showToastMessage: {displayToast: false, message: ''},
 	showToastMessage2: {displayToast: false, message: ''},
 	showContracts: false,
-	sepcSelectedRecordInAddSpecDlg:{}
+	specSelectedRecInAddSpecDlg:{}
 };
 
 export const fetchBudgetLineItems = createAsyncThunk<any, any>(
@@ -149,7 +149,7 @@ export const bidManagerSlice = createSlice({
 			state.showContracts = action.payload;
 		},
 		setSepcSelectedRecord:(state, action: PayloadAction<any>)=>{
-			state.sepcSelectedRecordInAddSpecDlg = action.payload
+			state.specSelectedRecInAddSpecDlg = action.payload
 		}
 	},
 	extraReducers: (builder) => {

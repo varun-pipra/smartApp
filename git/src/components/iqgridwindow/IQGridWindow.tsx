@@ -29,7 +29,7 @@ type IQGridWindowProps = IQBaseWindowProps & {
 	detailGridNavigation?: boolean;
 	currentRowSelectionData?: any;
 	showPinned?: boolean;
-	getLIDOpen?:any;
+	getLIDOpen?: any;
 };
 
 const IQGridWindow = ({ className, content = {}, companyInfo = false, lidCondition, manualLIDOpen, onDetailClose, showPinned = false, getLIDOpen = () => { },
@@ -100,7 +100,7 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 		if ((!lidCondition || result === true) && !row?.node?.group) {
 			setOpenLID(true);
 			setDetails(row.data);
-			if(getLIDOpen ?? false) {
+			if (getLIDOpen ?? false) {
 				getLIDOpen(true);
 			}
 		}
@@ -110,7 +110,7 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 		setOpenLID(false);
 		onDetailClose && onDetailClose();
 		setDetails(undefined);
-		if(getLIDOpen ?? false) {
+		if (getLIDOpen ?? false) {
 			getLIDOpen(false);
 		}
 	};
@@ -218,6 +218,7 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 							presenceProps={{
 								showStreams: true,
 								showLiveSupport: presenceProps?.presenceId,
+								showPrint: presenceProps?.presenceId,
 								presenceId: (presenceProps?.presenceId && presenceProps?.presenceId + '-lid') || ''
 							}}
 							navigationPages={gridNavigationCount}
@@ -285,6 +286,7 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 				presenceProps={{
 					showStreams: true,
 					showLiveSupport: presenceProps?.presenceId,
+					showPrint: presenceProps?.presenceId,
 					presenceId: (presenceProps?.presenceId && presenceProps?.presenceId + '-lid') || ''
 				}}
 			/> : ''}

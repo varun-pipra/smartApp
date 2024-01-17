@@ -37,6 +37,7 @@ import {
 import React from "react";
 import SmartSubmittalLID from "./details/SmartSubmittalLID";
 import TabbedWindowContent from "components/iqtabbedwindow/tab/TabbedWindowContent";
+import { setShowExtractSpecAI } from "../specificationmanager/stores/SpecificationManagerSlice";
 interface SmartSubmittalWindowProps {
 	activeTab?: String;
 }
@@ -433,6 +434,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 		if(server) {
 			dispatch(getSubmittalType());
 			dispatch(setShowManageSubmittalsAI(server.showBrena));
+			dispatch(setShowExtractSpecAI(server.showBrena));
 		}
 		if(defaultType && server)
 			dispatch(getSmartSubmitalGridList({type: defaultType}));
@@ -532,6 +534,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 							case "showBrena":
 								console.log('showBrena', data);
 								dispatch(setShowManageSubmittalsAI(data.data));
+								dispatch(setShowExtractSpecAI(data.data));
 								break;
 						}
 					}
@@ -858,6 +861,9 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 	// const modifiedData = searchAndFilter(rowData);
 	const componentPropsChanged = useCallback(
 		(params: any) => {
+			if([undefined, ...nonGroupCols].includes(defaultGroupValue)) {
+				document.querySelectorAll('.ag-selection-checkbox')?.forEach((x:any) => x.style.display = 'none');
+			};
 			if(defaultType === "default") {
 				const cols: any = params.api.getColumnDefs();
 				let updatedCols: any;
@@ -878,7 +884,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 				});
 				if(!_.isEqual(cols, updatedCols)) {
 					params.api.setColumnDefs(updatedCols);
-				}
+				};
 			}
 		},
 		[colDefs, activeTab]

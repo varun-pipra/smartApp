@@ -1,6 +1,6 @@
 import './IQGridWindowDetail.scss';
 
-import {IQBaseWindowPresenceProp} from 'components/iqbasewindow/IQBaseWindowTypes';
+import { IQBaseWindowPresenceProp } from 'components/iqbasewindow/IQBaseWindowTypes';
 import IQButton from 'components/iqbutton/IQButton';
 import IQGridLID from 'components/iqgridwindowdetail/IQGridWindowDetail';
 import IQObjectPage from 'components/iqobjectpage/IQObjectPage';
@@ -8,15 +8,15 @@ import IQTooltip from 'components/iqtooltip/IQTooltip';
 import DynamicPage, {
 	DynamicPageProps, IQDynamicPropsHeadContentProps
 } from 'components/ui5/dynamicpage/DynamicPage';
-import {appInfoData} from 'data/appInfo';
+import { appInfoData } from 'data/appInfo';
 import AwardBid from 'features/bidmanager/bidpackagedetails/tabs/awardbid/AwardBid';
 import Bidders from 'features/bidmanager/bidpackagedetails/tabs/bidders/Bidders';
-import React, {memo, useEffect, useRef, useState} from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
-import {renderPresence} from 'utilities/presence/Presence';
-import {Close} from '@mui/icons-material';
-import {Box, IconButton, InputAdornment, InputLabel, Stack, TextField} from '@mui/material';
-import {postMessage} from 'app/utils';
+import { renderPresence } from 'utilities/presence/Presence';
+import { Close } from '@mui/icons-material';
+import { Box, IconButton, InputAdornment, InputLabel, Stack, TextField } from '@mui/material';
+import { postMessage } from 'app/utils';
 import BlockchainIB from 'features/common/informationBubble/BlockchainIB';
 
 interface IQGridWindowDetailFooterProps {
@@ -78,16 +78,16 @@ const IQGridWindowDetail = ({
 	};
 
 	useEffect(() => {
-		if(tabSelected) {
+		if (tabSelected) {
 			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, tabid.current, data?.id, data?.code);
-			if(enableHelp) {
+			if (enableHelp) {
 				help(false);
 			};
 		}
 	}, [tabSelected]);
 
 	const help = (isFromHelpIcon: any) => {
-		const body = {iframeId: iFrameId, roomId: data?.id, appType: appType, tabName: tabid.current, isFromHelpIcon: isFromHelpIcon};
+		const body = { iframeId: iFrameId, roomId: data?.id, appType: appType, tabName: tabid.current, isFromHelpIcon: isFromHelpIcon };
 		postMessage({
 			event: "help",
 			body: body
@@ -95,11 +95,9 @@ const IQGridWindowDetail = ({
 	};
 
 	useEffect(() => {
-		if(appInfo) {
-			console.log('data', data);
-			if(presenceRef.current) return;
+		if (appInfo) {
+			if (presenceRef.current) return;
 			else {
-				console.log('else');
 				presenceRef.current = true;
 				renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, tabid.current, data?.id, data?.code);
 			}
@@ -113,7 +111,7 @@ const IQGridWindowDetail = ({
 	}, [navigationDisableFlag]);
 
 	const onScroll = (value: any) => {
-		if(pinned == false) {setCollapsed(value);}
+		if (pinned == false) { setCollapsed(value); }
 	};
 
 	const presenceId = presenceProps?.presenceId || '';
@@ -122,7 +120,7 @@ const IQGridWindowDetail = ({
 		pinned: pinned,
 		headContent: headContent,
 		collapsed: collapsed,
-		onPinClick: (value: any) => {setPinned(value);},
+		onPinClick: (value: any) => { setPinned(value); },
 		bodyContent: <IQObjectPage
 			tabs={tabs || []}
 			defaultTabId={defaultTabId}
@@ -134,7 +132,7 @@ const IQGridWindowDetail = ({
 	};
 	const rigthpanelClose = () => {
 		onClose();
-		const body = {iframeId: iFrameId, roomId: data?.id, appType: appType, isFromHelpIcon: false};
+		const body = { iframeId: iFrameId, roomId: data?.id, appType: appType, isFromHelpIcon: false };
 		postMessage({
 			event: "help",
 			body: body
@@ -142,7 +140,7 @@ const IQGridWindowDetail = ({
 	};
 	return <SUIDrawer
 		className='iqgrid-window-details-root'
-		PaperProps={{style: {position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a'}}}
+		PaperProps={{ style: { position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a' } }}
 		anchor='right'
 		variant='permanent'
 		elevation={8}
@@ -153,7 +151,7 @@ const IQGridWindowDetail = ({
 			{showSubTitle && (
 				<span>{subtitle || <></>}</span>
 			)}
-			<Stack direction='row' style={{gap: '4px'}}>
+			<Stack direction='row' style={{ gap: '4px' }}>
 				{showHepIcon && (
 					<IconButton
 						className="close-btn live-support-cls"
@@ -166,7 +164,7 @@ const IQGridWindowDetail = ({
 				<IconButton
 					className='close-btn'
 					aria-label='Close Right Pane'
-					onClick={() => {rigthpanelClose();}}
+					onClick={() => { rigthpanelClose(); }}
 				>
 					<Close />
 				</IconButton>
@@ -187,7 +185,7 @@ const IQGridWindowDetail = ({
 							size='small'
 							disabled={prevBtnDisabled}
 							onClick={() => {
-								if(onPrevious) onPrevious();
+								if (onPrevious) onPrevious();
 								else
 									onNavigation && onNavigation('-');
 							}}
@@ -207,7 +205,7 @@ const IQGridWindowDetail = ({
 							size='small'
 							disabled={nextBtnDisabled}
 							onClick={() => {
-								if(onNext) onNext();
+								if (onNext) onNext();
 								else
 									onNavigation && onNavigation('+');
 							}}

@@ -151,6 +151,19 @@ const ProjectTeamWindow = (props: any) => {
 	const groupKeyValue = useRef<any>(null);
 	const classes = useStyles2();
 	const skillsData: any = useAppSelector(getSkillsData);
+	const getSkillsOptions = () => {
+		let groupedList: any = [];
+		skillsData.map((data: any) => {
+			groupedList.push({
+				...data,
+				value: data.id,
+				label: data.name,
+				displayLabel: `${data.name + ' - ' + data.trade?.name}`
+			});
+		});
+		// setGridSkillsOptions(groupedList);
+		return groupedList
+	};
 	const tradesData: any = useAppSelector(getTradeData);
 	const workTeamsData: any = useAppSelector(getWorkTeams);
 	const companiesData: any = useAppSelector(getCompanyData);
@@ -168,7 +181,7 @@ const ProjectTeamWindow = (props: any) => {
 		display: false
 	});
 	const [companyOptions, setCompanyOptions] = useState([]);
-	const [gridSkillsOptions, setGridSkillsOptions] = useState([]);
+	const [gridSkillsOptions, setGridSkillsOptions] = useState(getSkillsOptions || []);
 	const [totalRowCount, setTotalRowCount] = useState(rowData?.length);
 	const CompanyData: any = useAppSelector(getCompanyData);
 	const CategoriesData: any = useAppSelector(getcategoriesData);
@@ -1870,19 +1883,19 @@ const ProjectTeamWindow = (props: any) => {
 		});
 		return groupedList
 	}
-	const getSkillsOptions = () => {
-		let groupedList: any = [];
-		skillsData.map((data: any) => {
-			groupedList.push({
-				...data,
-				value: data.id,
-				label: data.name,
-				displayLabel: `${data.name + ' - ' + data.trade?.name}`
-			});
-		});
-		setGridSkillsOptions(groupedList);
-		return groupedList
-	};
+	// const getSkillsOptions = () => {
+	// 	let groupedList: any = [];
+	// 	skillsData.map((data: any) => {
+	// 		groupedList.push({
+	// 			...data,
+	// 			value: data.id,
+	// 			label: data.name,
+	// 			displayLabel: `${data.name + ' - ' + data.trade?.name}`
+	// 		});
+	// 	});
+	// 	setGridSkillsOptions(groupedList);
+	// 	return groupedList
+	// };
 
 	const getTradesOptions = () => {
 		let groupedList: any = [];

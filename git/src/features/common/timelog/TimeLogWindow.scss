@@ -60,4 +60,15 @@
             color: #666;
         }
     }
+    .blue-color {
+        color: #059cdf;
+        cursor: pointer;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        .common-icon-c-mark:before {
+            color: #26d8b1;
+            font-size: 24px;
+        }
+    }
 }

@@ -618,7 +618,7 @@ const SafetyViolation = (props: any) => {
 							Do you want to Expunge safety violation record {selectedRecord?.data?.name} for this worker form the public records?
 						</div>
 						<div style={styles.contextTextSubTitle}>
-							<div>Note: This record will be still available for record purpose on this project. But, we will not be recommending this worker for any feature company jobs.</div>
+							<div>Note: This record will be still available for record purpose on this project. But, we will not be recommending this worker for any future company jobs.</div>
 						</div>
 					</div>
 				}

@@ -261,6 +261,7 @@ const VendorPayApplicationsLID = ({data, ...props}: IQGridWindowDetailProps) => 
 		presenceProps: {
 			presenceId: 'VendorPayApp-LineItem-presence',
 			showLiveSupport: true,
+			showPrint: true,
 			showLiveLink: false,
 			showStreams: true,
 			showComments: false,

@@ -842,12 +842,12 @@ const UserDetails = (props: any) => {
 					id="hourlyRate"
 					className='hourly-rate-cls'
 					fullWidth
-					disabled={CategoriesData?.length === 0 || !user?.trade?.displayField}
+					disabled={CategoriesData?.length === 0 || !user?.trade?.displayField || !user.workCategory}
 					InputProps={{
 						startAdornment: (
 							<InputAdornment position='start'>
 								<span className='common-icon-hourly-rate userdetails_icons' />
-								<span style={{marginLeft : '6px',lineHeight: '0.8', color: CategoriesData?.length === 0 || !user?.trade?.displayField ? '#999' : '#333333' }}>$</span>
+								<span style={{marginLeft : '6px',lineHeight: '0.8', color: CategoriesData?.length === 0 || !user?.trade?.displayField || !user.workCategory ? '#999' : '#333333' }}>$</span>
 							</InputAdornment>
 						)
 					}}

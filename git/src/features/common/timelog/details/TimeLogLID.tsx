@@ -93,6 +93,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 		presenceProps: {
 			presenceId: 'TimeLog-LineItem-presence',
 			showLiveSupport: true,
+			showPrint: true,
 			showLiveLink: false,
 			showStreams: true,
 			showComments: false,

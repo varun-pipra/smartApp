@@ -43,11 +43,12 @@ export interface IQSearchFieldProps {
 	showExtraColumns?: boolean;
 	onSelectionChange?: any;
 	showSearchField?:boolean;
+	addKeysToFilters?: boolean;
 };
 
 const IQSearchField = (props: IQSearchFieldProps) => {
 	const { showGroups = true, showFilter = true, onFilterMenuClose = () => { }, defaultFilters, defaultSearchText = "", defaultGroups = "", headerStatusFilters,
-		isShowDropdown = false, dropDownListExtraColumns = [], dropdownValues, filterAllowSubMenu = true, isSearchPlaceHolder = 'Search', onSelectionChange = () => { }, showExtraColumns = true, showSearchField = false,...rest
+	isShowDropdown = false, dropDownListExtraColumns = [], dropdownValues, filterAllowSubMenu = true, isSearchPlaceHolder = 'Search', onSelectionChange = () => { }, showExtraColumns = true, showSearchField = false, addKeysToFilters = false, ...rest
 	} = props;
 	const [filters, setFilters] = useState<any>({});
 	const [group, setGroup] = useState({ name: '' });
@@ -92,7 +93,16 @@ const IQSearchField = (props: IQSearchFieldProps) => {
 					if (headerStatusFilters?.names?.length === 0 && prevFilters?.safetyStatus?.length > 0) {
 						return filterEl;
 					} else {
-						return { ...prevFilters, ...filterEl };
+						if (typeof filterEl === 'string' && addKeysToFilters) {
+							let prevFiltersCopy: any = {...prevFilters};
+							if (prevFiltersCopy[filterEl]) {
+								delete prevFiltersCopy[filterEl];
+								return prevFiltersCopy;
+							}
+							return { ...prevFilters, [filterEl]: filterEl }
+						} else {
+							return { ...prevFilters, ...filterEl };
+						}
 					};
 				});
 			}

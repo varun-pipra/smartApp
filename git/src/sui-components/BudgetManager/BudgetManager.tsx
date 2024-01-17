@@ -23,6 +23,7 @@ interface BudgetManagerROProps {
 	disableRowsKey?: string;
 	alertText?: React.ReactNode;
 	alertTitle?: string;
+	moduleName?:string;
 };
 
 const BudgetManagerRO = (props: BudgetManagerROProps) => {
@@ -354,27 +355,37 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 		if (_.isEmpty(filters)) setFilters({});
 		else setFilters(filters);
 		if (filters) {
-			if (filters == 'all') {
+			if (filters.all === 'all') {
 				setRowData(props?.data);
-			}
-			else if (filters == 'notContracted') {
-				const filteredRecs = props?.data?.filter((obj: any) => {
-					if (props?.defaultRecords?.includes(obj.id) || obj?.[props?.disableRowsKey ?? 'clientContract'] == null) return obj;
-				});
+			} else {
+				let filteredRecs: any = props?.data;
+				if (filters.notContracted === 'notContracted') {
+					filteredRecs = filteredRecs?.filter((obj: any) => {
+						if (props?.defaultRecords?.includes(obj.id) || obj?.[props?.disableRowsKey ?? 'clientContract'] == null) return obj;
+					});
+				}
+				if (filters.contracted === 'contracted') {
+					filteredRecs = filteredRecs?.filter((obj: any) => {
+						if (obj?.[props?.disableRowsKey ?? 'clientContract'] != null && !props?.defaultRecords?.includes(obj.id)) return obj;
+					});
+				} 
+				if (filters.providerSource?.length > 0 && !filters.providerSource?.includes('all')) {
+					filteredRecs = filteredRecs?.filter((obj: any) => {
+						return filters.providerSource.includes(obj.providerSource?.toString());
+					});
+				}
 				setRowData(filteredRecs);
-			}
-			else if (filters == 'contracted') {
-				const filteredRecs = props?.data?.filter((obj: any) => {
-					if (obj?.[props?.disableRowsKey ?? 'clientContract'] != null && !props?.defaultRecords?.includes(obj.id)) return obj;
-				});
-				setRowData(filteredRecs);
-			}
-			else {
-				setRowData(props?.data);
 			}
 		}
 		else setRowData(props?.data);
 	};
+
+	const isAddDisabled = () => {
+		console.log("isAddDisabled", selectedRows, props?.defaultRecords)
+		if(!selectedRows?.length) return true
+		if(JSON.stringify(selectedRows?.map((row:any)=>row?.id)) == JSON.stringify(props?.defaultRecords)) return true
+		else false;	
+	}
 
 	const renderGrid = useCallback(() => {
 		return (<div style={containerStyle} className="budget-grid-cls">
@@ -443,11 +454,11 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 						<span className='total-cls'><span className='length-cls'>Total Budget Value of Selected Item</span> <b>{`${currencySymbol} ${getAmountAlignment(totalBudgetValue)}`}</b></span>
 					</div>
 					<IQButton
-						disabled={selectedRows?.length > 0 ? false : true}
+						disabled={props?.moduleName == 'VendorContracts' ? isAddDisabled(): selectedRows?.length > 0 ? false : true}
 						className='btn-add-line-items'
 						onClick={() => handleSelectedRows()}
 					>
-						ADD SELECTED BUDGET LINE ITEMS
+						{props?.moduleName == 'VendorContracts' ? "ADD / MANAGE SELECTED ITEMS" : "ADD SELECTED BUDGET LINE ITEMS"}
 					</IQButton>
 				</>
 			}
@@ -463,7 +474,8 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 					// onViewFilterChange={handleViewFilter}
 					// onSearchChange={searchHandler}
 					onFilterChange={(filters:any) => filterHandler(filters)}
-					filterAllowSubMenu={false}
+					//filterAllowSubMenu={false}
+					addKeysToFilters={true}
 				/>
 			</div>
 			{renderGrid()}
@@ -491,6 +503,7 @@ const getFilterMenuOptions = () => {
 			text: 'All',
 			value: 'all',
 			key: 'all',
+			isWithoutSubMenu: true,
 			children: {
 				type: "checkbox",
 				items: [],
@@ -500,6 +513,7 @@ const getFilterMenuOptions = () => {
 			text: 'Contracted',
 			value: 'contracted',
 			key: 'contracted',
+			isWithoutSubMenu: true,
 			children: {
 				type: "checkbox",
 				items: [],
@@ -509,6 +523,7 @@ const getFilterMenuOptions = () => {
 			text: 'Not Contracted',
 			value: 'notContracted',
 			key: 'notContracted',
+			isWithoutSubMenu: true,
 			children: {
 				type: "checkbox",
 				items: [],

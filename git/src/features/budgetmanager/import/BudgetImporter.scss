@@ -1,0 +1,53 @@
+.bm-importer {
+	.MuiPaper-root {
+		min-width: unset;
+	}
+
+	.MuiDialogContent-root {
+		padding: 2em !important;
+		display: flex;
+		flex-direction: column;
+		gap: 2em;
+
+		.bm-type {
+			.MuiFormGroup-root {
+				padding-left: 0.5em;
+				display: flex;
+				flex-direction: row;
+			}
+		}
+
+		.info-box {
+			padding: 1em;
+			background-color: #fdf5cd;
+			border: 1px solid #ecda57;
+			border-radius: 0.2em;
+			gap: 0.5em;
+
+			.info-container {
+				display: flex;
+				flex-direction: row;
+				gap: 1em;
+
+				.info-icon {
+					width: 2em;
+					height: 2em;
+					background-color: #dbbc3a;
+					border-radius: 50%;
+					&:before {
+						color: #fff;
+						font-size: 2em;
+					}
+				}
+
+				.info-text {
+					font-size: 13px;
+				}
+			}
+
+			.download-template-btn {
+				width: fit-content;
+			}
+		}
+	}
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import './TimeLogWindow.scss';
 
-import { setCurrencySymbol, setServer } from 'app/common/appInfoSlice';
+import { setCurrencySymbol, setCustomDatesRange, setServer } from 'app/common/appInfoSlice';
 import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
 import { currency, isLocalhost, postMessage } from 'app/utils';
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
@@ -25,7 +25,7 @@ import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
 import { setSelectedTimeLog } from './stores/TimeLogSlice';
-import { getTimeLogStatus } from 'utilities/timeLog/enums';
+import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 
 let defaultTimeLogStatusFilter: any = [];
@@ -56,7 +56,11 @@ const TimeLogWindow = (props: any) => {
 	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
 	const dateTimeFields = ['startDate', 'endDate', 'startTime', 'endTime'];
 	let gridRef = useRef<AgGridReact>();
-
+	const datesRef = useRef<any>({
+		startDate : '',
+		endDate : '',
+	});
+	const selectedFiltersRef = useRef<any>({});
 	if (statusFilter) defaultTimeLogStatusFilter = filters.status;
 
 	const groupOptions = [{
@@ -243,9 +247,41 @@ const TimeLogWindow = (props: any) => {
 			innerRenderer: GroupRowInnerRenderer
 		};
 	}, []);
-
-	const onFilterChange = (activeFilters: any, type?: string) => {
-		setSelectedFilters(activeFilters);
+	const defaultDateRangeState = () => {
+		datesRef.current = {
+			startDate : '',
+			endDate : '',
+		};
+	};
+	const onFilterChange = (filterValues: any, type?: string) => {
+		if (Object.keys(filterValues).length !== 0) {
+			let filterObj = filterValues;
+			if(selectedFilters?.dateRange?.includes('custom') && !filterValues?.dateRange?.includes('custom')) {
+				defaultDateRangeState();
+			};
+			Object.keys(filterObj).filter((item) => {
+				if (filterObj[item]?.length === 0) {
+					delete filterObj[item]
+				};
+				if (filterObj[item] === "" || filterObj[item] === undefined || filterObj[item] === null) {
+					delete filterObj[item];
+				};
+			});
+			if (!_.isEqual(selectedFilters, filterObj) && Object.keys(filterObj).length > 0) {
+				setSelectedFilters(filterObj);
+			} else {
+				if (!_.isEqual(selectedFilters, filterObj)
+					&& Object.keys(filterValues).length === 0) {
+						setSelectedFilters(filterObj);
+						defaultDateRangeState();
+				};
+			}
+		} else {
+			 if (Object.keys(filterValues).length === 0) {
+				setSelectedFilters(filterValues);
+				defaultDateRangeState();
+			};
+		};
 	};
 
 	const onGridSearch = (searchText: any) => {
@@ -270,19 +306,27 @@ const TimeLogWindow = (props: any) => {
 					});
 				} else return item?.[field]?.toString()?.match(regex);
 			});
-			const filterVal = (_.isEmpty(selectedFilters) || (!_.isEmpty(selectedFilters)
-				&& (_.isEmpty(selectedFilters?.apps) || selectedFilters?.apps?.length === 0 || selectedFilters?.apps?.indexOf(item.smartItem.name) > -1)
-				&& (_.isEmpty(selectedFilters?.companies) || selectedFilters?.companies?.length === 0 || selectedFilters?.companies?.indexOf(item.company) > -1)
-				&& (_.isEmpty(selectedFilters?.conflicting) || selectedFilters?.conflicting?.length === 0 || selectedFilters?.conflicting?.indexOf(item?.conflicting)) > -1)
-				&& (_.isEmpty(selectedFilters?.createdBy) || selectedFilters?.createdBy?.length === 0 || selectedFilters?.createdBy?.indexOf(item.createdBy?.name) > -1)
-				&& (_.isEmpty(selectedFilters?.location) || selectedFilters?.location?.length === 0 || selectedFilters?.location?.indexOf(item?.location)) > -1)
-				&& (_.isEmpty(selectedFilters?.sbs) || selectedFilters?.sbs?.length === 0 || selectedFilters?.sbs?.indexOf(item.sbs) > -1)
-				&& (_.isEmpty(selectedFilters?.source) || selectedFilters?.source?.length === 0 || selectedFilters?.source?.indexOf(item?.source) > -1)
-				&& (_.isEmpty(selectedFilters?.workTeam) || selectedFilters?.workTeam?.length === 0 || selectedFilters?.workTeam?.indexOf(item?.workTeam) > -1)
-				&& (_.isEmpty(selectedFilters?.status) || selectedFilters?.status?.length === 0 || selectedFilters?.status?.indexOf(item.status) > -1);
-			// && (_.isEmpty(selectedFilters?.dateRange) || selectedFilters?.dateRange?.length === 0 || selectedFilters?.dateRange?.indexOf(item?.dateRange)) > -1;
-
-			return searchVal && filterVal;
+			let filterValues = {...selectedFilters};
+			selectedFiltersRef.current = selectedFilters;
+			if(filterValues?.dateRange?.includes("custom")) {
+				let dateRange = filterValues?.dateRange?.filter((item:any) => !item.includes('custom'));
+				filterValues.dateRange = dateRange; 
+			};
+			const filterVal = (_.isEmpty(filterValues) || (!_.isEmpty(filterValues)
+				&& (_.isEmpty(filterValues?.apps) || filterValues?.apps?.length === 0 || filterValues?.apps?.indexOf(item.smartItem.name) > -1)
+				&& (_.isEmpty(filterValues?.companies) || filterValues?.companies?.length === 0 || filterValues?.companies?.indexOf(item.company) > -1)
+				&& (_.isEmpty(filterValues?.conflicting) || filterValues?.conflicting?.length === 0 || filterValues?.conflicting?.indexOf(item?.conflicting)) > -1)
+				&& (_.isEmpty(filterValues?.createdBy) || filterValues?.createdBy?.length === 0 || filterValues?.createdBy?.indexOf(item.createdBy?.name) > -1)
+				&& (_.isEmpty(filterValues?.location) || filterValues?.location?.length === 0 || filterValues?.location?.indexOf(item?.location)) > -1)
+				&& (_.isEmpty(filterValues?.sbs) || filterValues?.sbs?.length === 0 || filterValues?.sbs?.indexOf(item.sbs) > -1)
+				&& (_.isEmpty(filterValues?.source) || filterValues?.source?.length === 0 || filterValues?.source?.indexOf(item?.source) > -1)
+				&& (_.isEmpty(filterValues?.workTeam) || filterValues?.workTeam?.length === 0 || filterValues?.workTeam?.indexOf(item?.workTeam) > -1)
+				&& (_.isEmpty(filterValues?.status) || filterValues?.status?.length === 0 || filterValues?.status?.indexOf(item.status) > -1)
+				&& (_.isEmpty(filterValues?.dateRange) || filterValues?.dateRange?.length === 0 || item?.dateRange === 'custom' ? false : filterValues?.dateRange?.indexOf(item?.dateRange)) > -1;
+				
+				const filterDates = moment(item.endDate).isBetween(moment(datesRef?.current?.startDate), moment(datesRef?.current?.endDate));
+				if(!_.values(datesRef.current).every(_.isEmpty)) return searchVal && filterVal && filterDates;
+				else return searchVal && filterVal;
 		});
 	};
 
@@ -309,13 +353,21 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const handleApplyDatesFilter = (dates:any) => {
-		setSelectedFilters({...selectedFilters, dateRange: dates});
+		if(!!selectedFiltersRef?.current?.dateRange) {
+			setSelectedFilters({...selectedFiltersRef?.current, ['dateRange']: [...selectedFiltersRef?.current?.dateRange,'custom']});
+		} else {
+			setSelectedFilters({...selectedFiltersRef?.current, ['dateRange']: ['custom']});
+		};
+		datesRef.current = dates;
+		dispatch(setCustomDatesRange(dates));
 	};
 	
 	const handleClearDatesFilter = () => {
-		setSelectedFilters({...selectedFilters, dateRange: undefined});
+		let filtersCopy = selectedFiltersRef?.current;
+		setSelectedFilters((filtersCopy?.dateRange || [])?.filter((x:any) => !['custom','all'].includes(x)));
+		defaultDateRangeState();
+		dispatch(setCustomDatesRange(datesRef.current));
 	};
-
 	/**
 	 * Grid data is set in this method
 	 * 
@@ -332,6 +384,11 @@ const TimeLogWindow = (props: any) => {
 			else return true;
 		},
 		headerCheckboxSelection: true,
+		cellRenderer: (params: any) => {
+			return <div className='blue-color'>
+				{params?.data?.timeSegmentId}
+			</div>;
+		}
 	}, {
 		headerName: 'Status',
 		field: 'status',
@@ -384,15 +441,7 @@ const TimeLogWindow = (props: any) => {
 		headerName: 'Start Date',
 		field: 'startDate',
 		keyCreator: (params: any) => {
-			let now = moment.utc(new Date());
-			let lastContact = moment.utc(params?.data.endDate);
-			let days = now.diff(lastContact, 'days');
-			let label = '';
-			if (days >= 2) {
-				label = moment.utc(lastContact).fromNow(); // '2 days ago' etc.
-			};
-			label = lastContact.calendar().split(' ')[0];
-			return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${label})`) || "None";
+			return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
 		},
 		valueGetter: (params: any) => `${moment.utc(params?.data?.startDate).format('DD/MM/YYYY')}`,
 	}, {
@@ -413,15 +462,19 @@ const TimeLogWindow = (props: any) => {
 		aggFunc: (params: any) => {
 			let sum = 0;
 			params.values.forEach((time: any) => {
-				let a = time.split(":");
+				let a;
+				if(time?.includes('Hrs') || time?.includes('Mins')) {
+					a = time?.replace('Hrs', ':');
+					a = a?.replace('Mins', '');
+				} else a = time;
+				a = a?.split(":");
 				let calculate = +a[0] * 60 * 60 + +a[1] * 60;
 				sum += calculate;
 			});
 			if (moment(new Date(sum * 1000))?.isValid()) {
 				let finalCnt = new Date(sum * 1000)?.toISOString();
-				return finalCnt?.substr(11, 5);
-				// return finalCnt?.substr(11, 2)+"Hrs"+" "+ finalCnt?.substr(14, 2)+"Mins";
-			}
+				return finalCnt?.substr(11, 2)+"Hrs"+" "+ finalCnt?.substr(14, 2)+"Mins"
+			};
 		},
 		valueGetter: (params: any) => params?.data?.duration
 	}, {
@@ -597,8 +650,8 @@ const TimeLogWindow = (props: any) => {
 				type: "custom",
 				component: <CustomDateRangeFilterComp 
 					dates={{
-						startDate : selectedFilters?.dateRange?.startDate,
-						endDate : selectedFilters?.dateRange?.endDate,
+						startDate : datesRef?.current?.startDate ?? selectedFilters?.dateRange?.startDate,
+						endDate : datesRef?.current?.endDate ?? selectedFilters?.dateRange?.endDate,
 					}} 
 					handleApplyDatesFilter={handleApplyDatesFilter}
 					handleClearDatesFilter= {handleClearDatesFilter}
@@ -661,32 +714,33 @@ const TimeLogWindow = (props: any) => {
 	};
 	const GetDateRangeFilterData = (data:any) => {
 		const todayDate = new Date();
-		const startDayOfPrevWeek = moment(todayDate).subtract(1, 'week').startOf('week');
-		const lastDayOfPrevWeek = moment(todayDate).subtract(1, 'week').endOf('week');
 
-		const startDayOfThisWeek = moment(todayDate).add(1, 'week').startOf('week');
-		const lastDayOfThisWeek = moment(todayDate).add(1, 'week').endOf('week');
+		const startDayOfThisWeek = moment(todayDate).startOf('week');
+		const lastDayOfThisWeek = moment(todayDate).endOf('week');
+
+		const startDayOfPrevWeek = moment(startDayOfThisWeek).subtract(1, 'week').startOf('week');
+		const lastDayOfPrevWeek = moment(lastDayOfThisWeek).subtract(1, 'week').endOf('week');
 		
 		const startDayOfPrevMonth = moment(todayDate).subtract(1, 'month').startOf('month');
 		const lastDayOfPrevMonth = moment(todayDate).subtract(1, 'month').endOf('month');
 
-		const startDayOfThisMonth = moment(todayDate).add(1, 'month').startOf('month');
-		const lastDayOfThisMonth = moment(todayDate).add(1, 'month').endOf('month');
+		const startDayOfThisMonth = moment(todayDate).startOf('month');
+		const lastDayOfThisMonth = moment(todayDate).endOf('month');
 
 		const todayStart = moment().startOf('day');
 		const todayEnd = moment().endOf('day');
 		const yesterdayStart = moment().subtract(1, 'days').startOf('day');
 		const yesterdayEnd = moment().subtract(1, 'days').endOf('day');
 		const actualDate = moment(data?.endDate);
+
+			if(moment(actualDate).isBetween(todayStart, todayEnd)) return 'today';
+		else if(moment(actualDate).isBetween(yesterdayStart, yesterdayEnd)) return 'yesterday';
 		
-			 if(moment(actualDate).isBetween(startDayOfPrevWeek, lastDayOfPrevWeek)) return 'lastWeek';
+		else if(moment(actualDate).isBetween(startDayOfPrevWeek, lastDayOfPrevWeek)) return 'lastWeek';
 		else if(moment(actualDate).isBetween(startDayOfThisWeek, lastDayOfThisWeek)) return 'thisWeek';
 		
 		else if(moment(actualDate).isBetween(startDayOfThisMonth, lastDayOfThisMonth)) return 'thisMonth';
 		else if(moment(actualDate).isBetween(startDayOfPrevMonth, lastDayOfPrevMonth)) return 'lastMonth';
-
-		else if(moment(actualDate).isBetween(yesterdayStart, yesterdayEnd)) return 'yesterday';
-		else if(moment(actualDate).isBetween(todayStart, todayEnd)) return 'today';
 
 		else return 'future';
 	};
@@ -764,7 +818,7 @@ const TimeLogWindow = (props: any) => {
 						searchComponent: {
 							show: true,
 							type: 'regular',
-							defaultFilters: defaultFilters,
+							defaultFilters: selectedFilters,
 							groupOptions: groupOptions,
 							filterOptions: filterOptions,
 							onGroupChange: onGroupingChange,

@@ -4,12 +4,20 @@ import {memo, useMemo, useEffect, useState, useRef, useCallback} from 'react';
 import DatePickerComponent from 'components/datepicker/DatePicker';
 import InputIcon from 'react-multi-date-picker/components/input_icon';
 import './DateRange.scss';
+import { useAppSelector } from 'app/hooks';
+import { getCustomDatesRange } from 'app/common/appInfoSlice';
 const CustomDateRangeFilterComp = memo((props:any) => {
 	const {dates, handleClearDatesFilter, handleApplyDatesFilter,fromLabel = "From", toLabel = "To", ...rest} = props;
+	const customDatesRange = useAppSelector(getCustomDatesRange);
 	const [customDates, setCustomDates] = React.useState({
 		startDate: "",
 		endDate: ""
 	});
+	React.useEffect(() => {
+		if(customDatesRange) {
+			setCustomDates(customDatesRange);
+		};
+	},[customDatesRange])
 	const handleClear = () => {
 		setCustomDates({
 			startDate: "",
@@ -31,7 +39,7 @@ const CustomDateRangeFilterComp = memo((props:any) => {
 									zIndex={9999}
 									defaultValue={customDates?.startDate}
 									containerClassName={"iq-customdate-cont"}
-									maxDate={new Date()}
+									// maxDate={new Date()}
 									onChange={(val: any) => setCustomDates({ ...customDates, ['startDate']: val })}
 									render={
 										<InputIcon
@@ -49,7 +57,7 @@ const CustomDateRangeFilterComp = memo((props:any) => {
 									zIndex={9999}
 									defaultValue={customDates?.endDate}
 									containerClassName={"iq-customdate-cont"}
-									maxDate={new Date()}
+									// maxDate={new Date()}
 									onChange={(val: any) => setCustomDates({ ...customDates, ['endDate']: val })}
 									render={
 										<InputIcon

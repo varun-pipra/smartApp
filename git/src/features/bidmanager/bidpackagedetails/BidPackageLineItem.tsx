@@ -219,6 +219,7 @@ const BidPackageLineItem = (props: any) => {
 			domElementId: presenceId,
 			initialconfig: {
 				'showLiveSupport': true,
+				'showPrint':true,
 				'showLiveLink': false,
 				'showStreams': true,
 				'showComments': false,

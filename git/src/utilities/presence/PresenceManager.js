@@ -87,7 +87,9 @@ class PresenceManager {
             if(initialconfig && initialconfig.showLiveLink){
                 html+= '<div class="cell livelinkbtn-main" data-qtip="LiveLink"><div class="livelinkbtn-wrapper tooltip"><span class="badgecount"></span><span class="tooltiptext">LiveLink</span><div class="livelinkbtn"></div></div></div>';
             }
-    
+            if(initialconfig && initialconfig.showPrint){
+                html+='<div class="cell printbutton-main" data-qtip="Print"><div class="print-button-wrapper tooltip"><span class="badgecount"></span><span class="tooltiptext">Print</span><div class="printbutton"></div></div></div>';
+            }
             if(initialconfig && initialconfig.showStreams){
                 html+='<div class="cell streambutton-main" data-qtip="Stream"><div class="streambutton-wrapper tooltip"><span class="badgecount"></span><span class="tooltiptext">Stream</span><div class="streambutton"></div></div></div>';
             }
@@ -324,6 +326,7 @@ class PresenceManager {
         var brenabtn=mainControl.getElementsByClassName("brenabtn-wrapper")[0];
         var livesupportbtn=mainControl.getElementsByClassName("livesupportbtn-wrapper")[0];
         var livelinkbtn=mainControl.getElementsByClassName("livelinkbtn-wrapper")[0];
+        var printbutton=mainControl.getElementsByClassName("printbutton-wrapper")[0];
         var streambutton=mainControl.getElementsByClassName("streambutton-wrapper")[0];
         var commentbutton=mainControl.getElementsByClassName("commentbutton-wrapper")[0];
         var chatbutton=mainControl.getElementsByClassName("chatbutton-wrapper")[0];
@@ -336,6 +339,9 @@ class PresenceManager {
         });
         livelinkbtn && livelinkbtn.addEventListener("click",function(){
             mainDiv.trigger('livelinkbtnclick');
+        });
+        printbutton && streambutton.addEventListener("click",function(){
+            mainDiv.trigger('printbuttonclick');
         });
         streambutton && streambutton.addEventListener("click",function(){
             mainDiv.trigger('streambuttonclick');

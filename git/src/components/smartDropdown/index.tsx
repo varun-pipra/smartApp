@@ -1232,6 +1232,7 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 								defaultValue={{}}
 								open={true}
 								onChange={handleSubMenuChange}
+								className={'no-border'}
 							  />
 							) :
 							menuItems && menuItems.length > 0 ? (

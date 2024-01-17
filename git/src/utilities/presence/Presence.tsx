@@ -9,6 +9,7 @@ export const renderPresence = (presenceProps: any, appInfoData: any, iFrameId: s
 				showBrena: presenceProps?.showBrena,
 				showLiveSupport: presenceProps?.showLiveSupport,
 				showLiveLink: presenceProps?.showLiveLink,
+				showPrint: presenceProps?.showPrint,
 				showStreams: presenceProps?.showStreams,
 				showComments: presenceProps?.showComments,
 				showChat: presenceProps?.showChat,
@@ -41,6 +42,14 @@ export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId
 			postMessage({
 				event: 'launchcommonlivelink',
 				body: { iframeId: iFrameId, roomId: appInfo.presenceRoomId, appType: appType },
+				data: participantCtrl.getParticipants()
+			});
+		});
+
+		participantCtrl.addEventListener('printbuttonclick', function (e: any) {
+			postMessage({
+				event: 'launchpresenceprint',
+				body: { iframeId: iFrameId, roomId: lineItemId ? lineItemId : appInfo.presenceRoomId, appType: appType },
 				data: participantCtrl.getParticipants()
 			});
 		});
