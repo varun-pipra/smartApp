@@ -15,6 +15,9 @@ import { GetUniqueList } from "features/safety/sbsmanager/utils";
 import _ from "lodash";
 import IconButton from "@mui/material/IconButton";
 import FileCopyIcon from '@mui/icons-material/FileCopy';
+import SmartDialog from "components/smartdialog/SmartDialog";
+import { HeadsetMic } from "@mui/icons-material";
+import IQTooltip from 'components/iqtooltip/IQTooltip';
 
 const AddSpecificationsDialog = (props: any) => {
   const { open=false, ...rest } = props;
@@ -30,7 +33,10 @@ const AddSpecificationsDialog = (props: any) => {
   const [gridSearchText, setGridSearchText] = React.useState('');
   const [openSpecDocViewer,setOpenSpecDocViewer] = React.useState(false);
   const [specBookPagesData, setSpecBookPagesData] = React.useState({});
-
+    const onImagePreview = (event: any) => {
+      const { data } = event;
+      handelFileClick(data);
+    };
   const filterOptions = React.useMemo(() => {
       var filterMenu = [
         {
@@ -142,23 +148,20 @@ const AddSpecificationsDialog = (props: any) => {
       valueGetter: (params: any) => params?.data?.startPage ? `${params?.data?.startPage} - ${params?.data?.endPage}` : 'NA'
   },{
     headerName: "File",
-    field: "file",
-    cellClass: "sm-pages",
-    minWidth: 120,
-    suppressMenu: true,
-    resizable: true,
-    cellStyle: { color: "#059cdf" },
-    cellRenderer:(params:any)=>{
-      return(<span>
-        <IconButton aria-label="Close"
-            onClick={()=> handelFileClick(params?.data)}>
-            <FileCopyIcon/>
-        </IconButton>
-
-      </span>)
-  }
-    // valueGetter: (params: any) => params?.data?.startPage ? `${params?.data?.startPage} - ${params?.data?.endPage}` : 'NA'
-}
+    field: "thumbnailUrl",
+    menuTabs: [],
+    minWidth: 100,
+    flex: 1,
+    type: 'avatar',
+    onCellClicked: onImagePreview,
+    cellStyle: {
+      display: 'flex',
+      alignItems: 'left',
+    },
+    cellRenderer: (params: any) => {
+      return <img style={{ borderRadius: '0' }} src={params.value} />;
+    }
+  },
   ]
 
   const findAndUpdateFiltersData = (
@@ -211,7 +214,6 @@ const AddSpecificationsDialog = (props: any) => {
         return groupingMenu;
       }, []);
       const handelFileClick = (data:any) => {
-        console.log('datayugvuy')
 		    dispatch(setSepcSelectedRecord(data)) 
         let payload = {
           id: data.specBook.id?.specBook?.id,
@@ -267,6 +269,21 @@ const AddSpecificationsDialog = (props: any) => {
         }
       }, [SMData]);
 
+      const handleHelp = () => {
+        postMessage({
+          event: "help",
+          body: {iframeId: "toolsAndEquipment"},
+        });
+      };
+
+      const optionalTools = [
+        <IQTooltip title="Help" placement={'bottom'}>
+          <IconButton key={'freshdesk-tool'} aria-label="Help" onClick={handleHelp}>
+            <HeadsetMic />
+          </IconButton>
+        </IQTooltip>
+      ];
+
     const groupRowRendererParams = React.useMemo(() => {
       return {
         checkbox: true,
@@ -307,37 +324,21 @@ const AddSpecificationsDialog = (props: any) => {
     console.log(rowData,'rowData')
 	return (
     <div className="add-spec-dlg">
-      <SUIDialog
-        open={open}
-        PaperProps={{
-          sx: { height: "70%", width: "85%" },
-        }}
-        className={"add-spec-dlg custom-style"}
-        headerTitle="Select Specifications"
-        iframeId="budgetManagerIframe"
-        toolsOpts={{
-          closable: true,
-          resizable: true,
-          // openInNewTab: true
-        }}
-        presenceId={presenceId}
-        // presenceToolsOpts={{
-        // 	showLiveSupport: true,
-        // 	showLiveLink: false,
-        // 	showStreams: false,
-        // 	showComments: false,
-        // 	showChat: false,
-        // 	hideProfile: false
-        // }}
+      <SmartDialog className={'barcode-model'} open={open} PaperProps={{
+					sx: { height: '70%', width: '70%' },
+
+				}}
         onClose={props.closeAddSpec}
-        isFullView={isFullView}
-        buttons={
-          <>
-            <Button disabled={selected.length === 0} onClick={() => { addSpecRec() }} variant="contained">ADD</Button>
-          </>
-        }
-      >
-              <div className="spec-main-continer" style={{height: '100%'}}>
+					custom={{
+						closable: true,
+						resizable: true,
+            tools: [optionalTools],
+						title: 'Select Specifications',
+            buttons:<>
+                <Button disabled={selected.length === 0} onClick={() => { addSpecRec() }} variant="contained">ADD</Button>
+              </>
+					}}>
+					 <div className="spec-main-continer" style={{height: '100%'}}>
                   <div>
                       
                   <div className="spec-search-box">
@@ -358,7 +359,7 @@ const AddSpecificationsDialog = (props: any) => {
                       </Box>
                   </div>
                   </div>
-                  <div style={{height: '100%', width: '100%'}}>
+                  <div style={{height: '100%', width: '100%'}} className="doc-file-grid-view">
                       <SUIGrid
                           grouped={true}
                           headers={colDefs}
@@ -372,7 +373,7 @@ const AddSpecificationsDialog = (props: any) => {
                       />
                   </div>
               </div>
-      </SUIDialog>
+				</SmartDialog>
     </div>
 	);
 }

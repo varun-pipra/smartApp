@@ -12,7 +12,7 @@ import DocUploader from 'sui-components/DocUploader/DocUploader';
 import {fileDownload} from 'app/hooks';
 
 import SUIGrid from "sui-components/Grid/Grid";
-import { getSMList, getSpecBookPages } from 'features/field/specificationmanager/stores/SpecificationManagerSlice';
+import { getSMList, getSpecBookPages, resetSpecBookPages } from 'features/field/specificationmanager/stores/SpecificationManagerSlice';
 import IQButton from 'components/iqbutton/IQButton';
 import './ReferenceFiles.scss'
 import AddSpecificationsDialog from './AddSepcDialog/AddSpecificationsDialog'
@@ -21,10 +21,13 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import SpecDocViewer from './SpecificationDocviewer/SpecDocViewer';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
+	const onImagePreview = (event: any) => {
+		const { data } = event;
+		handelFileClick(data);
+	};
 	const specColumns =  [
 		{
 		  headerName: "Spec Number",
-		//   pinned: "left",
 		  field: "number",
 		  cellClass: "sm-number",
 		  cellRenderer: "agGroupCellRenderer",
@@ -36,7 +39,6 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 		},
 		{
 		  headerName: "Spec Section Title",
-		//   pinned: "left",
 		  field: "title",
 		  cellClass: "sm-title",
 		  resizable: true,
@@ -57,7 +59,6 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 		  field: "division",
 		  cellClass: "sm-division",
 		  minWidth: 250,
-		//   rowGroup: true,
 		  resizable: true,
 		  suppressMenu: true,
 		  keyCreator: (params: any) => params.data.division && `${params.data.division.number} - ${params.data.division.text}` || "None",
@@ -85,25 +86,22 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 		},
 		{
 			headerName: "File",
-			field: "file",
-			cellClass: "sm-pages",
-			minWidth: 120,
-			suppressMenu: true,
-			resizable: true,
-			cellStyle: { color: "#059cdf" },
-			cellRenderer:(params:any)=>{
-			  return(<span>
-				<IconButton aria-label="Close"
-						 onClick={()=> handelFileClick(params?.data)}
-						 >
-					<FileCopyIcon/>
-					</IconButton>
-	  
-			  </span>)
-		  }
-		}
+			field: "thumbnailUrl",
+			menuTabs: [],
+			minWidth: 100,
+			flex: 1,
+			type: 'avatar',
+			onCellClicked: onImagePreview,
+			cellStyle: {
+				display: 'flex',
+				alignItems: 'left',
+			},
+			cellRenderer: (params: any) => {
+				return <img src={params.value} />;
+			}
+		},
 	  ]
-	  const headers = useMemo(() => specColumns, []);
+	const headers = useMemo(() => specColumns, []);
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const bidPackage = useAppSelector(getSelectedRecord);
@@ -137,18 +135,13 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 
 	useEffect(() => {
 	if(SMData?.length > 0) {
-		// findAndUpdateFiltersData('specs', SMData, "division", true, "text", true, "number");
-		// findAndUpdateFiltersData('specs', SMData, "bidPackageName");
-		// findAndUpdateFiltersData('specs', SMData, "specBook", true, "displayName");
 		const data: any = SMData.map((item: any) => ({
 			...item, pages: `${item.startPage} - ${item.endPage}`,
 			bidPackageValue: item.bidPackageName === null || item.bidPackageName === '' ? 'NA' : item.bidPackageName
 		}));
 		setSpecModifiedList(data);
-		// setSpecRowData(data);
 	} else {
 		setSpecModifiedList([]);
-		// setSpecRowData([]);
 	}
 }, [SMData]);
 	
@@ -156,12 +149,10 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 
 	const handelFileClick = (data:any) => {
 		setSepcSelectedRecord(data)
-        console.log(data.specBook.id ,'data');
         let payload = {
-          id: data.specBook.id?.specBook?.id,
+          id: data.specBook?.id,
         };
         dispatch(getSpecBookPages(payload));
-        // setOpenSpecDocViewer(true)
       }
 
 
@@ -219,7 +210,6 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 	};
 
 	const saveReferenceFiles = (formattedList: any) => {
-		console.log(formattedList,'formattedList')
 		uploadReferenceFile(appInfo, {referenceFiles: formattedList}, bidPackage?.id)
 			.then((bidPackageItem: any) => {
 				typeVariable = undefined;
@@ -254,8 +244,8 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 	};
 
 	const closeSpecDocViewer=()=>{
-		console.log('false')
 		setOpenSpecDocViewer(false)
+		dispatch(resetSpecBookPages(''))
 	}
 
 	useEffect(() => {
@@ -270,7 +260,8 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 		fileDownload(objectIds, filename);
 	};
 
-	return <div className='referenceFile'>
+	return (
+	<div className='referenceFile'>
 		{openAddSpecDlg ? (
 				<AddSpecificationsDialog
 					open={true}
@@ -312,14 +303,13 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
 			showDownloadButton={true}
 			fileDownload={(data: any) => {download(data, 'Files');}}
 		></DocUploader>
+		<div>
 		<div className='doc-uploadd-header'>
 			<span className="doc-lbl-hdr-bold">Specifications</span>
 		</div>
 		<div className='specifications-container'>
 			<IQButton
 				className='specifications-add-btn'
-				// sx={{ height: '2.5em' }}
-			// disabled={isBudgetLocked ? true : disableAddButton ? true : false}
 			onClick={()=>setOpenAddSpecDlg(true)}
 			>
 			<span style={{marginRight: '6px',fontSize: '19px'}} className='common-icon-Add'></span><span> Add Specifications</span>
@@ -329,31 +319,29 @@ export const ReferenceFiles = ({iFrameId, appType, readOnly}: any) => {
               <IconButton
                 className="ref-delete-btn"
                 disabled={selected.length === 0}
-                // onClick={() => {
-                //   onSelectedFilesDelete();
-                // }}
               >
                 <span className="common-icon-delete"></span>
               </IconButton>
             </IQTooltip>
           </div>
 		</div>
-		<div className="grid">
-        <SUIGrid
-          headers={headers}
-          data={specModifiedList}
-          rowSelected={(e: any) => rowSelected(e)}
-          getRowId={(record: any) => record.data.id}
-        />
-      </div>
+		<div className="doc-file-grid-view" style={{height: '430px',overflow: 'auto' , marginBottom: '0px'}}>
+			<SUIGrid
+			headers={headers}
+			data={specModifiedList}
+			rowSelected={(e: any) => rowSelected(e)}
+			getRowId={(record: any) => record.data.id}
+			/>
+      	</div>
+	</div>
 		{ openSpecDocViewer ?(
 			<SpecDocViewer
 				 specBookPagesData={specBookPagesData} 
 				 selectedRecord={sepcSelectedRecord} 
 				 closeSpecDocViewer={closeSpecDocViewer}
-				//  sepcSelectedRecord={}
 				 />):<>
 			</>
 		}
-	</div>;
+	</div>
+	)
 };
