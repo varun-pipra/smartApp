@@ -40,6 +40,7 @@ import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVPAStatusFilter: any = [];
+let vpaBlockchain = false;
 
 const VendorPayApplicationsWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -69,6 +70,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	let gridRef = useRef<AgGridReact>();
 	if(statusFilter) defaultVPAStatusFilter = mainGridFilters.status;
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+	vpaBlockchain = blockchainEnabled;
 
 	const tabEnum: any = {
 		payAppDetails: 'pay-Application-Details',

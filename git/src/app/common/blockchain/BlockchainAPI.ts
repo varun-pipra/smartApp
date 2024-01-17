@@ -24,7 +24,7 @@ export const blockchainAction = async (enable: boolean, type: number) => {
 	let response: any;
 	if(!isLocalhost) {
 		response = await fetch(`${server?.hostUrl}/EnterpriseDesktop/blockchain/FinanceBlockChain/EnableDisableBlockChain?projectId=${server.uniqueId}&isEnabled=${enable}&type=${type}&sessionId=${server?.sessionId}`, {
-			method: 'PATCH',
+			method: 'POST',
 			// headers: {'content-type': 'application/json'}
 		});
 		return response;

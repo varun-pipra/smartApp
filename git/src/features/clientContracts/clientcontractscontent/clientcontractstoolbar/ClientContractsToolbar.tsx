@@ -60,7 +60,7 @@ const ClientContractsToolbar = (props: any) => {
 
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
-	const [toggleChecked, setToggleChecked] = React.useState(true);
+	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const groupOptions = [
 		{text: "Client Company", value: "client.name"},
 		{text: appInfo && isUserGCForCC(appInfo) ? "Status" : 'Response Status', value: "status"},

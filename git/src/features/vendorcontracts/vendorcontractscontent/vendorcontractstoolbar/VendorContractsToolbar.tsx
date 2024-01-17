@@ -45,7 +45,7 @@ const VendorContractsToolbar = (props: any) => {
 	const [showAlertForPendingCompliance, setShowAlertForPendingCompliance] = React.useState<any>({show: false, message: '', type: ''});
 
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
-	const [toggleChecked, setToggleChecked] = React.useState(true);
+	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
 
 	const groupOptions = [
@@ -114,7 +114,7 @@ const VendorContractsToolbar = (props: any) => {
 		let adhocBidsList: any = [];
 		contractsList?.map((item: any) => {
 			if(item?.contractFor == 2) adhocBidsList.push(
-				{ text: item?.bidPackage?.name, id: item?.bidPackage?.name, key: item?.bidPackage?.name, value: item?.bidPackage?.name, },
+				{text: item?.bidPackage?.name, id: item?.bidPackage?.name, key: item?.bidPackage?.name, value: item?.bidPackage?.name, },
 			);
 		});
 		return adhocBidsList;

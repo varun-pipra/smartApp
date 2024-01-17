@@ -41,6 +41,7 @@ import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultCPAStatusFilter: any = [];
+let cpaBlockchain = false;
 
 const ClientPayApplicationsWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -70,6 +71,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 	const [selectedGroup, setSelectedGroup] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+	cpaBlockchain = blockchainEnabled;
 
 	const groupOptions = [
 		{text: 'Payment Status', value: 'status'},

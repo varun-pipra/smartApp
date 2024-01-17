@@ -473,7 +473,7 @@ const TimeLogWindow = (props: any) => {
 			});
 			if (moment(new Date(sum * 1000))?.isValid()) {
 				let finalCnt = new Date(sum * 1000)?.toISOString();
-				return finalCnt?.substr(11, 2)+"Hrs"+" "+ finalCnt?.substr(14, 2)+"Mins"
+				return finalCnt?.substr(11, 2)+" Hrs "+" "+ finalCnt?.substr(14, 2)+" Mins "
 			};
 		},
 		valueGetter: (params: any) => params?.data?.duration
@@ -818,7 +818,7 @@ const TimeLogWindow = (props: any) => {
 						searchComponent: {
 							show: true,
 							type: 'regular',
-							defaultFilters: selectedFilters,
+							defaultFilters: defaultFilters,
 							groupOptions: groupOptions,
 							filterOptions: filterOptions,
 							onGroupChange: onGroupingChange,

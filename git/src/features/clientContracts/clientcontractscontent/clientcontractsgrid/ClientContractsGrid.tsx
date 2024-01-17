@@ -16,6 +16,7 @@ import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 
 var tinycolor = require('tinycolor2');
 let defaultCCStatusFilter: any = [];
+let clientContractBlockchain = false;
 
 const ClientContractsGrid = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -35,6 +36,7 @@ const ClientContractsGrid = (props: any) => {
 	const showLineItemDetails = useAppSelector((state) => state.clientContracts.showLineItemDetails);
 	const [gridRef, setGridRef] = useState<any>();
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+	clientContractBlockchain = blockchainEnabled;
 
 	if(statusFilter) defaultCCStatusFilter = activeMainGridFilters.status;
 
@@ -204,7 +206,7 @@ const ClientContractsGrid = (props: any) => {
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
 					const bcStatus = params.data?.blockChainStatus;
-					const showBCIcon = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(bcStatus) === -1);
+					const showBCIcon = (clientContractBlockchain && ['None', 'AuthVerified'].indexOf(bcStatus) === -1);
 					return <>
 						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '9%', marginTop: '12px'}}></span>}
 						{params?.data?.hasChangeOrder && <IQTooltip

@@ -17,6 +17,7 @@ import SubmittedBy from 'resources/images/bidManager/SubmittedBy.svg';
 import SubmittedOn from 'resources/images/bidManager/SubmittedOn.svg';
 import SUIAlert from 'sui-components/Alert/Alert';
 import SUICard from 'sui-components/Card/Card';
+import { getIntendToBid, getSubmissionStatus} from "utilities/bid/enums";
 import DocUploader from 'sui-components/DocUploader/DocUploader';
 import SUIGrid from 'sui-components/Grid/Grid';
 import { formatDate } from 'utilities/datetime/DateTimeUtils';
@@ -28,6 +29,7 @@ import {
 	Alert, Box, Button, Card, Grid, InputLabel, ToggleButton, ToggleButtonGroup
 } from '@mui/material';
 import { getAmountAlignment } from 'utilities/commonutills';
+import _ from 'lodash';
 
 const AwardBid = () => {
 	const dispatch = useAppDispatch();
@@ -39,6 +41,7 @@ const AwardBid = () => {
 	const { awardBidSelectedRecord, awardBidClick, awardBidDetailData, openUpdateBudgetDialog, files } = useAppSelector((state) => state.awardBid);
 	const containerStyle = React.useMemo(() => ({ width: '100%', height: '300px' }), []);
 	const [data, setData] = React.useState<any>(BiddersGridData);
+	const [modifieddata, setmodifiedData] = React.useState<any>(BiddersGridData);
 	const [selectedItem, setSelectedItem] = React.useState<any>(null);
 	const [showConfirmationDlg, setShowConfirmationDlg] = React.useState<boolean>(false);
 	const [showAwardToastMsg, setShowAwardToastMsg] = React.useState<boolean>(false);
@@ -48,9 +51,9 @@ const AwardBid = () => {
 	const leftContentRef = useRef<any>('');
 	const [showChartView, setShowChartView] = React.useState<boolean>(false);
 	const [contract, setContract] = React.useState<any>(null);
+	const [searchText, setSearchText] = React.useState('');
 
 	React.useEffect(() => {
-		console.log("tableViewType", tableViewType, viewType)
 		if (viewType != tableViewType) setTableViewType(viewType)
 	}, [viewType])
 
@@ -116,31 +119,6 @@ const AwardBid = () => {
 
 	const [filters, setFilters] = React.useState<any>(filterOptions);
 
-	useEffect(() => {
-		const gridDataCopy = [...BiddersGridData];
-		let filteredData = gridDataCopy;
-		if (activeAwardBidFilters?.submissionStatus?.length > 0) {
-			filteredData = gridDataCopy.filter((rec: any) => {
-				return activeAwardBidFilters?.submissionStatus?.includes(rec?.submissionStatus?.toString());
-			});
-		}
-		if (activeAwardBidFilters?.intendToBid?.length > 0) {
-			filteredData = filteredData.filter((rec: any) => {
-				return activeAwardBidFilters?.intendToBid?.includes(rec?.intendToBid?.toString());
-			});
-		}
-		if (activeAwardBidFilters?.isDiverseSupplier?.length > 0) {
-			filteredData = filteredData.filter((rec: any) => {
-				return activeAwardBidFilters?.isDiverseSupplier?.includes(rec?.company?.isDiverseSupplier?.toString());
-			});
-		}
-		if (activeAwardBidFilters?.complianceStatus?.length > 0) {
-			filteredData = filteredData.filter((rec: any) => {
-				return activeAwardBidFilters?.complianceStatus?.includes(rec?.company?.complianceStatus);
-			});
-		}
-		setData(filteredData);
-	}, [activeAwardBidFilters, BiddersGridData]);
 
 
 	useEffect(() => {
@@ -188,6 +166,15 @@ const AwardBid = () => {
 	React.useEffect(() => {
 		dispatch(setAwardBidSelectedRecord([]));
 		setData(BiddersGridData);
+		const finaldata: any = [];
+		BiddersGridData && BiddersGridData?.map((value: any) => {
+			finaldata.push({
+				...value,
+				intendToBid_duplicate : getIntendToBid(value?.intendToBid),
+				submissionStatus_duplicate:getSubmissionStatus(value?.submissionStatus)
+			}) 
+		})
+		setmodifiedData(finaldata)
 	}, [selectedRecord, BiddersGridData]);
 
 	const handleToggleChange = (e: any, newAlignment: any) => {
@@ -206,6 +193,46 @@ const AwardBid = () => {
 		fileDownload(objectIds, filename);
 	};
 
+	const searchHandler = (searchText: string) => {
+		setSearchText(searchText);
+	};
+	useEffect(() => {
+		const filteredList = filterAction(modifieddata, activeAwardBidFilters, searchText);
+		setData(filteredList);
+	}, [searchText, activeAwardBidFilters, modifieddata]);
+
+	const filterAction = (list: Array<any>, filters: any = {}, searchText: string = '') => {
+		let gridDataCopy = [...list];
+		let filteredData = gridDataCopy;
+		if (!_.isEmpty(filters)) {
+			if (filters?.submissionStatus?.length > 0) {
+				filteredData = gridDataCopy?.filter((rec: any) => {
+					return filters?.submissionStatus?.includes(rec?.submissionStatus?.toString());
+				});
+			}
+			if (filters?.intendToBid?.length > 0) {
+				filteredData = filteredData?.filter((rec: any) => {
+					return filters?.intendToBid?.includes(rec?.intendToBid?.toString());
+				});
+			}
+			if (filters?.isDiverseSupplier?.length > 0) {
+				filteredData = filteredData?.filter((rec: any) => {
+					return filters?.isDiverseSupplier?.includes(rec?.company?.isDiverseSupplier?.toString());
+				});
+			}
+			if (filters?.complianceStatus?.length > 0) {
+				filteredData = filteredData?.filter((rec: any) => {
+					return filters?.complianceStatus?.includes(rec?.company?.complianceStatus);
+				});
+			}
+		}
+		if (searchText) {
+			filteredData = filteredData?.filter((obj: any) => {
+				return JSON.stringify(obj)?.toLowerCase()?.includes(searchText?.toLowerCase());
+			});
+		}
+		return filteredData
+	}
 	return (
 		<div className='award-bid'>
 			<div className='award-bid-header'>
@@ -239,7 +266,7 @@ const AwardBid = () => {
 						showGroups={false}
 						filters={filters}
 						onFilterChange={(filters: any) => dispatch(setActiveAwardBidFilters(filters))}
-						// onSearchChange={searchHandler}
+						onSearchChange={searchHandler}
 					/>
 					<div style={{ overflow: 'auto', height: '910px', cursor: 'pointer' }}>
 						{data.map((obj: any, index: number) => (

@@ -404,9 +404,9 @@ const UserDetails = (props: any) => {
 				};
 			}
 			if (mapData.length > 0) {
-				setUser({ ...user, 'trade': mapData?.[0] });
+				return mapData?.[0];
 			} else {
-				setUser({ ...user, 'trade': defaultdata.trade });
+				return defaultdata.trade;
 			};
 
 			//}
@@ -433,7 +433,8 @@ const UserDetails = (props: any) => {
 		}
 		else if (name == 'company') {
 			updateddata = { ...user, [name]: { color: value[0]['color'], id: value[0]['id'], displayField: value[0]['displayField'], thumbnailId: value[0]['thumbnailUrl'] } };
-			filterTradeValues(value);
+			let tradeFieldValue = filterTradeValues(value);
+			updateddata = { ...updateddata, 'trade': tradeFieldValue};
 		} else if (name == 'skills') {
 			updateddata = { ...user, [name]: value }
 			fetchPendingDocsApiCall(updateddata)

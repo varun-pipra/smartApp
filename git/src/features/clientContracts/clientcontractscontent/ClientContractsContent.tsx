@@ -109,7 +109,13 @@ const ClientContractsContent = (props: any) => {
 		}
 	}, [unLockedSov]);
 
-	React.useEffect(() => {setTimeout(() => {setShowLockSuccessMsg({show: false, msg1: '', msg2: ''});}, 5000);}, [showLockSuccessMsg]);
+	React.useEffect(() => {
+		if (showLockSuccessMsg?.show) {
+			setTimeout(() => {
+				setShowLockSuccessMsg({ show: false, msg1: "", msg2: "" });
+			  }, 5000);
+		}
+  }, [showLockSuccessMsg]);
 
 
 	React.useEffect(() => {

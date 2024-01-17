@@ -48,7 +48,7 @@ const BidManagerToolbar = (props: any) => {
 		method: ''
 	});
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
-	const [toggleChecked, setToggleChecked] = React.useState(true);
+	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const groupOptions = [
 		{text: "Status", value: "status"},
 		{text: "Companies", value: "company"},

@@ -30,6 +30,7 @@ import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 
 var tinycolor = require('tinycolor2');
 let defaultBidStatusFilter: any = [];
+let bidManagerBlockchain = false;
 
 const BidManagerGrid = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -50,6 +51,7 @@ const BidManagerGrid = (props: any) => {
 	const selectedRecord = useAppSelector((state) => state.bidManager.selectedRecord);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+	bidManagerBlockchain = blockchainEnabled;
 
 	useEffect(() => {
 		gridRef?.current?.api?.applyTransaction(liveData);
@@ -279,7 +281,7 @@ const BidManagerGrid = (props: any) => {
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
 					const bcStatus = params.data?.blockChainStatus;
-					const showBCIcon = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(bcStatus) === -1);
+					const showBCIcon = (bidManagerBlockchain && ['None', 'AuthVerified'].indexOf(bcStatus) === -1);
 					return <>
 						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '9%', marginTop: '12px'}}></span>}
 						{/* <IQTooltip

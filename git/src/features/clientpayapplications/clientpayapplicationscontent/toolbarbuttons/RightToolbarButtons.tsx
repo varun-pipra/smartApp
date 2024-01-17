@@ -21,7 +21,7 @@ const ClientPayAppToolbarRightButtons = () => {
 	const tableViewType = useAppSelector(getTableViewType);
 
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
-	const [toggleChecked, setToggleChecked] = React.useState(true);
+	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const {blockchainEnabled} = useAppSelector((state: any) => state.blockchain);
 	const appInfo = useAppSelector(getServer);
 

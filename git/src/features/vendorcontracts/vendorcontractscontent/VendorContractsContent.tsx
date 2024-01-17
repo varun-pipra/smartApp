@@ -107,7 +107,13 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 		}
 	}, [toast]);
 
-	React.useEffect(() => {setTimeout(() => {setShowLockSuccessMsg({show: false, msg1: '', msg2: ''});}, 5000);}, [showLockSuccessMsg]);
+	React.useEffect(() => {
+		if (showLockSuccessMsg?.show) {
+			setTimeout(() => {
+				setShowLockSuccessMsg({ show: false, msg1: "", msg2: "" });
+			  }, 5000);
+		}
+  }, [showLockSuccessMsg]);
 
 	const minimizeIcon = useMemo<React.ReactElement>(() => {
 		return <div className='common-icon-minimize' style={{fontSize: '1.25rem'}}></div>;

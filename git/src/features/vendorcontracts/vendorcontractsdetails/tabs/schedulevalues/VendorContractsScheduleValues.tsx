@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback, useRef, useMemo } from "react";
-import { useAppDispatch, useAppSelector } from "app/hooks";
+import React, {useEffect, useState, useCallback, useRef, useMemo} from "react";
+import {useAppDispatch, useAppSelector} from "app/hooks";
 import SUISelectionTiles from "sui-components/SelectionTiles/SUISelectionTiles";
 import SUIPayIntervalFrequency from "sui-components/PayIntervalFrequency/SUIPayIntervalFrequency";
 import WorkItemsDropdown from "sui-components/WorkItemsDropdown/WorkItemsDropdown";
@@ -8,37 +8,37 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import IQToggle from "components/iqtoggle/IQToggle";
 import IQTooltip from "components/iqtooltip/IQTooltip";
-import { Stack, Box } from "@mui/material";
+import {Stack, Box} from "@mui/material";
 import infoicon from "resources/images/common/infoicon.svg";
 import SUIAlert from "sui-components/Alert/Alert";
 
-import { Button } from "@mui/material";
+import {Button} from "@mui/material";
 //import { Lock, FileCopy } from "@mui/icons-material";
 import "./VendorContractsScheduleValues.scss";
-import { getServer } from "app/common/appInfoSlice";
-import { addPaymenForSov, createScheduleOfValues, deleteAllScheduleOfValues, deleteBudgetItem, deleteScheduleOfValue, updateScheduleOfValues, updateScheduleOfValuesThroughDate } from "features/vendorcontracts/stores/ScheduleOfValuesAPI";
-import { errorMsg, errorStatus, getAmountAlignment, isUserGC } from "utilities/commonutills";
-import { setSelectedRecord } from "features/vendorcontracts/stores/VendorContractsSlice";
-import { getValuesOfAllEntries, tiles } from "./utils";
-import { getBudgetItemsByPackage, getVendorContractsList } from "features/vendorcontracts/stores/gridSlice";
-import { setUnlockedSov } from "features/vendorcontracts/stores/ScheduleOfValuesSlice";
-import { getContractDetailsById } from 'features/vendorcontracts/stores/VendorContractsSlice';
+import {getServer} from "app/common/appInfoSlice";
+import {addPaymenForSov, createScheduleOfValues, deleteAllScheduleOfValues, deleteBudgetItem, deleteScheduleOfValue, updateScheduleOfValues, updateScheduleOfValuesThroughDate} from "features/vendorcontracts/stores/ScheduleOfValuesAPI";
+import {errorMsg, errorStatus, getAmountAlignment, isUserGC} from "utilities/commonutills";
+import {setSelectedRecord} from "features/vendorcontracts/stores/VendorContractsSlice";
+import {getValuesOfAllEntries, tiles} from "./utils";
+import {getBudgetItemsByPackage, getVendorContractsList} from "features/vendorcontracts/stores/gridSlice";
+import {setUnlockedSov} from "features/vendorcontracts/stores/ScheduleOfValuesSlice";
+import {getContractDetailsById} from 'features/vendorcontracts/stores/VendorContractsSlice';
 import Toast from "components/toast/Toast";
-import { PaymentStatus } from "utilities/vendorContracts/enums";
-import { formatDate } from "utilities/datetime/DateTimeUtils";
-import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
-import { AddBudgetLineItemButton } from "features/clientContracts/clientcontractsdetails/tabs/schedulevalues/ClientContractsScheduleValues";
+import {PaymentStatus} from "utilities/vendorContracts/enums";
+import {formatDate} from "utilities/datetime/DateTimeUtils";
+import {amountFormatWithSymbol, amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
+import {AddBudgetLineItemButton} from "features/clientContracts/clientcontractsdetails/tabs/schedulevalues/ClientContractsScheduleValues";
 import BudgetManagerRO from "sui-components/BudgetManager/BudgetManager";
 
 const VendorContractsScheduleValues = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
-	const emptyObj = [{ completionPercentage: "", payoutPercentage: "", payoutAmount: null, balanceAmount: null }];
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
-	const { selectedRecord, contractDetailsGetCall } = useAppSelector((state) => state.vendorContracts);
-	const { budgetItems } = useAppSelector((state) => state.vendorContractsGrid);
-	const { loginUserData } = useAppSelector((state) => state.vendorContracts);
-	const { budgetManagerData } = useAppSelector(state => state.cCSov);
+	const emptyObj = [{completionPercentage: "", payoutPercentage: "", payoutAmount: null, balanceAmount: null}];
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
+	const {selectedRecord, contractDetailsGetCall} = useAppSelector((state) => state.vendorContracts);
+	const {budgetItems} = useAppSelector((state) => state.vendorContractsGrid);
+	const {loginUserData} = useAppSelector((state) => state.vendorContracts);
+	const {budgetManagerData} = useAppSelector(state => state.cCSov);
 
 	const [toggleChecked, setToggleChecked] = React.useState<boolean>(true);
 	const [sovUnlocked, setSovUnlocked] = React.useState<boolean>(false);
@@ -49,7 +49,7 @@ const VendorContractsScheduleValues = (props: any) => {
 	const tableDataRef = useRef<any>();
 	const [pinnedTopData, setPinnedTopData] = useState<any>([]);
 
-	React.useEffect(() => { budgetItems?.length && setSelectedBudgetItem(budgetItems?.[0]) }, [budgetItems])
+	React.useEffect(() => {budgetItems?.length && setSelectedBudgetItem(budgetItems?.[0]);}, [budgetItems]);
 
 	const [activeTile, setActiveTile] = useState<any>(tiles[0]);
 	const [tilesData, setTilesData] = useState<any>(tiles);
@@ -62,34 +62,34 @@ const VendorContractsScheduleValues = (props: any) => {
 	const [selectedTileData, setSelectedTileData] = useState<any>({});
 	const [showErrorMsg, setShowErrorMsg] = useState<boolean>(false);
 	const [showDuplicateMsg, setShowDuplicateMsg] = useState<boolean>(false);
-	const [toastMsg, setToastMsg] = useState<any>("")
-	const [toast, setToast] = useState<any>({ show: false, message: '' });
+	const [toastMsg, setToastMsg] = useState<any>("");
+	const [toast, setToast] = useState<any>({show: false, message: ''});
 	const cellValueChangedRef = useRef<any>(false);
 	const [openBudgetPicker, setOpenBudgetPicker] = useState<any>(false);
-	const [availableBudgetItems, setAvailableBudgetItems] = useState<any>([])
+	const [availableBudgetItems, setAvailableBudgetItems] = useState<any>([]);
 
 
 	React.useEffect(() => {
 		toast?.show && setTimeout(() => {
-			setToast({ show: false, message: '' })
-		}, 5000)
-	}, [toast?.show])
+			setToast({show: false, message: ''});
+		}, 5000);
+	}, [toast?.show]);
 
 	React.useEffect(() => {
-		const list: any = []
+		const list: any = [];
 		budgetManagerData?.map((budget: any) => {
-			if ((budget?.Vendors?.length == 0 || budget?.Vendors?.map((vendor: any) => vendor?.id)?.includes(selectedRecord?.vendor?.id)) && budget?.providerSource == 0) list.push(budget)
-		})
-		setAvailableBudgetItems([...list])
-	}, [budgetManagerData])
+			if((budget?.Vendors?.length == 0 || budget?.Vendors?.map((vendor: any) => vendor?.id)?.includes(selectedRecord?.vendor?.id)) && budget?.providerSource == 0) list.push(budget);
+		});
+		setAvailableBudgetItems([...list]);
+	}, [budgetManagerData]);
 
 	const workItemsExtraColumns = [
-		{ headerName: 'Work Item', dataKey: 'label', name: 'label', width: '60%', showCol: true, showRenderColVal: false },
-		{ name: "status", showIcon: true, dataKey: "status", width: '15%', showValueOnTop: true },
-		{ name: "pagination", width: '15%', colWidth: '5%', showCol: true, showRenderColVal: true },
-		{ headerName: 'Bid Value', dataKey: 'bidValue', name: 'amount', width: '125px', align: 'left', colWidth: '10%', showCol: true, showRenderColVal: false },
-		{ headerName: 'Change Order Amount', dataKey: 'changeOrderAmt', name: 'amount', width: '240px', align: 'right', showCol: true, colWidth: '17.5%', showRenderColVal: false },
-		{ headerName: 'Revised Bid Value', dataKey: 'revisedBidValue', name: 'amount', width: '180px', align: 'right', showCol: true, colWidth: '14%', showRenderColVal: false },
+		{headerName: 'Work Item', dataKey: 'label', name: 'label', width: '60%', showCol: true, showRenderColVal: false},
+		{name: "status", showIcon: true, dataKey: "status", width: '15%', showValueOnTop: true},
+		{name: "pagination", width: '15%', colWidth: '5%', showCol: true, showRenderColVal: true},
+		{headerName: 'Bid Value', dataKey: 'bidValue', name: 'amount', width: '125px', align: 'left', colWidth: '10%', showCol: true, showRenderColVal: false},
+		{headerName: 'Change Order Amount', dataKey: 'changeOrderAmt', name: 'amount', width: '240px', align: 'right', showCol: true, colWidth: '17.5%', showRenderColVal: false},
+		{headerName: 'Revised Bid Value', dataKey: 'revisedBidValue', name: 'amount', width: '180px', align: 'right', showCol: true, colWidth: '14%', showRenderColVal: false},
 	];
 
 	/**
@@ -106,84 +106,84 @@ const VendorContractsScheduleValues = (props: any) => {
 		cellValueChangedRef.current = true;
 		event.stopPropagation();
 		const enteredValue = activeTile?.type == 'DollarAmount' && colKey == 'workStage' ? event?.target?.value : Number(event.target.value?.replaceAll(',', ''));
-		let existedValuesSum = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0)
-		console.log("handleTableCellsChange", enteredValue, colKey, getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey), selectedBudgetItem?.quantity)
+		let existedValuesSum = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0);
+		console.log("handleTableCellsChange", enteredValue, colKey, getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey), selectedBudgetItem?.quantity);
 		// } else if (activeTile?.type == 'PercentComplete' && (enteredValue > 100 || ((params.node?.rowPinned === 'top' && existedValuesSum ? Number(existedValuesSum) : 0) + enteredValue > 100))) {
-		if (activeTile?.type == 'PercentComplete' && enteredValue > 100) {
+		if(activeTile?.type == 'PercentComplete' && enteredValue > 100) {
 			setShowErrorMsg(true);
 			setShowAlert(true);
 			setToastMsg('Values More than 100 are not allowed.');
-		} else if (colKey == 'payoutPercentage' && ((params.node?.rowPinned === 'top' && existedValuesSum ? Number(existedValuesSum) : 0) + enteredValue > 100)) {
+		} else if(colKey == 'payoutPercentage' && ((params.node?.rowPinned === 'top' && existedValuesSum ? Number(existedValuesSum) : 0) + enteredValue > 100)) {
 			setShowErrorMsg(true);
 			setShowAlert(true);
 			setToastMsg("The sum of 'Percent Payout' values from all the rows cannot be more than 100.");
-		} else if (colKey == 'completionQuantity' && selectedBudgetItem?.quantity && (enteredValue > selectedBudgetItem?.quantity)) {
+		} else if(colKey == 'completionQuantity' && selectedBudgetItem?.quantity && (enteredValue > selectedBudgetItem?.quantity)) {
 			setShowAlert(true);
 			setShowErrorMsg(true);
-			setToastMsg("The 'Unit Quantity' cannot be more than the total Unit Quantity of the selected Work Item")
-		} else if (colKey == 'completionQuantity' && selectedBudgetItem?.quantity && getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.includes(selectedBudgetItem?.quantity)) {
+			setToastMsg("The 'Unit Quantity' cannot be more than the total Unit Quantity of the selected Work Item");
+		} else if(colKey == 'completionQuantity' && selectedBudgetItem?.quantity && getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.includes(selectedBudgetItem?.quantity)) {
 			setShowAlert(true);
 			setShowErrorMsg(true);
-			setToastMsg("You have already entered the 'Total Unit Quantity' So You can't add new Record. If you still want to add then edit/delete the existed record with 'Total Quantity'.")
+			setToastMsg("You have already entered the 'Total Unit Quantity' So You can't add new Record. If you still want to add then edit/delete the existed record with 'Total Quantity'.");
 		}
-		else if (colKey == 'payoutAmount' && selectedBudgetItem?.bidValue && (enteredValue > selectedBudgetItem?.bidValue || ((params.node.rowPinned === 'top' && existedValuesSum ? Number(existedValuesSum) : 0) + enteredValue > selectedBudgetItem?.bidValue))) {
+		else if(colKey == 'payoutAmount' && selectedBudgetItem?.bidValue && (enteredValue > selectedBudgetItem?.bidValue || ((params.node.rowPinned === 'top' && existedValuesSum ? Number(existedValuesSum) : 0) + enteredValue > selectedBudgetItem?.bidValue))) {
 			setShowAlert(true);
 			setShowErrorMsg(true);
 			// newRecRef.current[colKey] = '';
-			setToastMsg("Sum of Payout amount of all rows cannot exceed the total Bid Value.")
+			setToastMsg("Sum of Payout amount of all rows cannot exceed the total Bid Value.");
 		} else {
 			const value = colKey == 'completionQuantity' && selectedBudgetItem?.quantity ? (selectedBudgetItem?.bidValue / selectedBudgetItem?.quantity) * enteredValue : (selectedBudgetItem?.bidValue / 100) * enteredValue;
 			newRecRef.current[colKey] = enteredValue;
-			if (params.node.rowPinned === 'top') {
-				if (activeTile?.type == "PercentComplete") {
-					let existedValues = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0)
+			if(params.node.rowPinned === 'top') {
+				if(activeTile?.type == "PercentComplete") {
+					let existedValues = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0);
 					existedValues = (existedValues ? Number(existedValues) : 0) + Number(enteredValue);
 					//   console.log("existeddd", existedValues)
 					const paidAmount = (selectedBudgetItem?.bidValue / 100) * Number(existedValues);
 					//   console.log("iffffff", existedValues, enteredValue, paidAmount);
-					if (colKey == 'payoutPercentage') {
+					if(colKey == 'payoutPercentage') {
 						//   console.log("second");
 						newRecRef.current["payoutAmount"] = value; newRecRef.current["balanceAmount"] = selectedBudgetItem?.bidValue - Number(paidAmount);
 					}
-					if (newRecRef?.current?.completionPercentage && newRecRef?.current?.payoutPercentage) {
+					if(newRecRef?.current?.completionPercentage && newRecRef?.current?.payoutPercentage) {
 						// console.log("reffffffffffff", newRecRef?.current) 
 						newRecRef.current["enableAddBtn"] = true;
 					} else {
 						newRecRef.current["enableAddBtn"] = false;
 					}
 				}
-				if (activeTile?.type == "UnitOfMeasure") {
-					let existedValues = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0)
+				if(activeTile?.type == "UnitOfMeasure") {
+					let existedValues = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0);
 					existedValues = (existedValues ? Number(existedValues) : 0) + Number(enteredValue);
 					const paidAmount = selectedBudgetItem?.quantity ? (selectedBudgetItem?.bidValue / selectedBudgetItem?.quantity) * Number(enteredValue) : 0;
-					console.log("activeTile?.type", activeTile?.type, existedValues, paidAmount)
-					if (selectedBudgetItem?.quantity) {
-						console.log("ifffff", selectedBudgetItem?.quantity, value)
-						newRecRef.current["balanceAmount"] = selectedBudgetItem?.bidValue - Number(paidAmount)
-						if (colKey == 'completionQuantity') {
-							const vals = Number(getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, 'payoutAmount')?.reduce((a: any, b: any) => Number(a) + Number(b), 0))
-							const payoutAmt = Number(value) - (vals && vals != NaN ? vals : 0)
-							newRecRef.current["payoutAmount"] = payoutAmt < 0 ? Number(value) : payoutAmt
+					console.log("activeTile?.type", activeTile?.type, existedValues, paidAmount);
+					if(selectedBudgetItem?.quantity) {
+						console.log("ifffff", selectedBudgetItem?.quantity, value);
+						newRecRef.current["balanceAmount"] = selectedBudgetItem?.bidValue - Number(paidAmount);
+						if(colKey == 'completionQuantity') {
+							const vals = Number(getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, 'payoutAmount')?.reduce((a: any, b: any) => Number(a) + Number(b), 0));
+							const payoutAmt = Number(value) - (vals && !Number.isNaN(vals) ? vals : 0);
+							newRecRef.current["payoutAmount"] = payoutAmt < 0 ? Number(value) : payoutAmt;
 							console.log("ïssues", newRecRef?.current, payoutAmt, Number(value), Number(getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, 'payoutAmount')?.reduce((a: any, b: any) => Number(a) + Number(b), 0)));
 						}
-						else newRecRef.current["balanceAmount"] = selectedBudgetItem?.bidValue - Number(existedValues)
+						else newRecRef.current["balanceAmount"] = selectedBudgetItem?.bidValue - Number(existedValues);
 					} else {
-						console.log("elseee", selectedBudgetItem?.quantity)
-						if (colKey == 'payoutAmount') newRecRef.current["balanceAmount"] = selectedBudgetItem?.bidValue - Number(existedValues)
+						console.log("elseee", selectedBudgetItem?.quantity);
+						if(colKey == 'payoutAmount') newRecRef.current["balanceAmount"] = selectedBudgetItem?.bidValue - Number(existedValues);
 					}
-					if (newRecRef?.current?.completionQuantity && newRecRef?.current?.payoutAmount) {
+					if(newRecRef?.current?.completionQuantity && newRecRef?.current?.payoutAmount) {
 						newRecRef.current["enableAddBtn"] = true;
 					} else {
 						newRecRef.current["enableAddBtn"] = false;
 					}
 				}
-				if (activeTile?.type == "DollarAmount") {
-					if (colKey == 'payoutAmount') {
-						let existedValues = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0)
+				if(activeTile?.type == "DollarAmount") {
+					if(colKey == 'payoutAmount') {
+						let existedValues = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0);
 						existedValues = (existedValues ? Number(existedValues) : 0) + Number(enteredValue);
 						newRecRef.current["balanceAmount"] = selectedBudgetItem?.bidValue - Number(existedValues);
 					}
-					if (newRecRef?.current?.workStage && newRecRef?.current?.payoutAmount) {
+					if(newRecRef?.current?.workStage && newRecRef?.current?.payoutAmount) {
 						newRecRef.current["enableAddBtn"] = true;
 					} else {
 						newRecRef.current["enableAddBtn"] = false;
@@ -195,47 +195,47 @@ const VendorContractsScheduleValues = (props: any) => {
 				// console.log("put call", colKey, enteredValue, tableDataRef?.current);
 				// params.node.setDataValue(colKey, enteredValue); 
 				const gridDataCopy = [...tableDataRef.current[selectedBudgetItem?.id]?.payments];
-				let updatedObj = { ...gridDataCopy[params.node.rowIndex] }
-				if (activeTile?.type == "PercentComplete") {
+				let updatedObj = {...gridDataCopy[params.node.rowIndex]};
+				if(activeTile?.type == "PercentComplete") {
 					//   console.log("iffffff", colKey, gridDataCopy, value, updatedObj)
-					if (colKey == 'payoutPercentage') {
+					if(colKey == 'payoutPercentage') {
 						// console.log("second", gridDataCopy[params.node.rowIndex]["payoutAmount"], value);
-						let existedValues = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0)
+						let existedValues = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.reduce((a: any, b: any) => Number(a) + Number(b), 0);
 						existedValues = existedValues + Number(enteredValue);
-						updatedObj = { ...updatedObj, payoutAmount: value }
-						updatedObj = { ...updatedObj, balanceAmount: selectedBudgetItem?.bidValue - Number(value) }
+						updatedObj = {...updatedObj, payoutAmount: value};
+						updatedObj = {...updatedObj, balanceAmount: selectedBudgetItem?.bidValue - Number(value)};
 						// console.log("dataaa111", gridDataCopy);
 					}
 				}
 				// console.log("dataaa222", gridDataCopy, updatedObj);
 
-				if (activeTile?.type == "UnitOfMeasure") {
-					updatedObj = { ...updatedObj, balanceAmount: selectedBudgetItem?.bidValue - Number(value) }
-					updatedObj = colKey == 'completionQuantity' ? { ...updatedObj, payoutAmount: value } : { ...updatedObj, balanceAmount: selectedBudgetItem?.bidValue - Number(enteredValue) }
+				if(activeTile?.type == "UnitOfMeasure") {
+					updatedObj = {...updatedObj, balanceAmount: selectedBudgetItem?.bidValue - Number(value)};
+					updatedObj = colKey == 'completionQuantity' ? {...updatedObj, payoutAmount: value} : {...updatedObj, balanceAmount: selectedBudgetItem?.bidValue - Number(enteredValue)};
 				}
-				if (activeTile?.type == "DollarAmount") {
-					if (colKey == 'payoutAmount') updatedObj = { ...updatedObj, balanceAmount: selectedBudgetItem?.bidValue - Number(value) }
+				if(activeTile?.type == "DollarAmount") {
+					if(colKey == 'payoutAmount') updatedObj = {...updatedObj, balanceAmount: selectedBudgetItem?.bidValue - Number(value)};
 				}
-				updatedObj = { ...updatedObj, [colKey]: enteredValue }
-				gridDataCopy[params.node.rowIndex] = updatedObj
+				updatedObj = {...updatedObj, [colKey]: enteredValue};
+				gridDataCopy[params.node.rowIndex] = updatedObj;
 				// console.log("dataaa", gridDataCopy, updatedObj);
 				//params.node.setDataValue(colKey, enteredValue);
 				params.node.setData(gridDataCopy[params.node.rowIndex]);//Using to re-render the cells when there is a change
-				tableDataRef.current = { ...tableData, [selectedBudgetItem?.id]: { ...tableData[selectedBudgetItem?.id], payments: [...gridDataCopy] } };
+				tableDataRef.current = {...tableData, [selectedBudgetItem?.id]: {...tableData[selectedBudgetItem?.id], payments: [...gridDataCopy]}};
 			}
 		}
 	};
-	React.useEffect(() => { dispatch(setUnlockedSov(sovUnlocked)) }, [sovUnlocked]);
+	React.useEffect(() => {dispatch(setUnlockedSov(sovUnlocked));}, [sovUnlocked]);
 	React.useEffect(() => {
-		if (!props.readOnly) {
+		if(!props.readOnly) {
 			setPinnedTopData(emptyObj);
 		}
 		else setPinnedTopData([]);
 
-	}, [selectedRecord, props.readOnly])
+	}, [selectedRecord, props.readOnly]);
 
 	React.useEffect(() => {
-		if (budgetItems?.length == selectedRecord?.budgetLineItemsWithValidSOV) { dispatch(setUnlockedSov(false)); setSovUnlocked(false) }
+		if(budgetItems?.length == selectedRecord?.budgetLineItemsWithValidSOV) {dispatch(setUnlockedSov(false)); setSovUnlocked(false);}
 	}, [selectedRecord, budgetItems]);
 
 	/**
@@ -247,45 +247,45 @@ const VendorContractsScheduleValues = (props: any) => {
 	 * @author Srinivas Nadendla
 	 */
 	const handleTableCellsBlur = (event: any, params: any, colKey: string) => {
-		if (!cellValueChangedRef.current) return;
+		if(!cellValueChangedRef.current) return;
 		cellValueChangedRef.current = false;
 		const enteredValue = activeTile?.type == 'DollarAmount' && colKey == 'workStage' ? event?.target?.value : Number(event.target.value?.replaceAll(',', ''));
 		const checkDuplicates = () => {
-			if (params.node.rowPinned == 'top') return getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.includes(enteredValue)
+			if(params.node.rowPinned == 'top') return getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey)?.includes(enteredValue);
 			else {
 				let values = getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey);
-				console.log("elsee", values, params.node.rowIndex)
-				values.splice(params.node.rowIndex, 1)
-				console.log("elsee1", values, params.node.rowIndex)
-				return values?.includes(enteredValue)
+				console.log("elsee", values, params.node.rowIndex);
+				values.splice(params.node.rowIndex, 1);
+				console.log("elsee1", values, params.node.rowIndex);
+				return values?.includes(enteredValue);
 			}
-		}
+		};
 		console.log("enteredValue", enteredValue, checkDuplicates(), getValuesOfAllEntries(tableData[selectedBudgetItem?.id]?.payments, colKey));
-		if (['completionPercentage', 'completionQuantity', 'workStage'].includes(colKey) && (checkDuplicates())) {
+		if(['completionPercentage', 'completionQuantity', 'workStage'].includes(colKey) && (checkDuplicates())) {
 			setShowErrorMsg(true);
 			setShowAlert(true);
-			setToastMsg('Duplicate Values are not allowed')
+			setToastMsg('Duplicate Values are not allowed');
 			newRecRef.current[colKey] = '';
 			newRecRef.current["enableAddBtn"] = false;
-			if (colKey == 'completionQuantity') {
+			if(colKey == 'completionQuantity') {
 				newRecRef.current['payoutAmount'] = '';
 				newRecRef.current['balanceAmount'] = '';
 			}
 			params.node.setData(newRecRef.current);
 		}
-		if (colKey == 'completionQuantity') {
-			if (newRecRef?.current?.payoutAmount < 0) {
+		if(colKey == 'completionQuantity') {
+			if(newRecRef?.current?.payoutAmount < 0) {
 				setShowAlert(true);
 				newRecRef.current[colKey] = '';
 				newRecRef.current['payoutAmount'] = '';
 				newRecRef.current['balanceAmount'] = '';
 				newRecRef.current["enableAddBtn"] = false;
 				setShowErrorMsg(true);
-				setToastMsg("You have already Added the total Unit Quantity. If you want to add one more, edit the alrealy existed then add new Payment / Remove the existed Payments and add from starting.")
+				setToastMsg("You have already Added the total Unit Quantity. If you want to add one more, edit the alrealy existed then add new Payment / Remove the existed Payments and add from starting.");
 			}
 		}
-		if (params.node.rowPinned !== 'top') {
-			console.log("rowPinned", params.node.rowPinned)
+		if(params.node.rowPinned !== 'top') {
+			console.log("rowPinned", params.node.rowPinned);
 			// const value = (selectedBudgetItem?.bidValue / 100) * enteredValue;      
 			// const gridDataCopy = [...tableDataRef.current[selectedBudgetItem?.id]?.payments];
 			//   if(activeTile?.type == "PercentComplete") {
@@ -313,22 +313,22 @@ const VendorContractsScheduleValues = (props: any) => {
 			//   tableDataRef.current = {...tableData, [selectedBudgetItem?.id]: {...tableData[selectedBudgetItem?.id], payments:  [...gridDataCopy]}};
 
 
-			const updatedRecord = tableDataRef?.current[selectedBudgetItem?.id]
-			console.log("put blur", tableDataRef?.current, updatedRecord, enteredValue, updatedRecord?.payments[params.node.rowIndex]?.[colKey])
-			const payload = updatedRecord?.type == 'PercentComplete' ? { completionPercentage: updatedRecord?.payments[params.node.rowIndex]?.completionPercentage, payoutPercentage: updatedRecord?.payments[params.node.rowIndex]?.payoutPercentage }
-				: updatedRecord?.type == 'UnitOfMeasure' ? { completionQuantity: updatedRecord?.payments[params.node.rowIndex]?.completionQuantity, payoutAmount: updatedRecord?.payments[params.node.rowIndex]?.payoutAmount } : { payoutAmount: updatedRecord?.payments[params.node.rowIndex]?.payoutAmount, workStage: updatedRecord?.payments[params.node.rowIndex]?.workStage }
+			const updatedRecord = tableDataRef?.current[selectedBudgetItem?.id];
+			console.log("put blur", tableDataRef?.current, updatedRecord, enteredValue, updatedRecord?.payments[params.node.rowIndex]?.[colKey]);
+			const payload = updatedRecord?.type == 'PercentComplete' ? {completionPercentage: updatedRecord?.payments[params.node.rowIndex]?.completionPercentage, payoutPercentage: updatedRecord?.payments[params.node.rowIndex]?.payoutPercentage}
+				: updatedRecord?.type == 'UnitOfMeasure' ? {completionQuantity: updatedRecord?.payments[params.node.rowIndex]?.completionQuantity, payoutAmount: updatedRecord?.payments[params.node.rowIndex]?.payoutAmount} : {payoutAmount: updatedRecord?.payments[params.node.rowIndex]?.payoutAmount, workStage: updatedRecord?.payments[params.node.rowIndex]?.workStage};
 			updateScheduleOfValues(appInfo, selectedRecord?.id, selectedBudgetItem?.id, params?.data?.id, payload, (response: any) => {
-				if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
-				else dispatch(setSelectedRecord(response))
-			})
+				if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
+				else dispatch(setSelectedRecord(response));
+			});
 		}
-		if (params.node.rowPinned === 'top') {
-			if (colKey == 'payoutAmount') {
+		if(params.node.rowPinned === 'top') {
+			if(colKey == 'payoutAmount') {
 				newRecRef.current['newRecRef.current'] = getAmountAlignment(newRecRef.current?.payoutAmount);
 			}
 			// params.node.setData(newRecRef.current);
 			// setRecUpdated(recUpdated + Math.random());
-			const event = new CustomEvent('updateSOVRec', { detail: newRecRef });
+			const event = new CustomEvent('updateSOVRec', {detail: newRecRef});
 			document.dispatchEvent(event);
 		}
 	};
@@ -372,16 +372,16 @@ const VendorContractsScheduleValues = (props: any) => {
 				sort: 'asc',
 				cellRenderer: (params: any) => {
 					return props.readOnly || ['Paid', 'SelectedForPayment'].includes(params?.data?.status) ? (
-						<div style={{ textAlign: "center" }}>
+						<div style={{textAlign: "center"}}>
 							{params.data?.completionPercentage}%
 						</div>
 					) : (
-						<div style={{ textAlign: "center" }}>
+						<div style={{textAlign: "center"}}>
 							<TextField
 								id="work-completion-text-field"
 								placeholder="Enter"
 								variant="standard"
-								sx={{ width: "70px" }}
+								sx={{width: "70px"}}
 								value={
 									params.node.rowPinned === 'top'
 										? newRecRef.current?.completionPercentage
@@ -420,14 +420,14 @@ const VendorContractsScheduleValues = (props: any) => {
 				sortable: false,
 				cellRenderer: (params: any) => {
 					return props.readOnly || ['Paid', 'SelectedForPayment'].includes(params?.data?.status) ? (
-						<div style={{ textAlign: "center" }}>{params?.data?.payoutPercentage}%</div>
+						<div style={{textAlign: "center"}}>{params?.data?.payoutPercentage}%</div>
 					) : (
-						<div style={{ textAlign: "center" }}>
+						<div style={{textAlign: "center"}}>
 							<TextField
 								id="payout-text-field"
 								placeholder="Enter"
 								variant="standard"
-								sx={{ width: "70px" }}
+								sx={{width: "70px"}}
 								value={
 									params.node.rowPinned === 'top'
 										? newRecRef.current?.payoutPercentage
@@ -540,16 +540,16 @@ const VendorContractsScheduleValues = (props: any) => {
 				sort: 'asc',
 				cellRenderer: (params: any) => {
 					return props.readOnly || ['Paid', 'SelectedForPayment'].includes(params?.data?.status) ? (
-						<div style={{ textAlign: "center" }}>
+						<div style={{textAlign: "center"}}>
 							{getAmountAlignment(params.data?.completionQuantity)} {selectedBudgetItem?.unitOfMeasure ? selectedBudgetItem?.unitOfMeasure : ''}
 						</div>
 					) : (
-						<div style={{ textAlign: "center" }}>
+						<div style={{textAlign: "center"}}>
 							<TextField
 								id="payout-text-field"
 								placeholder="Enter"
 								variant="standard"
-								sx={{ width: "120px" }}
+								sx={{width: "120px"}}
 								value={
 									params.node.rowPinned === 'top'
 										? getAmountAlignment(newRecRef.current?.completionQuantity)
@@ -596,7 +596,7 @@ const VendorContractsScheduleValues = (props: any) => {
 								id="payout-amount-text-field"
 								placeholder="Enter"
 								variant="standard"
-								sx={{ width: "120px" }}
+								sx={{width: "120px"}}
 								value={
 									params.node.rowPinned === 'top'
 										? getAmountAlignment(newRecRef.current?.payoutAmount)
@@ -691,7 +691,7 @@ const VendorContractsScheduleValues = (props: any) => {
 					return props.readOnly || ['Paid', 'SelectedForPayment'].includes(params?.data?.status) ? (
 						<div>{params?.data?.workStage}</div>
 					) : (
-						<div style={{ textAlign: "left" }}>
+						<div style={{textAlign: "left"}}>
 							<TextField
 								id="work-stage-text-field"
 								placeholder="Enter"
@@ -737,7 +737,7 @@ const VendorContractsScheduleValues = (props: any) => {
 								id="payout-text-field"
 								placeholder="Enter"
 								variant="standard"
-								sx={{ width: "120px" }}
+								sx={{width: "120px"}}
 								value={
 									params.node.rowPinned === 'top'
 										? getAmountAlignment(newRecRef.current?.payoutAmount)
@@ -818,16 +818,16 @@ const VendorContractsScheduleValues = (props: any) => {
 			field: "status",
 			minWidth: 185,
 			menuTabs: [],
-			cellStyle: { textAlign: "center" },
+			cellStyle: {textAlign: "center"},
 			cellRenderer: (params: any) => {
-				console.log("status in sov", params, params?.data?.status)
+				console.log("status in sov", params, params?.data?.status);
 				const payStatus = PaymentStatus[params.data?.status];
-				if (payStatus === "Paid") {
+				if(payStatus === "Paid") {
 					let styleOpts = {
-						style: { color: payStatus === "Paid" ? "#008000c2" : "red" },
-					}
+						style: {color: payStatus === "Paid" ? "#008000c2" : "red"},
+					};
 					return <div {...styleOpts}>{payStatus}</div>;
-				} return payStatus
+				} return payStatus;
 			}
 		},
 		{
@@ -846,7 +846,7 @@ const VendorContractsScheduleValues = (props: any) => {
 			menuTabs: [],
 		}
 
-	]
+	];
 
 	// useEffect(() => {
 	// 	if (!['Draft', 'ReadyToSubmit', 'Scheduled']?.includes(selectedRecord?.status)) {
@@ -859,71 +859,71 @@ const VendorContractsScheduleValues = (props: any) => {
 
 	React.useEffect(() => {
 		let scheduleOfValuesGridData: any = {};
-		if (selectedRecord?.scheduleOfValues) {
+		if(selectedRecord?.scheduleOfValues) {
 			selectedRecord?.scheduleOfValues?.length && selectedRecord?.scheduleOfValues?.map((obj: any) => {
 				// console.log("obj", obj, scheduleOfValuesGridData);
-				if (!Object.keys(scheduleOfValuesGridData)?.includes(obj?.budgetItem?.id)) {
+				if(!Object.keys(scheduleOfValuesGridData)?.includes(obj?.budgetItem?.id)) {
 					// console.log("ifff", obj?.budgetItem?.id)
-					scheduleOfValuesGridData = { ...scheduleOfValuesGridData, [obj?.budgetItem?.id]: { ...obj } }
+					scheduleOfValuesGridData = {...scheduleOfValuesGridData, [obj?.budgetItem?.id]: {...obj}};
 				}
-			})
+			});
 		}
 		else {
 			//   console.log("elseeee scheduleOfValues", selectedRecord?.scheduleOfValues, budgetItems, contractDetailsGetCall)
 			selectedRecord?.scheduleOfValues == null && contractDetailsGetCall && budgetItems?.map((row: any) => {
 				// console.log("repeated call")
-				if (!Object.keys(scheduleOfValuesGridData)?.includes(row?.id)) {
+				if(!Object.keys(scheduleOfValuesGridData)?.includes(row?.id)) {
 					//   console.log("scheduleOfValuesGridData in ", row?.id)
-					createScheduleOfValues(appInfo, selectedRecord?.id, row?.id, { type: 'PercentComplete' }, (response: any) => {
-						if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
+					createScheduleOfValues(appInfo, selectedRecord?.id, row?.id, {type: 'PercentComplete'}, (response: any) => {
+						if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 						else response?.scheduleOfValues?.map((obj: any) => {
-							if (obj?.budgetItem?.id == row?.id) {
-								scheduleOfValuesGridData = { ...scheduleOfValuesGridData, [row?.id]: { ...obj } };
+							if(obj?.budgetItem?.id == row?.id) {
+								scheduleOfValuesGridData = {...scheduleOfValuesGridData, [row?.id]: {...obj}};
 								setTableData(scheduleOfValuesGridData);
 							}
 
-						})
-					})
+						});
+					});
 				}
-			})
+			});
 			//   console.log("Active tile", tilesData[0])
-			setActiveTile(tilesData[0])
+			setActiveTile(tilesData[0]);
 		}
 		// console.log("scheduleOfValuesGridData", scheduleOfValuesGridData, Object.keys(scheduleOfValuesGridData))
 		setTableData(scheduleOfValuesGridData);
 		tableDataRef.current = scheduleOfValuesGridData;
-	}, [selectedRecord, budgetItems])
+	}, [selectedRecord, budgetItems]);
 
 	React.useEffect(() => {
 		const data = tilesData?.map((tile: any) => {
 			//   console.log("active tile set", tableData[selectedBudgetItem?.id], selectedBudgetItem)
-			if (tile?.type == tableData[selectedBudgetItem?.id]?.type) {
+			if(tile?.type == tableData[selectedBudgetItem?.id]?.type) {
 				// console.log("tile", tile)
-				setActiveTile(tile)
-				return { ...tile, isActive: true }
+				setActiveTile(tile);
+				return {...tile, isActive: true};
 			};
-			return { ...tile, isActive: false }
-		})
+			return {...tile, isActive: false};
+		});
 		setTilesData(data);
 	}, [tableData, selectedBudgetItem]);
 
 	const onSelectedTileChange = (tile: any) => {
 		// console.log("selected Tile", tile, activeTile?.type,tableData[selectedBudgetItem?.id]?.payIntervalFrequency );
-		if (tableData[selectedBudgetItem?.id]?.payments?.length > 0 || (activeTile?.type == 'ThroughDate' && ['Monthly', 'Weekly', 'RealTime']?.includes(tableData[selectedBudgetItem?.id]?.payIntervalFrequency))) {
-			setShowAlert(true)
+		if(tableData[selectedBudgetItem?.id]?.payments?.length > 0 || (activeTile?.type == 'ThroughDate' && ['Monthly', 'Weekly', 'RealTime']?.includes(tableData[selectedBudgetItem?.id]?.payIntervalFrequency))) {
+			setShowAlert(true);
 		}
 		else {
 			setActiveTile(tile);
 			const resp = deleteAllScheduleOfValues(appInfo, selectedRecord?.id, selectedBudgetItem?.id, (response: any) => {
-				if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
-				else createScheduleOfValues(appInfo, selectedRecord?.id, selectedBudgetItem?.id, { type: tile?.type }, (response: any) => {
-					if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
+				if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
+				else createScheduleOfValues(appInfo, selectedRecord?.id, selectedBudgetItem?.id, {type: tile?.type}, (response: any) => {
+					if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 					else response?.scheduleOfValues?.map((obj: any) => {
-						if (obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({ ...tableData, [selectedBudgetItem?.id]: { ...obj } })
-					})
+						if(obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({...tableData, [selectedBudgetItem?.id]: {...obj}});
+					});
 					// dispatch(setSelectedRecord(response))
-				})
-			})
+				});
+			});
 			//   console.log("deleteeeee resp", resp);      
 			// setTimeout(() => {
 			// 	// console.log("set time out")
@@ -955,8 +955,8 @@ const VendorContractsScheduleValues = (props: any) => {
 			budgetItemsData?.map((obj: any) => {
 				let status = 'pending';
 				sovData?.map((row: any) => {
-					if (row?.budgetItem?.id == obj?.id) status = row?.status == 'Pending' ? 'pending' : 'completed'
-				})
+					if(row?.budgetItem?.id == obj?.id) status = row?.status == 'Pending' ? 'pending' : 'completed';
+				});
 				return {
 					value: obj?.id,
 					label: `${obj?.name} - ${obj?.costCode ? obj?.costCode : ''} - ${obj?.costType ? obj?.costType : ''}`,
@@ -969,19 +969,19 @@ const VendorContractsScheduleValues = (props: any) => {
 			});
 		const handleChange = (val: any) => {
 			budgetItemsData?.forEach((obj: any) => {
-				if (obj?.id == val) setSelectedBudgetItem(obj);
+				if(obj?.id == val) setSelectedBudgetItem(obj);
 			});
 			const data: any = tilesData?.map((tile: any) => {
-				if (tile?.type == tableData[val]?.type) { setActiveTile({ ...tile, isActive: true }); return { ...tile, isActive: true } };
-				return { ...tile, isActive: false }
-			})
+				if(tile?.type == tableData[val]?.type) {setActiveTile({...tile, isActive: true}); return {...tile, isActive: true};};
+				return {...tile, isActive: false};
+			});
 			setTilesData(data);
-			setSovUnlocked(false)
+			setSovUnlocked(false);
 			newRecRef.current["enableAddBtn"] = false;
 		};
 		return (
 			<div className="vc-schedule-values_work-items">
-				<div style={{ width: 500 }}>
+				<div style={{width: 500}}>
 					<WorkItemsDropdown
 						lineItemlabel={`Work Items (${selectedRecord?.budgetLineItemsWithValidSOV ? selectedRecord?.budgetLineItemsWithValidSOV : 0} of ${budgetItems && budgetItems?.length} Schedule Value Completed)`}
 						dropDownListExtraColumns={['ActivePendingSOVUpdate', 'ActiveUnlockedPendingSOVUpdate']?.includes(selectedRecord?.status) ? [
@@ -993,12 +993,12 @@ const VendorContractsScheduleValues = (props: any) => {
 								dataKey: "status",
 								showValueOnTop: true,
 							},
-							{ name: "pagination", showValueOnTop: true },
+							{name: "pagination", showValueOnTop: true},
 						]}
 						ignoreSorting={true}
 						selectedValue={selectedBudgetItem?.id}
 						options={options || []}
-						handleInputChange={(val: any) => { handleChange(val) }}
+						handleInputChange={(val: any) => {handleChange(val);}}
 						showExtraColumns={true}
 						showDescription={true}
 						isDropDownPosition={true}
@@ -1044,39 +1044,39 @@ const VendorContractsScheduleValues = (props: any) => {
 		} : {
 			workStage: value?.workStage,
 			payoutAmount: value?.payoutAmount
-		}
+		};
 		addPaymenForSov(appInfo, selectedRecord?.id, selectedBudgetItem?.id, payload, (response: any) => {
-			if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
+			if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 			else {
-				if (response?.status != selectedRecord?.status) {
+				if(response?.status != selectedRecord?.status) {
 					dispatch(getVendorContractsList(appInfo));
 				}
 				dispatch(setSelectedRecord(response));
 				response?.scheduleOfValues?.map((obj: any) => {
-					if (obj?.budgetItem?.id == selectedBudgetItem?.id && obj?.status == 'Completed') setToast({ show: true, message: `${response?.budgetLineItemsWithValidSOV && response?.budgetLineItemsWithValidSOV} Of ${budgetItems?.length} Schedule Value Completed Successfully.` })
-				})
+					if(obj?.budgetItem?.id == selectedBudgetItem?.id && obj?.status == 'Completed') setToast({show: true, message: `${response?.budgetLineItemsWithValidSOV && response?.budgetLineItemsWithValidSOV} Of ${budgetItems?.length} Schedule Value Completed Successfully.`});
+				});
 			}
-		})
-		setNewRecord(emptyObj[0])
+		});
+		setNewRecord(emptyObj[0]);
 		newRecRef.current = {};
 		newRecRef.current["enableAddBtn"] = false;
 	};
 
 	const ChangePayOutType = (type: string) => {
-		if (type == 'yes') {
+		if(type == 'yes') {
 			setActiveTile(selectedTileData);
 			newRecRef.current = {};
 			setNewRecord(emptyObj[0]);
-			setTableData({ ...tableData, [selectedBudgetItem?.id]: { ...tableData[selectedBudgetItem?.id], payments: [] } })
+			setTableData({...tableData, [selectedBudgetItem?.id]: {...tableData[selectedBudgetItem?.id], payments: []}});
 			deleteAllScheduleOfValues(appInfo, selectedRecord?.id, selectedBudgetItem?.id, (response: any) => {
-				if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
-				else createScheduleOfValues(appInfo, selectedRecord?.id, selectedBudgetItem?.id, { type: selectedTileData?.type }, (response: any) => {
-					if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
+				if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
+				else createScheduleOfValues(appInfo, selectedRecord?.id, selectedBudgetItem?.id, {type: selectedTileData?.type}, (response: any) => {
+					if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 					else response?.scheduleOfValues?.map((obj: any) => {
-						if (obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({ ...tableData, [selectedBudgetItem?.id]: { ...obj } })
-					})
+						if(obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({...tableData, [selectedBudgetItem?.id]: {...obj}});
+					});
 					// dispatch(setSelectedRecord(response))          
-				})
+				});
 			});
 			setShowAlert(false);
 			// createScheduleOfValues(appInfo, selectedRecord?.id, selectedBudgetItem?.id, { type: selectedTileData?.type }, (response: any) => {
@@ -1092,12 +1092,12 @@ const VendorContractsScheduleValues = (props: any) => {
 			setShowAlert(false);
 			tableDataRef.current = tableData[selectedBudgetItem?.id]?.payments;
 			const data: any = tilesData?.map((tile: any) => {
-				if (tile?.recordId == activeTile?.recordId) return { ...tile, isActive: true }
-				return { ...tile, isActive: false };
-			})
+				if(tile?.recordId == activeTile?.recordId) return {...tile, isActive: true};
+				return {...tile, isActive: false};
+			});
 			setTilesData(data);
 		}
-	}
+	};
 	/***
 	 * On removing record updating the local ref values to the latest
 	 * @param value
@@ -1108,13 +1108,13 @@ const VendorContractsScheduleValues = (props: any) => {
 		// setShowAlert(true);
 		// console.log("true", value, updatedRecords);
 		deleteScheduleOfValue(appInfo, selectedRecord?.id, selectedBudgetItem?.id, value, (response: any) => {
-			if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
-			else dispatch(getContractDetailsById({ appInfo: appInfo, id: selectedRecord?.id })).then((resp: any) => {
-				console.log("respp", resp)
+			if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
+			else dispatch(getContractDetailsById({appInfo: appInfo, id: selectedRecord?.id})).then((resp: any) => {
+				console.log("respp", resp);
 				resp?.payload?.status != selectedRecord?.status && dispatch(getVendorContractsList(appInfo));
 			});
 		});
-		setTableData({ ...tableData, [selectedBudgetItem?.id]: { ...tableData[selectedBudgetItem?.id], payments: [...updatedRecords] } })
+		setTableData({...tableData, [selectedBudgetItem?.id]: {...tableData[selectedBudgetItem?.id], payments: [...updatedRecords]}});
 		// setTimeout(() => {
 		// 	dispatch(getContractDetailsById({ appInfo: appInfo, id: selectedRecord?.id }));
 		// }, 5000);
@@ -1122,11 +1122,11 @@ const VendorContractsScheduleValues = (props: any) => {
 	const handleThroughData = (obj: any) => {
 		console.log("handleThroughData", obj);
 		updateScheduleOfValuesThroughDate(appInfo, selectedRecord?.id, selectedBudgetItem?.id, obj, (response: any) => {
-			if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
+			if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 			else dispatch(setSelectedRecord(response));
 		});
 
-	}
+	};
 
 	return (
 		<>
@@ -1136,14 +1136,14 @@ const VendorContractsScheduleValues = (props: any) => {
 					<div className="vc-schedule-values_auto-pay-switch">
 						Auto Create Pay Applications
 						<IQTooltip title={`Auto Create Pay Applications `} arrow={true}>
-						<span className="common-icon-Project-Info"></span>
+							<span className="common-icon-Project-Info"></span>
 						</IQTooltip>
 						<Stack direction="row">
 							<IQToggle
 								checked={tableData[selectedBudgetItem?.id]?.autoCreatePayApplication}
 								switchLabels={["ON", "OFF"]}
 								onChange={(e, value) => {
-									updateScheduleOfValuesThroughDate(appInfo, selectedRecord?.id, selectedBudgetItem?.id, { autoCreatePayApplication: value }, (response: any) => {
+									updateScheduleOfValuesThroughDate(appInfo, selectedRecord?.id, selectedBudgetItem?.id, {autoCreatePayApplication: value}, (response: any) => {
 										dispatch(setSelectedRecord(response));
 									});
 								}}
@@ -1161,12 +1161,12 @@ const VendorContractsScheduleValues = (props: any) => {
 						</AddBudgetLineItemButton>
 					</div>
 				)}
-				{selectedRecord?.contractFor == 2 && !selectedRecord?.noOfBudgetLineItems ? 
+				{selectedRecord?.contractFor == 2 && !selectedRecord?.noOfBudgetLineItems ?
 					<div className="add-budget-watermark">
-					<div className="add-budget-watermark-wrap">
+						<div className="add-budget-watermark-wrap">
 							<span className={"common-icon-schedule-values"} ></span>
 							<span className="doc-text-clr">Click + to add the Budget Line Items</span>
-							</div>
+						</div>
 					</div>
 
 					: <div>
@@ -1206,7 +1206,7 @@ const VendorContractsScheduleValues = (props: any) => {
 						</div>
 
 						{(!activeTile.recordId || activeTile?.recordId === 1) && (
-							<div style={{ width: "100%", height: "300px" }} className="sov-grid-cls">
+							<div style={{width: "100%", height: "300px"}} className="sov-grid-cls">
 								<SUILineItem
 									headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...percentHeaders, ...statusColumn] : percentHeaders}
 									// headers={percentHeaders}
@@ -1231,7 +1231,7 @@ const VendorContractsScheduleValues = (props: any) => {
 							</div>
 						)}
 						{activeTile?.recordId === 2 && (
-							<div style={{ width: "100%", height: "200px" }}>
+							<div style={{width: "100%", height: "200px"}}>
 								<SUILineItem
 									headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...unitHeaders, ...statusColumn] : unitHeaders}
 									data={tableData[selectedBudgetItem?.id]?.payments ? tableData[selectedBudgetItem?.id]?.payments : []}
@@ -1255,7 +1255,7 @@ const VendorContractsScheduleValues = (props: any) => {
 							</div>
 						)}
 						{activeTile?.recordId === 3 && (
-							<div style={{ width: "100%", height: "200px" }}>
+							<div style={{width: "100%", height: "200px"}}>
 								<SUILineItem
 									headers={!['Draft', 'ReadyToSubmit', 'Scheduled', 'AwaitingAcceptance']?.includes(selectedRecord?.status) ? [...dollarHeaders, ...statusColumn] : dollarHeaders}
 									// headers={dollarHeaders}
@@ -1301,7 +1301,7 @@ const VendorContractsScheduleValues = (props: any) => {
 									showErrorMsg || showDuplicateMsg ?
 										<div>
 											<span>{toastMsg}</span>
-											<div style={{ textAlign: 'right', marginTop: '10px' }}>
+											<div style={{textAlign: 'right', marginTop: '10px'}}>
 												<Button
 													className="cancel-cls"
 													style={{
@@ -1337,41 +1337,42 @@ const VendorContractsScheduleValues = (props: any) => {
 					defaultRecords={budgetItems?.map((row: any) => row?.id)}
 					onAdd={(rows: any) => {
 						const existedIds: any = budgetItems?.map((row: any) => row?.id);
-						const rowIds: any = rows?.map((row: any) => row?.id);						
-						const newlyAddedItems = rows?.filter((row: any) => !existedIds?.includes(row?.id))
-						const removedItems = existedIds?.filter((id:string) => !rowIds?.includes(id));
-						console.log("existedIds", existedIds, removedItems,newlyAddedItems)
+						const rowIds: any = rows?.map((row: any) => row?.id);
+						const newlyAddedItems = rows?.filter((row: any) => !existedIds?.includes(row?.id));
+						const removedItems = existedIds?.filter((id: string) => !rowIds?.includes(id));
+						console.log("existedIds", existedIds, removedItems, newlyAddedItems);
 
-						removedItems?.map((removedId:string, index:number) => {
-							deleteBudgetItem(appInfo, selectedRecord?.id, removedId, (response:any) => {
-								if(removedItems?.length == index+1) newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id }))										
-							})
-						})
+						removedItems?.map((removedId: string, index: number) => {
+							deleteBudgetItem(appInfo, selectedRecord?.id, removedId, (response: any) => {
+								if(removedItems?.length == index + 1) newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id}));
+							});
+						});
 
-						newlyAddedItems?.map((item:any, index:number) => {
+						newlyAddedItems?.map((item: any, index: number) => {
 							console.log("item", item);
-							createScheduleOfValues(appInfo, selectedRecord?.id, item?.id, { type: 'PercentComplete' }, (response: any) => {
-								if (errorStatus?.includes(response?.status)) setToast({ show: true, message: errorMsg });
+							createScheduleOfValues(appInfo, selectedRecord?.id, item?.id, {type: 'PercentComplete'}, (response: any) => {
+								if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 								else {
-									console.log("adhocccc", response) 
+									console.log("adhocccc", response);
 									response?.scheduleOfValues?.map((obj: any) => {
-										if (obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({ ...tableData, [selectedBudgetItem?.id]: { ...obj } })
-									})
-									if(newlyAddedItems?.length == index+1) { dispatch(setSelectedRecord(response)) 
-										newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id }))										
+										if(obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({...tableData, [selectedBudgetItem?.id]: {...obj}});
+									});
+									if(newlyAddedItems?.length == index + 1) {
+										dispatch(setSelectedRecord(response));
+										newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id}));
 									}
 								}
-							})
-						})
+							});
+						});
 					}}
 					alertTitle={'Warning'}
 					alertText={<span>
 						<span>Adding/Removing budget line items for the vendor contract will affect the Original Contract Amount</span>
-						<br/>
+						<br />
 						<span> and Schedule of Value calculations for the selected items.</span>
-						<br/><br/>
+						<br /><br />
 						<span>Do you wish to continue?</span>
-						
+
 					</span>}
 					disableRowsKey={'vendorContract'}
 					moduleName={'VendorContracts'}
