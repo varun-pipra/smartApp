@@ -250,9 +250,8 @@ const AddSpecificationsDialog = (props: any) => {
   const addSpecRec = () => {
     const files = selected.map((file: any) => {
       return {
-        driveObjectId: file.uniqueId,
-        name: file.displayName,
-        fileType: 1,
+        driveObjectId: file.id,
+        fileType: 2,
       };
     });
     props.onAddRecord({ add: files });
@@ -301,7 +300,7 @@ const AddSpecificationsDialog = (props: any) => {
   const optionalTools = [
     <IQTooltip title="Help" placement={"bottom"}>
       <IconButton key={"freshdesk-tool"} aria-label="Help" onClick={handleHelp}>
-        <HeadsetMic />
+       <div className="spec-live-support-btn"></div>
       </IconButton>
     </IQTooltip>,
   ];
@@ -354,6 +353,11 @@ const AddSpecificationsDialog = (props: any) => {
   const closeSpecDocViewer = () => {
     setOpenSpecDocViewer(false);
   };
+
+  const refreshSMGrid = () => {
+    dispatch(getSMList());
+    setSelected([])
+  };
   const modifiedData = searchAndFilter(rowData);
   console.log(rowData, "rowData");
   return (
@@ -389,7 +393,11 @@ const AddSpecificationsDialog = (props: any) => {
           <div>
             <div className="spec-search-box">
               <div className="refresh">
-                <span className="common-icon-refresh"></span>
+              <IQTooltip title="Refresh" placement="bottom">
+                <IconButton onClick={refreshSMGrid} aria-label="Refresh Spec Manager">
+                  <span className="common-icon-refresh"></span>
+                </IconButton>
+              </IQTooltip>
               </div>
               <Box>
                 <Stack direction="row">

@@ -58,7 +58,18 @@ export const fetchBidPackage = async (appInfo: any, packageId: any) => {
 	}
 
 	const packageDetails = list.find((obj: any) => obj.id === packageId);
-	return packageDetails;
+	return {...packageDetails,"specifications": [
+        {
+            "": 1,
+            "id": "64a4bf2e-fccc-49fe-b28f-8f4d23cc4af6",
+            "title": "REQUEST FOR INFORMATION",
+            "division": "01 - General Requirement",
+            "number": "05510",
+            "startPage": 5,
+            "endPage": 10,
+            "specBook": "A3.6.pdf"
+        }
+    ]};
 };
 
 export const updateBidPackage = async (appInfo: any, packageId: any, body: any) => {

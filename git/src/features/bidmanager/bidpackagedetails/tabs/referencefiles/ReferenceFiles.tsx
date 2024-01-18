@@ -66,8 +66,6 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       suppressMenu: true,
       resizable: true,
       cellClass: "sm-specBookName",
-      keyCreator: (params: any) => params.data?.specBook?.fileName || "None",
-      valueGetter: (params: any) => `${params?.data?.specBook?.fileName}`,
     },
     {
       headerName: "Division",
@@ -76,20 +74,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       minWidth: 250,
       resizable: true,
       suppressMenu: true,
-      keyCreator: (params: any) =>
-        (params.data.division &&
-          `${params.data.division.number} - ${params.data.division.text}`) ||
-        "None",
-      valueGetter: (params: any) => {
-        const division = params?.data?.division;
-        if (
-          division &&
-          division.number !== undefined &&
-          division.text !== undefined
-        ) {
-          return `${division.number} - ${division.text}`;
-        }
-      },
+
     },
 
     {
@@ -134,6 +119,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   const { SMData, specBookpages } = useAppSelector(
     (state) => state.specificationManager
   );
+  const [specificationsData,setSpecificationsData] = useState(bidPackage?.specifications || [])
   const [openSpecDocViewer, setOpenSpecDocViewer] = useState(false);
   const [specBookPagesData, setSpecBookPagesData] = useState({});
   const [sepcSelectedRecord, setSepcSelectedRecord] = useState({});
@@ -267,6 +253,20 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
     });
   };
 
+  const handelDeleteSpecifications = () => {
+    const files = selected.map((file: any) => {
+      return {
+        referenceId: file.id,
+        fileType: 2,
+      };
+    });
+    saveReferenceFiles({
+      remove: [
+        files
+      ]
+    });
+  }
+
   const constructList = (list: Array<any>, fromDrive = false) => {
     const modifiedList = list?.map((item: any) => {
       if (fromDrive)
@@ -385,6 +385,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
               <IconButton
                 className="ref-delete-btn"
                 disabled={selected.length === 0}
+                onClick={handelDeleteSpecifications}
               >
                 <span className="common-icon-delete"></span>
               </IconButton>
@@ -394,7 +395,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
         <div className="grid">
           <SUIGrid
             headers={headers}
-            data={specModifiedList}
+            data={specificationsData}
             rowSelected={(e: any) => rowSelected(e)}
             getRowId={(record: any) => record.data.id}
           />
