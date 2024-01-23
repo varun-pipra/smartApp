@@ -368,10 +368,13 @@
             color: orange;
         }
     }
-    .pt-Company,.base-container, .inside-grid-cell-cls, .MuiBox-root {
-            .dropdown-without-chip-cls {
-                display : flex;
-            }
+    .pt-Company,
+    .base-container,
+    .inside-grid-cell-cls,
+    .MuiBox-root {
+        .dropdown-without-chip-cls {
+            display: flex;
+        }
     }
     .pt-email,
     .pt-Company,
@@ -431,6 +434,30 @@
             background-color: #c8cbcc !important;
             .ag-group-child-count {
                 color: #333;
+            }
+        }
+    }
+    .navigate-to-home {
+        left: 10px;
+        top: 0px;
+        position: absolute;
+        .common-icon-home {
+            border: 0px solid #fff;
+            box-shadow: none;
+            &:before {
+                content: "\ea15";
+                font-family: "common-webfont";
+                color: #ee7532;
+                height: 40px;
+                width: 40px;
+                border: 1px solid #d4cdcd;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0px 1px 5px #d4cdcd;
+                font-size: 25px;
+                background-color: #fff;
             }
         }
     }

@@ -108,12 +108,12 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 	}, [toast]);
 
 	React.useEffect(() => {
-		if (showLockSuccessMsg?.show) {
+		if(showLockSuccessMsg?.show) {
 			setTimeout(() => {
-				setShowLockSuccessMsg({ show: false, msg1: "", msg2: "" });
-			  }, 5000);
+				setShowLockSuccessMsg({show: false, msg1: "", msg2: ""});
+			}, 5000);
 		}
-  }, [showLockSuccessMsg]);
+	}, [showLockSuccessMsg]);
 
 	const minimizeIcon = useMemo<React.ReactElement>(() => {
 		return <div className='common-icon-minimize' style={{fontSize: '1.25rem'}}></div>;
@@ -226,9 +226,6 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 	};
 
 	const handlePostChangeAndLockAction = (type: any) => {
-		if(blockchainEnabled) {
-			dispatch(setShowBlockchainDialog(true));
-		}
 		setShowAlert({
 			show: true, type: type, message:
 				<span>The changes made to the contract will be posted as a new change event and notified to the vendor.<br /><br /> Would you like to go ahead and re post the contract?</span>
@@ -277,10 +274,16 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 		if(type == 'yes') {
 			showAlert?.type == 'cancel' && cancelAndLockContract(appInfo, selectedRecord?.id, afterItemAction);
 			if(showAlert?.type == 'route') {
+				if(blockchainEnabled) {
+					dispatch(setShowBlockchainDialog(true));
+				}
 				lockAndPostContract(appInfo, selectedRecord?.id, afterItemAction);
 				setShowLockSuccessMsg({show: true, msg1: 'Contract Routed, Posted and Locked.', msg2: 'Notified the response to the Vendor.'});
 			}
 			if(showAlert?.type == 'lock') {
+				if(blockchainEnabled) {
+					dispatch(setShowBlockchainDialog(true));
+				}
 				activateContract(appInfo, selectedRecord?.id, afterItemAction);
 				setShowLockSuccessMsg({show: true, msg1: 'Posted Contract and Locked.', msg2: 'Notified the response to the Vendor.'});
 			}

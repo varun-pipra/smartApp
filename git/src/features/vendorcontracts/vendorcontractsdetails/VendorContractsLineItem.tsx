@@ -249,19 +249,19 @@ const VendorContractsLineItem = (props: headerprops) => {
 			label: 'Contract Details',
 			showCount: false,
 			icon: (tabSelected === 'contract-details' ? <span className='common-icon-contracts tabicon tabicon_orange' /> : <span className='common-icon-contracts tabicon' />),
-			content: <ContractDetails readOnly={isUserGC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(vendorLineItem?.status) ? false : true : true}></ContractDetails>
+			content: <ContractDetails readOnly={props.showBCInfo || (isUserGC(appInfo) ? (['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(vendorLineItem?.status) ? false : true) : true)}></ContractDetails>
 		}, {
 			tabId: 'schedule-of-Values',
 			label: 'Schedule of Values',
 			icon: (tabSelected === 'schedule-of-Values' ? <span className='common-icon-schedule-values tabicon tabicon_orange' /> : <span className='common-icon-schedule-values tabicon' />),
-			content: <VendorContractsScheduleValues readOnly={isUserGC(appInfo) ? ['Draft', 'ReadyToSubmit']?.includes(vendorLineItem?.status) || unLockedSov ? false : true : true}></VendorContractsScheduleValues>
+			content: <VendorContractsScheduleValues readOnly={props.showBCInfo || (isUserGC(appInfo) ? ['Draft', 'ReadyToSubmit']?.includes(vendorLineItem?.status) || unLockedSov ? false : true : true)}></VendorContractsScheduleValues>
 		}, {
 			tabId: 'contract-Files',
 			label: 'Contract Files',
 			showCount: (filesCount > 0),
 			count: filesCount,
 			icon: (tabSelected === 'contract-Files' ? <span className='common-icon-contract-files tabicon tabicon_orange' /> : <span className='common-icon-contract-files tabicon' />),
-			content: <VendorContractFiles readOnly={isUserGC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(vendorLineItem?.status) ? false : true : true} />
+			content: <VendorContractFiles readOnly={props.showBCInfo || (isUserGC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(vendorLineItem?.status) ? false : true : true)} />
 		}, {
 			tabId: 'change-Events',
 			label: 'Change Events',

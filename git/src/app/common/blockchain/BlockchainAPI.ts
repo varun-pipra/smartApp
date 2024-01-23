@@ -10,10 +10,10 @@ export const fetchBlockchainStatus = async (type: number) => {
 	let response: any;
 	if(!isLocalhost) {
 		response = await fetch(`${server?.hostUrl}/EnterpriseDesktop/blockchain/FinanceBlockChain/IsBlockChainEnabled?sessionId=${server?.sessionId}&projectId=${server.uniqueId}&type=${type}`, {
-			method: 'GET',
-			// headers: {'content-type': 'application/json'}
+			method: 'GET'
 		});
-		return response;
+		const enabled = await response.json();
+		return enabled;
 	}
 
 	return true;
@@ -24,10 +24,10 @@ export const blockchainAction = async (enable: boolean, type: number) => {
 	let response: any;
 	if(!isLocalhost) {
 		response = await fetch(`${server?.hostUrl}/EnterpriseDesktop/blockchain/FinanceBlockChain/EnableDisableBlockChain?projectId=${server.uniqueId}&isEnabled=${enable}&type=${type}&sessionId=${server?.sessionId}`, {
-			method: 'POST',
-			// headers: {'content-type': 'application/json'}
+			method: 'POST'
 		});
-		return response;
+		const result = await response.json();
+		return result;
 	}
 
 	return true;

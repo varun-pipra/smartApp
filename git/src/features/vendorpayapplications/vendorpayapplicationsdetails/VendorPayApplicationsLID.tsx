@@ -83,6 +83,7 @@ const VendorPayApplicationsLID = ({data, ...props}: IQGridWindowDetailProps) => 
 	const [contractorResponse, setContractorResponse] = React.useState<any>({show: false, type: 2, data: {}});
 	const {vPayAppId, tab} = useAppSelector((state) => state.vendorPayApps);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+	const disableBlockchainActionButtons = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(vendorPayAppLineItem?.blockChainStatus) === -1);
 
 	React.useEffect(() => {
 		setContractorResponse({...contractorResponse, show: ["Rejected"]?.includes(vendorPayAppLineItem?.status), type: 3, data: vendorPayAppLineItem?.scAuthorization?.rejection ? vendorPayAppLineItem?.scAuthorization : vendorPayAppLineItem?.gcAuthorization});
@@ -163,8 +164,6 @@ const VendorPayApplicationsLID = ({data, ...props}: IQGridWindowDetailProps) => 
 		// 	content: <p>links</p>
 		// }
 	];
-
-	const disableBlockchainActionButtons = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(vendorPayAppLineItem?.blockChainStatus) === -1);
 
 	const lidProps = {
 		title: `Pay Application ID: ${vendorPayAppLineItem?.code}`,

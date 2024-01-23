@@ -239,24 +239,24 @@ const ClientContractsLineItem = (props: headerprops) => {
 			label: 'Contract Details',
 			showCount: false,
 			iconCls: 'common-icon-contracts',
-			content: <ClientContractDetails readOnly={isUserGCForCC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(contractLineItem?.status) ? false : true : true} />
+			content: <ClientContractDetails readOnly={props.showBCInfo || (isUserGCForCC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(contractLineItem?.status) ? false : true : true)} />
 		}, {
 			tabId: 'schedule-of-Values',
 			label: 'Schedule of Values',
 			iconCls: 'common-icon-schedule-values',
-			content: <ClientContractScheduleValues readOnly={isUserGCForCC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(contractLineItem?.status) ? false : true : true} ></ClientContractScheduleValues>
+			content: <ClientContractScheduleValues readOnly={props.showBCInfo || (isUserGCForCC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(contractLineItem?.status) ? false : true : true)} ></ClientContractScheduleValues>
 		}, {
 			tabId: 'billing-Schedule',
 			label: 'Billing Schedule',
 			iconCls: 'common-icon-billing-schedule',
-			content: <CCBillingSchedule readOnly={isUserGCForCC(appInfo) ? contractLineItem?.includeEntireBudget == null || !contractLineItem?.budgetItems ? true : ['Draft', 'ReadyToSubmit']?.includes(contractLineItem?.status) || unLockedSov ? false : true : true}></CCBillingSchedule>
+			content: <CCBillingSchedule readOnly={props.showBCInfo || (isUserGCForCC(appInfo) ? contractLineItem?.includeEntireBudget == null || !contractLineItem?.budgetItems ? true : ['Draft', 'ReadyToSubmit']?.includes(contractLineItem?.status) || unLockedSov ? false : true : true)}></CCBillingSchedule>
 		}, {
 			tabId: 'contract-Files',
 			label: 'Contract Files',
 			showCount: (filesCount > 0),
 			count: filesCount,
 			iconCls: 'common-icon-contract-files',
-			content: <ClientContractFiles readOnly={isUserGCForCC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(contractLineItem?.status) || unLockedSov ? false : true : true} />
+			content: <ClientContractFiles readOnly={props.showBCInfo || (isUserGCForCC(appInfo) ? ['Draft', 'ReadyToSubmit', 'AwaitingAcceptanceUnlocked', 'ActiveUnlocked', 'ActiveUnlockedPendingSOVUpdate']?.includes(contractLineItem?.status) || unLockedSov ? false : true : true)} />
 		}, {
 			tabId: 'change-Events',
 			label: 'Change Events',

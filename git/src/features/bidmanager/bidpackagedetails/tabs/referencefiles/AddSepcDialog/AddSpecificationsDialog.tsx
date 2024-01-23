@@ -20,6 +20,7 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import SmartDialog from "components/smartdialog/SmartDialog";
 import { HeadsetMic } from "@mui/icons-material";
 import IQTooltip from "components/iqtooltip/IQTooltip";
+import IQButton from "components/iqbutton/IQButton";
 
 const AddSpecificationsDialog = (props: any) => {
   const { open = false, ...rest } = props;
@@ -41,6 +42,7 @@ const AddSpecificationsDialog = (props: any) => {
   const [specBookPagesData, setSpecBookPagesData] = React.useState({});
   const onImagePreview = (event: any) => {
     const { data } = event;
+    console.log(data)
     handelFileClick(data);
   };
   const filterOptions = React.useMemo(() => {
@@ -91,11 +93,12 @@ const AddSpecificationsDialog = (props: any) => {
     },
 
     {
-      headerName: "Spec Section Name",
+      headerName: "Spec Section Title",
       field: "sectionName",
       cellClass: "sm-sectionName",
       resizable: true,
       suppressMenu: true,
+      pinned: "left",
       valueGetter: (params: any) => {
         return params.data?.title;
       },
@@ -108,7 +111,7 @@ const AddSpecificationsDialog = (props: any) => {
       resizable: true,
       cellClass: "sm-specBookName",
       keyCreator: (params: any) => params.data?.specBook?.fileName || "None",
-      valueGetter: (params: any) => `${params?.data?.specBook?.fileName}`,
+      valueGetter: (params: any) => `${params?.data?.specBook?.fileName}`
     },
     {
       headerName: "Division",
@@ -118,20 +121,11 @@ const AddSpecificationsDialog = (props: any) => {
       //   rowGroup: true,
       resizable: true,
       suppressMenu: true,
-      keyCreator: (params: any) =>
-        (params.data.division &&
-          `${params.data.division.number} - ${params.data.division.text}`) ||
-        "None",
+      keyCreator: (params: any) => (params.data.division && `${params.data.division.number} - ${params.data.division.text}`) || "None",
       valueGetter: (params: any) => {
-        const division = params?.data?.division;
-        if (
-          division &&
-          division.number !== undefined &&
-          division.text !== undefined
-        ) {
-          return `${division.number} - ${division.text}`;
+              const division = params?.data?.division;
+              if (division && division.number !== undefined && division.text !== undefined) return `${division.number} - ${division.text}`;
         }
-      },
     },
 
     {
@@ -162,16 +156,20 @@ const AddSpecificationsDialog = (props: any) => {
       headerName: "File",
       field: "thumbnailUrl",
       menuTabs: [],
-      minWidth: 100,
+      minWidth: 50,
       flex: 1,
-      type: "avatar",
       onCellClicked: onImagePreview,
       cellStyle: {
         display: "flex",
-        alignItems: "left",
+        alignItems: "normal",
+        justifyContent: "left",
+
       },
       cellRenderer: (params: any) => {
-        return <img style={{ borderRadius: "0" }} src={params.value} />;
+        return <img
+        src={'https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media'}
+        className="thumbnailUrl-cls"
+      />;
       },
     },
   ];
@@ -235,7 +233,7 @@ const AddSpecificationsDialog = (props: any) => {
   const handelFileClick = (data: any) => {
     dispatch(setSepcSelectedRecord(data));
     let payload = {
-      id: data.specBook.id?.specBook?.id,
+      id: data.specBook?.id,
     };
     dispatch(getSpecBookPages(payload));
     // setOpenSpecDocViewer(true)
@@ -250,7 +248,7 @@ const AddSpecificationsDialog = (props: any) => {
   const addSpecRec = () => {
     const files = selected.map((file: any) => {
       return {
-        driveObjectId: file.id,
+        referenceId: file.id,
         fileType: 2,
       };
     });
@@ -300,11 +298,14 @@ const AddSpecificationsDialog = (props: any) => {
   const optionalTools = [
     <IQTooltip title="Help" placement={"bottom"}>
       <IconButton key={"freshdesk-tool"} aria-label="Help" onClick={handleHelp}>
-       <div className="spec-live-support-btn"></div>
+        <div className="spec-live-support-btn"></div>
       </IconButton>
     </IQTooltip>,
   ];
-
+  const refreshSMGrid = () => {
+    dispatch(getSMList());
+    // setSelected([])
+  };
   const groupRowRendererParams = React.useMemo(() => {
     return {
       checkbox: true,
@@ -353,11 +354,6 @@ const AddSpecificationsDialog = (props: any) => {
   const closeSpecDocViewer = () => {
     setOpenSpecDocViewer(false);
   };
-
-  const refreshSMGrid = () => {
-    dispatch(getSMList());
-    setSelected([])
-  };
   const modifiedData = searchAndFilter(rowData);
   console.log(rowData, "rowData");
   return (
@@ -376,7 +372,7 @@ const AddSpecificationsDialog = (props: any) => {
           title: "Select Specifications",
           buttons: (
             <>
-              <Button
+              <IQButton
                 disabled={selected.length === 0}
                 onClick={() => {
                   addSpecRec();
@@ -384,7 +380,7 @@ const AddSpecificationsDialog = (props: any) => {
                 variant="contained"
               >
                 ADD
-              </Button>
+                </IQButton>
             </>
           ),
         }}
@@ -392,7 +388,7 @@ const AddSpecificationsDialog = (props: any) => {
         <div className="spec-main-continer" style={{ height: "100%" }}>
           <div>
             <div className="spec-search-box">
-              <div className="refresh">
+              <div className="refresh" style={{marginLeft : '18px', cursor:'pointer'}}>
               <IQTooltip title="Refresh" placement="bottom">
                 <IconButton onClick={refreshSMGrid} aria-label="Refresh Spec Manager">
                   <span className="common-icon-refresh"></span>

@@ -51,6 +51,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       headerCheckboxSelection: true,
       resizable: true,
       minWidth: 200,
+      pinned : 'left'
     },
     {
       headerName: "Spec Section Title",
@@ -58,6 +59,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       cellClass: "sm-title",
       resizable: true,
       minWidth: 250,
+      pinned : 'left'
     },
     {
       headerName: "Spec Book",
@@ -65,7 +67,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       minWidth: 150,
       suppressMenu: true,
       resizable: true,
-      cellClass: "sm-specBookName",
+      cellClass: "sm-specBookName"
     },
     {
       headerName: "Division",
@@ -73,8 +75,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       cellClass: "sm-division",
       minWidth: 250,
       resizable: true,
-      suppressMenu: true,
-
+      suppressMenu: true
     },
 
     {
@@ -96,14 +97,18 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       menuTabs: [],
       minWidth: 50,
       flex: 1,
-      type: "avatar",
       onCellClicked: onImagePreview,
       cellStyle: {
         display: "flex",
-        alignItems: "left",
+        alignItems: "normal",
+        justifyContent: "left",
+
       },
       cellRenderer: (params: any) => {
-        return <img src={params.value} />;
+        return <img
+        src={'https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media'}
+        className="thumbnailUrl-cls"
+      />;
       },
     },
   ];
@@ -119,13 +124,20 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   const { SMData, specBookpages } = useAppSelector(
     (state) => state.specificationManager
   );
-  const [specificationsData,setSpecificationsData] = useState(bidPackage?.specifications || [])
   const [openSpecDocViewer, setOpenSpecDocViewer] = useState(false);
   const [specBookPagesData, setSpecBookPagesData] = useState({});
   const [sepcSelectedRecord, setSepcSelectedRecord] = useState({});
   const { specSelectedRecInAddSpecDlg } = useAppSelector(
     (state) => state.bidManager
   );
+  const [specificationsData,setSpecificationsData] = useState(bidPackage?.specifications || []);
+  useEffect(() => {
+      if(bidPackage?.specifications && bidPackage?.specifications?.length) {
+        setSpecificationsData(bidPackage?.specifications);
+      } else {
+        setSpecificationsData([]);
+      }
+  },[bidPackage?.specifications]);
 
   useEffect(() => {
     if (specBookpages.hasOwnProperty("totalCount")) {
@@ -161,8 +173,21 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   }, [SMData]);
 
   let typeVariable: any;
-
+  const handelDeleteSpecifications = () => {
+    const files = selected.map((file: any) => {
+      return {
+        referenceId: file.id,
+        fileType: 2,
+      };
+    });
+    saveReferenceFiles({
+      remove: [
+        files
+      ]
+    });
+  }
   const handelFileClick = (data: any) => {
+    console.log(data,'name')
     setSepcSelectedRecord(data);
     let payload = {
       id: data.specBook?.id,
@@ -238,6 +263,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       setFileType(undefined);
       dispatch(setUploadQueue([]));
       dispatch(setSelectedRecord(bidPackageItem));
+      // setOpenAddSpecDlg(false);
     });
   };
 
@@ -252,20 +278,6 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       ],
     });
   };
-
-  const handelDeleteSpecifications = () => {
-    const files = selected.map((file: any) => {
-      return {
-        referenceId: file.id,
-        fileType: 2,
-      };
-    });
-    saveReferenceFiles({
-      remove: [
-        files
-      ]
-    });
-  }
 
   const constructList = (list: Array<any>, fromDrive = false) => {
     const modifiedList = list?.map((item: any) => {
@@ -398,6 +410,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
             data={specificationsData}
             rowSelected={(e: any) => rowSelected(e)}
             getRowId={(record: any) => record.data.id}
+            nowRowsMsg={'Click on Add Specifications Button'}
           />
       </div>
       {openSpecDocViewer ? (

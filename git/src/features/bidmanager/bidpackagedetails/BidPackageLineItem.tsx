@@ -219,7 +219,7 @@ const BidPackageLineItem = (props: any) => {
 			domElementId: presenceId,
 			initialconfig: {
 				'showLiveSupport': true,
-				'showPrint':true,
+				'showPrint': true,
 				'showLiveLink': false,
 				'showStreams': true,
 				'showComments': false,
@@ -240,7 +240,7 @@ const BidPackageLineItem = (props: any) => {
 			label: "Bid Details",
 			showCount: false,
 			icon: (tabSelected === "bid-details" ? <span className='common-icon-Biddetailsgray tabicon tabicon_orange' /> : <span className='common-icon-Biddetailsgray tabicon' />),
-			content: [2, 3, 4, 5, 6, 7, 8].includes(bidLineItem?.status) ? (
+			content: [2, 3, 4, 5, 6, 7, 8].includes(bidLineItem?.status) || props.showBCInfo ? (
 				<BidDetailsRO data={bidLineItem} />
 			) : (
 				<BidDetails />
@@ -256,7 +256,7 @@ const BidPackageLineItem = (props: any) => {
 				<ReferenceFiles
 					iFrameId="bidManagerIframe"
 					appType="BidManagerLineItem"
-					readOnly={[2, 3, 4, 5, 6, 7, 8].includes(bidLineItem?.status)}
+					readOnly={[2, 3, 4, 5, 6, 7, 8].includes(bidLineItem?.status) || props.showBCInfo}
 				/>
 			),
 		},
@@ -269,7 +269,7 @@ const BidPackageLineItem = (props: any) => {
 			content: (
 				<Bidders
 					key={JSON.stringify(biddersReadOnly())}
-					readOnly={biddersReadOnly()}
+					readOnly={biddersReadOnly() || props.showBCInfo}
 				/>
 			),
 		},
@@ -287,7 +287,7 @@ const BidPackageLineItem = (props: any) => {
 			showCount: (queryCount > 0),
 			count: queryCount,
 			icon: (tabSelected === "bid-queries" ? <span className='common-icon-BidQueries bidqueries_tabicon tabicon_orange ' /> : <span className='common-icon-BidQueries bidqueries_tabicon' />),
-			content: <BidQueries readOnly={[4, 5, 6, 7, 8].includes(bidLineItem?.status)} />,
+			content: <BidQueries readOnly={[4, 5, 6, 7, 8].includes(bidLineItem?.status) || props.showBCInfo} />,
 			disabled: [3, 4, 5, 6, 8].includes(bidLineItem?.status) ? false : true,
 		}
 	];

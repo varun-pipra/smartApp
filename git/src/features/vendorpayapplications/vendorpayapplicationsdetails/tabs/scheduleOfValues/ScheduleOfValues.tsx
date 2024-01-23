@@ -1,29 +1,27 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useAppSelector, useAppDispatch } from 'app/hooks';
+import React, {useEffect} from 'react';
+import {useAppSelector, useAppDispatch} from 'app/hooks';
 import './ScheduleOfValues.scss';
 import SUIGrid from 'sui-components/Grid/Grid';
-import { ColDef } from 'ag-grid-enterprise';
-import { getAmountAlignment } from 'utilities/commonutills';
+import {ColDef} from 'ag-grid-enterprise';
+import {getAmountAlignment} from 'utilities/commonutills';
 import IQButton from 'components/iqbutton/IQButton';
-import { Card, Popover } from '@mui/material';
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { addPaymentToPayApp, removePaymentFromPayApp } from 'features/vendorpayapplications/stores/SOVAPI';
-import { getPayAppDetails, setSelectedRecord } from 'features/vendorpayapplications/stores/VendorPayAppSlice';
-import { getServer } from 'app/common/appInfoSlice';
-import { getContractDetailsById } from 'features/vendorcontracts/stores/VendorContractsSlice';
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {Popover} from '@mui/material';
+import {addPaymentToPayApp, removePaymentFromPayApp} from 'features/vendorpayapplications/stores/SOVAPI';
+import {getPayAppDetails, setSelectedRecord} from 'features/vendorpayapplications/stores/VendorPayAppSlice';
+import {getServer} from 'app/common/appInfoSlice';
+import {getContractDetailsById} from 'features/vendorcontracts/stores/VendorContractsSlice';
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 
 interface ScheduleProps {
-
+	readOnly?: boolean;
 }
 
 const ScheduleOFValues = (props: ScheduleProps) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
-	const { selectedRecord } = useAppSelector(state => state.vendorPayApps);
-	const [openManageSov, setOpenManageSov] = React.useState<any>({})
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
+	const {selectedRecord} = useAppSelector(state => state.vendorPayApps);
+	const [openManageSov, setOpenManageSov] = React.useState<any>({});
 	const [selectedRecs, setSelectedRecs] = React.useState<any>([]);
 	const [sovData, setSovData] = React.useState<any>({});
 
@@ -33,27 +31,27 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 	React.useEffect(() => {
 		const recs: any = [];
 		selectedRecord?.scheduleOfValues?.map((obj: any) => {
-			console.log("dddd", obj)
+			console.log("dddd", obj);
 			obj?.payments?.map((payment: any) => {
 				payment?.status == 'SelectedForPayment' && recs.push(payment);
-			})
+			});
 
-		})
-		setSelectedRecs([...recs])
-	}, [selectedRecord?.scheduleOfValues])
+		});
+		setSelectedRecs([...recs]);
+	}, [selectedRecord?.scheduleOfValues]);
 
 	React.useEffect(() => {
-		console.log("sov righnt", selectedRecord)
+		console.log("sov righnt", selectedRecord);
 		let sovObj = {};
-		selectedRecord?.contract && dispatch(getContractDetailsById({ appInfo: appInfo, id: selectedRecord?.contract?.id })).then((data: any) => {
+		selectedRecord?.contract && dispatch(getContractDetailsById({appInfo: appInfo, id: selectedRecord?.contract?.id})).then((data: any) => {
 			// console.log("getContractDetailsById", data?.payload?.scheduleOfValues)
 			data?.payload?.scheduleOfValues?.map((obj: any) => {
-				sovObj = { ...sovObj, [obj?.budgetItem?.id]: obj };
-			})
+				sovObj = {...sovObj, [obj?.budgetItem?.id]: obj};
+			});
 			// console.log("sov data", sovObj)
-			setSovData(sovObj)
-		})
-	}, [selectedRecord?.contract?.id])
+			setSovData(sovObj);
+		});
+	}, [selectedRecord?.contract?.id]);
 
 	const headers: ColDef[] = [
 		{
@@ -68,7 +66,7 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 						</span>
 						<span>AT</span>
 					</div>
-				)
+				);
 			}
 		},
 		{
@@ -89,7 +87,7 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 				// console.log("params In cellrender", params)
 				return (
 					<span>{params.data?.payoutPercentage}%</span>
-				)
+				);
 			}
 		},
 		{
@@ -102,7 +100,7 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 				// console.log("params In cellrender", params)
 				return (
 					<span>{amountFormatWithSymbol(params.data?.payoutAmount)}</span>
-				)
+				);
 			}
 		},
 		{
@@ -118,21 +116,21 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 						<span className='balanceAmount'>{amountFormatWithSymbol(params?.data?.balanceAmount)}</span>
 						<span className='totalAmount'> of {amountFormatWithSymbol(params?.data?.bidValue)}</span>
 					</div>
-				)
+				);
 			}
 		},
 	];
 	const percentColumn = {
 		headerName: "% Work Completion",
 		field: "completionPercentage",
-		cellStyle: { textAlign: "center" },
+		cellStyle: {textAlign: "center"},
 		minWidth: 170,
 		menuTabs: [],
 	};
 	const uomColumn = {
 		headerName: "Unit Quantity",
 		field: "completionQuantity",
-		cellStyle: { textAlign: "center" },
+		cellStyle: {textAlign: "center"},
 		minWidth: 160,
 		menuTabs: [],
 		valueGetter: (params: any) => `${getAmountAlignment(params?.data?.completionQuantity)} ${params?.data?.unitOfMeasure && params?.data?.completionQuantity > 0 ? params?.data?.unitOfMeasure : ''}`
@@ -140,7 +138,7 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 	const dollarAmountColumn = {
 		headerName: "Work Stage",
 		field: "workStage",
-		cellStyle: { textAlign: "left" },
+		cellStyle: {textAlign: "left"},
 		minWidth: 160,
 		menuTabs: [],
 	};
@@ -149,16 +147,16 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 		field: "status",
 		minWidth: 225,
 		menuTabs: [],
-		cellStyle: { textAlign: "center" },
+		cellStyle: {textAlign: "center"},
 		cellRenderer: (params: any) => {
 			const payStatus = params?.data?.status;
 
-			if (payStatus === "Paid") {
+			if(payStatus === "Paid") {
 				let styleOpts = {
-					style: { color: payStatus === "Paid" ? "#008000c2" : "red" },
+					style: {color: payStatus === "Paid" ? "#008000c2" : "red"},
 				};
 				return <div {...styleOpts}>{payStatus}</div>;
-			} else if (payStatus === "ReadyToBePaid") {
+			} else if(payStatus === "ReadyToBePaid") {
 				const buttonStyles = {
 					backgroundColor: selectedRecs.includes(params.data) ? "#1976D2" : "",
 					color: selectedRecs.includes(params.data) ? "#fff" : "",
@@ -184,7 +182,7 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 						{selectedRecs.includes(params.data) ? "Selected For Payment" : "Ready To Be Paid"}
 					</IQButton>
 				);
-			} else if (payStatus === "SelectedForPayment") {
+			} else if(payStatus === "SelectedForPayment") {
 				return (
 					<IQButton className="selected-btn"
 						color="primary"
@@ -203,49 +201,49 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 	};
 
 	const [columns, setColumns] = React.useState<ColDef[]>(headers);
-	const [postion, setPosition] = React.useState<any>({ top: null, left: null });
+	const [postion, setPosition] = React.useState<any>({top: null, left: null});
 	const handleManageSov = (event: React.MouseEvent<HTMLElement>, index: any, colDefs: any, item: any) => {
 		// setAnchorEl(event.currentTarget);
 		console.log("itemmm", sovData, item);
-		setOpenManageSov({ ...openManageSov, [index]: { show: true, colDefs: [...colDefs, PaymentStatusColumn], payments: sovData[item?.budgetItem?.id]?.payments } });
-		setPosition({ top: (event?.pageY + 20), left: (event?.pageX - 67) })
+		setOpenManageSov({...openManageSov, [index]: {show: true, colDefs: [...colDefs, PaymentStatusColumn], payments: sovData[item?.budgetItem?.id]?.payments}});
+		setPosition({top: (event?.pageY + 20), left: (event?.pageX - 67)});
 		setOpenSOVIndex(index);
-	}
+	};
 	const onPaymentStatusClick = (rec: any) => {
 		const isFound = selectedRecs.indexOf(rec);
 		// console.log("paaa", selectedRecs, rec, isFound)
-		if (isFound === -1) {
-			selectedRecs.push(rec)
-			addPaymentToPayApp(appInfo, { id: rec?.id }, selectedRecord?.id, (response: any) => {
-				dispatch(setSelectedRecord(response))
-			})
+		if(isFound === -1) {
+			selectedRecs.push(rec);
+			addPaymentToPayApp(appInfo, {id: rec?.id}, selectedRecord?.id, (response: any) => {
+				dispatch(setSelectedRecord(response));
+			});
 		}
 		else {
 			selectedRecs.splice(isFound, 1);
 			removePaymentFromPayApp(appInfo, selectedRecord?.id, rec?.id, (response: any) => {
-				dispatch(getPayAppDetails({ appInfo: appInfo, id: selectedRecord?.id }))
-			})
+				dispatch(getPayAppDetails({appInfo: appInfo, id: selectedRecord?.id}));
+			});
 		}
 		setSelectedRecs([...selectedRecs]);
 	};
 
 	useEffect(() => {
-		if (sovRef) {
+		if(sovRef) {
 			sovRef[openSOVIndex]?.current?.api.forEachNode((node: any) => {
-				if (selectedRecs.length && selectedRecs.findIndex((rec: any) => rec.id === node.data.id) > -1) {
+				if(selectedRecs.length && selectedRecs.findIndex((rec: any) => rec.id === node.data.id) > -1) {
 					node.setSelected(true);
 				} else {
 					node.setSelected(false);
 				}
 			});
 		}
-	}, [headers])
+	}, [headers]);
 
 	const getPayments = (item: any) => {
 		return item?.payments?.map((obj: any) => {
-			return { ...obj, bidValue: item?.budgetItem?.bidValue }
-		})
-	}
+			return {...obj, bidValue: item?.budgetItem?.bidValue};
+		});
+	};
 
 
 	// const [columns2, setColumns2] = React.useState<ColDef[]>(headers2);
@@ -276,8 +274,8 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 						<div className='grid_heading'>{workItem?.budgetItem?.name} - {workItem?.budgetItem?.costCode} - {workItem?.budgetItem?.costType}</div>
 						{['Draft', 'AutoGeneratedWaitingForBothParties']?.includes(selectedRecord?.status) && <IQButton
 							className='btn-post-contract'
-							style={{ width: 'fit-content', marginBottom: '10px' }}
-							onClick={(e: any) => handleManageSov(e, index, colDefs, { ...workItem, payments: [...paymentsList] })}
+							style={{width: 'fit-content', marginBottom: '10px'}}
+							onClick={(e: any) => handleManageSov(e, index, colDefs, {...workItem, payments: [...paymentsList]})}
 							startIcon={<span className=''></span>}
 						>
 							Manage SOV
@@ -287,7 +285,7 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 								open={true}
 								//                 onClose={() => setOpenManageSov({...openManageSov, [index]: false})}
 								anchorReference="anchorPosition"
-								anchorPosition={{ top: postion.top, left: postion.left }}
+								anchorPosition={{top: postion.top, left: postion.left}}
 								anchorOrigin={{
 									vertical: 'top',
 									horizontal: 'left',
@@ -303,24 +301,23 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 									}
 								}}
 							>
-								<div className='sov-popup-grid' style={{ padding: '10px' }}>
+								<div className='sov-popup-grid' style={{padding: '10px'}}>
 									<div className='ScheduleHeading_Section'>
 										<span>{"Schedule Of Values "}</span>
-										<span className='common-icon-close' onClick={() => setOpenManageSov({ ...openManageSov, [index]: { ...openManageSov[index], show: false } })}></span>
+										<span className='common-icon-close' onClick={() => setOpenManageSov({...openManageSov, [index]: {...openManageSov[index], show: false}})}></span>
 									</div>
-									<div className='grid_section' style={{ height: '200px', width: '100%' }}>
+									<div className='grid_section' style={{height: '200px', width: '100%'}}>
 										<SUIGrid
 											headers={[...openManageSov[index]?.colDefs]}
 											data={openManageSov[index]?.payments ? openManageSov[index]?.payments : []}
 											nowRowsMsg={''}
 											realTimeDocPrefix="transactions@"
-											getReference={(tabRef: any) => { setSovRef({ [index]: tabRef }) }}
+											getReference={(tabRef: any) => {setSovRef({[index]: tabRef});}}
 											suppressRowClickSelection={true}
 										/>
 									</div>
 								</div>
 							</Popover>
-
 						}
 						<div className='grid_section'>
 							<SUIGrid
@@ -330,10 +327,10 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 								realTimeDocPrefix="transactions@"
 							/>
 						</div>
-					</>
+					</>;
 				})
 			}
 		</div>
-	)
-}
+	);
+};
 export default ScheduleOFValues;

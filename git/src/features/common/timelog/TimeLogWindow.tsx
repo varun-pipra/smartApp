@@ -10,8 +10,7 @@ import { appInfoData } from 'data/appInfo';
 import _ from 'lodash';
 import { memo, useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { triggerEvent } from 'utilities/commonFunctions';
-import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import { getTime, triggerEvent } from 'utilities/commonFunctions';
 import SUIAlert from 'sui-components/Alert/Alert';
 import AddTimeLogForm from './AddTimeLogForm';
 import { timelogStatusMap } from './TimeLogConstants';
@@ -27,6 +26,7 @@ import { getAppsList } from 'features/safety/sbsmanager/operations/sbsManagerSli
 import { setSelectedTimeLog } from './stores/TimeLogSlice';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
+import SUIClock from 'sui-components/Clock/Clock';
 
 let defaultTimeLogStatusFilter: any = [];
 
@@ -54,7 +54,7 @@ const TimeLogWindow = (props: any) => {
 	const [columns, setColumns] = useState([]);
 	const [rowData, setRowData] = useState<Array<any>>([]);
 	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
-	const dateTimeFields = ['startDate', 'endDate', 'startTime', 'endTime'];
+	const dateTimeFields = ['startDate', 'endDate'];
 	let gridRef = useRef<AgGridReact>();
 	const datesRef = useRef<any>({
 		startDate : '',
@@ -368,6 +368,81 @@ const TimeLogWindow = (props: any) => {
 		defaultDateRangeState();
 		dispatch(setCustomDatesRange(datesRef.current));
 	};
+	const onDataChange = (fieldName: string, time: any, rowIndex?: any) => {
+		// let updatedEntries;
+		// updatedEntries[rowIndex][fieldName] = time;
+		// if (fieldName === "startTime" || fieldName === "endTime") {
+		//   if (
+		// 	updatedEntries[rowIndex].startTime &&
+		// 	updatedEntries[rowIndex].endTime
+		//   ) {
+		// 	const startDateTime: any = addTimeToDate(
+		// 	  dateStr,
+		// 	  updatedEntries[rowIndex].startTime
+		// 	);
+		// 	const endDateTime: any = addTimeToDate(
+		// 	  dateStr,
+		// 	  updatedEntries[rowIndex].endTime
+		// 	);
+		// 	const durationInSeconds =
+		// 	  (new Date(endDateTime).getTime() -
+		// 		new Date(startDateTime).getTime()) /
+		// 	  1000;
+		// 	  if (durationInSeconds > 0) {
+		// 		updatedEntries[rowIndex].duration = durationInSeconds;
+		// 	  } else {
+		// 		updatedEntries[rowIndex].duration = 0;
+		// 		if (fieldName === 'startTime') {
+		// 		  updatedEntries[rowIndex].endTime = '';
+		// 		} else {
+		// 		  updatedEntries[rowIndex].startTime = '';
+		// 		}
+		// 	  }
+			
+		//   }
+		// }
+	  };
+	  const convertTimetoDate = (date: any) => {
+		if (date === "") return null;
+		// let b: any = date ? dayjs(`1/1/1 ${date}`).format("HH:mm:00") : null; //checking AM or PM
+		// let a: any = dayjs(new Date()).set('hour', (b?.split(":")?.[0])).set('minute', (b?.split(":")?.[1]?.split(" ")?.[0]));
+		let b: any = date ? moment.utc(date).format("HH:mm:A") : null; //checking AM or PM
+		let a: any = moment.utc(new Date()).set('hour', (b?.split(":")?.[0])).set('minute', (b?.split(":")?.[1]?.split(" ")?.[0]));
+		return a._d;
+	};
+	  const getPickerDefaultTime = (time: any, incrementDecrement: any) => {
+		
+		let currentTime: any = convertTimetoDate(time);
+		if (isNaN(currentTime)) {
+		  return '';
+		}
+		let [hours, minutes, ampm] = time.split(/:|\s/);
+		hours = parseInt(hours, 10);
+			minutes = parseInt(minutes, 10);
+		if (isNaN(hours) && isNaN(minutes)) {
+		  return '';
+		}
+		if (incrementDecrement) {
+						minutes += 5;
+						if (minutes >= 60) {
+				minutes -= 60;
+				hours = (hours + 1) % 12;
+						}
+		} else {
+			  minutes -= 5;
+						if (minutes < 0) {
+				minutes += 60;
+				hours = (hours - 1 + 12) % 12;
+						}
+		}
+		// Format the new time
+		hours = hours === 0 ? 12 : hours; // Handle midnight (0 hours)
+		if (hours === 12 && minutes === 0) {
+		ampm = ampm?.toLowerCase() === "am" ? "PM" : "AM";
+		}
+		let newTime = `${hours}:${String(minutes).padStart(2, "0")} ${ampm}`;
+		return newTime;
+	  }
 	/**
 	 * Grid data is set in this method
 	 * 
@@ -442,20 +517,47 @@ const TimeLogWindow = (props: any) => {
 		field: 'startDate',
 		keyCreator: (params: any) => {
 			return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
-		},
-		valueGetter: (params: any) => `${moment.utc(params?.data?.startDate).format('DD/MM/YYYY')}`,
+		}
 	}, {
 		headerName: 'End Date',
-		field: 'endDate',
-		valueGetter: (params: any) => `${moment.utc(params?.data?.endDate).format('DD/MM/YYYY')}`,
+		field: 'endDate'
 	}, {
 		headerName: 'Start Time',
 		field: 'startTime',
-		valueGetter: (params: any) => `${moment.utc(params?.data?.startTime).format('h:mm A')}`,
+		cellRenderer: (params: any) => {
+			return params?.data ? (
+				<SUIClock
+				onTimeSelection={(value: any) => {
+				onDataChange("startTime", getTime(value));
+				}}
+				disabled={false}
+				defaultTime={moment.utc(params?.data?.startTime).format('h:mm A') || ""}
+				pickerDefaultTime={getPickerDefaultTime(params?.data?.startTime, false)}
+				placeholder={"HH:MM"}
+				// actions={[]}
+				ampmInClock={true}
+			></SUIClock>
+			) : null
+		},
 	}, {
 		headerName: 'End Time',
 		field: 'endTime',
-		valueGetter: (params: any) => `${moment.utc(params?.data?.endTime).format('h:mm A')}`,
+		cellRenderer: (params: any) => {
+			return params?.data ? (
+				<SUIClock
+				onTimeSelection={(value: any) => {
+				onDataChange("endTime", getTime(value));
+				}}
+				disabled={false}
+				defaultTime={moment.utc(params?.data?.endTime).format('h:mm A') || ""}
+				pickerDefaultTime={getPickerDefaultTime(params?.data?.endTime, false)}
+				placeholder={"HH:MM"}
+				// actions={[]}
+				ampmInClock={true}
+			></SUIClock>
+			) : null
+		},
+	}, {
 	}, {
 		headerName: 'Duration',
 		field: 'duration',
@@ -530,14 +632,14 @@ const TimeLogWindow = (props: any) => {
 		headerName: 'Time Log ID',
 		field: 'timeLogId',
 		keyCreator: (params: any) => params?.data?.timeLogId || "None"
-	}], []);
+	}], [defaultTimeLogStatusFilter, server, selectedFilters]);
 
 	(headers || [])?.forEach((item: any) => {
 		if (dateTimeFields?.includes(item?.field)) {
 			item.cellRenderer = (params: any) => {
 				if (!!params?.node?.footer) return null;
 				else return (
-					<>{params.value}</>
+					<>{moment.utc(params?.value).format('DD/MM/YYYY')}</>
 				);
 			}
 		};

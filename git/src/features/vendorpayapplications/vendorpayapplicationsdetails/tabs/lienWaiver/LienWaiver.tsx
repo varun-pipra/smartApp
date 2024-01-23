@@ -1,29 +1,31 @@
-import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
-import { useAppSelector, useAppDispatch } from "app/hooks";
+import React, {useEffect, useMemo, useState, useRef, useCallback} from "react";
+import {useAppSelector, useAppDispatch} from "app/hooks";
 import "./LienWaiver.scss";
-import { Checkbox, Button, Card } from "@mui/material";
+import {Checkbox, Button, Card} from "@mui/material";
 
 import {
 	getShowContractAttachments,
 	setShowContractAttachments,
 } from "features/vendorcontracts/stores/VendorContractsSlice";
 import ContractAttachments from "features/supplementalcontracts/SupplementalContractsWindow";
-import { appInfoData } from "data/appInfo";
-import { getServer } from "app/common/appInfoSlice";
-import { addContractFiles } from "features/vendorcontracts/stores/tabs/contractfiles/VCContractFilesTabSlice";
+import {appInfoData} from "data/appInfo";
+import {getServer} from "app/common/appInfoSlice";
+import {addContractFiles} from "features/vendorcontracts/stores/tabs/contractfiles/VCContractFilesTabSlice";
 import LienFileViewer from "components/fileviewer/LienFileViewer";
-import { patchVendorPayAppDetails } from "features/vendorpayapplications/stores/gridApi";
-import { setEnableSubmitPayApp, setSelectedRecord, setSignatureToAuthorize } from "features/vendorpayapplications/stores/VendorPayAppSlice";
-import { getAmountAlignment } from "utilities/commonutills";
-import { ToWords } from 'to-words';
+import {patchVendorPayAppDetails} from "features/vendorpayapplications/stores/gridApi";
+import {setEnableSubmitPayApp, setSelectedRecord, setSignatureToAuthorize} from "features/vendorpayapplications/stores/VendorPayAppSlice";
+import {getAmountAlignment} from "utilities/commonutills";
+import {ToWords} from 'to-words';
 import SignatureCanvas from "react-signature-canvas";
 import convertDateToDisplayFormat from "utilities/commonFunctions";
-import { isUserGCForVPA } from "features/vendorpayapplications/utils";
-import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
-import { currencyDescription } from "app/utils";
+import {isUserGCForVPA} from "features/vendorpayapplications/utils";
+import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
+import {currencyDescription} from "app/utils";
 
 
-interface LienWaiverProps { }
+interface LienWaiverProps {
+	readOnly?: boolean;
+}
 
 const LienWaiver = (props: LienWaiverProps) => {
 	const dispatch = useAppDispatch();
@@ -31,27 +33,27 @@ const LienWaiver = (props: LienWaiverProps) => {
 	const [appData] = React.useState(appInfoData);
 	const appInfo = useAppSelector(getServer);
 	const [filesToView, setFilesToView] = useState<any>([]);
-	const [showAmount, setShowAmount] = useState<boolean>(false)
-	const [signedOn, setSignedOn] = useState<any>(null)
-	const [userDetails, setUserDetails] = useState<any>({ name: null, signedOn: null })
-	const [gcAndScDetail, setGcAndScDetails] = useState<any>({ gc: { name: null, signedOn: null }, sc: { name: null, signedOn: null } })
+	const [showAmount, setShowAmount] = useState<boolean>(false);
+	const [signedOn, setSignedOn] = useState<any>(null);
+	const [userDetails, setUserDetails] = useState<any>({name: null, signedOn: null});
+	const [gcAndScDetail, setGcAndScDetails] = useState<any>({gc: {name: null, signedOn: null}, sc: {name: null, signedOn: null}});
 
 	const signaturePadRef = useRef<any>();
 
 	const openContractAttachments = useAppSelector(getShowContractAttachments);
-	const { selectedRecord } = useAppSelector((state) => state.vendorPayApps);
-	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const {selectedRecord} = useAppSelector((state) => state.vendorPayApps);
+	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 	const [signature, setSignature] = useState<any>('');
 
-	const toWords = new ToWords({ localeCode: 'en-US' });
+	const toWords = new ToWords({localeCode: 'en-US'});
 
 	React.useEffect(() => {
-		if (isUserGCForVPA(appInfo)) {
-			setSignature(selectedRecord?.gcAuthorization?.signature)
-			setUserDetails(selectedRecord?.gcAuthorization?.displayName)
+		if(isUserGCForVPA(appInfo)) {
+			setSignature(selectedRecord?.gcAuthorization?.signature);
+			setUserDetails(selectedRecord?.gcAuthorization?.displayName);
 		}
-		else { setSignature(selectedRecord?.scAuthorization?.signature); setUserDetails(selectedRecord?.scAuthorization?.displayName) }
-	}, [selectedRecord, appInfo])
+		else {setSignature(selectedRecord?.scAuthorization?.signature); setUserDetails(selectedRecord?.scAuthorization?.displayName);}
+	}, [selectedRecord, appInfo]);
 
 	// React.useEffect(() => {
 	// 	if(signaturePadRef?.current) {
@@ -61,26 +63,26 @@ const LienWaiver = (props: LienWaiverProps) => {
 	// }, [selectedRecord, signaturePadRef])
 
 	React.useEffect(() => {
-		if (['PaymentAuthorized', 'PaymentSent', 'PaymentReceived', 'Rejected', 'SubmittedWaitingForOtherParty']?.includes(selectedRecord?.status)) { setChecked(true); setShowAmount(true) }
-		if (isUserGCForVPA(appInfo)) {
-			if (["AutoGeneratedWaitingForBothParties", 'Draft']?.includes(selectedRecord?.status)) {
-				if (selectedRecord?.gcAuthorization?.signature) {
-					console.log("AutoGeneratedWaitingForBothParties if", selectedRecord, checked, showAmount)
+		if(['PaymentAuthorized', 'PaymentSent', 'PaymentReceived', 'Rejected', 'SubmittedWaitingForOtherParty']?.includes(selectedRecord?.status)) {setChecked(true); setShowAmount(true);}
+		if(isUserGCForVPA(appInfo)) {
+			if(["AutoGeneratedWaitingForBothParties", 'Draft']?.includes(selectedRecord?.status)) {
+				if(selectedRecord?.gcAuthorization?.signature) {
+					console.log("AutoGeneratedWaitingForBothParties if", selectedRecord, checked, showAmount);
 					setChecked(true);
-					setShowAmount(true)
+					setShowAmount(true);
 				} else {
 					setChecked(false);
-					setShowAmount(false)
+					setShowAmount(false);
 				}
 			}
 		}
 		else {
 			{
-				if (["AutoGeneratedWaitingForBothParties", 'Draft']?.includes(selectedRecord?.status)) {
-					if (selectedRecord?.scAuthorization?.signature) {
-						console.log("AutoGeneratedWaitingForBothParties else", selectedRecord, showAmount, checked)
+				if(["AutoGeneratedWaitingForBothParties", 'Draft']?.includes(selectedRecord?.status)) {
+					if(selectedRecord?.scAuthorization?.signature) {
+						console.log("AutoGeneratedWaitingForBothParties else", selectedRecord, showAmount, checked);
 						setChecked(true);
-						setShowAmount(true)
+						setShowAmount(true);
 					} else {
 						setChecked(false);
 						setShowAmount(false);
@@ -89,38 +91,38 @@ const LienWaiver = (props: LienWaiverProps) => {
 				// if(['PaymentAuthorized', 'PaymentSent', 'PaymentReceived' , 'Rejected']?.includes(selectedRecord?.status))   { setChecked(true); setShowAmount(true) }      
 			}
 		}
-	}, [selectedRecord])
+	}, [selectedRecord]);
 
 	React.useEffect(() => {
 		let name = selectedRecord?.lienWaiverFile?.name.includes('.pdf') ? selectedRecord?.lienWaiverFile?.name : selectedRecord?.lienWaiverFile?.name + ".pdf";
 		let fileViewerObj = {
 			uri: selectedRecord?.lienWaiverFile?.stream?.downloadUrl + '?download=false&fileName=' + name
-		}
+		};
 		selectedRecord?.lienWaiverFile?.stream?.downloadUrl ? setFilesToView([fileViewerObj]) : setFilesToView([]);
-	}, [selectedRecord?.lienWaiverFile?.stream?.downloadUrl])
+	}, [selectedRecord?.lienWaiverFile?.stream?.downloadUrl]);
 
 	React.useEffect(() => {
 		let isValidPayment: boolean = ['UpfrontPayment', 'Retainage']?.includes(selectedRecord?.type) ? true : false;
 		selectedRecord?.scheduleOfValues?.map((sov: any) => {
 			!isValidPayment && sov?.payments?.find((payment: any) => {
-				if (payment?.status == 'SelectedForPayment') isValidPayment = true;
-			})
-		})
-		console.log("signn", signature, checked, filesToView?.length, showAmount, isValidPayment)
-		if (checked && signature && signature != '' && filesToView?.length && showAmount && isValidPayment) dispatch(setEnableSubmitPayApp(true));
-		else dispatch(setEnableSubmitPayApp(false))
-	}, [signature, checked, filesToView, showAmount, selectedRecord])
+				if(payment?.status == 'SelectedForPayment') isValidPayment = true;
+			});
+		});
+		console.log("signn", signature, checked, filesToView?.length, showAmount, isValidPayment);
+		if(checked && signature && signature != '' && filesToView?.length && showAmount && isValidPayment) dispatch(setEnableSubmitPayApp(true));
+		else dispatch(setEnableSubmitPayApp(false));
+	}, [signature, checked, filesToView, showAmount, selectedRecord]);
 
 	const handleChange = (e: any) => {
-		console.log("eee", e, checked)
-		if (checked) {
-			const isValid = isUserGCForVPA(appInfo) ? selectedRecord?.gcAuthorization?.signature != null ? true : false : selectedRecord?.scAuthorization?.signature != null ? true : false
-			isValid && patchVendorPayAppDetails(appInfo, { signedOn: null, signature: null }, selectedRecord?.id, (response: any) => {
-				dispatch(setSelectedRecord(response))
+		console.log("eee", e, checked);
+		if(checked) {
+			const isValid = isUserGCForVPA(appInfo) ? selectedRecord?.gcAuthorization?.signature != null ? true : false : selectedRecord?.scAuthorization?.signature != null ? true : false;
+			isValid && patchVendorPayAppDetails(appInfo, {signedOn: null, signature: null}, selectedRecord?.id, (response: any) => {
+				dispatch(setSelectedRecord(response));
 				signaturePadRef.current.clear();
 				// setSignature(null);                     
-			})
-			setShowAmount(false)
+			});
+			setShowAmount(false);
 		}
 		setChecked(!checked);
 	};
@@ -130,10 +132,10 @@ const LienWaiver = (props: LienWaiverProps) => {
 			stream: {
 				driveObjectId: contracts[0]?.uniqueId
 			}
-		}
+		};
 		patchVendorPayAppDetails(appInfo, payload, selectedRecord?.id, (response: any) => {
 			dispatch(setSelectedRecord(response));
-		})
+		});
 	};
 
 	const addContractDocs = () => {
@@ -141,23 +143,23 @@ const LienWaiver = (props: LienWaiverProps) => {
 	};
 
 	const closeFileViewer = () => {
-		console.log("closeeee")
+		console.log("closeeee");
 		setFilesToView([]);
-		patchVendorPayAppDetails(appInfo, { stream: null, signedOn: null, signature: null }, selectedRecord?.id, (response: any) => {
-			dispatch(setSelectedRecord(response))
-		})
+		patchVendorPayAppDetails(appInfo, {stream: null, signedOn: null, signature: null}, selectedRecord?.id, (response: any) => {
+			dispatch(setSelectedRecord(response));
+		});
 		setShowAmount(false);
 		setChecked(false);
 		setSignedOn(null);
 	};
 	const clearSignature = () => {
-		if (signaturePadRef?.current) {
+		if(signaturePadRef?.current) {
 			signaturePadRef.current.clear();
 			// setSignature(null)       
 		}
-		patchVendorPayAppDetails(appInfo, { signedOn: null, signature: null }, selectedRecord?.id, (response: any) => {
-			dispatch(setSelectedRecord(response))
-		})
+		patchVendorPayAppDetails(appInfo, {signedOn: null, signature: null}, selectedRecord?.id, (response: any) => {
+			dispatch(setSelectedRecord(response));
+		});
 		setSignedOn(null);
 
 	};
@@ -166,14 +168,14 @@ const LienWaiver = (props: LienWaiverProps) => {
 		return <div className="signature_section">
 			<span className="common-icon-signature"></span>
 			<label>{label}</label>
-			<div className="signature" style={{ width: '100%' }}>
+			<div className="signature" style={{width: '100%'}}>
 				<SignatureCanvas
 					ref={signaturePadRef}
 					penColor="black"
 					canvasProps={{
 						className: "contracts-sign-modal_sig-pad",
 					}}
-					onEnd={() => { handleOnEnd() }}
+					onEnd={() => {handleOnEnd();}}
 				/>
 				<div className="contracts-sign-modal_sign-above-wrapper">
 					<div className="contracts-sign-modal_sign-above-txt">
@@ -199,14 +201,14 @@ const LienWaiver = (props: LienWaiverProps) => {
 					</label>
 				</div>
 			</div>
-		</div>
-	}
+		</div>;
+	};
 
 	const getSignature = (sign: any, name: string, signedOn: any, label: any) => {
 		return <>
 			<span className="common-icon-signature"></span>
 			<label>{label}</label>
-			<Card style={{ height: 200, width: 310 }}><img src={sign} /></Card>
+			<Card style={{height: 200, width: 310}}><img src={sign} /></Card>
 			<div className="lienwaiver_footerSection">
 				<div className="name_div">
 					<p>Name</p>
@@ -222,48 +224,48 @@ const LienWaiver = (props: LienWaiverProps) => {
 				</div>
 			</div>
 
-		</>
+		</>;
 
-	}
+	};
 
 	const getGCForm = (gc: any, sc: any) => {
 		return <div className="awaiting-stat">
 			<span className="awaiting-stat-vendor-sign">{getSignature(sc?.signature, sc?.displayName, sc?.signedOn, 'Vendor Signature')}</span>
 			<span className="awaiting-stat-General-sign">{getSignaturePad(gc?.signature, gc?.displayName, gc?.signedOn, 'General Contract Signature')}</span>
-		</div>
+		</div>;
 	};
 	const getSCForm = (gc: any, sc: any) => {
 		return <div className="awaiting-stat">
 			<span className="awaiting-stat-vendor-sign">{getSignature(gc?.signature, gc?.displayName, gc?.signedOn, 'General Contract Signature')}</span>
 			<span className="awaiting-stat-General-sign">{getSignaturePad(sc?.signature, sc?.displayName, sc?.signedOn, 'Vendor Signature')}</span>
-		</div>
+		</div>;
 	};
 
 	const getReadOnlySign = () => {
 		const data = isUserGCForVPA(appInfo) ? selectedRecord?.gcAuthorization : selectedRecord?.scAuthorization;
-		return <div className="sumitted-stat">{getSignature(data?.signature, data?.displayName, data?.signedOn, isUserGCForVPA(appInfo) ? 'General Contract Signature' : 'Vendor Signature')}</div>
-	}
+		return <div className="sumitted-stat">{getSignature(data?.signature, data?.displayName, data?.signedOn, isUserGCForVPA(appInfo) ? 'General Contract Signature' : 'Vendor Signature')}</div>;
+	};
 
 	const getGCAndSCSigns = (gc: any, sc: any) => {
 		const data = isUserGCForVPA(appInfo) ? selectedRecord?.gcAuthorization : selectedRecord?.scAuthorization;
-		return <div className="auto-gen-stat">{getSignaturePad(data?.signature, data?.displayName, data?.signedOn, isUserGCForVPA(appInfo) ? 'General Contract Signature' : 'Vendor Signature')}</div>
-	}
+		return <div className="auto-gen-stat">{getSignaturePad(data?.signature, data?.displayName, data?.signedOn, isUserGCForVPA(appInfo) ? 'General Contract Signature' : 'Vendor Signature')}</div>;
+	};
 
 	const getReadOnlySigns = () => {
-		const gc = selectedRecord?.gcAuthorization
-		const sc = selectedRecord?.scAuthorization
+		const gc = selectedRecord?.gcAuthorization;
+		const sc = selectedRecord?.scAuthorization;
 
 		return <div className="awaiting-stat">
 			<span className="awaiting-stat-vendor-sign">{getSignature(gc?.signature, gc?.displayName, gc?.signedOn, 'General Contract Signature')}</span>
 			<span className="awaiting-stat-vendor-sign">{getSignature(sc?.signature, sc?.displayName, sc?.signedOn, 'Vendor Signature')}</span>
-		</div>
-	}
+		</div>;
+	};
 
 
 
 	const handleOnEnd = () => {
-		if (signaturePadRef?.current && !signaturePadRef.current.isEmpty()) {
-			const sign = signaturePadRef?.current?.getTrimmedCanvas().toDataURL("image/png")
+		if(signaturePadRef?.current && !signaturePadRef.current.isEmpty()) {
+			const sign = signaturePadRef?.current?.getTrimmedCanvas().toDataURL("image/png");
 			setSignature(sign);
 			dispatch(setSignatureToAuthorize(sign));
 			// selectedRecord?.status != 'AwaitingAcceptance' && patchVendorPayAppDetails(appInfo, { signature: sign, signedOn: new Date() }, selectedRecord?.id, (response: any) => {
@@ -272,7 +274,7 @@ const LienWaiver = (props: LienWaiverProps) => {
 			setSignedOn(new Date());
 		}
 		else setSignature('');
-	}
+	};
 
 	const getLienWaiverFile = useCallback(() => {
 		return (
@@ -282,8 +284,8 @@ const LienWaiver = (props: LienWaiverProps) => {
 				closeFileViewer={closeFileViewer}
 				showClose={['Draft', 'AutoGeneratedWaitingForBothParties']?.includes(selectedRecord?.status)}
 			></LienFileViewer>
-		)
-	}, [filesToView])
+		);
+	}, [filesToView]);
 
 	return (
 		<div className="lienwaiver">
@@ -349,7 +351,7 @@ const LienWaiver = (props: LienWaiverProps) => {
 					selectedRecord?.status == 'Draft' ? <div className="signature_section">
 						<span className="common-icon-signature"></span>
 						<label>{isUserGCForVPA(appInfo) ? 'General Contractor Signature' : 'Vendor Signature'}</label>
-						<div className="signature" style={{ width: '100%' }}>
+						<div className="signature" style={{width: '100%'}}>
 							<SignatureCanvas
 								ref={signaturePadRef}
 								penColor="black"
@@ -358,7 +360,7 @@ const LienWaiver = (props: LienWaiverProps) => {
 									//height: 200,
 									className: "contracts-sign-modal_sig-pad",
 								}}
-								onEnd={() => { handleOnEnd() }}
+								onEnd={() => {handleOnEnd();}}
 							/>
 							<div className="contracts-sign-modal_sign-above-wrapper">
 								<div className="contracts-sign-modal_sign-above-txt">
@@ -392,6 +394,6 @@ const LienWaiver = (props: LienWaiverProps) => {
 
 			</div>
 		</div>
-	)
-}
+	);
+};
 export default LienWaiver;

@@ -8,7 +8,7 @@ import SUIDrawer from 'sui-components/Drawer/Drawer';
 import {postMessage} from 'app/utils';
 import {getServer} from 'app/common/appInfoSlice';
 import IQButton from 'components/iqbutton/IQButton';
-import {getShowLineItemDetails, getSelectedRecord, setSelectedNode, setSelectedRecord, setShowLineItemDetails, getClientCompanies, getClientContractDetails, getMinMaxDrawerStatus, setMinMaxDrawerStatus} from '../stores/ClientContractsSlice';
+import {getShowLineItemDetails, setSelectedNode, setSelectedRecord, setShowLineItemDetails, getClientCompanies, getClientContractDetails, getMinMaxDrawerStatus, setMinMaxDrawerStatus} from '../stores/ClientContractsSlice';
 import ClientContractsForm from './clientcontractsform/ClientContractsForm';
 import ClientContractsToolbar from './clientcontractstoolbar/ClientContractsToolbar';
 import ClientContractsGrid from './clientcontractsgrid/ClientContractsGrid';
@@ -32,12 +32,10 @@ import {setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 const ClientContractsContent = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
-	const {selectedNode, selectedRecord, selectedTabName, enablePostAndLockBtn} = useAppSelector((state) => state.clientContracts);
+	const {selectedNode, selectedRecord, enablePostAndLockBtn} = useAppSelector((state) => state.clientContracts);
 
 	// Redux state extraction
 	const showRightPanel = useAppSelector(getShowLineItemDetails);
-	const lineItem: any = useAppSelector(getSelectedRecord);
-	const {loginUserData} = useAppSelector((state) => state.clientContracts);
 	const {unLockedSov} = useAppSelector((state) => state.cCBillingSchedule);
 
 
@@ -50,7 +48,6 @@ const ClientContractsContent = (props: any) => {
 	const [lockContract, setLockAndPostContract] = React.useState<any>({show: false, disable: true});
 	const [unlockContract, setUnlockContract] = React.useState<any>({show: false, disable: false});
 	const [cancelAndLock, setCancelAndLock] = React.useState<any>({show: false, disable: false});
-	const [saveChanges, setSaveChanges] = React.useState<any>({show: false, disable: false});
 	const [postChangeAndLock, setPostChangeAndLock] = React.useState<any>({show: false, disable: false});
 	const [contractDialog, setContractDialog] = React.useState<any>({show: false, type: ''});
 	const [contractorResponse, setContractorResponse] = React.useState<any>({show: false, type: ''});
@@ -61,7 +58,6 @@ const ClientContractsContent = (props: any) => {
 	const [showLockSuccessMsg, setShowLockSuccessMsg] = React.useState<any>({show: false, msg1: '', msg: 2});
 
 	const [SCActions, setSCActions] = React.useState<any>({show: false, decline: {show: true, disable: false}, revise: {show: true, disable: false}, accept: {show: true, disable: false}});
-	const {changeEventsList} = useAppSelector((state) => state?.ccChangeEvents);
 
 	const minimizeIcon = useMemo<React.ReactElement>(() => {
 		return <div className='common-icon-minimize' style={{fontSize: '1.25rem'}}></div>;
@@ -110,12 +106,12 @@ const ClientContractsContent = (props: any) => {
 	}, [unLockedSov]);
 
 	React.useEffect(() => {
-		if (showLockSuccessMsg?.show) {
+		if(showLockSuccessMsg?.show) {
 			setTimeout(() => {
-				setShowLockSuccessMsg({ show: false, msg1: "", msg2: "" });
-			  }, 5000);
+				setShowLockSuccessMsg({show: false, msg1: "", msg2: ""});
+			}, 5000);
 		}
-  }, [showLockSuccessMsg]);
+	}, [showLockSuccessMsg]);
 
 
 	React.useEffect(() => {
@@ -207,9 +203,6 @@ const ClientContractsContent = (props: any) => {
 	};
 
 	const handlePostChangeAndLockAction = (type: any) => {
-		if(blockchainEnabled) {
-			dispatch(setShowBlockchainDialog(true));
-		}
 		setShowAlert({
 			show: true, type: type, message:
 				<span>The changes made to the contract will be posted as a new change event and notified to the vendor.<br /><br /> Would you like to go ahead and re post the contract?</span>
@@ -256,14 +249,23 @@ const ClientContractsContent = (props: any) => {
 		if(type == 'yes') {
 			showAlert?.type == 'cancel' && cancelAndLockContract(appInfo, selectedRecord?.id, afterItemAction);
 			if(showAlert?.type == 'lock') {
+				if(blockchainEnabled) {
+					dispatch(setShowBlockchainDialog(true));
+				}
 				activateClientContract(appInfo, selectedRecord?.id, afterItemAction);
 				setShowLockSuccessMsg({show: true, msg1: 'Posted Contract and Locked.', msg2: 'Notified the response to the Client.'});
 			}
 			if(showAlert?.type == 'route') {
+				if(blockchainEnabled) {
+					dispatch(setShowBlockchainDialog(true));
+				}
 				lockAndPostContract(appInfo, selectedRecord?.id, afterItemAction);
 				setShowLockSuccessMsg({show: true, msg1: 'Contract Routed, Posted and Locked.', msg2: 'Notified the response to the Client.'});
 			}
 			if(showAlert?.type == 'unlock') {
+				if(blockchainEnabled) {
+					dispatch(setShowBlockchainDialog(true));
+				}
 				unLockContract(appInfo, selectedRecord?.id, afterItemAction);
 				setToast({show: true, message: "Contract Unlocked. Changes made in the contracts will be notified to the Vendor on click of Post Change & Lock"});
 			}
