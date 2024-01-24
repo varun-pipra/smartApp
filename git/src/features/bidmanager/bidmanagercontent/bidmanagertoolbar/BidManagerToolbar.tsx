@@ -24,7 +24,7 @@ import _ from "lodash";
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
-import {moduleType, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
+import {doBlockchainAction, moduleType, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 
 const BidManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -210,7 +210,7 @@ const BidManagerToolbar = (props: any) => {
 		patchBidPackage(appInfo, selectedRows[0]?.id, {status: 3}).then((response: any) => {
 			dispatch(fetchGridData(appInfo));
 			setDisablePostBid(true);
-			if(blockchainEnabled) {
+			if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
 				dispatch(setShowBlockchainDialog(true));
 			}
 		});
@@ -223,8 +223,7 @@ const BidManagerToolbar = (props: any) => {
 	};
 	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setToggleChecked(event.target.checked);
-		const typeValue: number = moduleType['BidManager'];
-		blockchainAction(event.target.checked, typeValue);
+		dispatch(doBlockchainAction({enable: event.target.checked, typeString: 'BidManager'}));
 	};
 
 	return <Stack direction='row' className='toolbar-root-container-bidmanager'>

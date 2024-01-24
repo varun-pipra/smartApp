@@ -27,4 +27,10 @@
     .ag-full-width-container>div {
         z-index: 1;
     }
+
+	.common-icon-blockchain {
+		&:before {
+			color: #cfa22a !important;
+		}
+	}
 }

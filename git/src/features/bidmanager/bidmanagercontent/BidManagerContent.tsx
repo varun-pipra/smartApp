@@ -32,7 +32,7 @@ import {fetchGridData} from '../stores/gridSlice';
 import BidLineItemForm from './bidlineitemform/BidLineItemForm';
 import BidManagerGrid from './bidmanagergrid/BidManagerGrid';
 import BidToolbar from './bidmanagertoolbar/BidManagerToolbar';
-import {setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
+import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 
 const BidManagerContent = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -162,19 +162,17 @@ const BidManagerContent = (props: any) => {
 	const handlePostBid = () => {
 		patchBidPackage(appInfo, selectedRecord?.id, {status: 3}).then((response: any) => {
 			dispatch(fetchGridData(appInfo));
-			dispatch(setToastMessage2({displayToast: true, message: 'Bid Posted Successfully'}));
 			dispatch(setSelectedRecord(response));
-			if(blockchainEnabled) {
+			if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
 				dispatch(setShowBlockchainDialog(true));
+			} else {
+				dispatch(setToastMessage2({displayToast: true, message: 'Bid Posted Successfully'}));
 			}
 		});
 	};
 
 	const handleAwardBid = () => {
 		dispatch(setAwardBidClick(true));
-		if(blockchainEnabled) {
-			dispatch(setShowBlockchainDialog(true));
-		}
 	};
 
 	const handleUpdateBudget = () => {
@@ -194,7 +192,7 @@ const BidManagerContent = (props: any) => {
 		setShowAlert(false);
 	};
 
-	const disableBlockchainActionButtons = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(selectedRecord?.blockChainStatus) === -1);
+	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRecord?.blockChainStatus) === -1);
 
 	return <>
 		<Box className='bid-manager-content'>

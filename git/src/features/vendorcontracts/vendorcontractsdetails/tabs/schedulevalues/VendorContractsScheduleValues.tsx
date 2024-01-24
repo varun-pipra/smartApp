@@ -29,6 +29,7 @@ import {formatDate} from "utilities/datetime/DateTimeUtils";
 import {amountFormatWithSymbol, amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
 import {AddBudgetLineItemButton} from "features/clientContracts/clientcontractsdetails/tabs/schedulevalues/ClientContractsScheduleValues";
 import BudgetManagerRO from "sui-components/BudgetManager/BudgetManager";
+import { getBudgets } from "features/clientContracts/stores/CCSovSlice";
 
 const VendorContractsScheduleValues = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -1161,7 +1162,7 @@ const VendorContractsScheduleValues = (props: any) => {
 						</AddBudgetLineItemButton>
 					</div>
 				)}
-				{selectedRecord?.contractFor == 2 && !selectedRecord?.noOfBudgetLineItems ?
+				{selectedRecord?.contractFor == 2 && (!selectedRecord?.noOfBudgetLineItems || budgetItems?.length == 0) ?
 					<div className="add-budget-watermark">
 						<div className="add-budget-watermark-wrap">
 							<span className={"common-icon-schedule-values"} ></span>
@@ -1342,13 +1343,16 @@ const VendorContractsScheduleValues = (props: any) => {
 						const removedItems = existedIds?.filter((id: string) => !rowIds?.includes(id));
 						console.log("existedIds", existedIds, removedItems, newlyAddedItems);
 
-						removedItems?.map((removedId: string, index: number) => {
+						removedItems?.length && removedItems?.map((removedId: string, index: number) => {
 							deleteBudgetItem(appInfo, selectedRecord?.id, removedId, (response: any) => {
-								if(removedItems?.length == index + 1) newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id}));
+								if(removedItems?.length == index + 1) { 
+									dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id})); 
+									dispatch(getBudgets(appInfo));
+								};
 							});
 						});
 
-						newlyAddedItems?.map((item: any, index: number) => {
+						newlyAddedItems?.length && newlyAddedItems?.map((item: any, index: number) => {
 							console.log("item", item);
 							createScheduleOfValues(appInfo, selectedRecord?.id, item?.id, {type: 'PercentComplete'}, (response: any) => {
 								if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
@@ -1358,8 +1362,9 @@ const VendorContractsScheduleValues = (props: any) => {
 										if(obj?.budgetItem?.id == selectedBudgetItem?.id) setTableData({...tableData, [selectedBudgetItem?.id]: {...obj}});
 									});
 									if(newlyAddedItems?.length == index + 1) {
+										console.log("addd", newlyAddedItems.length, index)
 										dispatch(setSelectedRecord(response));
-										newlyAddedItems?.length || removedItems?.length && dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id}));
+										dispatch(getBudgetItemsByPackage({appInfo: appInfo, contractId: selectedRecord?.id}));
 									}
 								}
 							});

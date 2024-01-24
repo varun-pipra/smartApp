@@ -14,6 +14,7 @@ import {updateContractDetails} from 'features/vendorcontracts/stores/gridAPI';
 import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
+import {blockchainStates} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVCStatusFilter: any = [];
@@ -221,9 +222,9 @@ const VendorContractsGrid = (props: any) => {
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
 					const bcStatus = params.data?.blockChainStatus;
-					const showBCIcon = (vendorContractBlockchain && ['None', 'AuthVerified'].indexOf(bcStatus) === -1);
+					const showBCIcon = (vendorContractBlockchain && blockchainStates.indexOf(bcStatus) === -1);
 					return <>
-						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '9%', marginTop: '12px'}}></span>}
+						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '7%', marginTop: '12px', fontSize: '1.25em'}}></span>}
 						{params?.data?.hasChangeOrder && <IQTooltip
 							title={'Schedule Of Values of the Contract to be updated due to recent approval of the Change Event Request.'}
 							placement={'bottom'}
@@ -453,7 +454,7 @@ const VendorContractsGrid = (props: any) => {
 	}, []);
 
 	return (
-		<div className='NestedGrid' style={containerStyle}>
+		<div className='vendor-contracts-grid' style={containerStyle}>
 			<div style={gridStyle} className='ag-theme-alpine'>
 				<SUIGrid
 					headers={columns}

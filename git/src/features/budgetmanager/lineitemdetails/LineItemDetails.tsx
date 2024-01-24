@@ -326,7 +326,12 @@ const LineItemDetails = (props: headerprops) => {
 					<div className='kpi-vertical-container'>
 						<div className='lid-details-container'>
 							<AddDescription value={!lineItemDescription ? '' : lineItemDescription} showicon={false} />
-							<span className='budgetid-label grey-font'>Budget ID:</span><span className='grey-font'> {selectedRow?.name}</span>
+							<span className='budgetid-label grey-font'>Budget ID:</span>
+							<span className='grey-font budgetid-content'> 
+								<span>{selectedRow?.name}</span>
+								<span className='sapnumber common-icon-sap-logo'></span>
+								<span className='sapnumber'>{selectedRow?.id?.substring(0,10)?.toUpperCase()}</span>
+							</span>
 							<span className='last-modified-label grey-font'>Last Modified:</span><span className='grey-font'> {stringToUSDateTime2(selectedRow.modifiedDate)} by {selectedRow.modifiedBy?.displayName}</span>
 						</div>
 						<span className='kpi-right-container'>

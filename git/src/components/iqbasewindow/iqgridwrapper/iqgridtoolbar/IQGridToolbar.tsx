@@ -22,6 +22,7 @@ interface IQSearchComponentProps {
 	defaultSearchText?: any;
 	defaultGroups?: any;
 	headerStatusFilters?: any;
+	showNone?:boolean;
 };
 
 export type IQGridToolbarProps = StackProps & {
@@ -68,6 +69,7 @@ const IQGridToolbar = ({className, leftItems, rightItems, searchComponent, ...st
 				defaultGroups={searchComponent?.defaultGroups}
 				defaultSearchText={searchComponent?.defaultSearchText}
 				headerStatusFilters={searchComponent?.headerStatusFilters}
+				showNone={searchComponent?.showNone}
 			/> : undefined}
 			{searchComponent?.type === 'viewBuilder' ? <IQSearch
 				groups={searchComponent?.groupOptions}

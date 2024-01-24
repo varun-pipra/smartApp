@@ -382,17 +382,24 @@ const SBSManagerWindow = (props: any) => {
       minWidth: 200,
       cellRenderer: (params: any) => {
         return (
-          <div
-            className="sbs-suppli-info-cell"
-            onClick={() => {
-              postMessage({event: 'openitem', body: {smartItemId:params.data.uniqueid}});
-              // setDefaultTabId("SBSAdditionalInfo");
-              // setOpenRightPanel(true);
-              // setCurrentRowSelection(params.data);
-            }}
-          >
-            View/Update Info
-          </div>
+          <>
+            {!!params?.data?.supplementalInfoItemId ? (
+              <div
+                className="sbs-suppli-info-cell"
+                onClick={() => {
+                  postMessage({
+                    event: "openitem",
+                    body: { smartItemId: params?.data?.supplementalInfoItemId },
+                  });
+                  // setDefaultTabId("SBSAdditionalInfo");
+                  // setOpenRightPanel(true);
+                  // setCurrentRowSelection(params.data);
+                }}
+              >
+                View/Update Info
+              </div>
+            ) : null}
+          </>
         );
       },
     },
@@ -604,6 +611,7 @@ const SBSManagerWindow = (props: any) => {
                 onFilterChange: onFilterChange,
                 onSearchChange: onGridSearch,
                 defaultGroups: "category",
+                showNone : false
               },
             },
             grid: {

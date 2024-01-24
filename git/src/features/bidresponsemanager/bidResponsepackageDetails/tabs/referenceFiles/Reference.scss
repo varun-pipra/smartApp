@@ -13,4 +13,28 @@
              font-weight: normal;
          }
      }
+     .spec-upload-base-container {
+        margin: 10px 0px 10px 0px;
+        .common-icon-Upload-File {
+            font-size: 24px;
+        }
+     }
+     .bid-res-spec-grid {        
+        flex: 4;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        .sui-grid {
+        height: 350px !important;
+        .ag-root-wrapper {
+            border: none !important;
+            & [col-id="thumbnailUrl"] {
+                img {
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    object-fit: contain;
+                }
+            }
+        }
+        }
+     }
  }

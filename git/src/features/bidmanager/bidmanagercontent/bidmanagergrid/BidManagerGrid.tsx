@@ -27,6 +27,7 @@ import {formatDate} from 'utilities/datetime/DateTimeUtils';
 // import CustomHeader from './CustomHeader';
 import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
+import {blockchainStates} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultBidStatusFilter: any = [];
@@ -281,9 +282,9 @@ const BidManagerGrid = (props: any) => {
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
 					const bcStatus = params.data?.blockChainStatus;
-					const showBCIcon = (bidManagerBlockchain && ['None', 'AuthVerified'].indexOf(bcStatus) === -1);
+					const showBCIcon = (bidManagerBlockchain && blockchainStates.indexOf(bcStatus) === -1);
 					return <>
-						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '9%', marginTop: '12px'}}></span>}
+						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '7%', marginTop: '12px', fontSize: '1.25em'}}></span>}
 						{/* <IQTooltip
 						title={'Scheduled'}
 						placement={'bottom'} arrow={true}

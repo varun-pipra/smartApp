@@ -1,53 +1,87 @@
 .bm-importer {
-	.MuiPaper-root {
-		min-width: unset;
-	}
-
-	.MuiDialogContent-root {
-		padding: 2em !important;
-		display: flex;
-		flex-direction: column;
-		gap: 2em;
-
-		.bm-type {
-			.MuiFormGroup-root {
-				padding-left: 0.5em;
-				display: flex;
-				flex-direction: row;
-			}
-		}
-
-		.info-box {
-			padding: 1em;
-			background-color: #fdf5cd;
-			border: 1px solid #ecda57;
-			border-radius: 0.2em;
-			gap: 0.5em;
-
-			.info-container {
-				display: flex;
-				flex-direction: row;
-				gap: 1em;
-
-				.info-icon {
-					width: 2em;
-					height: 2em;
-					background-color: #dbbc3a;
-					border-radius: 50%;
-					&:before {
-						color: #fff;
-						font-size: 2em;
-					}
-				}
-
-				.info-text {
-					font-size: 13px;
-				}
-			}
-
-			.download-template-btn {
-				width: fit-content;
-			}
-		}
-	}
+    .MuiDialogTitle-root {
+        padding: 0.5em 0.9em 0.25em 1.2em !important;
+        .title-tools {
+            padding-top: 0.5em;
+        }
+    }
+    .MuiPaper-root {
+        min-width: unset;
+        border-radius: 0.5em;
+    }
+    .MuiDialogContent-root {
+        padding: 1.5em 2em !important;
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+        border: 0px;
+        .bm-type {
+            .MuiFormGroup-root {
+                padding-left: 0.5em;
+                display: flex;
+                flex-direction: row;
+                .MuiFormControlLabel-root {
+                    margin-right: 30px;
+                    .MuiTypography-root {
+                        padding-left: 4px;
+                        color: #666;
+                    }
+                }
+            }
+        }
+        .info-box {
+            padding: 1em 0.8em;
+            background-color: #fdf5ca;
+            border: 2px solid #fae062;
+            border-radius: 0.2em;
+            gap: 0.5em;
+            .info-container {
+                display: flex;
+                flex-direction: row;
+                gap: 0.8em;
+                .info-icon {
+                    width: 1.8em;
+                    height: 1.8em;
+                    background-color: #dcb90a;
+                    border-radius: 50%;
+                    margin-top: 2px;
+                    -webkit-transform: rotate(180deg);
+                    -moz-transform: rotate(180deg);
+                    -ms-transform: rotate(180deg);
+                    -o-transform: rotate(180deg);
+                    transform: rotate(180deg);
+                    &:before {
+                        color: #fff;
+                        font-size: 1.8em;
+                        line-height: 1.06;
+                    }
+                }
+                .info-text {
+                    font-size: 14px;
+                    color: #333;
+                    line-height: 1.4;
+                }
+            }
+            .download-template-btn {
+                width: fit-content;
+                border-color: #e95a16;
+                color: #e95a16;
+                font-weight: bold;
+                margin-top: 14px;
+                font-size: 15px !important;
+                padding-top: 0px !important;
+            }
+        }
+    }
+    .question-cls {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    .iq-fileupload-field {
+        gap: 0.4em;
+    }
+    .MuiDialogActions-root {
+        padding: 2.0em 2em !important;
+    }
 }

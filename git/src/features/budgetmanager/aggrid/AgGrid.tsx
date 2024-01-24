@@ -3,16 +3,14 @@ import {Button, Stack} from '@mui/material';
 import {createStyles, makeStyles} from '@mui/styles';
 import {ColDef} from 'ag-grid-community/dist/lib/entities/colDef';
 import {
-	getCostCodeDivisionList,
 	getCostTypeList,
-	getServer,
+	getServer
 } from 'app/common/appInfoSlice';
 import _ from 'lodash';
 // import {getAmountAlignmentNew} from 'utilities/commonutills';
 import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
 import {postMessage} from 'app/utils';
-import CostCodeDropdown from 'components/costcodedropdown/CostCodeDropdown';
 import DatePickerComponent from 'components/datepicker/DatePicker';
 import IQTooltip, {IQGridTooltip} from 'components/iqtooltip/IQTooltip';
 import SmartDropDown from 'components/smartDropdown';
@@ -26,7 +24,7 @@ import 'utilities/presence/PresenceManager.css';
 import PresenceManager from 'utilities/presence/PresenceManager.js';
 import {primaryIconSize} from '../BudgetManagerGlobalStyles';
 import {curveList} from '../headerpage/HeaderPage';
-import {setBidPackagesList, setClientContractsList, setSelectedRows, setVendorContractsList, setLiveData} from '../operations/gridSlice';
+import {setBidPackagesList, setClientContractsList, setSelectedRows, setVendorContractsList} from '../operations/gridSlice';
 import {setSelectedRowData, setSelectedRowIndex} from '../operations/rightPanelSlice';
 import {
 	getGridColumnHide,
@@ -42,10 +40,9 @@ import VendorList from './vendor/Vendor';
 import {getBidStatus, getBidStatusIdFromText, StatusColors, StatusIcons} from 'utilities/bid/enums';
 import {formatDate} from 'utilities/datetime/DateTimeUtils';
 import {vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons} from 'utilities/vendorContracts/enums';
-import {budgetManagerMainGridRTListener} from '../BudgetManagerRT';
 import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
 import {getCostCodeDropdownList, getCostCodeFilterList} from '../operations/settingsSlice';
-import { providerSourceObj } from 'utilities/commonutills';
+import {providerSourceObj} from 'utilities/commonutills';
 // import {setInterval} from 'timers/promises';
 var tinycolor = require('tinycolor2');
 
@@ -86,11 +83,7 @@ const TableGrid = (props: TableGridProps) => {
 	const gridStyle = useMemo(() => ({height: '100%', width: '100%'}), []);
 	const {gridData, originalGridApiData, presenceData, liveData,
 		selectedFilters, searchText} = useAppSelector((state) => state.gridData);
-
-	const {selectedRowIndexData} = useAppSelector(
-		(state) => state.rightPanel
-	);
-	const {settingsData, costCodeDropdownData, divisionCostCodeFilterData} = useAppSelector(state => state.settings);
+	const {settingsData} = useAppSelector(state => state.settings);
 
 	const rightPannel = useAppSelector(showRightPannel);
 	const {viewData, viewBuilderData} = useAppSelector((state) => state.viewBuilder);
@@ -227,23 +220,23 @@ const TableGrid = (props: TableGridProps) => {
 
 	}, [selectedGroupKey]);
 
-	const isCostCodeExists = (options: any, costCodeVal: any)=> {
+	const isCostCodeExists = (options: any, costCodeVal: any) => {
 		let isExists: any = false;
-		(options || []).forEach((rec: any)=>{
-			if (rec.value === costCodeVal) {
+		(options || []).forEach((rec: any) => {
+			if(rec.value === costCodeVal) {
 				isExists = true;
 			} else {
 				if(rec.children?.length > 0) {
-					rec.children.forEach((childRec: any)=>{
+					rec.children.forEach((childRec: any) => {
 						if(childRec.value === costCodeVal) {
 							isExists = true;
 						}
-					})
+					});
 				}
 			}
 		});
 		return isExists;
-	}
+	};
 
 	const columns: any = [
 		{
@@ -313,119 +306,119 @@ const TableGrid = (props: TableGridProps) => {
 				let selectOptions: any = [...getDivisionOptions()];
 				let hiddenOptions: any = [];
 				let isCostCodeExistsInOptions: any = params?.data?.costCode ? isCostCodeExists(selectOptions, params?.data?.costCode) : false;
-				if (!isCostCodeExistsInOptions) {
-					let obj: any = 
-						{
-							value: params?.data?.costCode,
-							id: params?.data?.costCode,
-							children: null,
-							isHidden: true,
-						}
+				if(!isCostCodeExistsInOptions) {
+					let obj: any =
+					{
+						value: params?.data?.costCode,
+						id: params?.data?.costCode,
+						children: null,
+						isHidden: true,
+					};
 					hiddenOptions.push(obj);
 				}
 				let inLinefilter: any = [];
 				getDivisionFilterOptions()?.map((option: any) => {
 					if(option?.value == params?.data?.division) {
-						setMultiLevelDefaultFilters([option?.hierarchy]);
+						// setMultiLevelDefaultFilters([option?.hierarchy]);
 						inLinefilter = [option?.hierarchy];
 					}
 				});
-				
-				
+
+
 				// return params?.node?.level == 1 ? (
-					// <CostCodeDropdown
-					// 	label=''
-					// 	options={getDivisionOptions()}
-					// 	required={false}
-					// 	selectedValue={
-					// 		params?.data
-					// 			? params?.data?.division + '|' + params?.data?.costCode
-					// 			: ''
-					// 	}
-					// 	checkedColor={'#0590cd'}
-					// 	onChange={(value) => handleOnChange(value, params)}
-					// 	showFilter={false}
-					// 	showFilterInSearch={true}
-					// 	isFullWidth={true}
-					// 	outSideOfGrid={false}
-					// 	sx={{
-					// 		fontSize: '13px',
-					// 		'&:before': {
-					// 			border: 'none',
-					// 		},
-					// 		'&:after': {
-					// 			border: 'none',
-					// 		},
-					// 		'.MuiSelect-icon': {
-					// 			display: 'none',
-					// 		},
-					// 	}}
-					// 	filteringValue={params?.data?.division}
-					// />
-					return (
-            params?.data && (
-              <>
-                {(
-                  <CostCodeSelect
-                    label=" "
-                    options={selectOptions}
-					hiddenOptions = {hiddenOptions}
-                    onChange={(value: any) => handleOnChange(value, params)}
-                    // required={true}
-                    // startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
-                    checkedColor={"#0590cd"}
-                    showFilter={false}
-                    selectedValue={
-                      params?.data?.division && params?.data?.costCode
-                        ? (!isCostCodeExistsInOptions ? params?.data?.costCode : (params?.data?.division + "|" + params?.data?.costCode))
-                        : ""
-                    }
-                    Placeholder={"Select"}
-                    outSideOfGrid={false}
-                    showFilterInSearch={true}
-                    isFullWidth={true}
-                    sx={{
-                      fontSize: "13px",
-                      "&:before": {
-                        border: "none",
-                      },
-                      "&:after": {
-                        border: "none",
-                      },
-                      ".MuiSelect-icon": {
-                        display: "none",
-                      },
-                    }}
-                    filteroptions={getDivisionFilterOptions()}
-                    filteringValue={params?.data?.division}
-                    onFiltersUpdate={(filters: any) =>
-                      setMultiLevelDefaultFilters(filters)
-                    }
-                    defaultFilters={
-                      multiLevelDefaultFilters?.length
-                        ? multiLevelDefaultFilters?.length
-                        : inLinefilter
-                    }
-                  />
-                ) 
-				// : (
-                //   <div
-                //     onClick={(e: any) => {
-				// 		console.log('srini on click');
-                //     //   e.stopPropagation();
-                //     //   params.node.setData({
-                //     //     ...params.node.data,
-                //     //     isCostCodeExistsInOptions: true,
-                //     //   });
-                //     }}
-                //   >
-                //     Srini {params.data?.costCode}
-                //   </div>
-                // )
-				}
-              </>
-            )
-          );
+				// <CostCodeDropdown
+				// 	label=''
+				// 	options={getDivisionOptions()}
+				// 	required={false}
+				// 	selectedValue={
+				// 		params?.data
+				// 			? params?.data?.division + '|' + params?.data?.costCode
+				// 			: ''
+				// 	}
+				// 	checkedColor={'#0590cd'}
+				// 	onChange={(value) => handleOnChange(value, params)}
+				// 	showFilter={false}
+				// 	showFilterInSearch={true}
+				// 	isFullWidth={true}
+				// 	outSideOfGrid={false}
+				// 	sx={{
+				// 		fontSize: '13px',
+				// 		'&:before': {
+				// 			border: 'none',
+				// 		},
+				// 		'&:after': {
+				// 			border: 'none',
+				// 		},
+				// 		'.MuiSelect-icon': {
+				// 			display: 'none',
+				// 		},
+				// 	}}
+				// 	filteringValue={params?.data?.division}
+				// />
+				return (
+					params?.data && (
+						<>
+							{(
+								<CostCodeSelect
+									label=" "
+									options={selectOptions}
+									hiddenOptions={hiddenOptions}
+									onChange={(value: any) => handleOnChange(value, params)}
+									// required={true}
+									// startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
+									checkedColor={"#0590cd"}
+									showFilter={false}
+									selectedValue={
+										params?.data?.division && params?.data?.costCode
+											? (!isCostCodeExistsInOptions ? params?.data?.costCode : (params?.data?.division + "|" + params?.data?.costCode))
+											: ""
+									}
+									Placeholder={"Select"}
+									outSideOfGrid={false}
+									showFilterInSearch={true}
+									isFullWidth={true}
+									sx={{
+										fontSize: "13px",
+										"&:before": {
+											border: "none",
+										},
+										"&:after": {
+											border: "none",
+										},
+										".MuiSelect-icon": {
+											display: "none",
+										},
+									}}
+									filteroptions={getDivisionFilterOptions()}
+									filteringValue={params?.data?.division}
+									onFiltersUpdate={(filters: any) =>
+										setMultiLevelDefaultFilters(filters)
+									}
+									defaultFilters={
+										multiLevelDefaultFilters?.length
+											? multiLevelDefaultFilters?.length
+											: inLinefilter
+									}
+								/>
+							)
+								// : (
+								//   <div
+								//     onClick={(e: any) => {
+								// 		console.log('srini on click');
+								//     //   e.stopPropagation();
+								//     //   params.node.setData({
+								//     //     ...params.node.data,
+								//     //     isCostCodeExistsInOptions: true,
+								//     //   });
+								//     }}
+								//   >
+								//     Srini {params.data?.costCode}
+								//   </div>
+								// )
+							}
+						</>
+					)
+				);
 				// ) : null;
 			}
 		},
@@ -437,28 +430,28 @@ const TableGrid = (props: TableGridProps) => {
 			keyCreator: (params: any) => params.data.costType || 'None',
 			cellRenderer: (params: any) => {
 				// return params?.node?.level == 1 ? (
-					return params?.data && <SmartDropDown
-						options={getCostTypeOptions()}
-						dropDownLabel=''
-						isSearchField={false}
-						isFullWidth={true}
-						outSideOfGrid={false}
-						selectedValue={params.data ? params?.data?.costType : ''}
-						handleChange={(value: any) => handleOnChange(value, params)}
-						sx={{
-							fontSize: '13px',
-							'&:before': {
-								border: 'none',
-							},
-							'&:after': {
-								border: 'none',
-							},
-							'.MuiSelect-icon': {
-								display: 'none',
-							},
-						}}
-						menuProps={classes.menuPaper}
-					/>
+				return params?.data && <SmartDropDown
+					options={getCostTypeOptions()}
+					dropDownLabel=''
+					isSearchField={false}
+					isFullWidth={true}
+					outSideOfGrid={false}
+					selectedValue={params.data ? params?.data?.costType : ''}
+					handleChange={(value: any) => handleOnChange(value, params)}
+					sx={{
+						fontSize: '13px',
+						'&:before': {
+							border: 'none',
+						},
+						'&:after': {
+							border: 'none',
+						},
+						'.MuiSelect-icon': {
+							display: 'none',
+						},
+					}}
+					menuProps={classes.menuPaper}
+				/>;
 				// ) : null;
 			}
 		}, {
@@ -612,7 +605,7 @@ const TableGrid = (props: TableGridProps) => {
 			headerName: 'Provider Source',
 			field: 'providerSource',
 			hide: false,
-			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],			
+			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],
 		},
 		{
 			headerName: 'Transaction Amount',
@@ -1550,19 +1543,22 @@ const TableGrid = (props: TableGridProps) => {
 	};
 
 	useEffect(() => {
-	}, [mousePos]);
+		try {
+			console.log('liveData--------->', liveData);
+			if(liveData) {
+				for(let id in liveData) {
+					const diffKeys = liveData[id];
+					let rowNode = gridRef.current?.api?.getRowNode(id);
+					console.log('liveData--------->row', rowNode);
 
-	useEffect(() => {
-		if(liveData) {
-			for(let id in liveData) {
-				const diffKeys = liveData[id];
-				let rowNode = gridRef.current?.api?.getRowNode(id);
-
-				if(diffKeys && diffKeys.length > 0)
-					gridRef.current?.api?.flashCells({rowNodes: [rowNode], columns: ['division', ...diffKeys]});
-				else
-					gridRef.current?.api?.flashCells({rowNodes: [rowNode]});
+					if(diffKeys && diffKeys.length > 0)
+						console.log('liveData--------->if', rowNode, diffKeys), gridRef.current?.api?.flashCells({rowNodes: [rowNode], columns: ['division', ...diffKeys]});
+					else
+						console.log('liveData--------->else', rowNode, diffKeys), gridRef.current?.api?.flashCells({rowNodes: [rowNode], columns: ['division']});
+				}
 			}
+		} catch(e) {
+			console.log(e);
 		}
 	}, [liveData]);
 
@@ -1619,7 +1615,7 @@ const TableGrid = (props: TableGridProps) => {
 					&& (_.isEmpty(selectedFilters.clientStatus) || selectedFilters.clientStatus?.length === 0 || selectedFilters.clientStatus?.indexOf(item.clientContract?.status) > -1)
 					&& (_.isEmpty(selectedFilters.location) || selectedFilters.location?.length === 0 || _.intersection(selectedFilters.location, locationIds).length > 0)
 					&& (_.isEmpty(selectedFilters.Vendors) || selectedFilters.Vendors?.length === 0 || _.intersection(selectedFilters.Vendors, vendorsIds).length > 0)
-					&& (_.isEmpty(selectedFilters.providerSource) || selectedFilters.providerSource?.length === 0 || selectedFilters.providerSource?.indexOf(item.providerSource?.toString()) > -1)	
+					&& (_.isEmpty(selectedFilters.providerSource) || selectedFilters.providerSource?.length === 0 || selectedFilters.providerSource?.indexOf(item.providerSource?.toString()) > -1)
 				));
 		});
 	};

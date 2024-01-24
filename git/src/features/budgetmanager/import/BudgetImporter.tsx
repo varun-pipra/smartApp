@@ -17,19 +17,19 @@ const BudgetImporter = (props: any) => {
 		}}
 		PaperProps={{
 			sx: {
-				width: '50em',
+				width: '55em',
 				height: '60%'
 			}
 		}}
 		actions={
-			<IQButton color="orange" disabled>
+			<IQButton color="orange">
 				START IMPORT
 			</IQButton>
 		}
 		{...props}
 	>
 		<Stack className="bm-type">
-			<div>How do you like to start your Budget Import?</div>
+			<div className="question-cls">How do you like to start your Budget Import?</div>
 			<RadioGroup
 				name="import-type"
 				value={'new'}
@@ -68,7 +68,7 @@ const BudgetImporter = (props: any) => {
 			<div className="info-container">
 				<span className='info-icon common-icon-info-white'></span>
 				<span className='info-text'>We recommend you to first download the standard budget template and use this template to build your data file.<br />
-					Note: Once the template is ready, use that to begin your import process.<br /><br />
+					Note: Once the template is ready, use that to begin your import process.<br />
 					<IQButton
 						className="download-template-btn"
 						color="orange"

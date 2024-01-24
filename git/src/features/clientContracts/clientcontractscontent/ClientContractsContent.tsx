@@ -27,7 +27,7 @@ import {isUserGCForCC} from '../utils';
 import {SUIToast} from 'sui-components/Toast/Suitoast';
 import {getCCChangeEventsList} from 'features/clientContracts/stores/CCChangeEventsSlice';
 import {fetchSettings} from 'features/budgetmanager/operations/settingsSlice';
-import {setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
+import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 
 const ClientContractsContent = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -241,7 +241,7 @@ const ClientContractsContent = (props: any) => {
 		response?.type == 'decline' ? declineContract(appInfo, selectedRecord?.id, payload, afterItemAction)
 			: response?.type == 'revise' ? reviseContract(appInfo, selectedRecord?.id, payload, afterItemAction) : acceptContract(appInfo, selectedRecord?.id, {signature: response?.signature}, afterItemAction);
 		setContractDialog({...contractDialog, show: false});
-		if(blockchainEnabled) {
+		if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
 			dispatch(setShowBlockchainDialog(true));
 		}
 	};
@@ -249,23 +249,22 @@ const ClientContractsContent = (props: any) => {
 		if(type == 'yes') {
 			showAlert?.type == 'cancel' && cancelAndLockContract(appInfo, selectedRecord?.id, afterItemAction);
 			if(showAlert?.type == 'lock') {
-				if(blockchainEnabled) {
-					dispatch(setShowBlockchainDialog(true));
-				}
 				activateClientContract(appInfo, selectedRecord?.id, afterItemAction);
-				setShowLockSuccessMsg({show: true, msg1: 'Posted Contract and Locked.', msg2: 'Notified the response to the Client.'});
+				if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
+					dispatch(setShowBlockchainDialog(true));
+				} else {
+					setShowLockSuccessMsg({show: true, msg1: 'Posted Contract and Locked.', msg2: 'Notified the response to the Client.'});
+				}
 			}
 			if(showAlert?.type == 'route') {
-				if(blockchainEnabled) {
-					dispatch(setShowBlockchainDialog(true));
-				}
 				lockAndPostContract(appInfo, selectedRecord?.id, afterItemAction);
-				setShowLockSuccessMsg({show: true, msg1: 'Contract Routed, Posted and Locked.', msg2: 'Notified the response to the Client.'});
+				if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
+					dispatch(setShowBlockchainDialog(true));
+				} else {
+					setShowLockSuccessMsg({show: true, msg1: 'Contract Routed, Posted and Locked.', msg2: 'Notified the response to the Client.'});
+				}
 			}
 			if(showAlert?.type == 'unlock') {
-				if(blockchainEnabled) {
-					dispatch(setShowBlockchainDialog(true));
-				}
 				unLockContract(appInfo, selectedRecord?.id, afterItemAction);
 				setToast({show: true, message: "Contract Unlocked. Changes made in the contracts will be notified to the Vendor on click of Post Change & Lock"});
 			}
@@ -284,7 +283,7 @@ const ClientContractsContent = (props: any) => {
 		});
 	};
 
-	const disableBlockchainActionButtons = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(selectedRecord?.blockChainStatus) === -1);
+	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRecord?.blockChainStatus) === -1);
 
 	return <>
 		<Box className='bid-manager-content'>

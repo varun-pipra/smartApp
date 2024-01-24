@@ -113,7 +113,23 @@
                 }
                 .grey-font {
                     color: #999;
-                }
+				}
+				.budgetid-content{
+					display: flex;
+					gap:10px;
+				}
+				.common-icon-sap-setting:before {
+					font-size: 15px !important;
+				}
+				.sapnumber{
+					color:#059cdf;
+                    &.common-icon-sap-logo:before {
+                        color: #3198f2 !important;
+                        background: -webkit-linear-gradient(#00AEEF, #0097DC, #007CC5, #006CB8, #0066B3);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                    }
+				}
                 .budgetid-label,
                 .last-modified-label {
                     height: 100%;

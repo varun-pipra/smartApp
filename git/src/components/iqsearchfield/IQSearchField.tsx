@@ -44,10 +44,11 @@ export interface IQSearchFieldProps {
 	onSelectionChange?: any;
 	showSearchField?:boolean;
 	addKeysToFilters?: boolean;
+	showNone?:boolean;
 };
 
 const IQSearchField = (props: IQSearchFieldProps) => {
-	const { showGroups = true, showFilter = true, onFilterMenuClose = () => { }, defaultFilters, defaultSearchText = "", defaultGroups = "", headerStatusFilters,
+	const {showNone = true, showGroups = true, showFilter = true, onFilterMenuClose = () => { }, defaultFilters, defaultSearchText = "", defaultGroups = "", headerStatusFilters,
 	isShowDropdown = false, dropDownListExtraColumns = [], dropdownValues, filterAllowSubMenu = true, isSearchPlaceHolder = 'Search', onSelectionChange = () => { }, showExtraColumns = true, showSearchField = false, addKeysToFilters = false, ...rest
 	} = props;
 	const [filters, setFilters] = useState<any>({});
@@ -356,7 +357,7 @@ const IQSearchField = (props: IQSearchFieldProps) => {
 			<Stack className='iqsearch-field' direction={'row'} sx={props.sx}>
 				{!showGroups ? <></>
 					: <IconMenu
-						showNone={true}
+						showNone={showNone}
 						options={props.groups}
 						defaultValue={group.name ? { [group.name]: true } : {}}
 						defaultGroups={defaultGroups}

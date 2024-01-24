@@ -66,6 +66,7 @@ const HeaderPinning = (props: any) => {
 	const [localhost] = React.useState(isLocalhost);
 	const realtimeRef = React.useRef(false);
 	const dataSetRef = React.useRef(false);
+	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);
 
 	const languageList = [
 		{label: 'English', value: 'en'},
@@ -315,6 +316,13 @@ const HeaderPinning = (props: any) => {
 							<span className='title-text'>{t('BM_create_new_budget_line_item')}</span>
 							<AddDescription value={rightPannel ? '' : lineItemDescription} />
 							<p className='right-spacer'></p>
+							{isBudgetLocked && <div className='bubble-box'>
+								<div className='icon common-icon-blockchain'></div>
+								<div className='text'>
+									<div>Budget is locked and now is in Read Only Mode.</div>
+									<div>To Edit you may unlock the budget.</div>
+								</div>
+							</div>}
 							{/* <MuiGrid item xl={1.5} lg={1.5} md={1.5} sm={6} xs={6}>
 								<SmartDropDown
 									LeftIcon={<div className='budget-Curve' style={{ fontSize: '1.25rem' }}></div>}

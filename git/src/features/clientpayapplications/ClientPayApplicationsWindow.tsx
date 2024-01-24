@@ -8,7 +8,6 @@ import {currency, isLocalhost, postMessage} from 'app/utils';
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import {appInfoData} from 'data/appInfo';
-import CustomHeader from 'features/bidmanager/bidmanagercontent/bidmanagergrid/CustomHeader';
 import {getClientCompanies} from 'features/clientContracts/stores/ClientContractsSlice';
 import _ from 'lodash';
 import {useEffect, useMemo, useState, useRef, memo} from 'react';
@@ -37,7 +36,7 @@ import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanage
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 import {AgGridReact} from 'ag-grid-react';
 import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
-import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
+import {blockchainStates, checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultCPAStatusFilter: any = [];
@@ -351,8 +350,11 @@ const ClientPayApplicationsWindow = (props: any) => {
 				// checkbox: true,
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
+					const bcStatus = params.data?.blockChainStatus;
+					const showBCIcon = (cpaBlockchain && blockchainStates.indexOf(bcStatus) === -1);
 					return (
 						<>
+							{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '3%', marginTop: '12px', fontSize: '1.25em'}}></span>}
 							<span
 								className='ag-costcodegroup'
 								style={{
@@ -580,6 +582,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 	return (
 		appInfo && (isUserGCForCPA(appInfo) !== 'Not Authorized' ? <div className='client-pay-applications-cls'><GridWindow
 			open={true}
+			className='client-pay-app-cls'
 			iconCls='common-icon-pay-application'
 			title='Client Pay Applications'
 			defaultTabId='pay-Application-Details'

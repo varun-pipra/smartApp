@@ -1,6 +1,6 @@
 import { useAppSelector } from "app/hooks";
 import IQButton from "components/iqbutton/IQButton";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useMemo, useCallback } from "react";
 import SUIGrid from "sui-components/Grid/Grid";
 import IQSearch from "components/iqsearchfield/IQSearchField";
@@ -40,6 +40,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 	const [filters, setFilters] = React.useState<any>({});
 	const mySearch = useRef(false);
 
+	const [locations, setLocations] = useState<any>([]);
 	const selectedRowsData = (rows: any) => {
 		tableRef?.current?.api.forEachNode((node: any) => {
 			node.setSelected(rows?.includes(node?.data?.id));
@@ -61,7 +62,24 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			const idArray = selectedRows.map((item: any) => item.id);
 			selectedRowsData(idArray);
 		}
+		
 	}, [rowData]);
+
+	useEffect(()=> {
+		if (props?.data?.length > 0) {
+			let locationRecords:any = [];
+			props.data.forEach((rec: any)=> {
+				if (rec?.locations?.length >0) {
+					rec.locations.forEach((item: any) => {
+						if (locationRecords.findIndex((obj: any) => obj.id === item.id) === -1) {
+							locationRecords.push(item);
+						}
+					});
+				}
+			});
+			setLocations(locationRecords);
+		}
+	}, [props?.data])
 
 	React.useEffect(() => {
 		let totalBudget: number = 0;
@@ -226,7 +244,21 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			headerName: "Provider Source",
 			field: "providerSource",
 			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],			
-		}
+		},
+		{
+			headerName: 'Location',
+			field: 'locations',
+			suppressMenu: true,
+			minWidth: 220,
+			keyCreator: (params: any) => {
+				const {value} = params;
+				return (Array.isArray(value) && value?.length > 0) ? (value || [])?.map((location: any) => location?.name)?.join(', ') : 'NA';
+			},
+			cellRenderer: (params: any) => {
+				const {value} = params;
+				return Array.isArray(value) ? (value || [])?.map((location: any) => location?.name)?.join(', ') : '';
+			}
+		},
 	];
 	const autoGroupColumnDef = useMemo<ColDef>(() => {
 		return {
@@ -350,41 +382,60 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 	};
 
 	const filterHandler = (filters: any) => {
-		console.log("filterHandler", filters)
-		mySearch.current = true;
-		if (_.isEmpty(filters)) setFilters({});
-		else setFilters(filters);
-		if (filters) {
-			if (filters.all === 'all') {
-				setRowData(props?.data);
-			} else {
-				let filteredRecs: any = props?.data;
-				if (filters.notContracted === 'notContracted') {
-					filteredRecs = filteredRecs?.filter((obj: any) => {
-						if (props?.defaultRecords?.includes(obj.id) || obj?.[props?.disableRowsKey ?? 'clientContract'] == null) return obj;
-					});
-				}
-				if (filters.contracted === 'contracted') {
-					filteredRecs = filteredRecs?.filter((obj: any) => {
-						if (obj?.[props?.disableRowsKey ?? 'clientContract'] != null && !props?.defaultRecords?.includes(obj.id)) return obj;
-					});
-				} 
-				if (filters.providerSource?.length > 0 && !filters.providerSource?.includes('all')) {
-					filteredRecs = filteredRecs?.filter((obj: any) => {
-						return filters.providerSource.includes(obj.providerSource?.toString());
-					});
-				}
-				setRowData(filteredRecs);
-			}
-		}
-		else setRowData(props?.data);
-	};
+    console.log("filterHandler", filters);
+    mySearch.current = true;
+    if (_.isEmpty(filters)) setFilters({});
+    else setFilters(filters);
+    if (filters) {
+      let filteredRecs: any = props?.data;
+      if (
+        filters.contractStatus?.length > 0 &&
+        !filters.contractStatus?.includes("all")
+      ) {
+        if (filters.contractStatus.includes("contracted")) {
+          filteredRecs = filteredRecs?.filter((obj: any) => {
+            if (
+              obj?.[props?.disableRowsKey ?? "clientContract"] != null &&
+              !props?.defaultRecords?.includes(obj.id)
+            )
+              return obj;
+          });
+        } else {
+          filteredRecs = filteredRecs?.filter((obj: any) => {
+            if (
+              props?.defaultRecords?.includes(obj.id) ||
+              obj?.[props?.disableRowsKey ?? "clientContract"] == null
+            )
+              return obj;
+          });
+        }
+      }
+      if (
+        filters.providerSource?.length > 0 &&
+        !filters.providerSource?.includes("all")
+      ) {
+        filteredRecs = filteredRecs?.filter((obj: any) => {
+          return filters.providerSource.includes(
+            obj.providerSource?.toString()
+          );
+        });
+      }
+	  if (filters.location?.length > 0 && !filters.location?.includes("all")) {
+		filteredRecs = filteredRecs?.filter((obj: any) => {
+			const locationIds = obj.locations?.map((location: any) => location.id?.toString());
+			return _.intersection(filters.location, locationIds).length > 0;
+		  });
+	  }
+      setRowData(filteredRecs);
+    } else setRowData(props?.data);
+  };
 
 	const isAddDisabled = () => {
 		console.log("isAddDisabled", selectedRows, props?.defaultRecords)
-		if(!selectedRows?.length) return true
+		if(!selectedRows?.length && !props?.defaultRecords?.length) return true
 		if(JSON.stringify(selectedRows?.map((row:any)=>row?.id)) == JSON.stringify(props?.defaultRecords)) return true
 		else false;	
+		console.log("elseee",JSON.stringify(selectedRows?.map((row:any)=>row?.id)), JSON.stringify(props?.defaultRecords) )
 	}
 
 	const renderGrid = useCallback(() => {
@@ -423,6 +474,58 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			</div>
 		</div >);
 	}, [rowData]);
+
+	const filtersData: any = [
+		{
+			text: 'Contract Status',
+			value: 'contractStatus',
+			key: 'contractStatus',
+			children: {
+				type: "checkbox",
+				items: [
+					{text: "Contracted", id: 'contracted', value: 'contracted', key: 'contracted'},
+					{text: "Not Contracted", id: 'notContracted', value: 'notContracted', key: 'notContracted'},
+				],
+			},
+		},
+		{
+			text: 'Provider Source',
+			value: 'providerSource',
+			key: 'providerSource',
+			children: {
+				type: "checkbox",
+				items: [
+					{text: "Self Perform", id: '1', value: '1', key: '1'},
+					{text: "Trade Partner", id: '2', value: '0', key: '0'},
+				],
+			},
+		},
+		{
+			text: "Location",
+			value: 'location',
+			key: 'location',
+			children: {
+				type: "checkbox",
+				items: []
+			},
+		},
+	];
+	const [filterOptions, setFilterOptions] = useState<any>(filtersData);
+
+	useEffect(()=> {
+		const filtersOptionsCopy = [...filterOptions];
+		let locationItem: any = filtersOptionsCopy.find((rec: any) => rec?.value === "location");
+		const locationOptions: any = (locations || []).map((opt: any) => {
+			return {
+				text: opt.name,
+				id: opt.id?.toString(),
+				value: opt.id?.toString(),
+				key: opt.id
+			};
+		});
+		locationItem.children.items = locationOptions;
+		setFilterOptions(filtersOptionsCopy);
+	}, [locations])
 
 	return (
 		<IQBaseWindow
@@ -467,7 +570,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 				<IQSearch
 					placeholder={'Search'}
 					showGroups={false}
-					filters={getFilterMenuOptions()}
+					filters={filterOptions}
 					onSearchChange={(text: string) => handleOnSearchChange(text)}
 					filterHeader=''
 					// onSettingsChange={handleSettings}
@@ -539,6 +642,15 @@ const getFilterMenuOptions = () => {
 					{text: "Self Perform", id: '1', value: '1', key: '1'},
 					{text: "Trade Partner", id: '2', value: '0', key: '0'},
 				],
+			},
+		},
+		{
+			text: "Location",
+			value: 'location',
+			key: 'location',
+			children: {
+				type: "checkbox",
+				items: []
 			},
 		},
 	];

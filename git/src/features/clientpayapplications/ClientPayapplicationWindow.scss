@@ -9,3 +9,11 @@
         }
     }
 }
+
+.client-pay-app-cls {
+	.common-icon-blockchain {
+		&:before {
+			color: #cfa22a !important;
+		}
+	}
+}

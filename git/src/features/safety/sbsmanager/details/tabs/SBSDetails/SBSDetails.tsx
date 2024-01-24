@@ -5,18 +5,12 @@ import { InputLabel, Stack, TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import DatePickerComponent from "components/datepicker/DatePicker";
 import InputIcon from "react-multi-date-picker/components/input_icon";
-//import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import globalStyles, {
-  primaryIconSize,
-} from "features/budgetmanager/BudgetManagerGlobalStyles";
 import { formatDate } from "utilities/datetime/DateTimeUtils";
-
-import { useEffect } from "react";
-
 import { getTradeData } from "features/projectsettings/projectteam/operations/ptDataSlice";
 import { setSaveDetailsObj, setEnableSaveButton } from "features/safety/sbsmanager/operations/sbsManagerSlice";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { postMessage } from "app/utils";
 
 const SBSDetailsTab = (props: any) => {
   const { selectedRec, ...rest } = props;
@@ -291,6 +285,31 @@ const SBSDetailsTab = (props: any) => {
             />
           </div>
         </div>
+        {selectedRecData?.supplementalInfoItemId ? (
+          <>
+            <div
+              className="eventrequest-details-header"
+            >
+              <div className="title-action">
+                <span className="title">Supplemental Info</span>
+              </div>
+            </div>
+            <div
+              className="sbs-suppli-info-cell"
+              style={{ marginTop: "10px" }}
+              onClick={() => {
+                postMessage({
+                  event: "openitem",
+                  body: {
+                    smartItemId: selectedRecData?.supplementalInfoItemId,
+                  },
+                });
+              }}
+            >
+              View/Update Supplemental Info
+            </div>
+          </>
+        ) : null}
       </div>
     </div>
   );

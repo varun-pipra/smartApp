@@ -1,5 +1,5 @@
 import {PayloadAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {fetchBlockchainStatus} from './BlockchainAPI';
+import {blockchainAction, fetchBlockchainStatus} from './BlockchainAPI';
 
 export interface BidManagerState {
 	loading: boolean;
@@ -21,9 +21,17 @@ export const moduleType: any = {
 	ClientPayApplication: 5
 };
 
-export const checkBlockchainStatus = createAsyncThunk<any, any>('blockchainStatus', async (typeString: string) => {
+export const blockchainStates = ['None', 'AuthVerified', 'NoLongerValid', 'Expired', 'NoNotMe'];
+
+export const checkBlockchainStatus = createAsyncThunk<any, string>('blockchainStatus', async (typeString: string) => {
 	const typeValue = moduleType[typeString];
 	const status = await fetchBlockchainStatus(typeValue);
+	return status;
+});
+
+export const doBlockchainAction = createAsyncThunk<any, any>('doBlockchainAction', async ({enable, typeString}) => {
+	const typeValue = moduleType[typeString];
+	const status = await blockchainAction(enable, typeValue);
 	return status;
 });
 
@@ -42,6 +50,13 @@ export const blockchain = createSlice({
 			state.loading = false;
 			state.blockchainEnabled = action.payload;
 		}).addCase(checkBlockchainStatus.rejected, (state, action) => {
+			state.loading = false;
+		}).addCase(doBlockchainAction.pending, (state, action) => {
+			state.loading = true;
+		}).addCase(doBlockchainAction.fulfilled, (state, action) => {
+			state.loading = false;
+			state.blockchainEnabled = action.payload;
+		}).addCase(doBlockchainAction.rejected, (state, action) => {
 			state.loading = false;
 		});
 	}

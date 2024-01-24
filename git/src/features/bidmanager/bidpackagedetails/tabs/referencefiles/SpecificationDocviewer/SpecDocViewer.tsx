@@ -1,4 +1,4 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQSearchField from "components/iqsearchfield/IQSearchField";
 import IQBrenaDocViewer from "components/iqbrenadocviewer/IQBrenaDocViewer";
@@ -6,20 +6,25 @@ import SUIDialog from "sui-components/Dialog/Dialog";
 
 import './SpecDocViewer.scss'
 import SMBrenaSearch from "features/field/specificationmanager/smbrena/content/leftpanel/SMBrenaSearch";
+import _ from "lodash";
 const SpecDocViewer = (props:any) => {
   const dispatch = useAppDispatch();
   const  {selectedRecord,closeSpecDocViewer,specBookPagesData , ...rest} = props;
   const docViewElementId = "sbs-spec-canvasWrapper";
-  const [showSearchpanel, setShowSearchpanel] = useState(false);
+  // const [showSearchpanel, setShowSearchpanel] = useState(false);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    if (search.length > 0) {
-      setShowSearchpanel(true);
-    } else {
-      setShowSearchpanel(false);
-    }
-  }, [search]);
+  // useEffect(() => {
+  //   if (search.length > 0) {
+  //     setShowSearchpanel(true);
+  //   } else {
+  //     setShowSearchpanel(false);
+  //   }
+  // }, [search]);
+
+  const debounceOnSearch = useCallback(_.debounce((searchText) => {
+    // setSearch(searchText)
+	}, 2000), [search]);
 
   return (
     <div>
@@ -30,7 +35,7 @@ const SpecDocViewer = (props:any) => {
       closable: true,
     }}
     PaperProps={{
-      sx: { height: "70%", width: "65%" ,padding: '0px !important' },
+      sx: { height: "75%", width: "70%" ,padding: '0px !important' },
     }}
     onClose={closeSpecDocViewer}
     style={{
@@ -48,7 +53,7 @@ const SpecDocViewer = (props:any) => {
           showGroups={false}
           showFilter={false}
           filterHeader=""
-          onSearchChange={(searchText: any) => setSearch(searchText)}
+          onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
         />
       </div>
         <IQBrenaDocViewer
@@ -58,14 +63,14 @@ const SpecDocViewer = (props:any) => {
           stopFocus={true}
           defaultPageToNavigate={selectedRecord?.startPage}
         />
-        {showSearchpanel && (
+        {/* {showSearchpanel && (
           <SMBrenaSearch
             renderModel={true}
             open={showSearchpanel}
             handleClose={() => setShowSearchpanel(false)}
             readonly={false}
           />
-        )}
+        )} */}
       </div>
     </SUIDialog>
     </div>

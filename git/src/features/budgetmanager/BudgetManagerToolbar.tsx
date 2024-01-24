@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import {
 	IconButton,
 	ToggleButton,
@@ -27,14 +27,14 @@ import {
 	getViewBuilderPopup,
 	setShowSettingPopup3, setToastMessage
 } from "./operations/tableColumnsSlice";
-import {useAppSelector, useAppDispatch} from "app/hooks";
+import { useAppSelector, useAppDispatch } from "app/hooks";
 import ImportCSVData from "components/importcsv/ImportCSVData";
 import BudgetTransferPanel from "./budgettransferpanel/BudgetTransferPanel";
-import {fetchGridData, setSelectedGroupKey, setSelectedFilters, setSearchText} from "./operations/gridSlice";
-import {deleteBudgetLineItem} from "./operations/gridAPI";
-import {getServer, getCostCodeDivisionList, getCostTypeList} from "app/common/appInfoSlice";
+import { fetchGridData, setSelectedGroupKey, setSelectedFilters, setSearchText } from "./operations/gridSlice";
+import { deleteBudgetLineItem } from "./operations/gridAPI";
+import { getServer, getCostCodeDivisionList, getCostTypeList } from "app/common/appInfoSlice";
 
-import {lockAndUnlockBudget} from "./operations/tableColumnsAPI";
+import { lockAndUnlockBudget } from "./operations/tableColumnsAPI";
 import SUIDrawer from "sui-components/Drawer/Drawer";
 import ViewBuilderGrid from "./managetablecolumns/ViewBuilderGrid";
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
@@ -44,27 +44,28 @@ import EditIcon from "resources/images/common/Edit.svg";
 import DeleteIcon from "resources/images/common/Delete.svg";
 import NewviewIcon from "resources/images/common/Newgridview.svg";
 import SUIAlert from "sui-components/Alert/Alert";
-import {getBidStatusIdFromText, statusFilterOptions} from "utilities/bid/enums";
-import {vendorContractsStatusFilterOptions} from "utilities/vendorContracts/enums";
-import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
+import { getBidStatusIdFromText, statusFilterOptions } from "utilities/bid/enums";
+import { vendorContractsStatusFilterOptions } from "utilities/vendorContracts/enums";
+import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 import BudgetImporter from "./import/BudgetImporter";
+import ShortcutSharpIcon from '@mui/icons-material/ShortcutSharp';
 
 const BudgetManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
-	const {selectedRows, bidPackagesList, vendorContractsList, clientContractsList} = useAppSelector(state => state.gridData);
-	const {selectedRow} = useAppSelector(state => state.rightPanel);
-	const {isBudgetLocked} = useAppSelector(state => state.tableColumns);
+	const { selectedRows, bidPackagesList, vendorContractsList, clientContractsList } = useAppSelector(state => state.gridData);
+	const { selectedRow } = useAppSelector(state => state.rightPanel);
+	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);
 	const tableViewType = useAppSelector(getTableViewType);
 	const openSettingPopup = useAppSelector(getShowSettingPopup);
 	const viewBuilderPopup = useAppSelector(getViewBuilderPopup);
 	const openImportCSVPopup = useAppSelector(getImportPopup);
 	const costCodeDivisionOpts = useAppSelector(getCostCodeDivisionList);
 	const costTypeOpts = useAppSelector(getCostTypeList);
-	const {gridData, originalGridApiData} = useAppSelector((state) => state.gridData);
+	const { gridData, originalGridApiData } = useAppSelector((state) => state.gridData);
 	const appInfo = useAppSelector(getServer);
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
 	const [showNewAddLineItemBtn, setShowNewAddLineItemBtn] = useState<boolean>(false);
-	const {viewData} = useAppSelector(state => state.viewBuilder);
+	const { viewData } = useAppSelector(state => state.viewBuilder);
 	const [alert, setAlert] = useState<boolean>(false);
 	// const [filteredRecords, setFilteredRecords] = useState<any>([]);
 	// const [activeFilters, setActiveFilters] = useState<any>({});
@@ -78,33 +79,33 @@ const BudgetManagerToolbar = (props: any) => {
 	const [costCodeList, setCostCodeList] = useState<any>([]);
 
 	useEffect(() => {
-		if(originalGridApiData?.length > 0) {
+		if (originalGridApiData?.length > 0) {
 			let locationRecords: any = [];
 			let vendorRecords: any = [];
 			let costCodeUniqueRecords: any = [];
 			let divisionUniqueRecords: any = [];
 			originalGridApiData.forEach((rec: any) => {
-				if(rec.locations?.length > 0) {
+				if (rec.locations?.length > 0) {
 					rec.locations.forEach((item: any) => {
-						if(locationRecords.findIndex((obj: any) => obj.id === item.id) === -1) {
+						if (locationRecords.findIndex((obj: any) => obj.id === item.id) === -1) {
 							locationRecords.push(item);
 						}
 					});
 				}
-				if(rec.Vendors?.length > 0) {
+				if (rec.Vendors?.length > 0) {
 					rec.Vendors.forEach((item: any) => {
-						if(vendorRecords.findIndex((obj: any) => obj.id === item.id) === -1) {
+						if (vendorRecords.findIndex((obj: any) => obj.id === item.id) === -1) {
 							vendorRecords.push(item);
 						}
 					});
 				}
 				if (rec.costCode) {
-					if(costCodeUniqueRecords.findIndex((item: any)=> item === rec.costCode) === -1) {
+					if (costCodeUniqueRecords.findIndex((item: any) => item === rec.costCode) === -1) {
 						costCodeUniqueRecords.push(rec.costCode);
 					}
 				}
 				if (rec.division) {
-					if(divisionUniqueRecords.findIndex((item: any)=> item === rec.division) === -1) {
+					if (divisionUniqueRecords.findIndex((item: any) => item === rec.division) === -1) {
 						divisionUniqueRecords.push(rec.division);
 					}
 				}
@@ -160,9 +161,9 @@ const BudgetManagerToolbar = (props: any) => {
 			children: {
 				type: "checkbox",
 				items: [
-					{text: "Back Loaded", id: '2', value: '2', key: '2'},
-					{text: "Front Loaded", id: '0', value: '0', key: '2'},
-					{text: "Linear", id: '3', value: '3', key: '3'},
+					{ text: "Back Loaded", id: '2', value: '2', key: '2' },
+					{ text: "Front Loaded", id: '0', value: '0', key: '2' },
+					{ text: "Linear", id: '3', value: '3', key: '3' },
 				],
 			},
 		},
@@ -253,8 +254,8 @@ const BudgetManagerToolbar = (props: any) => {
 			children: {
 				type: "checkbox",
 				items: [
-					{text: "Self Perform", id: '1', value: '1', key: '1'},
-					{text: "Trade Partner", id: '2', value: '0', key: '0'},
+					{ text: "Self Perform", id: '1', value: '1', key: '1' },
+					{ text: "Trade Partner", id: '2', value: '0', key: '0' },
 				]
 			},
 		}
@@ -272,8 +273,8 @@ const BudgetManagerToolbar = (props: any) => {
 		let clientItem = filtersCopy.find((rec: any) => rec?.value === "clientContract");
 		let locationItem = filtersCopy.find((rec: any) => rec?.value === "location");
 		let vendorsItem = filtersCopy.find((rec: any) => rec?.value === "Vendors");
-		const costTypeOptions = costTypeOpts?.map((opt: any) => {return {text: opt?.label, id: opt?.value, value: opt?.value, key: opt?.value};});
-		const costCodeDivisionOptions = costCodeDivisionOpts?.map((opt: any) => {return {text: opt?.name, id: opt?.name, value: opt?.name, key: opt?.name};});
+		const costTypeOptions = costTypeOpts?.map((opt: any) => { return { text: opt?.label, id: opt?.value, value: opt?.value, key: opt?.value }; });
+		const costCodeDivisionOptions = costCodeDivisionOpts?.map((opt: any) => { return { text: opt?.name, id: opt?.name, value: opt?.name, key: opt?.name }; });
 		const locationOptions = (locations || []).map((opt: any) => {
 			return {
 				text: opt.name,
@@ -322,10 +323,10 @@ const BudgetManagerToolbar = (props: any) => {
 		selectedRows.length > 0 ? setDisableDelete(false) : setDisableDelete(true);
 	}, [selectedRows, gridData]);
 
-	const handleUploadedFile = (file: any) => {};
+	const handleUploadedFile = (file: any) => { };
 
 	const handleView = (event: any, value: string) => {
-		if(value !== null) {
+		if (value !== null) {
 			dispatch(setShowTableViewType(value));
 		}
 	};
@@ -335,11 +336,11 @@ const BudgetManagerToolbar = (props: any) => {
 	};
 
 	const handleListChanges = (val: string) => {
-		if(val == 'yes') {
+		if (val == 'yes') {
 			const selectedRowIds = selectedRows.map((row: any) => row.id);
 			deleteBudgetLineItem(appInfo, selectedRowIds, (response: any) => {
 				dispatch(fetchGridData(appInfo));
-				dispatch(setToastMessage({displayToast: true, message: `Selected Record Deleted Successfully`}));
+				dispatch(setToastMessage({ displayToast: true, message: `Selected Record Deleted Successfully` }));
 			});
 			setDisableDelete(true);
 			selectedRowIds.includes(selectedRow.id) && dispatch(setRightPannel(false));
@@ -366,7 +367,7 @@ const BudgetManagerToolbar = (props: any) => {
 	};
 
 	const handleLockBudget = () => {
-		const payload = isBudgetLocked ? {"status": 1} : {"status": 2};
+		const payload = isBudgetLocked ? { "status": 1 } : { "status": 2 };
 		lockAndUnlockBudget(appInfo, payload, (response: any) => {
 			dispatch(setBudgetLocked(!isBudgetLocked));
 		});
@@ -403,7 +404,7 @@ const BudgetManagerToolbar = (props: any) => {
 							// disabled={disableDelete}
 							onClick={() => setImportVisible(true)}
 						>
-							<span className="common-icon-Importui-appcls"></span>
+							<span className="common-icon-budget-import"></span>
 						</IconButton>
 					</IQTooltip>
 				</>
@@ -438,6 +439,16 @@ const BudgetManagerToolbar = (props: any) => {
 						<AssessmentOutlinedIcon />
 					</ToggleButton>
 				</ToggleButtonGroup>
+				
+				{appInfo?.gblConfig?.ConnectorType == "sap" && <Button
+					variant="outlined"
+					startIcon={<span className='common-icon-redo' />}
+					className="sap-button"
+					// onClick={handleLockBudget}
+				>
+					<span className='postto'>Post to</span>
+					<span className='common-icon-sap-logo sapicon'></span>
+				</Button>}
 				<Button
 					variant="outlined"
 					startIcon={isBudgetLocked ? <LockOpenTwoToneIcon /> : <Lock />}
@@ -493,10 +504,10 @@ const BudgetManagerToolbar = (props: any) => {
 					elevation={2}
 				// open={false}
 				>
-					<Box sx={{width: "18vw", height: "50%"}} role="presentation">
+					<Box sx={{ width: "18vw", height: "50%" }} role="presentation">
 						<Stack
 							direction="row"
-							sx={{justifyContent: "end", height: "5em"}}
+							sx={{ justifyContent: "end", height: "5em" }}
 						>
 							<IconButton
 								aria-label="Close Right Pane"
@@ -505,7 +516,7 @@ const BudgetManagerToolbar = (props: any) => {
 								<Close />
 							</IconButton>
 						</Stack>
-						<div style={{height: "70%"}}>
+						<div style={{ height: "70%" }}>
 							<BudgetTransferPanel />
 						</div>
 					</Box>
@@ -636,7 +647,7 @@ const getViewFilters = () => {
 	{
 		text: 'Save As',
 		value: 'saveAs',
-		icon: <Box component='img' alt='Save As' src={SaveAsIcon} className='image' width={25} height={25} color={'#666666'} sx={{marginLeft: '-2px!important'}} />
+		icon: <Box component='img' alt='Save As' src={SaveAsIcon} className='image' width={25} height={25} color={'#666666'} sx={{ marginLeft: '-2px!important' }} />
 	},
 	{
 		text: 'Edit',

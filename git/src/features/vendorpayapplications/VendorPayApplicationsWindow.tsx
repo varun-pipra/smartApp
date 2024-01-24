@@ -36,7 +36,7 @@ import VendorPayApplicationsLID from './vendorpayapplicationsdetails/VendorPayAp
 import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 import {AgGridReact} from 'ag-grid-react';
-import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
+import {blockchainStates, checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVPAStatusFilter: any = [];
@@ -385,9 +385,12 @@ const VendorPayApplicationsWindow = (props: any) => {
 			headerCheckboxSelection: true,
 			width: 100,
 			comparator: (valueA: any, valueB: any) => valueA?.toLowerCase().localeCompare(valueB?.toLowerCase()),
-			cellRenderer: (params: any) => {
+			_cellRenderer: (params: any) => {
+				const bcStatus = params.data?.blockChainStatus;
+				const showBCIcon = (vpaBlockchain && blockchainStates.indexOf(bcStatus) === -1);
 				return (
 					<>
+						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '3%', marginTop: '12px', fontSize: '1.25em'}}></span>}
 						<span
 							className="ag-costcodegroup"
 							style={{
@@ -401,6 +404,12 @@ const VendorPayApplicationsWindow = (props: any) => {
 						</span>
 					</>
 				);
+			},
+			get cellRenderer() {
+				return this._cellRenderer;
+			},
+			set cellRenderer(value) {
+				this._cellRenderer = value;
 			},
 		},
 		{
@@ -595,6 +604,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	return (
 		appInfo && (isUserGCForVPA(appInfo) !== 'Not Authorized' ? <div className='vendor-pay-applications-cls'><GridWindow
 			open={true}
+			className='vendor-pay-app-cls'
 			title='Vendor Pay Applications'
 			companyInfo={!isUserGCForVPA(appInfo)}
 			centerPiece={!isUserGCForVPA(appInfo) && `Below are all Pay Applications for your company '${appInfo?.currentUserInfo?.company}' for the Project '${appInfo?.currentProjectInfo?.name}'.`}

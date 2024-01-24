@@ -42,7 +42,6 @@ const AddSpecificationsDialog = (props: any) => {
   const [specBookPagesData, setSpecBookPagesData] = React.useState({});
   const onImagePreview = (event: any) => {
     const { data } = event;
-    console.log(data)
     handelFileClick(data);
   };
   const filterOptions = React.useMemo(() => {
@@ -111,7 +110,7 @@ const AddSpecificationsDialog = (props: any) => {
       resizable: true,
       cellClass: "sm-specBookName",
       keyCreator: (params: any) => params.data?.specBook?.fileName || "None",
-      valueGetter: (params: any) => `${params?.data?.specBook?.fileName}`
+      valueGetter: (params: any) => `${params?.data?.specBook?.fileName}`,
     },
     {
       headerName: "Division",
@@ -121,11 +120,19 @@ const AddSpecificationsDialog = (props: any) => {
       //   rowGroup: true,
       resizable: true,
       suppressMenu: true,
-      keyCreator: (params: any) => (params.data.division && `${params.data.division.number} - ${params.data.division.text}`) || "None",
+      keyCreator: (params: any) =>
+        (params.data.division &&
+          `${params.data.division.number} - ${params.data.division.text}`) ||
+        "None",
       valueGetter: (params: any) => {
-              const division = params?.data?.division;
-              if (division && division.number !== undefined && division.text !== undefined) return `${division.number} - ${division.text}`;
-        }
+        const division = params?.data?.division;
+        if (
+          division &&
+          division.number !== undefined &&
+          division.text !== undefined
+        )
+          return `${division.number} - ${division.text}`;
+      },
     },
 
     {
@@ -163,13 +170,17 @@ const AddSpecificationsDialog = (props: any) => {
         display: "flex",
         alignItems: "normal",
         justifyContent: "left",
-
+        cursor : 'pointer'
       },
       cellRenderer: (params: any) => {
-        return <img
-        src={'https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media'}
-        className="thumbnailUrl-cls"
-      />;
+        return (
+          <img
+            src={
+              "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media"
+            }
+            className="thumbnailUrl-cls"
+          />
+        );
       },
     },
   ];
@@ -233,7 +244,7 @@ const AddSpecificationsDialog = (props: any) => {
   const handelFileClick = (data: any) => {
     dispatch(setSepcSelectedRecord(data));
     let payload = {
-      id: data.specBook?.id,
+      id: data?.specBook?.id,
     };
     dispatch(getSpecBookPages(payload));
     // setOpenSpecDocViewer(true)
@@ -362,7 +373,7 @@ const AddSpecificationsDialog = (props: any) => {
         className={"barcode-model"}
         open={open}
         PaperProps={{
-          sx: { height: "70%", width: "80%" },
+          sx: { height: "85%", width: "80%" },
         }}
         onClose={props.closeAddSpec}
         custom={{
@@ -380,7 +391,7 @@ const AddSpecificationsDialog = (props: any) => {
                 variant="contained"
               >
                 ADD
-                </IQButton>
+              </IQButton>
             </>
           ),
         }}
@@ -388,12 +399,18 @@ const AddSpecificationsDialog = (props: any) => {
         <div className="spec-main-continer" style={{ height: "100%" }}>
           <div>
             <div className="spec-search-box">
-              <div className="refresh" style={{marginLeft : '18px', cursor:'pointer'}}>
-              <IQTooltip title="Refresh" placement="bottom">
-                <IconButton onClick={refreshSMGrid} aria-label="Refresh Spec Manager">
-                  <span className="common-icon-refresh"></span>
-                </IconButton>
-              </IQTooltip>
+              <div
+                className="refresh"
+                style={{ marginLeft: "18px", cursor: "pointer" }}
+              >
+                <IQTooltip title="Refresh" placement="bottom">
+                  <IconButton
+                    onClick={refreshSMGrid}
+                    aria-label="Refresh Spec Manager"
+                  >
+                    <span className="common-icon-refresh"></span>
+                  </IconButton>
+                </IQTooltip>
               </div>
               <Box>
                 <Stack direction="row">

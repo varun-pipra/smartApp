@@ -24,6 +24,7 @@ export const appInfoData: any = {
 	"gblConfig": {
 		isProjectAdmin: false,
 		isAdmin: false,
+		ConnectorType: 'sap',
 		user: {
 			email: "mksudeep@smartapp.com",
 			firstName: "Sudeep",

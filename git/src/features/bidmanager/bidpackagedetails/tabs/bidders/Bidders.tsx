@@ -86,7 +86,6 @@ const Bidders = (props: BiddersProps) => {
 		console.log('newCompany', newCompany)
 		setNewlyAddedCompany(newCompany);
 		const company = { company: { id: newCompany?.id, value: newCompany?.name, color: newCompany?.colorCode } };
-		console.log('company',company)
 		setSelectedBidder({ ...selectedBidder, ...company });
 	}, [newCompany]);
 
@@ -489,7 +488,7 @@ const Bidders = (props: BiddersProps) => {
 				showActions={false}
 			/>
 			<Stack className="bidders_table">
-				<InputLabel style={{ fontWeight: 'bold' }}>{` ${selectedRecord?.type == 0 ? 'Add Bidder' : 'Add Bidders'} (${selectedRecord?.bidderCount ? selectedRecord?.bidderCount : 0 })`}</InputLabel>
+				<InputLabel style={{ fontWeight: 'bold' }}>{` ${selectedRecord?.type == 0 ? 'Add Bidder' : 'Add Bidders'} (${selectedRecord?.bidderCount ? selectedRecord?.bidderCount : 0})`}</InputLabel>
 				<SUILineItem
 					headers={columnDefs}
 					data={rowData}

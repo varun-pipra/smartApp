@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?bcoihw');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?bcoihw#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?bcoihw') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?bcoihw') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?bcoihw##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?hyvzz5');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?hyvzz5#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?hyvzz5') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?hyvzz5') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?hyvzz5##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -27,6 +27,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-sap-logo {
+  &:before {
+    content: $common-icon-sap-logo; 
+  }
+}
+.common-icon-redo {
+  &:before {
+    content: $common-icon-redo; 
+  }
+}
+.common-icon-budget-import {
+  &:before {
+    content: $common-icon-budget-import; 
+  }
+}
 .common-icon-hourly-rate {
   &:before {
     content: $common-icon-hourly-rate; 

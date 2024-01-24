@@ -16,7 +16,7 @@ import {ContractorResponse} from 'features/vendorcontracts/vendorcontractsdetail
 import {getVendorPayAppsLst} from '../stores/gridSlice';
 import {patchVendorPayAppDetails} from "features/vendorpayapplications/stores/gridApi";
 import {amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
-import {setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
+import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 import BlockchainIB from 'features/common/informationBubble/BlockchainIB';
 var tinycolor = require('tinycolor2');
 
@@ -83,7 +83,7 @@ const VendorPayApplicationsLID = ({data, ...props}: IQGridWindowDetailProps) => 
 	const [contractorResponse, setContractorResponse] = React.useState<any>({show: false, type: 2, data: {}});
 	const {vPayAppId, tab} = useAppSelector((state) => state.vendorPayApps);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
-	const disableBlockchainActionButtons = (blockchainEnabled && ['None', 'AuthVerified'].indexOf(vendorPayAppLineItem?.blockChainStatus) === -1);
+	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(vendorPayAppLineItem?.blockChainStatus) === -1);
 
 	React.useEffect(() => {
 		setContractorResponse({...contractorResponse, show: ["Rejected"]?.includes(vendorPayAppLineItem?.status), type: 3, data: vendorPayAppLineItem?.scAuthorization?.rejection ? vendorPayAppLineItem?.scAuthorization : vendorPayAppLineItem?.gcAuthorization});
@@ -106,7 +106,7 @@ const VendorPayApplicationsLID = ({data, ...props}: IQGridWindowDetailProps) => 
 				submitPayApp(appInfo, vendorPayAppLineItem?.id, (response: any) => {
 					dispatch(setSelectedRecord(response));
 					dispatch(getVendorPayAppsLst(appInfo));
-					if(blockchainEnabled) {
+					if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
 						dispatch(setShowBlockchainDialog(true));
 					}
 				});
@@ -117,7 +117,7 @@ const VendorPayApplicationsLID = ({data, ...props}: IQGridWindowDetailProps) => 
 		authorizePayApp(appInfo, {signature: signature}, vendorPayAppLineItem?.id, (response: any) => {
 			dispatch(setSelectedRecord(response));
 			dispatch(getVendorPayAppsLst(appInfo));
-			if(blockchainEnabled) {
+			if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
 				dispatch(setShowBlockchainDialog(true));
 			}
 		});
@@ -231,7 +231,7 @@ const VendorPayApplicationsLID = ({data, ...props}: IQGridWindowDetailProps) => 
 							dispatch(setSelectedRecord(response));
 							dispatch(getVendorPayAppsLst(appInfo));
 							setContractDialog({...contractDialog, show: false});
-							if(blockchainEnabled) {
+							if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
 								dispatch(setShowBlockchainDialog(true));
 							}
 						});

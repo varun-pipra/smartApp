@@ -26,6 +26,7 @@ import IconMenu from "components/iqsearchfield/iqiconbuttonmenu/IQIconButtonMenu
 import SUICompanyCard from "sui-components/CompanyCard/CompanyCard";
 import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
+import _ from 'lodash';
 
 interface SUIBaseDropdownSelectorProps {
 	value?: any;
@@ -61,13 +62,13 @@ interface SUIBaseDropdownSelectorProps {
 	enforcedRelationship?: boolean;
 	chipEventTrigger?: boolean;
 	paperpropsclassName?: any;
-	suggestedDefaultText?:string;
-    moduleName?:any;
+	suggestedDefaultText?: string;
+	moduleName?: any;
 	insideGridCellEditor?: boolean;
 	handleListOpen?: Function;
 	handleListClose?: Function;
 	disabled?: boolean;
-	showIconInField?:boolean;
+	showIconInField?: boolean;
 }
 
 const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
@@ -102,11 +103,11 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 		enforcedRelationship = false,
 		chipEventTrigger = false,
 		paperpropsclassName,
-		suggestedDefaultText= "All:",
-        moduleName = 'userDetails',
+		suggestedDefaultText = "All:",
+		moduleName = 'userDetails',
 		insideGridCellEditor = false,
-		handleListOpen= () => { },
-		handleListClose= () => { },
+		handleListOpen = () => { },
+		handleListClose = () => { },
 		disabled = false,
 		showIconInField = false,
 	} = props;
@@ -129,8 +130,8 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 	const handleClose = () => {
 		setOpen(false);
 		if (handleListClose) {
-      		handleListClose(true);
-    	}
+			handleListClose(true);
+		}
 	};
 	const handleOpen = () => {
 		setOpen(!open);
@@ -285,6 +286,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 			setFilteredData([...searchedData]);
 		}
 	};
+
 	const filterChange = (filterValues: any) => {
 		if (!filterValues) {
 			setFilters({});
@@ -328,30 +330,50 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 					}
 					else if (key == 'diverseSupplier') {
 						companyObj?.diverseCategories?.map((obj: any) => {
-							console.log("name", obj)
 							filterData['diverseSupplier']?.includes(obj?.name) ? filteredData.push(companyObj) : null
 						})
 					}
 					else {
 						if (filterData[key]?.includes(companyObj[key])) {
 							filteredData.push(companyObj)
-							console.log("fffff", filterData[key], companyObj[key], filteredData)
 						}
 					}
 				})
 			})
-			console.log("filterData", filterData, filteredData);
-			if (filterData?.scope?.length || filterData?.diverseSupplier?.length || filterData?.complianceStatus?.length) setMenuOption(getSortedData(filteredData));
+
+			if (filterData?.scope?.length || filterData?.diverseSupplier?.length || filterData?.complianceStatus?.length) {
+				setMenuOption(getSortedData(duplicate(filteredData)));
+			}
 			else if (showSuggested) {
 				setMenuOption(getSortedData([...suggestedDropdownOptions, ...dropdownOptions]));
 			}
-			else setMenuOption(dropdownOptions);
+			else {
+				setMenuOption(dropdownOptions);
+			}
 
 			setFilters((prevFilters) => {
 				return { ...prevFilters, ...filterValues };
 			})
 		};
 	}
+	const duplicate = (yourData: any) => {
+		const uniqueObjects: any = {};
+		yourData.forEach((item: any) => {
+			// Check if the object has isSuggested property
+			if (item.isSuggested) {
+				const key = JSON.stringify(item);
+				if (!uniqueObjects[key]) { uniqueObjects[key] = item; }
+			} else {
+				// If isSuggested is not present, add it directly to the unique array
+				const key = JSON.stringify(item);
+				uniqueObjects[key] = item;
+			}
+		});
+
+		const resultArray = Object.values(uniqueObjects);
+		return resultArray;
+	}
+
 	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>, item: any) => {
 		setOpenCompanyCard(event.currentTarget);
 		setHoverItem(item)
@@ -394,7 +416,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 					)}
 					{basecustomline && <div className={multiSelect ? "base-custom-line" : "base-custom-line2"} style={{ backgroundColor: `#${item.color}` }}></div>}
 					{/* {!!item.thumbnailUrl && image && ( previous line */}
-					{image && (						
+					{image && (
 						<CompnayCardTooltip
 							enterDelay={700}
 							{...props}
@@ -406,7 +428,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 								alt="Avatar"
 								style={{ width: "24px", height: "24px", padding: "1px" }}
 								className="base-custom-img"
-							/> : <Avatar sx={{ backgroundColor: `#${item.color}`, width: "24px", height: "24px", padding: "1px", marginRight: '10px', fontSize: '12px' }}>{item?.displayField?.[0]?.toUpperCase()}</Avatar> }
+							/> : <Avatar sx={{ backgroundColor: `#${item.color}`, width: "24px", height: "24px", padding: "1px", marginRight: '10px', fontSize: '12px' }}>{item?.displayField?.[0]?.toUpperCase()}</Avatar>}
 						</CompnayCardTooltip>
 					)}
 					<ListItemText
@@ -475,7 +497,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 								alt="Avatar"
 								style={{ width: "24px", height: "24px", padding: "1px" }}
 								className="base-custom-img"
-							/> : <Avatar sx={{ backgroundColor: `#${item.color}`, width: "24px", height: "24px", padding: "1px", marginRight: '10px', fontSize: '13px' }}>{item?.displayField?.[0]?.toUpperCase()}</Avatar> }
+							/> : <Avatar sx={{ backgroundColor: `#${item.color}`, width: "24px", height: "24px", padding: "1px", marginRight: '10px', fontSize: '13px' }}>{item?.displayField?.[0]?.toUpperCase()}</Avatar>}
 						</CompnayCardTooltip>
 					)}
 					<ListItemText
@@ -501,7 +523,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 			>
 				<span>
 					<Select
-						className={(outSideOfGrid ? "base-custom-outsidegrid" : "base-custome-styles") + (insideGridCellEditor ? ' inside-grid-cell-cls': '')}
+						className={(outSideOfGrid ? "base-custom-outsidegrid" : "base-custome-styles") + (insideGridCellEditor ? ' inside-grid-cell-cls' : '')}
 						labelId="demo-multiple-checkbox-label"
 						id="demo-multiple-checkbox"
 						multiple={multiSelect}
@@ -540,19 +562,20 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 													<div key={x.displayField + index} className="dropdown-without-chip-cls">
 														{showIconInField && (
 															<>
-															{!!x?.thumbnailUrl ? <img
-															src={x?.thumbnailUrl}
-															alt="Avatar"
-															style={{ width: "24px", height: "24px", padding: "1px" }}
-															className="base-custom-img"
-														/> : <Avatar sx={{ backgroundColor: `#${x.color}`, 
-																width: "24px", 
-																height: "24px", 
-																padding: "1px", 
-																marginRight: '10px', 
-																fontSize: '12px' 
-															}}>{x?.displayField?.[0]?.toUpperCase()}</Avatar>}
-															</>	
+																{!!x?.thumbnailUrl ? <img
+																	src={x?.thumbnailUrl}
+																	alt="Avatar"
+																	style={{ width: "24px", height: "24px", padding: "1px" }}
+																	className="base-custom-img"
+																/> : <Avatar sx={{
+																	backgroundColor: `#${x.color}`,
+																	width: "24px",
+																	height: "24px",
+																	padding: "1px",
+																	marginRight: '10px',
+																	fontSize: '12px'
+																}}>{x?.displayField?.[0]?.toUpperCase()}</Avatar>}
+															</>
 														)}
 														{x?.displayField}
 													</div>

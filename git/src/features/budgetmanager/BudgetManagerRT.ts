@@ -7,6 +7,7 @@ export const budgetManagerMainGridRTListener = (path: any, event: any) => {
 	console.log('BUDGET MANAGER MAIN GRID RT DATA==============================================================>', value);
 
 	if(value) {
+		console.log('liveData inside value');
 		const {add, update, remove} = value;
 		const rootState = store.getState();
 
@@ -15,6 +16,7 @@ export const budgetManagerMainGridRTListener = (path: any, event: any) => {
 		let diffObject: any = {};
 
 		if(add?.length > 0) {
+			console.log('liveData inside add');
 			dataList = gridData.concat(add);
 			add.map((el: any) => diffObject[el.id] = undefined);
 		}
@@ -41,7 +43,7 @@ export const budgetManagerMainGridRTListener = (path: any, event: any) => {
 			dataList = gridData.filter((item: any) => idList.indexOf(item.id) === -1);
 		}
 
-		console.log(diffObject);
+		console.log('liveData------------length', dataList.length);
 		store.dispatch(setGridData(dataList));
 		store.dispatch(setLiveData(diffObject));
 	}

@@ -47,8 +47,8 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       cellClass: "sm-number",
       cellRenderer: "agGroupCellRenderer",
       sort: "asc",
-      checkboxSelection: true,
-      headerCheckboxSelection: true,
+      checkboxSelection: !readOnly,
+      headerCheckboxSelection: !readOnly,
       resizable: true,
       minWidth: 200,
       pinned : 'left'
@@ -102,6 +102,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
         display: "flex",
         alignItems: "normal",
         justifyContent: "left",
+        cursor : 'pointer'
 
       },
       cellRenderer: (params: any) => {
@@ -112,7 +113,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       },
     },
   ];
-  const headers = useMemo(() => specColumns, []);
+  const headers = useMemo(() => specColumns, [readOnly]);
   const dispatch = useAppDispatch();
   const appInfo = useAppSelector(getServer);
   const bidPackage = useAppSelector(getSelectedRecord);
@@ -181,16 +182,13 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       };
     });
     saveReferenceFiles({
-      remove: [
-        files
-      ]
+      remove:  files
     });
   }
   const handelFileClick = (data: any) => {
-    console.log(data,'name')
     setSepcSelectedRecord(data);
     let payload = {
-      id: data.specBook?.id,
+      id: data?.specBookId,
     };
     dispatch(getSpecBookPages(payload));
   };
@@ -263,7 +261,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       setFileType(undefined);
       dispatch(setUploadQueue([]));
       dispatch(setSelectedRecord(bidPackageItem));
-      // setOpenAddSpecDlg(false);
+      setOpenAddSpecDlg(false);
     });
   };
 
@@ -381,29 +379,31 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
         <div className="doc-uploadd-header">
           <span className="doc-lbl-hdr-bold">Specifications</span>
         </div>
-        <div className="specifications-container">
-          <IQButton
-            className="specifications-add-btn"
-            onClick={() => setOpenAddSpecDlg(true)}
-          >
-            <span
-              style={{ marginRight: "6px", fontSize: "19px" }}
-              className="common-icon-Add"
-            ></span>
-            <span> Add Specifications</span>
-          </IQButton>
-          <div className="icon-section">
-            <IQTooltip title="Delete" placement="bottom">
-              <IconButton
-                className="ref-delete-btn"
-                disabled={selected.length === 0}
-                onClick={handelDeleteSpecifications}
+        {!readOnly && (
+            <div className="specifications-container">
+              <IQButton
+                className="specifications-add-btn"
+                onClick={() => setOpenAddSpecDlg(true)}
               >
-                <span className="common-icon-delete"></span>
-              </IconButton>
-            </IQTooltip>
-          </div>
-        </div>
+                <span
+                  style={{ marginRight: "6px", fontSize: "19px" }}
+                  className="common-icon-Add"
+                ></span>
+                <span> Add Specifications</span>
+              </IQButton>
+              <div className="icon-section">
+                <IQTooltip title="Delete" placement="bottom">
+                  <IconButton
+                    className="ref-delete-btn"
+                    disabled={selected.length === 0}
+                    onClick={handelDeleteSpecifications}
+                  >
+                    <span className="common-icon-delete"></span>
+                  </IconButton>
+                </IQTooltip>
+              </div>
+            </div>
+        )} 
         <div className="grid">
           <SUIGrid
             headers={headers}
