@@ -47,6 +47,7 @@ interface SUIBaseDropdownSelectorProps {
 	sortOrder?: string;
 	filterOptions?: any;
 	onFilterChange?: any;
+	onSearchChange?:any;
 	companyImageWidth?: any;
 	companyImageHeight?: any;
 	addCompany?: any;
@@ -110,6 +111,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 		handleListClose = () => { },
 		disabled = false,
 		showIconInField = false,
+		onSearchChange = () => {}
 	} = props;
 
 	const [selectedOptions, setSelectedOptions] = React.useState<any[]>(value);
@@ -252,7 +254,15 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 
 	const handleSearch = (searchValue: string) => {
 		setSearch(searchValue);
-		if (filteredData && filteredData.length === 0) {
+		if(moduleName === 'bidManager'){
+			const filteredData = onSearchChange([...suggestedDropdownOptions, ...dropdownOptions], filters, searchValue);
+			const showSuggestedText = ([...filteredData] || []).filter((rec:any) => rec?.isSuggested)?.length > 0;
+			const showSuggestedDefaultText = ([...filteredData] || []).filter((rec:any) => !rec?.isSuggested)?.length > 0;
+			setSuggestedTextVal(showSuggestedText ? suggestedText: null);
+			setSuggestedDefaultTextVal(showSuggestedDefaultText ? suggestedDefaultText : null);
+			setMenuOption(getSortedData(duplicate(filteredData)));
+			console.log("foshgfdhgd", filteredData)
+		} else if (filteredData && filteredData.length === 0) {
 			let searchedData: any[] = dropdownOptions.filter((d: any) => {
 				let v = d?.displayField
 					.toLowerCase()
@@ -288,73 +298,77 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 	};
 
 	const filterChange = (filterValues: any) => {
-		if (!filterValues) {
-			setFilters({});
-			if (moduleName == 'bidManager') {
-				setMenuOption([...suggestedDropdownOptions, ...dropdownOptions]);
-				setSuggestedDefaultTextVal(suggestedDefaultText);
-				setSuggestedTextVal(suggestedText);
-			}
-			props?.onFilterChange({ ...filters, ...filterValues });
-		}
-		else {
+		// setFilters(filterValues);
+		// if (!filterValues) {
+		// 	setFilters({});
+		// 	if (moduleName == 'bidManager') {
+		// 		setMenuOption([...suggestedDropdownOptions, ...dropdownOptions]);
+		// 		setSuggestedDefaultTextVal(suggestedDefaultText);
+		// 		setSuggestedTextVal(suggestedText);
+		// 	}
+		// 	props?.onFilterChange({ ...filters, ...filterValues });
+		// }
+		// else {
 			// props?.onFilterChange({ ...filters, ...filterValues }); 
-			const filterData = { ...filters, ...filterValues }
-			const filteredData: any = [];
-			[...suggestedDropdownOptions, ...dropdownOptions]?.map((companyObj: any) => {
-				Object.keys(filterData)?.map((key: any) => {
-					if (key == 'scope') {
-						if (filterData[key]?.includes('all')) {
-							filteredData.push(companyObj);
-							setMenuOption([...suggestedDropdownOptions, ...dropdownOptions]);
-							setSuggestedDefaultTextVal(suggestedDefaultText);
-							setSuggestedTextVal(suggestedText);
-						} else {
-							if ((filterData[key]?.includes('This Project'))) {
-								!companyObj['isOrgCompany'] ? filteredData.push(companyObj) : null
-								setSuggestedTextVal(null);
-							} else {
-								setSuggestedTextVal(suggestedText);
-							};
-							if ((filterData[key]?.includes('Organizational'))) {
-								companyObj['isOrgCompany'] ? filteredData.push(companyObj) : null
-								setSuggestedDefaultTextVal(null);
-								setSuggestedTextVal(suggestedText);
-							} else {
-								setSuggestedDefaultTextVal(suggestedDefaultText);
-							};
-							if ((filterData[key]?.includes('Organizational' && 'This Project'))) {
-								setSuggestedDefaultTextVal(suggestedDefaultText);
-							}
-						}
-					}
-					else if (key == 'diverseSupplier') {
-						companyObj?.diverseCategories?.map((obj: any) => {
-							filterData['diverseSupplier']?.includes(obj?.name) ? filteredData.push(companyObj) : null
-						})
-					}
-					else {
-						if (filterData[key]?.includes(companyObj[key])) {
-							filteredData.push(companyObj)
-						}
-					}
-				})
-			})
+			const filterData = Object.keys(filterValues)?.length ?  { ...filters, ...filterValues } : filterValues;
+			const filteredData = props?.onFilterChange([...suggestedDropdownOptions, ...dropdownOptions], filterData, search);
+			const showSuggestedText = ([...filteredData] || []).filter((rec:any) => rec?.isSuggested)?.length > 0;
+			const showSuggestedDefaultText = ([...filteredData] || []).filter((rec:any) => !rec?.isSuggested)?.length > 0;
+			setSuggestedTextVal(showSuggestedText ? suggestedText: null);
+			setSuggestedDefaultTextVal(showSuggestedDefaultText ? suggestedDefaultText : null);
+			// [];
+			// [...suggestedDropdownOptions, ...dropdownOptions]?.map((companyObj: any) => {
+			// 	Object.keys(filterData)?.map((key: any) => {
+			// 		if (key == 'scope') {
+			// 			if (filterData[key]?.includes('all')) {
+			// 				filteredData.push(companyObj);
+			// 				setMenuOption([...suggestedDropdownOptions, ...dropdownOptions]);
+			// 				setSuggestedDefaultTextVal(suggestedDefaultText);
+			// 				setSuggestedTextVal(suggestedText);
+			// 			} else {
+			// 				if ((filterData[key]?.includes('This Project'))) {
+			// 					!companyObj['isOrgCompany'] ? filteredData.push(companyObj) : null
+			// 					setSuggestedTextVal(null);
+			// 				} else {
+			// 					setSuggestedTextVal(suggestedText);
+			// 				};
+			// 				if ((filterData[key]?.includes('Organizational'))) {
+			// 					companyObj['isOrgCompany'] ? filteredData.push(companyObj) : null
+			// 					setSuggestedDefaultTextVal(null);
+			// 					setSuggestedTextVal(suggestedText);
+			// 				} else {
+			// 					setSuggestedDefaultTextVal(suggestedDefaultText);
+			// 				};
+			// 				if ((filterData[key]?.includes('Organizational' && 'This Project'))) {
+			// 					setSuggestedDefaultTextVal(suggestedDefaultText);
+			// 				}
+			// 			}
+			// 		}
+			// 		else if (key == 'diverseSupplier') {
+			// 			companyObj?.diverseCategories?.map((obj: any) => {
+			// 				filterData['diverseSupplier']?.includes(obj?.name) ? filteredData.push(companyObj) : null
+			// 			})
+			// 		}
+			// 		else {
+			// 			if (filterData[key]?.includes(companyObj[key])) {
+			// 				filteredData.push(companyObj)
+			// 			}
+			// 		}
+			// 	})
+			// })
 
-			if (filterData?.scope?.length || filterData?.diverseSupplier?.length || filterData?.complianceStatus?.length) {
+			// if (filterData?.scope?.length || filterData?.diverseSupplier?.length || filterData?.complianceStatus?.length) {
+			// 	setMenuOption(getSortedData(duplicate(filteredData)));
+			// } else 
+			if (showSuggested) {
 				setMenuOption(getSortedData(duplicate(filteredData)));
-			}
-			else if (showSuggested) {
-				setMenuOption(getSortedData([...suggestedDropdownOptions, ...dropdownOptions]));
-			}
-			else {
+			} else {
 				setMenuOption(dropdownOptions);
 			}
 
-			setFilters((prevFilters) => {
-				return { ...prevFilters, ...filterValues };
-			})
-		};
+			setFilters(filterData);
+			// setFilters(filterValues);
+		// };
 	}
 	const duplicate = (yourData: any) => {
 		const uniqueObjects: any = {};
@@ -403,6 +417,8 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 						: false
 				}
 				className="base-dropdown-custom-menu-item"
+				style={{ background: selectedOptions.includes(item.displayField) ? '#fffad2' : 'transparent' }}
+				onClick={(e: any) => handleSuggestedItemsChange(e)}
 			>
 				<>
 					{multiSelect && (
@@ -423,7 +439,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 							title={<SUICompanyCard companyDetails={item} />}
 							disableHoverListener={hideTooltip}
 						>
-							{item?.thumbnailUrl ? <img
+							{!!item?.thumbnailUrl ? <img
 								src={item?.thumbnailUrl}
 								alt="Avatar"
 								style={{ width: "24px", height: "24px", padding: "1px" }}
@@ -742,7 +758,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 						{/* <Box className="base-menu-wrapper">                 */}
 						{(showSuggested && suggestedDropdownOptions.length > 0 && menuOption && menuOption.length > 0 && filteredData.length == 0) && (
 							<div>
-								{(showSuggested && suggestedDropdownOptions.length > 0 && moduleName !== 'userDetails' && (suggestedTextVal ?? false)) && (
+								{/* {(showSuggested && suggestedDropdownOptions.length > 0 && moduleName !== 'userDetails' && (suggestedTextVal ?? false)) && (
 									<InputLabel className="comp-drop-header"
 										style={{
 											padding: '8px 16px',
@@ -753,8 +769,8 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 									>
 										{suggestedTextVal}
 									</InputLabel>
-								)}
-								{(showSuggested && suggestedDropdownOptions.length > 0 && moduleName === 'userDetails') && (
+								)} */}
+								{(showSuggested && suggestedDropdownOptions.length > 0) && (
 									<InputLabel className="comp-drop-header"
 										style={{
 											padding: '8px 16px',
@@ -767,8 +783,8 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 									</InputLabel>
 								)}
 								{menuOption.filter((item: any, idx: number) => item.isSuggested).map((item: any, idx: number) =>
-									SuggestedMenuItems(item, idx))}
-								{(showSuggested && suggestedDropdownOptions.length > 0 && moduleName === 'userDetails') && menuOption.some((item: any) => !item.isSuggested) && (
+									dropdownMenuItems(item, idx))}
+								{(showSuggested && suggestedDropdownOptions.length > 0) && menuOption.some((item: any) => !item.isSuggested) && (
 									<InputLabel className="comp-drop-header"
 										style={{
 											padding: '8px 16px',
@@ -782,7 +798,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 								)}
 							</div>
 						)}
-						{((menuOption.length > 0 ?? false) && moduleName !== 'userDetails' && (suggestedDefaultTextVal ?? false)) && (
+						{/* {((menuOption.length > 0 ?? false) && moduleName !== 'userDetails' && (suggestedDefaultTextVal ?? false)) && (
 							<InputLabel className="comp-drop-header"
 								style={{
 									padding: '8px 16px',
@@ -793,7 +809,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 							>
 								{suggestedDefaultText}
 							</InputLabel>
-						)}
+						)} */}
 						{menuOption && menuOption.length > 0 && filteredData.length == 0 ? (
 							menuOption.filter((item: any, idx: any) => !item.isSuggested).map((item: any, idx: number) => {
 								return dropdownMenuItems(item, idx);

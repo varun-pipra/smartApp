@@ -2125,7 +2125,7 @@ const ProjectTeamWindow = (props: any) => {
 							userImageHandleOver(e, params);
 						}}
 						onClick={(event: any) => {
-							if (event.detail == 2) {
+							if (event?.detail == 2) {
 								const currentRec = params?.data,
 									canEdit = canEditProjectTeamRec(currentRec, appInfo?.gblConfig, true);
 								if (canEdit) {
@@ -2244,9 +2244,15 @@ const ProjectTeamWindow = (props: any) => {
 										className={` ${icon} icon_size status_icon`}
 										style={{ color: color, cursor: "pointer" }}
 										onClick={(event: any) => {
-											dispatch(setCurrentSelection(params?.data));
-											setDefaultTabId("safetyViolation" + '&' + Date.now());
-											setOpenRightPanel(true);
+											if((localhost || appInfo?.gblConfig?.projectPlanSettings?.ProjectTeamTabs?.Violations && (appInfo?.gblConfig?.isAdmin || appInfo?.gblConfig?.isProjectAdmin || appInfo?.gblConfig?.isSafetyManager) && appInfo?.gblConfig?.currentProjectInfo?.safetyTracking)) {
+												dispatch(setCurrentSelection(params?.data));
+												setDefaultTabId("safetyViolation" + '&' + Date.now());
+												setOpenRightPanel(true);
+											} else {
+												setOpenRightPanel(false);
+												dispatch(setCurrentSelection(null));
+												setLocalToastMessage('You do not have access to the Safety Violation tab');
+											}
 										}}
 									/>
 								) : (

@@ -316,8 +316,8 @@ const HeaderPinning = (props: any) => {
 							<span className='title-text'>{t('BM_create_new_budget_line_item')}</span>
 							<AddDescription value={rightPannel ? '' : lineItemDescription} />
 							<p className='right-spacer'></p>
-							{isBudgetLocked && <div className='bubble-box'>
-								<div className='icon common-icon-blockchain'></div>
+							{isBudgetLocked && <div className='bubble-box budget-locked-box'>
+								<div className='icon common-icon-info-white'></div>
 								<div className='text'>
 									<div>Budget is locked and now is in Read Only Mode.</div>
 									<div>To Edit you may unlock the budget.</div>

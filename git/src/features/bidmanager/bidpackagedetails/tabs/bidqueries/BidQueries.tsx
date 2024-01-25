@@ -84,7 +84,16 @@ const Grouping = ({ data, groupKey, onResponseClick, readOnly }: any) => {
 		</div>
 	)
 }
-
+const removeDuplicates = (array: any, key: any) => {
+	const uniqueKeys = new Set();
+	return array.filter((item: any) => {
+		const isDuplicate = uniqueKeys.has(item[key]);
+		if (!isDuplicate) {
+			uniqueKeys.add(item[key]);
+		}
+		return !isDuplicate;
+	});
+};
 const BidQueries = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
@@ -141,31 +150,20 @@ const BidQueries = (props: any) => {
 
 	React.useEffect(() => {
 		dispatch(loadBidQueriesByPackage({ appInfo: appInfo, packageId: selectedRecord?.id }));
-		if (selectedRecord) {
-			const companiesList: any = [];
-			selectedRecord?.bidders?.map((bidder: any) => {
-				!companiesList?.map((a: any) => a.value)?.includes(bidder?.company?.id) && companiesList.push({
-					text: bidder?.company?.name,
-					key: bidder?.company?.id,
-					value: bidder?.company?.id
-				})
-			})
-			setCompanyList(companiesList)
-		}
+
 	}, [selectedRecord])
 
-	React.useEffect(() => {
-		const filtersCopy = [...filters];
-		let companyItem = filtersCopy.find((rec: any) => rec?.value === "company");
-		companyItem.children.items = companyList;
-		setFilters(filtersCopy);
-
-	}, [companyList])
 
 
 	useEffect(() => {
 		const finaldata: any = [];
-		console.log('BidQueriesData', BidQueriesData)
+		if (selectedRecord) {
+			const companiesList = BidQueriesData?.map((bidder: any) => {
+				return { text: bidder?.queryBy?.companyName, key: bidder?.queryBy?.companyUId, value: bidder?.queryBy?.companyUId }
+			})
+			setCompanyList(removeDuplicates(companiesList, 'key'))
+		}
+
 		BidQueriesData?.map((data: any) => {
 			var status = data?.queryResponse !== null ? false : true;
 			finaldata.push({
@@ -190,6 +188,14 @@ const BidQueries = (props: any) => {
 		setQueriesData(finaldata);
 		setAliasQueriesData(finaldata);
 	}, [BidQueriesData])
+
+	React.useEffect(() => {
+		const filtersCopy = [...filters];
+		let companyItem = filtersCopy.find((rec: any) => rec?.value === "company");
+		companyItem.children.items = companyList;
+		setFilters(filtersCopy);
+
+	}, [companyList])
 
 	const queryHandleClick = () => {
 		const payLoad = {

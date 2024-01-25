@@ -1,6 +1,5 @@
 import "./Reference.scss";
-
-import { getServer } from "app/common/appInfoSlice";
+import { getServer ,  getSketchPageInfo} from "app/common/appInfoSlice";
 import { useAppDispatch, useAppSelector, useFilePreview } from "app/hooks";
 import { prepareFileList } from "features/bidmanager/stores/FilesSlice";
 import { useEffect, useState } from "react";
@@ -9,6 +8,9 @@ import { fileDownload } from "app/hooks";
 import SUIGrid from "sui-components/Grid/Grid";
 import { getSpecBookPages, resetSpecBookPages } from "features/field/specificationmanager/stores/SpecificationManagerSlice";
 import SpecDocViewer from "features/bidmanager/bidpackagedetails/tabs/referencefiles/SpecificationDocviewer/SpecDocViewer";
+import { getMarkupsByPageForSubmittals } from "features/field/specificationmanager/stores/SpecificationManagerAPI";
+import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
+import { modifyMarkupData } from "utilities/commonFunctions";
 
 export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   const appInfo = useAppSelector(getServer);
@@ -16,17 +18,47 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   const {specBookpages } = useAppSelector(
     (state) => state.specificationManager
   );
+  const sketchPageinfo= useAppSelector(getSketchPageInfo);
   const [specBookPagesData, setSpecBookPagesData] = useState({});
   const [openSpecDocViewer, setOpenSpecDocViewer] = useState(false);
-  const [sepcSelectedRecord, setSepcSelectedRecord] = useState({});
-
+  const [sepcSelectedRecord, setSepcSelectedRecord] = useState<any>({});
+  const [searchText,setSearchText] = useState<any>('')
+  const [bidRefernceagePUId, setBidRefernceagePUId] = useState();
   const { selectedRecord, bidDetails } = useAppSelector(
     (state) => state.bidResponseManager
   );
   const [files, setFiles] = useState<any>({});
 
   useEffect(() => {
-    console.log(specBookpages, "specBookpages");
+    if(sketchPageinfo){
+      if((searchText.length)){
+        handelSearchChange()
+      }else{
+        getMarkupsPerpage();
+      }
+    }    
+  }, [sketchPageinfo]);
+
+  const getMarkupsPerpage = ()=>{
+    let payload = {
+      specbookId: sepcSelectedRecord?.specBookId,
+      pageNo:sketchPageinfo?.currentPage?.page
+    }
+    getMarkupsByPageForSubmittals(payload)
+      .then((res:any)=>{
+        let updatedRes = res.map((item:any) => { return {...item, locked: true} })
+        let data = {
+          "extractionAreas": updatedRes
+        };
+        setBidRefernceagePUId(res[0]?.data?.pageUId)
+        sketchPageinfo.callback(data);
+      })
+      .catch((error:any)=>{
+        console.log('error',error);
+      })
+  }
+
+  useEffect(() => {
     if (specBookpages.hasOwnProperty("totalCount")) {
       setSpecBookPagesData(specBookpages);
       setOpenSpecDocViewer(true);
@@ -155,6 +187,24 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
     fileDownload(objectIds, filename);
   };
 
+  useEffect(()=> {
+    if(searchText) {
+      handelSearchChange()
+    }
+  },[searchText])
+
+  const handelSearchChange =() =>{
+    let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`
+    getTextOccurences(params).then((resp:any)=>{
+      let updatedRes = modifyMarkupData(resp.data).map((item:any) => { return {...item, locked: true} })
+      let data = {
+        "extractionAreas": updatedRes
+      };
+      console.log('udated markup data',data, sketchPageinfo);
+      sketchPageinfo?.callback(data)
+    })
+  }
+
   return (
     <div className="referenceFile">
       <span className="header-text">Reference Files</span>
@@ -201,6 +251,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
 				specBookPagesData={specBookPagesData}
 				selectedRecord={sepcSelectedRecord}
 				closeSpecDocViewer={closeSpecDocViewer}
+        onDocSearch={(text:any)=>setSearchText(text)}
 				/>
 			)}
     </div>

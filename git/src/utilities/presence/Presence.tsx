@@ -31,7 +31,6 @@ export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId
 
 		participantCtrl.addEventListener('livesupportbtnclick', function (e: any) {
 			const body = { iframeId: iFrameId, roomId: lineItemId ? lineItemId : appInfo.presenceRoomId, appType: appType, tabName: tabName, isFromHelpIcon: isFromHelpIcon };
-			console.log('helpbody', body)
 			postMessage({
 				event: 'help',
 				body: body
@@ -48,9 +47,13 @@ export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId
 
 		participantCtrl.addEventListener('printbuttonclick', function (e: any) {
 			postMessage({
-				event: 'launchpresenceprint',
-				body: { iframeId: iFrameId, roomId: lineItemId ? lineItemId : appInfo.presenceRoomId, appType: appType },
-				data: participantCtrl.getParticipants()
+				event: 'openitemlevelreport',
+				body: {
+					targetLocation: {
+						x: e.event.pageX,
+						y: e.event.pageY
+					}
+				}
 			});
 		});
 

@@ -32,19 +32,19 @@ import {getAmountAlignment} from 'utilities/commonutills';
 import _ from 'lodash';
 import {setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 
+declare const parent: any;
+
 const AwardBid = () => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const currency = useAppSelector(getCurrencySymbol);
 	const {selectedRecord} = useAppSelector((state) => state.bidManager);
 	const {BiddersGridData} = useAppSelector((state) => state.bidders);
-	const {expandedRows, activeAwardBidFilters, viewType} = useAppSelector((state) => state.awardBid);
-	const {awardBidSelectedRecord, awardBidClick, awardBidDetailData, openUpdateBudgetDialog, files} = useAppSelector((state) => state.awardBid);
-	const containerStyle = React.useMemo(() => ({width: '100%', height: '300px'}), []);
+	const {activeAwardBidFilters, viewType} = useAppSelector((state) => state.awardBid);
+	const {awardBidClick, awardBidDetailData, files} = useAppSelector((state) => state.awardBid);
 	const [data, setData] = React.useState<any>(BiddersGridData);
 	const [modifieddata, setmodifiedData] = React.useState<any>(BiddersGridData);
 	const [selectedItem, setSelectedItem] = React.useState<any>(null);
-	const [showConfirmationDlg, setShowConfirmationDlg] = React.useState<boolean>(false);
 	const [showAwardToastMsg, setShowAwardToastMsg] = React.useState<boolean>(false);
 	const [awardBidType, setAwardBidType] = React.useState<any>('');
 	const [tableViewType, setTableViewType] = React.useState<any>('grid');
@@ -54,6 +54,8 @@ const AwardBid = () => {
 	const [contract, setContract] = React.useState<any>(null);
 	const [searchText, setSearchText] = React.useState('');
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+	const projectInfo = parent?.GBL?.config?.currentProjectInfo;
+	const projectBCFlag = projectInfo?.blockchainEnabled;
 
 	React.useEffect(() => {
 		if(viewType != tableViewType) setTableViewType(viewType);
@@ -235,6 +237,7 @@ const AwardBid = () => {
 		}
 		return filteredData;
 	};
+
 	return (
 		<div className='award-bid'>
 			<div className='award-bid-header'>
@@ -657,14 +660,15 @@ const AwardBid = () => {
 									onClick={() => {
 										setAwardBidType('contract-later');
 										dispatch(setAwardBidClick(false));
-										setSelectedItem({...selectedItem, awarded: true});
 										awardBid(appInfo, selectedRecord?.id, selectedItem?.id, false).then(() => {
-											setShowAwardToastMsg(true);
 											dispatch(fetchGridData(appInfo));
 											dispatch(fetchBidPackageDetails({appInfo: appInfo, packageId: selectedRecord?.id}));
 											dispatch(fetchAwardBidDetailsData({appInfo: appInfo, packageId: selectedRecord?.id, bidderUniqueId: selectedItem?.id, }));
-											if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
+											if(blockchainEnabled && projectBCFlag) {
 												dispatch(setShowBlockchainDialog(true));
+											} else {
+												setSelectedItem({...selectedItem, awarded: true});
+												setShowAwardToastMsg(true);
 											}
 										});
 									}}
@@ -679,15 +683,15 @@ const AwardBid = () => {
 									onClick={() => {
 										setAwardBidType('contract-now');
 										dispatch(setAwardBidClick(false));
-										setSelectedItem({...selectedItem, awarded: true});
 										awardBid(appInfo, selectedRecord?.id, selectedItem?.id, true).then(() => {
-											setShowAwardToastMsg(true);
 											dispatch(fetchGridData(appInfo));
 											dispatch(fetchBidPackageDetails({appInfo: appInfo, packageId: selectedRecord?.id}));
 											dispatch(fetchAwardBidDetailsData({appInfo: appInfo, packageId: selectedRecord?.id, bidderUniqueId: selectedItem?.id, }));
-											if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
+											if(blockchainEnabled && projectBCFlag) {
 												dispatch(setShowBlockchainDialog(true));
 											} else {
+												setSelectedItem({...selectedItem, awarded: true});
+												setShowAwardToastMsg(true);
 												createVendorContracts(appInfo, {
 													title: selectedRecord?.name,
 													vendor: {id: selectedItem?.company?.id},
@@ -710,7 +714,7 @@ const AwardBid = () => {
 					}}
 				/>
 			}
-			{showAwardToastMsg && !(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled)(
+			{showAwardToastMsg && (
 				<Alert
 					severity='success'
 					className='floating-toast-cls'
@@ -736,32 +740,3 @@ const AwardBid = () => {
 };
 
 export default AwardBid;
-
-const getGroupMenuOptions = () => {
-	return [
-		// {
-		// 	text: 'Transactions Type',
-		// 	value: 'transactionType',
-		// }
-	];
-};
-
-const getFilterMenuOptions = () => {
-	return [
-		// {
-		// 	text: 'Scope',
-		// 	key: 'stageName',
-		// 	value: 'all',
-		// },
-		// {
-		// 	text: 'Diverce Supplier',
-		// 	key: 'stageName',
-		// 	value: 'Posted',
-		// },
-		// {
-		// 	text: 'Compliance Status',
-		// 	key: 'stageName',
-		// 	value: 'Pending',
-		// }
-	];
-};

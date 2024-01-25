@@ -3,15 +3,15 @@ import './BudgetDetails.scss';
 import {
 	getCostCodeDivisionList, getCostTypeList, getServer
 } from 'app/common/appInfoSlice';
-import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
+import { useAppDispatch, useAppSelector, useHotLink } from 'app/hooks';
 import CostCodeDropdown from 'components/costcodedropdown/CostCodeDropdown';
 import DatePickerComponent from 'components/datepicker/DatePicker';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import SmartDropDown from 'components/smartDropdown';
-import {primaryIconSize} from 'features/budgetmanager/BudgetManagerGlobalStyles';
+import { primaryIconSize } from 'features/budgetmanager/BudgetManagerGlobalStyles';
 import VendorList from 'features/budgetmanager/aggrid/vendor/Vendor';
 import Location from 'features/common/locationfield/LocationField';
-import React, {memo, useState, useEffect, useCallback, useRef} from 'react';
+import React, { memo, useState, useEffect, useCallback, useRef } from 'react';
 import InputIcon from 'react-multi-date-picker/components/input_icon';
 import SaveButtonWhite from 'resources/images/common/SaveButtonWhite.svg';
 import {
@@ -19,37 +19,37 @@ import {
 	getBidStatus, getBidStatusIdFromText
 } from 'utilities/bid/enums';
 import convertDateToDisplayFormat from 'utilities/commonFunctions';
-import {formatDate} from 'utilities/datetime/DateTimeUtils';
-import {amountFormatWithOutSymbol, amountFormatWithSymbol} from 'app/common/userLoginUtils';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import { amountFormatWithOutSymbol, amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import {
 	vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons
 } from 'utilities/vendorContracts/enums';
 
-import {WarningAmber} from '@mui/icons-material';
+import { WarningAmber } from '@mui/icons-material';
 import {
 	Box, Button, Divider, Fab,
 	FormControlLabel,
 	Radio, RadioGroup, IconButton, Select, FormControl, InputAdornment, MenuItem, TextField
 } from '@mui/material';
-import {createStyles, makeStyles} from '@mui/styles';
+import { createStyles, makeStyles } from '@mui/styles';
 
-import {curveList} from '../../../headerpage/HeaderPage';
-import {updateBudgetLineItem} from '../../../operations/gridAPI';
-import {addRollupTask} from '../../../operations/rightPanelAPI';
-import {setSelectedRowData} from "../../../operations/rightPanelSlice";
-import {fetchGridData} from '../../../operations/gridSlice';
-import {fetchLocationData} from 'features/common/locationfield/LocationStore';
+import { curveList } from '../../../headerpage/HeaderPage';
+import { updateBudgetLineItem } from '../../../operations/gridAPI';
+import { addRollupTask } from '../../../operations/rightPanelAPI';
+import { setSelectedRowData } from "../../../operations/rightPanelSlice";
+import { fetchGridData } from '../../../operations/gridSlice';
+import { fetchLocationData } from 'features/common/locationfield/LocationStore';
 
 import SUIBaseDropdownSelector from 'sui-components/BaseDropdown/BaseDropdown';
 import SUIAlert from 'sui-components/Alert/Alert';
 import IQSelect from 'components/iqselect/IQSelect';
 import DynamicTooltip from "sui-components/DynamicTooltip/DynamicTooltip";
 import building from 'resources/images/building.jpg';
-import {catalogData} from 'data/budgetmanager/catalogData';
-import {isLocalhost} from 'app/utils';
+import { catalogData } from 'data/budgetmanager/catalogData';
+import { isLocalhost } from 'app/utils';
 
 var tinycolor = require('tinycolor2');
-import {postMessage} from "../../../../../app/utils";
+import { postMessage } from "../../../../../app/utils";
 import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
 
 interface BudgetDetailsProps {
@@ -73,27 +73,28 @@ const useStyles: any = makeStyles((theme: any) =>
 const BudgetDetails = (props: BudgetDetailsProps) => {
 	const classes = useStyles();
 	const dispatch = useAppDispatch();
-	const {selectedRow} = useAppSelector(state => state.rightPanel);
-	const {settingsData, costCodeDropdownData, divisionCostCodeFilterData, CostCodeAndTypeData} = useAppSelector(state => state.settings);
+	const { selectedRow } = useAppSelector(state => state.rightPanel);
+	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);
+	const { settingsData, costCodeDropdownData, divisionCostCodeFilterData, CostCodeAndTypeData } = useAppSelector(state => state.settings);
 
-	const {tabSelectedValue = 'budget-details', toast} = props;
+	const { tabSelectedValue = 'budget-details', toast } = props;
 	const costCodeDivisionOpts = useAppSelector(getCostCodeDivisionList);
 	const costTypeOpts = useAppSelector(getCostTypeList);
 	const [formData, setFormData] = React.useState<any>({
 		...selectedRow,
 	});
 	const appInfo = useAppSelector(getServer);
-	const {currencySymbol} = useAppSelector((state) => state.appInfo);
-	const {rollupTaskData} = useAppSelector((state) => state.rightPanel);
-	const {lineItemDescription} = useAppSelector(state => state.tableColumns);
-	const {lineItem} = useAppSelector(state => state.gridData);
-	const {levels = [], locations = []} = useAppSelector(state => state.location);
+	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const { rollupTaskData } = useAppSelector((state) => state.rightPanel);
+	const { lineItemDescription } = useAppSelector(state => state.tableColumns);
+	const { lineItem } = useAppSelector(state => state.gridData);
+	const { levels = [], locations = [] } = useAppSelector(state => state.location);
 	const [location, setLocation] = useState<any>([]);
 	const [dynamicClose, setDynamicClose] = useState<any>(false);
 	const [rollupDisabelData, setRollupDisabelData] = useState<any>([]);
 	const [wbsOptions, setWbsOptions] = useState<any>([]);
 	const [selectedLevel, setSelectedLevel] = useState<any>();
-	const [alert, setAlert] = useState<any>({show: false, msg: '', type: 'Warning'});
+	const [alert, setAlert] = useState<any>({ show: false, msg: '', type: 'Warning' });
 	const [levelValue, setLevelValue] = useState<any>('');
 	const [catalogLocalData, setCatalogLocalData] = useState<any>(catalogData);
 	const companyDataRef = useRef<any>([]);
@@ -105,15 +106,17 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const [costCodeHiddenOptions, setCostCodeHiddenOptions] = useState<any>([]);
 	const [isCostCodeExistsInOptions, setIsCostCodeExistsInOptions] = useState<any>(false);
 
-	const isCostCodeExists = (options: any, costCodeVal: any)=> {
+	const isReadOnly = isBudgetLocked;
+
+	const isCostCodeExists = (options: any, costCodeVal: any) => {
 		let isExists: any = false;
-		(options || []).forEach((rec: any)=>{
+		(options || []).forEach((rec: any) => {
 			if (rec.value === costCodeVal) {
 				isExists = true;
 			} else {
-				if(rec.children?.length > 0) {
-					rec.children.forEach((childRec: any)=>{
-						if(childRec.value === costCodeVal) {
+				if (rec.children?.length > 0) {
+					rec.children.forEach((childRec: any) => {
+						if (childRec.value === costCodeVal) {
 							isExists = true;
 						}
 					})
@@ -123,19 +126,19 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		return isExists;
 	}
 
-	useEffect(()=> {
+	useEffect(() => {
 		if (formData?.costCode && costCodeDropdownData?.length > 0) {
-			let isCostCodeExistsInOptionsList: any =  isCostCodeExists(costCodeDropdownData, formData.costCode);
+			let isCostCodeExistsInOptionsList: any = isCostCodeExists(costCodeDropdownData, formData.costCode);
 			setIsCostCodeExistsInOptions(isCostCodeExistsInOptionsList);
 			if (!isCostCodeExistsInOptionsList) {
-				let obj: any = 
-					{
-						value: formData?.costCode,
-						id: formData?.costCode,
-						children: null,
-						isHidden: true,
-					}
-					setCostCodeHiddenOptions([obj]);
+				let obj: any =
+				{
+					value: formData?.costCode,
+					id: formData?.costCode,
+					children: null,
+					isHidden: true,
+				}
+				setCostCodeHiddenOptions([obj]);
 			}
 		}
 	}, [formData?.costCode, costCodeDropdownData])
@@ -156,19 +159,19 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 
 	useEffect(() => {
 		companyDataRef.current = formatCompanyData();
-		if(CompanyData?.length && companyDataRef.current?.length > 0 && selectedRow.equipmentManufacturerId) {
+		if (CompanyData?.length && companyDataRef.current?.length > 0 && selectedRow.equipmentManufacturerId) {
 			const obj = companyDataRef.current.find((rec: any) => selectedRow.equipmentManufacturerId === rec.objectId);
-			setFormData({...formData, equipmentManufacturer: [obj], equipmentManufacturerName: obj?.name});
+			setFormData({ ...formData, equipmentManufacturer: [obj], equipmentManufacturerName: obj?.name });
 		}
 
 	}, [CompanyData, selectedRow?.id]);
 
 	React.useEffect(() => {
-		if(selectedRow?.id) {
-			if(selectedRow.equipmentManufacturerId) {
+		if (selectedRow?.id) {
+			if (selectedRow.equipmentManufacturerId) {
 				const obj = formatCompanyData().find((rec: any) => selectedRow.equipmentManufacturerId === rec.objectId);
-				if(obj?.name) {
-					setFormData({...selectedRow, equipmentManufacturer: [obj], equipmentManufacturerName: obj?.name});
+				if (obj?.name) {
+					setFormData({ ...selectedRow, equipmentManufacturer: [obj], equipmentManufacturerName: obj?.name });
 				}
 			} else {
 				setFormData(selectedRow);
@@ -176,7 +179,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 
 			let rowLocations = selectedRow.locations || [];
 			setLocation(rowLocations?.map((el: any) => {
-				return {id: el.id, text: el.name};
+				return { id: el.id, text: el.name };
 			}) || []);
 		}
 	}, [selectedRow?.id]);
@@ -193,7 +196,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	}, [selectedRow?.locations, levels, selectedLevel]);
 
 	React.useEffect(() => {
-		if(lineItem?.id) {
+		if (lineItem?.id) {
 			setFormData({
 				...selectedRow,
 				equipmentManufacturer: formData?.equipmentManufacturer,
@@ -208,13 +211,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	}, [lineItem?.id]);
 
 	React.useEffect(() => {
-		if(rollupTaskData.length > 0) {
+		if (rollupTaskData.length > 0) {
 			setWbsOptions(rollupTaskData);
 		}
 	}, [rollupTaskData]);
 
 	React.useEffect(() => {
-		if(wbsOptions.length > 0) {
+		if (wbsOptions.length > 0) {
 			// console.log('wbsOptions', wbsOptions);
 			const filteredNames = wbsOptions.filter((item: any) => item.budgetItemId !== null && item.budgetItemId !== selectedRow.id).map((item: any) => item.value);
 			setRollupDisabelData(filteredNames);
@@ -222,18 +225,18 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	}, [wbsOptions]);
 
 	const handleDropdownChange = (value: any, name: string) => {
-		if(name === 'costCode') {
+		if (name === 'costCode') {
 			const costCodeTuple = value.split('|');
-			setFormData({...formData, 'division': costCodeTuple[0], 'costCode': costCodeTuple[1]});
-		} 
-		else if(name === 'providerSource') {
-			setAlert({show: true, type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}`});			
+			setFormData({ ...formData, 'division': costCodeTuple[0], 'costCode': costCodeTuple[1] });
+		}
+		else if (name === 'providerSource') {
+			setAlert({ show: true, type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}` });
 
 		} else {
 			// if (name == 'markupFeeAmount' && Number(value) > formData?.originalAmount) setAlert({ show: true, msg: 'Amount Should Not be greater then Original Amount.' });
 			// else if (name == 'markupFeePercentage' && Number(value) > 100) setAlert({ show: true, msg: 'Percentage Should be between 1 to 100.' });
-			if(Number(value) < 0) setAlert({show: true, type: 'Warning', msg: 'Negative Values are not Allowed.'});
-			else setFormData({...formData, [name]: value, markupFeeAmount: name == 'markupFeeType' ? null : name == 'markupFeeAmount' ? value : formData?.markupFeeAmount, markupFeePercentage: name == 'markupFeeType' ? null : name == 'markupFeePercentage' ? value : formData?.markupFeePercentage, addMarkupFee: name !== 'addMarkupFee' ? formData?.addMarkupFee : value});
+			if (Number(value) < 0) setAlert({ show: true, type: 'Warning', msg: 'Negative Values are not Allowed.' });
+			else setFormData({ ...formData, [name]: value, markupFeeAmount: name == 'markupFeeType' ? null : name == 'markupFeeAmount' ? value : formData?.markupFeeAmount, markupFeePercentage: name == 'markupFeeType' ? null : name == 'markupFeePercentage' ? value : formData?.markupFeePercentage, addMarkupFee: name !== 'addMarkupFee' ? formData?.addMarkupFee : value });
 		}
 	};
 
@@ -251,7 +254,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	};
 
 	React.useEffect(() => {
-		if(selectedLevel) {
+		if (selectedLevel) {
 			dispatch(fetchLocationData(selectedLevel));
 		}
 	}, [selectedLevel]);
@@ -289,13 +292,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		updateBudgetLineItem(appInfo, formData.id, data, (res: any) => {
 			dispatch(fetchGridData(appInfo));
 		});
-		toast({displayToast: true, message: 'Budget Details Updated Successfully'});
+		toast({ displayToast: true, message: 'Budget Details Updated Successfully' });
 	};
 
 	const WbsCustomHeader = (props: any) => {
 		return (
 			<div className="wbs-header-container-cls">
-				<span className="wbs-label-cell-cls" style={{margin: '0px 0px 14px 6px'}} onClick={() => handleNone()}>None</span>
+				<span className="wbs-label-cell-cls" style={{ margin: '0px 0px 14px 6px' }} onClick={() => handleNone()}>None</span>
 				<div className="wbs-auto-create-label-cls" onClick={() => handleAutoCreateWbs()}>
 					<IconButton className='add-button' >
 						<span className={'common-icon-add addIcon-styles-cls'}></span>
@@ -318,11 +321,11 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		addRollupTask(appInfo, newRollup, selectedRow?.id).then((response: any) => {
 			// console.log('response', response);
 			// console.log('neww response.id', response?.id);
-			if(response?.name !== null && response?.budgetItemId !== null) {
-				const newOption = {label: response?.name, value: response?.id, budgetItemId: response?.budgetItemId};
+			if (response?.name !== null && response?.budgetItemId !== null) {
+				const newOption = { label: response?.name, value: response?.id, budgetItemId: response?.budgetItemId };
 				setWbsOptions((prevArray: any) => [...prevArray, newOption]);
 				setDynamicClose(!dynamicClose);
-				toast({displayToast: true, message: `WBS item with name ${newRollup} has been created successfully`});
+				toast({ displayToast: true, message: `WBS item with name ${newRollup} has been created successfully` });
 				handleDropdownChange([response?.id], 'rollupTaskIds');
 				dispatch(fetchGridData(appInfo));
 			}
@@ -342,8 +345,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	// }
 	const wbsSelectedData = (value: any) => {
 		// console.log('wbsSelectedData', value);
-		if(value?.length > 0) {
-			if(value?.length > 1) {
+		if (value?.length > 0) {
+			if (value?.length > 1) {
 				const lastValue = value[value.length - 1];
 				// console.log('lastValue', lastValue);
 				return [lastValue];
@@ -384,7 +387,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	}, [formData.equipmentName]);
 
 	const onCatalogBtnClick = () => {
-		if(isLocalhost) {
+		if (isLocalhost) {
 			const obj = formatCompanyData().find((rec: any) => catalogLocalData.distributorId === rec.objectId);
 			setFormData({
 				...formData,
@@ -414,12 +417,12 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				data = typeof data == "string" ? JSON.parse(data) : data;
 				data =
 					data.hasOwnProperty("args") && data.args[0] ? data.args[0] : data;
-				if(data) {
-					switch(data.event || data.evt) {
+				if (data) {
+					switch (data.event || data.evt) {
 						case "save-catalog":
-							if(data.data) {
+							if (data.data) {
 								let catObj = JSON.parse(data.data)?.[0] || {};
-								if(catObj.manufacturer?.id) {
+								if (catObj.manufacturer?.id) {
 									const obj = companyDataRef.current.find((rec: any) => catObj.manufacturer?.id === rec.objectId);
 									setFormData({
 										...formData,
@@ -458,18 +461,18 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const getDefaultFilter = () => {
 		let inlineFilter: any = [];
 		divisionCostCodeFilterData?.map((obj: any) => {
-			if(obj?.value == formData?.division) inlineFilter = [obj?.hierarchy];
+			if (obj?.value == formData?.division) inlineFilter = [obj?.hierarchy];
 		});
 		return inlineFilter;
 	};
 
-	const handleProviderSourceChange = (type:string) => {
-		if(type == 'yes') {
+	const handleProviderSourceChange = (type: string) => {
+		if (type == 'yes') {
 			console.log("yeeeee", formData)
-			setFormData({...formData, providerSource: formData?.providerSource == 0 ? 1 : 0})
-			setAlert({show: false, type: '', msg: ''})
+			setFormData({ ...formData, providerSource: formData?.providerSource == 0 ? 1 : 0 })
+			setAlert({ show: false, type: '', msg: '' })
 		}
-		else setAlert({show: false, type: '', msg: ''})
+		else setAlert({ show: false, type: '', msg: '' })
 	}
 
 
@@ -510,7 +513,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							>
 								<WarningAmber
 									fontSize={primaryIconSize}
-									style={{color: "red"}}
+									style={{ color: "red" }}
 								/>
 							</IQTooltip>
 						) : null}
@@ -540,7 +543,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							>
 								<WarningAmber
 									fontSize={primaryIconSize}
-									style={{color: "red"}}
+									style={{ color: "red" }}
 								/>
 							</IQTooltip>
 						) : null}
@@ -566,13 +569,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
               }}
               filteringValue={formData.division}
             /> */}
-						<CostCodeSelect
+						{isReadOnly ? `${formData?.division}-${formData.costCode}` : <CostCodeSelect
 							label=" "
 							options={costCodeDropdownData?.length > 0 ? costCodeDropdownData : []}
-							hiddenOptions = {costCodeHiddenOptions}
+							hiddenOptions={costCodeHiddenOptions}
 							onChange={(value: any) => handleDropdownChange(value, 'costCode')}
 							// required={true}
-							startIcon={<div className='budget-Budgetcalculator' style={{fontSize: '1.25rem'}}></div>}
+							startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
 							checkedColor={'#0590cd'}
 							showFilter={false}
 							selectedValue={formData?.division && formData?.costCode ? (isCostCodeExistsInOptions ? (formData?.division + '|' + formData?.costCode) : formData?.costCode) : ''}
@@ -582,7 +585,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							filteroptions={divisionCostCodeFilterData.length > 0 ? divisionCostCodeFilterData : []}
 							onFiltersUpdate={(filters: any) => setDivisionDefaultFilters(filters)}
 							defaultFilters={divisionDefaultFilters?.length ? divisionDefaultFilters : getDefaultFilter()}
-						/>
+						/>}
 					</div>
 				</span>
 				{formData?.costType?.toLowerCase()?.includes("equipment") && (
@@ -593,7 +596,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						<span className="budget-info-tile">
 							<div className="budget-info-label">Manufacturer</div>
 							<div className="budget-info-data-box">
-								<SUIBaseDropdownSelector
+								{isReadOnly ? formData?.equipmentManufacturer : <SUIBaseDropdownSelector
 									value={formData?.equipmentManufacturer || []}
 									width="100%"
 									menuWidth="200px"
@@ -609,13 +612,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 									companyImageHeight={"17px"}
 									showSearchInSearchbar={true}
 									addCompany={false}
-								></SUIBaseDropdownSelector>
+								></SUIBaseDropdownSelector>}
 							</div>
 						</span>
 						<span className="budget-info-tile">
 							<div className="budget-info-label">Model Number</div>
 							<div className="budget-info-data-box">
-								<TextField
+								{isReadOnly ? formData?.equipmentModel : <TextField
 									id="equipmentModel"
 									fullWidth
 									placeholder={`Enter`}
@@ -630,9 +633,9 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 									variant="standard"
 									value={formData?.equipmentModel || ""}
 									onChange={(e: any) =>
-										setFormData({...formData, equipmentModel: e.target.value})
+										setFormData({ ...formData, equipmentModel: e.target.value })
 									}
-								/>
+								/>}
 							</div>
 						</span>
 						<span className="budget-info-tile from-catalog-btn-tile">
@@ -651,6 +654,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 											startIcon={<span className="common-icon-from-catalog"></span>}
 											className="from-catalog-btn"
 											onClick={onCatalogBtnClick}
+											disabled={isReadOnly}
 										>
 											From Catalog
 										</Button>
@@ -661,6 +665,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 										startIcon={<span className="common-icon-from-catalog"></span>}
 										className="from-catalog-btn"
 										onClick={onCatalogBtnClick}
+										disabled={isReadOnly}
 									>
 										From Catalog
 									</Button>
@@ -691,17 +696,19 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 									value={true}
 									control={<Radio />}
 									label="Yes"
+									disabled={isReadOnly}
 								/>
 								<FormControlLabel
 									value={false}
 									control={<Radio />}
 									label="No"
+									disabled={isReadOnly}
 								/>
 								{formData?.addMarkupFee && (
 									<>
 										<span className="enter-value-cls">Enter Value</span>
 										<span>
-											<FormControl sx={{m: 1, minWidth: 120}} size="small">
+											<FormControl sx={{ m: 1, minWidth: 120 }} size="small">
 												<Select
 													labelId="demo-select-small"
 													id="demo-select-small"
@@ -710,6 +717,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 															? "Amount"
 															: "Percentage"
 													}
+													disabled={isReadOnly}
 													className="cc-schedule-values_select"
 													// disabled={props?.readOnly}
 													onChange={(event: any) =>
@@ -728,6 +736,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 											<TextField
 												id="standard-basic"
 												variant="standard"
+												disabled={isReadOnly}
 												value={
 													formData?.markupFeeType == 0
 														? amountFormatWithOutSymbol(
@@ -750,7 +759,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 												InputProps={{
 													startAdornment: formData?.markupFeeType == 0 && (
 														<InputAdornment position="start">
-															<span style={{color: "#333333"}}>
+															<span style={{ color: "#333333" }}>
 																{currencySymbol}
 															</span>
 														</InputAdornment>
@@ -758,7 +767,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 													endAdornment: formData?.markupFeeType == 1 && (
 														<InputAdornment position="end">
 															<span
-																style={{color: "#333333", marginTop: "6px"}}
+																style={{ color: "#333333", marginTop: "6px" }}
 															>
 																{"%"}
 															</span>
@@ -815,7 +824,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						Cost Type <span className="required_color">*</span>
 					</div>
 					<div className="budget-info-data-box">
-						<SmartDropDown
+						{isReadOnly ? formData?.costType : <SmartDropDown
 							options={costTypeOpts?.length > 0 ? costTypeOpts : []}
 							required={true}
 							LeftIcon={gridIcon}
@@ -824,17 +833,17 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							outSideOfGrid={false}
 							selectedValue={formData.costType}
 							menuProps={classes.menuPaper}
-							sx={{fontSize: "18px"}}
+							sx={{ fontSize: "18px" }}
 							handleChange={(value: string | undefined | string[]) => {
 								handleDropdownChange(value ? value[0] : "", "costType");
 							}}
-						/>
+						/>}
 					</div>
 				</span>
 				<span className="budget-info-tile">
 					<div className="budget-info-label">Curve</div>
 					<div className="budget-info-data-box">
-						<SmartDropDown
+						{isReadOnly ? formData?.curve : <SmartDropDown
 							LeftIcon={<div className="budget-info-icon budget-Curve"></div>}
 							options={curveList}
 							outSideOfGrid={false}
@@ -845,13 +854,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							handleChange={(value: any) =>
 								handleDropdownChange(value, "curve")
 							}
-						/>
+						/>}
 					</div>
 				</span>
 				<span className="budget-info-tile vendor-field">
 					<div className="budget-info-label">Vendor</div>
 					<div className="budget-info-data-box">
-						{formData.bidPackage?.status == "Awarded" ? (
+						{formData.bidPackage?.status == "Awarded" || isReadOnly ? (
 							<>
 								<span className="common-icon-info-icon common-icon-Budgetcalculator"></span>
 								{formData?.Vendors?.map((data: any, i: any) => {
@@ -888,7 +897,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					<div className="budget-info-label">Estimated Start Date</div>
 					<div className="budget-info-data-box">
 						<span className="budget-info-data">
-							<DatePickerComponent
+							{isReadOnly ? <span>{convertDateToDisplayFormat(formData.estimatedStart)}</span> : <DatePickerComponent
 								containerClassName="iq-customdate-cont"
 								defaultValue={convertDateToDisplayFormat(
 									formData.estimatedStart
@@ -907,7 +916,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 										className="custom-input rmdp-input"
 									/>
 								}
-							/>
+							/>}
 						</span>
 					</div>
 				</span>
@@ -937,7 +946,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					<div className="budget-info-label">Estimated End Date</div>
 					<div className="budget-info-data-box">
 						<span className="budget-info-data">
-							<DatePickerComponent
+							{isReadOnly ? <span>{convertDateToDisplayFormat(formData.estimatedEnd)}</span> : <DatePickerComponent
 								containerClassName="iq-customdate-cont"
 								defaultValue={convertDateToDisplayFormat(formData.estimatedEnd)}
 								onChange={(val: any) =>
@@ -950,7 +959,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 										className="custom-input rmdp-input"
 									/>
 								}
-							/>
+							/>}
 						</span>
 					</div>
 				</span>
@@ -1006,20 +1015,20 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</span>
 					</div>
 				</span>
-				<div className="budget-info-subheader">Provider Source</div>				
+				<div className="budget-info-subheader">Provider Source</div>
 				<span>
 					<RadioGroup
 						row
 						aria-labelledby="demo-row-radio-buttons-group-label"
 						name="row-radio-buttons-group"
-						value={formData?.providerSource == 1 ? 'self' : 'trade' }
+						value={formData?.providerSource == 1 ? 'self' : 'trade'}
 						onChange={(e) => { handleDropdownChange(e.target.value == 'self' ? 1 : 0, "providerSource") }}
 					>
-						<FormControlLabel value="self" control={<Radio />} label="Self Perform" 
-							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract }
+						<FormControlLabel value="self" control={<Radio />} label="Self Perform"
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
 						/>
-						<FormControlLabel value="trade" control={<Radio />} label="Trade Partner" 
-							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract }
+						<FormControlLabel value="trade" control={<Radio />} label="Trade Partner"
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
 						/>
 					</RadioGroup>
 				</span>
@@ -1143,7 +1152,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 												formData?.vendorContract?.status
 												]
 											}
-											style={{color: "white"}}
+											style={{ color: "white" }}
 										/>
 									}
 									style={{
@@ -1218,7 +1227,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 												formData?.clientContract?.status
 												]
 											}
-											style={{color: "white"}}
+											style={{ color: "white" }}
 										/>
 									}
 									style={{
@@ -1249,32 +1258,42 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				<span className="budget-info-tile">
 					<div className="budget-info-label">Location Type</div>
 					<div className="budget-info-data-box">
-						<SmartDropDown
-							options={
-								levels?.map((level: any) => {
-									return {label: level.name, value: level.levelId};
-								}) || []
-							}
-							required={false}
-							LeftIcon={
-								<div className="budget-info-icon common-icon-Location-filled"></div>
-							}
-							isSearchField
-							isFullWidth
-							outSideOfGrid={false}
-							selectedValue={levelValue}
-							menuProps={classes.menuPaper}
-							sx={{fontSize: "18px"}}
-							handleChange={(value: string | undefined | string[]) => {
-								setSelectedLevel(value);
-							}}
-						/>
+						{isReadOnly ?
+							<span
+								className="budget-info-data hot-link"
+								// onClick={() =>
+								// 	window.open(useHotLink(`client-contracts/home?id=${formData?.clientContract?.id}`), "_blank")
+								// }
+							>
+								{levelValue || "-"}
+							</span>
+							: <SmartDropDown
+								options={
+									levels?.map((level: any) => {
+										return { label: level.name, value: level.levelId };
+									}) || []
+								}
+								required={false}
+								LeftIcon={
+									<div className="budget-info-icon common-icon-Location-filled"></div>
+								}
+								isSearchField
+								isFullWidth
+								outSideOfGrid={false}
+								selectedValue={levelValue}
+								menuProps={classes.menuPaper}
+								sx={{ fontSize: "18px" }}
+								handleChange={(value: string | undefined | string[]) => {
+									setSelectedLevel(value);
+								}}
+							/>
+						}
 					</div>
 				</span>
 				<span className="budget-info-tile">
 					<div className="budget-info-label">Default Location</div>
 					<div className="budget-info-data-box">
-						<Location
+						{isReadOnly ? location : <Location
 							fullWidth
 							hideLevel={true}
 							multiple={true}
@@ -1284,7 +1303,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 								handleLocationChange(newValue);
 							}}
 							getOptionLabel={(option: any) => option?.text || ""}
-						/>
+						/>}
 					</div>
 				</span>
 
@@ -1333,40 +1352,49 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				<span className="budget-info-tile  span-2">
 					<div className="budget-info-label">Work Breakdown Structure(WBS)</div>
 					<div className="budget-info-data-box">
-						<SmartDropDown
-							Placeholder={"Select"}
-							isSearchPlaceHolder={"Search"}
-							options={wbsOptions?.length > 0 ? wbsOptions : []}
-							required={true}
-							//isMultiple={true}
-							//showCheckboxes={true}
-							LeftIcon={
-								<div className="budget-info-icon common-icon-Location-filled"></div>
-							}
-							isSearchField
-							isFullWidth
-							outSideOfGrid={false}
-							selectedValue={wbsSelectedData(formData?.rollupTaskIds)}
-							menuProps={classes.wbsMenuPaper}
-							sx={{fontSize: "18px"}}
-							handleChange={(value: string | undefined | string[]) => {
-								handleDropdownChange(value, "rollupTaskIds");
-							}}
-							showDropDownHeaderTitle={true}
-							dropDownHeaderTitle={""}
-							showHeaderCloseIcon={true}
-							showCustomHeader={true}
-							showColumnHeader={false}
-							columnName={"None"}
-							disableOptionsList={rollupDisabelData ? rollupDisabelData : []}
-							showToolTipForDisabledOption={true}
-							showDescription={false}
-							customHeaderContent={<WbsCustomHeader />}
-							dynamicClose={dynamicClose}
-						// handleSearchProp={(filteredOptions: any, searchText: any) => {
-						// 	wbsHandleSearch(filteredOptions, searchText)
-						// }}
-						/>
+						{isReadOnly ?
+							<span
+								className="budget-info-data hot-link"
+								// onClick={() =>
+								// 	window.open(useHotLink(`client-contracts/home?id=${formData?.clientContract?.id}`), "_blank")
+								// }
+							>
+								{wbsSelectedData(formData?.rollupTaskIds) || "-"}
+							</span>
+							: <SmartDropDown
+								Placeholder={"Select"}
+								isSearchPlaceHolder={"Search"}
+								options={wbsOptions?.length > 0 ? wbsOptions : []}
+								required={true}
+								//isMultiple={true}
+								//showCheckboxes={true}
+								LeftIcon={
+									<div className="budget-info-icon common-icon-Location-filled"></div>
+								}
+								isSearchField
+								isFullWidth
+								outSideOfGrid={false}
+								selectedValue={wbsSelectedData(formData?.rollupTaskIds)}
+								menuProps={classes.wbsMenuPaper}
+								sx={{ fontSize: "18px" }}
+								handleChange={(value: string | undefined | string[]) => {
+									handleDropdownChange(value, "rollupTaskIds");
+								}}
+								showDropDownHeaderTitle={true}
+								dropDownHeaderTitle={""}
+								showHeaderCloseIcon={true}
+								showCustomHeader={true}
+								showColumnHeader={false}
+								columnName={"None"}
+								disableOptionsList={rollupDisabelData ? rollupDisabelData : []}
+								showToolTipForDisabledOption={true}
+								showDescription={false}
+								customHeaderContent={<WbsCustomHeader />}
+								dynamicClose={dynamicClose}
+							// handleSearchProp={(filteredOptions: any, searchText: any) => {
+							// 	wbsHandleSearch(filteredOptions, searchText)
+							// }}
+							/>}
 					</div>
 				</span>
 			</div>
@@ -1404,13 +1432,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				<SUIAlert
 					open={alert?.show}
 					onClose={() => {
-						setAlert({...alert, show: false, type: ''});
+						setAlert({ ...alert, show: false, type: '' });
 					}}
 					contentText={
 						<div>
 							<span>{alert?.msg}</span>
 							<br />
-							{ alert?.type == 'Warning' && <div style={{textAlign: "right", marginTop: "10px"}}>
+							{alert?.type == 'Warning' && <div style={{ textAlign: "right", marginTop: "10px" }}>
 								<Button
 									className="cancel-cls"
 									style={{
@@ -1424,16 +1452,16 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 											"0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)",
 										display: "initial",
 									}}
-									onClick={(e: any) => setAlert({...alert, show: false, type: ''})}
+									onClick={(e: any) => setAlert({ ...alert, show: false, type: '' })}
 								>
 									OK
 								</Button>
-							</div> }
+							</div>}
 						</div>
 					}
 					DailogClose={true}
 					title={alert?.type}
-					onAction={(e: any, type: string) => handleProviderSourceChange(type)}					
+					onAction={(e: any, type: string) => handleProviderSourceChange(type)}
 					showActions={alert?.type == 'Warning' ? false : true}
 				/>
 			)}

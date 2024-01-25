@@ -555,6 +555,11 @@ const SUIGrid = (props: TableGridProps) => {
 				gridApi.setPinnedBottomRowData([pinnedBottomData]);
 			}, 500);
 		}
+		if (props.pinnedTopRowData?.length > 0) {
+			setTimeout(()=> {
+				gridApi.setPinnedTopRowData(props.pinnedTopRowData);
+			}, 800);
+		}
 		if (props.tableref) {
 			props.tableref(gridApi);
 		}
@@ -715,7 +720,7 @@ const SUIGrid = (props: TableGridProps) => {
 				detailCellRendererParams={detailCellRendererParams}
 				onFirstDataRendered={onFirstDataRendered}
 				isRowMaster={isRowMaster}
-				pinnedTopRowData={props.pinnedTopRowData}
+				//pinnedTopRowData={props.pinnedTopRowData}
 				rowHeight={rowHeight}
 				getRowClass={props?.getRowClass}
 				groupSelectsChildren={groupSelectsChildren}

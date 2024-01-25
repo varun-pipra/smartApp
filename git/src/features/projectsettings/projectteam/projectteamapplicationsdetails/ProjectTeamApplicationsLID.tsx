@@ -720,7 +720,7 @@ const ProjectTeamApplicationsLID = ({data, iframeEventData, ...props}: IQGridWin
 			} else if(hasViolated && (status?.safetyStatus !== 7 ?? false) && status?.violationCount > 0) {
 				setSubTitleText('Safety Violation Records Found for this worker');
 			} else if(hasViolated && (status?.safetyStatus === 7 ?? false)) {
-				setSubTitleText('Worker is deactivated and is no longer allowed to work on this job site due to one or more Safety Violations');
+				setSubTitleText('This worker is deactivated and is no longer allowed to work on this job site due to one or more Safety Violations');
 			} else {
 				setSubTitleText('');
 			};
@@ -943,7 +943,7 @@ const ProjectTeamApplicationsLID = ({data, iframeEventData, ...props}: IQGridWin
 				padding: '4px 6px',
 				borderRadius: '2px',
 				marginTop: '10px',
-				marginLeft: '-14%',
+				// marginLeft: '-14%',
 				width: 'fit-content'
 
 			}}>

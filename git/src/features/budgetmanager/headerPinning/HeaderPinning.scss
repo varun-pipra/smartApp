@@ -89,6 +89,28 @@
             }
         }
     }
+    .bubble-box.budget-locked-box {
+        right: 40%;
+        border: 1px solid #ecda57;
+        position: absolute;
+        .icon.common-icon-info-white {
+            vertical-align: sub;
+            background-color: #dbbc3a;
+            border-radius: 50%;
+            color: #fff;
+            &:before {
+                color: #fff;
+                transform: rotate(180deg);
+                display: block;
+                font-size: 25px;
+            }
+        }
+         .text div {
+            color: #000;
+            line-height: 1.4;
+            font-weight: bold;
+        }
+    }
 }
 
 // Popover CSS End

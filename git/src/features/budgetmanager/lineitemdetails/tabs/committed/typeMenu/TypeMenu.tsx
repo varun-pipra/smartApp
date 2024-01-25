@@ -5,7 +5,7 @@ import React from 'react';
 import './TypeMenu.scss';
 
 import CloseIcon from '@mui/icons-material/Close';
-import { useAppDispatch } from 'app/hooks';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
 import IQMenuButton from 'components/iqmenu/IQMenuButton';
 import { setOpenBudgetTransferForm, setOpenCostForm } from 'features/budgetmanager/operations/rightPanelSlice';
 import BalanceModification from 'resources/images/budgetManager/BalanceModification.svg';
@@ -20,6 +20,7 @@ interface TypeMenuProps {
 
 const TypeMenu = (props: TypeMenuProps) => {
 	const dispatch = useAppDispatch();
+	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);	
 	const [ close, setClose ] = React.useState<any>(true);
 	const onHeaderChange = (text1: string, text2: string, type: number) => {
 		if (props.onItemClick) props.onItemClick({
@@ -32,6 +33,7 @@ const TypeMenu = (props: TypeMenuProps) => {
 	return <IQMenuButton
 		className='transaction-type-menu'
 		label='Add Transaction'
+		disabled={isBudgetLocked}
 		startIcon={ <Add /> }
 		endIcon={ <KeyboardArrowDown /> }
 		close={ close }

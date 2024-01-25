@@ -54,7 +54,7 @@ import {
   setToast,
   getSettingsCategoriesList,
   getSbsSettings,
-  getSBSDetailsById
+  getSBSDetailsById,
 } from "./operations/sbsManagerSlice";
 import { formatDate } from "utilities/datetime/DateTimeUtils";
 import _ from "lodash";
@@ -67,7 +67,7 @@ import SBSManagePhasesModal from "features/projectsettings/projectteam/projectte
 import PhasesGridList from "./phasesGridList/PhasesGridList";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import IQTooltip from "components/iqtooltip/IQTooltip";
-import { AddFiles , saveLinksData} from "./operations/sbsManagerAPI";
+import { AddFiles, saveLinksData } from "./operations/sbsManagerAPI";
 import { findAndUpdateFiltersData } from "./utils";
 
 const SBSManagerWindow = (props: any) => {
@@ -77,21 +77,21 @@ const SBSManagerWindow = (props: any) => {
         text: "Category",
         value: "category",
         key: "category",
-        keyValue:"category",
+        keyValue: "category",
         children: { type: "checkbox", items: [] },
       },
       {
         text: "Trade",
         value: "trade",
         key: "trade",
-        keyValue:"trades",
+        keyValue: "trades",
         children: { type: "checkbox", items: [] },
       },
       {
         text: "Phase",
         value: "phase",
         key: "phase",
-        keyValue:"phase",
+        keyValue: "phase",
         children: { type: "checkbox", items: [] },
       },
     ];
@@ -103,9 +103,14 @@ const SBSManagerWindow = (props: any) => {
   const appInfo = useAppSelector(getServer);
   const { detailsData } = useAppSelector((state) => state.sbsManager);
   const { currencySymbol } = useAppSelector((state) => state.appInfo);
-  const { sbsGridData, showSbsPanel, showPhaseModel, toast, sbsSettings,settingsCategoryList } = useAppSelector(
-    (state) => state.sbsManager
-  );
+  const {
+    sbsGridData,
+    showSbsPanel,
+    showPhaseModel,
+    toast,
+    sbsSettings,
+    settingsCategoryList,
+  } = useAppSelector((state) => state.sbsManager);
   const [gridSearchText, setGridSearchText] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<any>();
   const [rowData, setRowData] = useState([]);
@@ -127,17 +132,32 @@ const SBSManagerWindow = (props: any) => {
     (state) => state.appInfo.isAppMaximized
   );
   const gridApi = useRef<any>();
+  const [gridApiRef, setGridApiRef] = useState<any>();
   useEffect(() => {
     setShowManagePhasesModal(showPhaseModel);
   }, [showPhaseModel]);
   useEffect(() => {
-      if(sbsSettings && sbsSettings?.categoryId && settingsCategoryList?.length > 0) {
-          let value = [...settingsCategoryList].find((rec:any) => rec.id === sbsSettings.categoryId)?.name;
-          dispatch(getCategoryDropDownOptions(value ?? "System Breakdown Structure Categories (SBS)"));
-      } else if(sbsSettings?.length === 0) {
-        dispatch(getCategoryDropDownOptions("System Breakdown Structure Categories (SBS)"));
-      };
-  },[sbsSettings, settingsCategoryList]);
+    if (
+      sbsSettings &&
+      sbsSettings?.categoryId &&
+      settingsCategoryList?.length > 0
+    ) {
+      let value = [...settingsCategoryList].find(
+        (rec: any) => rec.id === sbsSettings.categoryId
+      )?.name;
+      dispatch(
+        getCategoryDropDownOptions(
+          value ?? "System Breakdown Structure Categories (SBS)"
+        )
+      );
+    } else if (sbsSettings?.length === 0) {
+      dispatch(
+        getCategoryDropDownOptions(
+          "System Breakdown Structure Categories (SBS)"
+        )
+      );
+    }
+  }, [sbsSettings, settingsCategoryList]);
   useEffect(() => {
     if (appInfo) {
       dispatch(getSBSGridList());
@@ -154,15 +174,67 @@ const SBSManagerWindow = (props: any) => {
     if (sbsGridData.length > 0) {
       setModifiedList(sbsGridData);
       setRowData(sbsGridData);
-      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "phase", true, "name"));
-      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "category", true, "name"));
-      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "trades", true, "name"));
+      setTimeout(() => {
+        console.log('refreshCells test');
+        gridApiRef.refreshCells({ force: true });
+      }, 500);
+      setFilters(
+        findAndUpdateFiltersData(
+          filterOptions,
+          sbsGridData,
+          "phase",
+          true,
+          "name"
+        )
+      );
+      setFilters(
+        findAndUpdateFiltersData(
+          filterOptions,
+          sbsGridData,
+          "category",
+          true,
+          "name"
+        )
+      );
+      setFilters(
+        findAndUpdateFiltersData(
+          filterOptions,
+          sbsGridData,
+          "trades",
+          true,
+          "name"
+        )
+      );
     } else if (sbsGridData.length === 0) {
       setModifiedList([]);
       setRowData([]);
-      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "phase", true, "name"));
-      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "category", true, "name"));
-      setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "trades", true, "name"));
+      setFilters(
+        findAndUpdateFiltersData(
+          filterOptions,
+          sbsGridData,
+          "phase",
+          true,
+          "name"
+        )
+      );
+      setFilters(
+        findAndUpdateFiltersData(
+          filterOptions,
+          sbsGridData,
+          "category",
+          true,
+          "name"
+        )
+      );
+      setFilters(
+        findAndUpdateFiltersData(
+          filterOptions,
+          sbsGridData,
+          "trades",
+          true,
+          "name"
+        )
+      );
     }
   }, [sbsGridData]);
   useEffect(() => {
@@ -217,13 +289,13 @@ const SBSManagerWindow = (props: any) => {
                 });
                 break;
               case "smartitemlink":
-                console.log('smartitemlink data', data);
-                setSmartItemLink(data)
+                console.log("smartitemlink data", data);
+                setSmartItemLink(data);
                 break;
               case "savesupplementalinfo":
-                console.log('savesupplementalinfo data', data);
+                console.log("savesupplementalinfo data", data);
                 dispatch(getSBSGridList());
-                break;                
+                break;
             }
           }
         };
@@ -249,13 +321,19 @@ const SBSManagerWindow = (props: any) => {
     console.log("structuredFiles drive", structuredFiles);
     AddFiles(detailsData?.id, structuredFiles, (response: any) => {
       console.log("respone in drive", response);
-      dispatch(getSBSDetailsById(detailsData?.uniqueid))
+      dispatch(getSBSDetailsById(detailsData?.uniqueid));
     });
   };
 
   const saveSmartItemLink = (smartData: any) => {
-    let payload =  { "details":{ "sbsId": detailsData?.id, "LinkType":0, "Link": smartData?.smartItemId}}
-      saveLinksData(payload, (response: any) => {
+    let payload = {
+      details: {
+        sbsId: detailsData?.id,
+        LinkType: 0,
+        Link: smartData?.smartItemId,
+      },
+    };
+    saveLinksData(payload, (response: any) => {
       dispatch(getSBSDetailsById(detailsData?.uniqueid));
       setSmartItemLink({});
     });
@@ -290,19 +368,19 @@ const SBSManagerWindow = (props: any) => {
         return (
           <div className="sbs-category-cell">
             {params?.data?.hasDifferentCategory ? (
-               <IQTooltip
-               title={
-                 <Stack direction="row" className="tooltipcontent">
-                   <p className="tooltiptext">
-                     Category name needs to be updated.
-                   </p>
-                 </Stack>
-               }
-               placement={"bottom"}
-               arrow={true}
-             >
-               <WarningAmberIcon fontSize={"small"} style={{ color: "red" }} />
-             </IQTooltip>
+              <IQTooltip
+                title={
+                  <Stack direction="row" className="tooltipcontent">
+                    <p className="tooltiptext">
+                      Category name needs to be updated.
+                    </p>
+                  </Stack>
+                }
+                placement={"bottom"}
+                arrow={true}
+              >
+                <WarningAmberIcon fontSize={"small"} style={{ color: "red" }} />
+              </IQTooltip>
             ) : null}
             {params.data?.name || "N/A"}
           </div>
@@ -611,7 +689,7 @@ const SBSManagerWindow = (props: any) => {
                 onFilterChange: onFilterChange,
                 onSearchChange: onGridSearch,
                 defaultGroups: "category",
-                showNone : false
+                showNone: false,
               },
             },
             grid: {
@@ -631,6 +709,7 @@ const SBSManagerWindow = (props: any) => {
               nowRowsMsg:
                 "<div>Add new SBS item by clicking the + Add button above</div>",
               onFirstDataRendered: onFirstDataRendered,
+              tableref: (val: any) => setGridApiRef(val),
             },
           },
         }}

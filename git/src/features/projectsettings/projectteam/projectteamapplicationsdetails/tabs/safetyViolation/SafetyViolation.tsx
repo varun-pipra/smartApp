@@ -76,6 +76,7 @@ const SafetyViolation = (props: any) => {
 				display: "flex",
 				alignItems: "left",
 			},
+			ignoreDefaultTooltip: true,
 			tooltipComponent: CustomTooltip,
 			tooltipValueGetter: (params: any) => {
 				return params?.data?.category.name && params?.data?.category.name?.length > 20 ? params?.data?.category.name : null;
@@ -98,6 +99,7 @@ const SafetyViolation = (props: any) => {
 				display: "flex",
 				alignItems: "left",
 			},
+			ignoreDefaultTooltip: true,
 			tooltipComponent: CustomTooltip,
 			tooltipValueGetter: (params: any) => {
 				return params?.data?.type?.name && params?.data?.type?.name.length > 15 ? params?.data?.type?.name : null;
@@ -138,6 +140,7 @@ const SafetyViolation = (props: any) => {
 				display: "flex",
 				alignItems: "left",
 			},
+			ignoreDefaultTooltip: true,
 			tooltipComponent: CustomTooltip,
 			tooltipValueGetter: (params: any) => {
 				return params?.data?.reason && params?.data?.reason?.length > 30 ? params?.data?.reason : null;
@@ -173,9 +176,10 @@ const SafetyViolation = (props: any) => {
 			},
 			tooltipComponent: CustomTooltip,
 			tooltipValueGetter: (params: any) => {
-				let a: any = moment.utc(params?.data?.createdOn).format('MM/DD/YYYY hh:mm A') + " " + (params?.data?.createdBy?.displayName ?? '');
-				return a?.length > 25 ? a : null;
+				let a: any = moment(new Date(params?.data?.createdOn)).format('MM/DD/YYYY hh:mm A') + " " + (params?.data?.createdBy?.displayName ?? '');
+				return a?.length > 30 ? a : null;
 			},
+			ignoreDefaultTooltip: true,
 			cellRenderer: (params: any) => {
 				return (
 					<span className="ag-costcodegroup" style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
@@ -242,11 +246,15 @@ const SafetyViolation = (props: any) => {
 		postMessage(evtData);
 	};
 	const rowSelected = (e: any) => {
-		if (e) {
-			setExpungeDisabled((e?.data?.isExpunged ?? false) ? true : false);
-		};
-		setDeleteDisabled(false);
-		setSelectedRecord(e);
+		if(e?.api?.getSelectedRows()?.length > 0 ?? false){
+			setDeleteDisabled(false);
+			setExpungeDisabled(e?.api?.getSelectedRows()?.[0]?.isExpunged ?? true);
+			setSelectedRecord(e?.api?.getSelectedRows()?.[0]);
+		} else {
+			setDeleteDisabled(true);
+			setExpungeDisabled(true);
+			setSelectedRecord({});
+		}
 	};
 	const handleDelete = () => {
 		setDeleteAction(true);
@@ -302,7 +310,7 @@ const SafetyViolation = (props: any) => {
 	const getUserLog = (date?: any, displayName?: any,) => {
 		return (
 			<>
-				{moment.utc(date).format('MM/DD/YYYY hh:mm A')}{" "}
+				{moment(new Date(date)).format('MM/DD/YYYY hh:mm A')}{" "}
 				{displayName ?? ''}{" "}
 			</>
 		)
@@ -324,7 +332,7 @@ const SafetyViolation = (props: any) => {
 		if (val == 'ok') {
 			let payload = {
 				userUniqueId: userdata?.id,
-				violationId: selectedRecord?.data?.id,
+				violationId: selectedRecord?.id,
 				data: {
 					"modifiedBy": {
 						id: appInfo?.gblConfig?.user?.uniqueId
@@ -420,7 +428,7 @@ const SafetyViolation = (props: any) => {
 		if (val == 'ok') {
 			let payload = {
 				userUniqueId: userdata?.id,
-				violationId: selectedRecord?.data?.id,
+				violationId: selectedRecord?.id,
 				data: {
 					"modifiedBy": {
 						id: appInfo?.gblConfig?.user?.uniqueId
@@ -499,7 +507,7 @@ const SafetyViolation = (props: any) => {
 					enbleAddBtn={true}
 					readOnly={true}
 					showAddRow={false}
-					rowSelected={rowSelected}
+					rowSelected={(e: any) => rowSelected(e)}
 					rowMessageHeading={"No Safety Violation items available yet"}
 					nowRowsMsg={"<div>click on + add button to create safety violation item."}
 				/>
@@ -615,7 +623,7 @@ const SafetyViolation = (props: any) => {
 					<div>
 						<div style={styles.contextTextTitle}>
 							<span className="common-icon-safety-violation"></span>
-							Do you want to Expunge safety violation record {selectedRecord?.data?.name} for this worker form the public records?
+							Do you want to Expunge safety violation record {selectedRecord?.name} for this worker form the public records?
 						</div>
 						<div style={styles.contextTextSubTitle}>
 							<div>Note: This record will be still available for record purpose on this project. But, we will not be recommending this worker for any future company jobs.</div>

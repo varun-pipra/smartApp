@@ -51762,3 +51762,75 @@ export const vcTransactions = {
     },
   ],
 };
+
+export const getTextOccurencesRes = {
+  "data": [
+      {
+          "left": 359,
+          "top": 226,
+          "width": 29,
+          "height": 16
+      },
+      {
+          "left": 354,
+          "top": 275,
+          "width": 43,
+          "height": 15
+      },
+      {
+          "left": 393,
+          "top": 517,
+          "width": 42,
+          "height": 14
+      },
+      {
+          "left": 444,
+          "top": 684,
+          "width": 29,
+          "height": 17
+      },
+      {
+          "left": 329,
+          "top": 707,
+          "width": 31,
+          "height": 17
+      },
+      {
+          "left": 360,
+          "top": 901,
+          "width": 42,
+          "height": 14
+      },
+      {
+          "left": 365,
+          "top": 925,
+          "width": 29,
+          "height": 13
+      },
+      {
+          "left": 383,
+          "top": 949,
+          "width": 28,
+          "height": 13
+      },
+      {
+          "left": 388,
+          "top": 1285,
+          "width": 27,
+          "height": 14
+      },
+      {
+          "left": 319,
+          "top": 1331,
+          "width": 29,
+          "height": 17
+      },
+      {
+          "left": 307,
+          "top": 1454,
+          "width": 29,
+          "height": 14
+      }
+  ],
+  "StatusCode": 0
+}

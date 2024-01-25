@@ -74,7 +74,7 @@ export const TLRightButtons = memo(() => {
 	return <>
 		<div key='spacer' className='toolbar-item-wrapper toolbar-group-button-wrapper' >
 			<ReportAndAnalyticsToggle />
-			<ToggleButtonGroup
+			{/* <ToggleButtonGroup
 				exclusive
 				value={'List'}
 				size='small'
@@ -87,7 +87,7 @@ export const TLRightButtons = memo(() => {
 				<ToggleButton value={'Chart'} aria-label='Change Events Analytics Tab'>
 					<AssessmentOutlinedIcon />
 				</ToggleButton>
-			</ToggleButtonGroup>
+			</ToggleButtonGroup> */}
 			<IQTooltip title='Settings' placement={'bottom'}>
 				<IconButton
 					className='settings-button'

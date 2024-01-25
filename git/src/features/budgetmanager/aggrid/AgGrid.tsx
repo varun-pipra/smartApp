@@ -84,6 +84,7 @@ const TableGrid = (props: TableGridProps) => {
 	const {gridData, originalGridApiData, presenceData, liveData,
 		selectedFilters, searchText} = useAppSelector((state) => state.gridData);
 	const {settingsData} = useAppSelector(state => state.settings);
+	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);	
 
 	const rightPannel = useAppSelector(showRightPannel);
 	const {viewData, viewBuilderData} = useAppSelector((state) => state.viewBuilder);
@@ -99,8 +100,9 @@ const TableGrid = (props: TableGridProps) => {
 	const selectedGroupKey = useAppSelector(state => state.gridData?.selectedGroupKey);
 	const [gridRef, setGridRef] = React.useState<any>();
 	const [multiLevelDefaultFilters, setMultiLevelDefaultFilters] = React.useState<any>([]);
-
-
+	const isReadOnly = isBudgetLocked;
+	console.log("isReadOnly", isBudgetLocked, isReadOnly);
+	
 	const selectedRecord = useAppSelector((state) => state.rightPanel.selectedRow);
 	const RemoveDuplicates = (array: any, key: any) => {
 		let unique: any = [];
@@ -268,6 +270,7 @@ const TableGrid = (props: TableGridProps) => {
 		{
 			headerName: 'Description',
 			field: 'description',
+			// editable: !isReadOnly,
 			editable: true,
 			hide: false,
 			suppressMenu: true,
@@ -357,7 +360,8 @@ const TableGrid = (props: TableGridProps) => {
 				// />
 				return (
 					params?.data && (
-						<>
+						isReadOnly ? `${params?.data?.division}-${params?.data?.costCode}`
+						: <>
 							{(
 								<CostCodeSelect
 									label=" "
@@ -1137,6 +1141,7 @@ const TableGrid = (props: TableGridProps) => {
 						let newColumnDef = {
 							...cDef,
 							...viewItem,
+							editable:!isReadOnly,
 							hide: viewItem.field == 'markupFee' ? !settingsData?.allowMarkupFee : viewItem?.hide
 						};
 						updatedColumndDefList.push(newColumnDef);
@@ -1145,7 +1150,7 @@ const TableGrid = (props: TableGridProps) => {
 			});
 			setColumnDefs(updatedColumndDefList);
 		}
-	}, [viewData, settingsData]);
+	}, [viewData, settingsData, isReadOnly]);
 
 	useEffect(() => {
 		if(columnDefs.length > 0) {

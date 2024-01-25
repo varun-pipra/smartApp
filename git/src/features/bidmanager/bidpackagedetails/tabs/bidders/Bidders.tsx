@@ -23,6 +23,7 @@ import { formatPhoneNumber } from 'utilities/commonFunctions';
 import {
 	Box, Button, Grid, InputLabel, Stack, TextField, ToggleButton, ToggleButtonGroup
 } from '@mui/material';
+import _ from 'lodash';
 
 interface BiddersProps {
 	readOnly?: boolean;
@@ -140,12 +141,14 @@ const Bidders = (props: BiddersProps) => {
 				color: data.colorCode,
 				id: data.objectId,
 				displayField: data.name,
-				thumbnailUrl: data.thumbnailUrl
+				thumbnailUrl: data.thumbnailUrl,
+				scope: data.isOrgCompany ? 'Organizational' : 'This Project',
+				isSuggested: data.isOrgCompany
 			});
 		});
 		console.log('groupedList', groupedList)
 		if (groupedList.length > 0) {
-			let filterDataAndMap: any = [...groupedList].filter((item: any) => item.isOrgCompany).map((item: any) => ({ ...item, isSuggested: true }));
+			let filterDataAndMap: any = [...groupedList].filter((item: any) => item.isSuggested);
 			let removeDuplicates: any = [...groupedList]?.filter((item: any) => { return !item.isOrgCompany });
 			setCompanyOptions(removeDuplicates);
 			setSuggestCompanyValues(filterDataAndMap);
@@ -181,17 +184,31 @@ const Bidders = (props: BiddersProps) => {
 			setSuggestContactPersons(filterDataAndMap);
 			setContactPersonOptions(removeDuplicates);
 		};
-	}, [contactPersonsList])
-
-	const handleFilterChange = (filters: any) => {
-		const filteredData: any = [];
-		companyData?.map((companyObj: any) => {
-			Object.keys(filters)?.map((key: any) => {
-				if (filters[key]?.includes(companyObj[key])) filteredData.push(companyObj)
-			})
+	}, [contactPersonsList]);
+	
+	const searchAndFilter = (list: any, selectedFilters?:any, searchVal?:any) => {
+		return (list || []).filter((item: any) => {
+			const regex = new RegExp(searchVal, 'gi');
+			const diverseSupplierArray = item?.diverseCategories?.map((x: any) => x?.name?.toString());
+			return (!searchVal || (searchVal && (item.displayField?.match(regex))))
+				&& (_.isEmpty(selectedFilters) || (!_.isEmpty(selectedFilters)
+					&& (_.isEmpty(selectedFilters?.complianceStatus) || selectedFilters?.complianceStatus?.length === 0 || selectedFilters?.complianceStatus?.indexOf(item.complianceStatus) > -1)
+					&& (_.isEmpty(selectedFilters?.diverseSupplier) || selectedFilters?.diverseSupplier?.length === 0 || _.intersection(selectedFilters?.diverseSupplier, diverseSupplierArray).length > 0)
+					&& (_.isEmpty(selectedFilters?.scope) || selectedFilters?.scope?.length === 0 || selectedFilters?.scope?.indexOf(item.scope) > -1)));
 		});
-	}
-
+	};
+	const handleFilterChange = (list: any, selectedFilters?:any, searchVal?:any) => {
+		// const filteredData: any = [];
+		// companyData?.map((companyObj: any) => {
+		// 	Object.keys(filters)?.map((key: any) => {
+		// 		if (filters[key]?.includes(companyObj[key])) filteredData.push(companyObj)
+		// 	})
+		// });
+		return searchAndFilter(list, selectedFilters, searchVal)
+	};
+	const handleSearchChange = (list: any, selectedFilters?:any, searchVal?:any) => {
+		return searchAndFilter(list, selectedFilters, searchVal)
+	};
 	const onCompnayAddButtonClick = (options: any, searchVal: any) => {
 		postMessage({
 			event: "common",
@@ -214,7 +231,9 @@ const Bidders = (props: BiddersProps) => {
 			},
 		});
 	};
-
+	const handleContactSearchChange = (list: any, selectedFilters?:any, searchVal?:any) => {
+		return searchAndFilter(list, selectedFilters, searchVal)
+	};
 	const headers = [
 		{
 			headerName: "Company",
@@ -240,6 +259,7 @@ const Bidders = (props: BiddersProps) => {
 						showFilterInSearch={true}
 						filterOptions={getFilterMenuOptions()}
 						onFilterChange={handleFilterChange}
+						onSearchChange={handleSearchChange}
 						paperpropsclassName={'companyMenu-dropdown-cls'}
 						showSuggested={(suggestCompanyValues.length === 0 ? false : true)}
 						suggestedDropdownOptions={suggestCompanyValues ? suggestCompanyValues : []}
@@ -288,6 +308,7 @@ const Bidders = (props: BiddersProps) => {
 						suggestedDefaultText={'Others'}
 						moduleName={'bidManager'}
 						handleAdd={onContactPersonAddButtonClick}
+						onSearchChange={handleContactSearchChange}
 					></SUIBaseDropdownSelector>
 				) : (
 					<>

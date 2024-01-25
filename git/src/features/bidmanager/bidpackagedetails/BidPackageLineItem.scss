@@ -21,8 +21,19 @@
         justify-content: space-between;
     }
     .presence-section {
-        padding: 0 1em;
-        justify-content: end;
+		padding: 0 0.5em;
+        display: grid !important;
+    	grid-template-columns: 25%;
+
+		.bubble-box {
+			grid-column: 2;
+		}
+
+		.presence-tools {
+			grid-column: 4;
+			align-self: center;
+			justify-self: end;
+		}
     }
     .details-header {
         padding-left: 1em;

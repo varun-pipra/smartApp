@@ -41,7 +41,7 @@ export const CompanyTooltip = (props: any) => {
 					</div>
 					<div className='phone'>
 						<span className='common-icon-phone CT-icons' />
-						{data?.company?.phone ? data?.company?.website : 'No Phone Number '}
+						{data?.company?.phone ? data?.company?.phone : 'No Phone Number '}
 					</div>
 				</div>
 				<div className='company-trades CT-section'>

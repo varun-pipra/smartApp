@@ -114,6 +114,18 @@ const BidResponsePackageLineItem = (props: any) => {
 					data: participantCtrl.getParticipants()
 				});
 			});
+			participantCtrl.addEventListener('printbuttonclick', function (e: any) {
+				console.log('printbuttonclick',e.event);
+				postMessage({
+					event: 'openitemlevelreport',
+					body: {
+						targetLocation: {
+							x: e.event.pageX,
+							y: e.event.pageY
+						}
+					}
+				});
+			});
 			participantCtrl.addEventListener('commentbuttonclick', function (e: any) {
 				postMessage({
 					event: 'launchcommoncomment',

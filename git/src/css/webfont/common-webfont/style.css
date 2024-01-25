@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?hyvzz5');
-  src:  url('fonts/common-webfont.eot?hyvzz5#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?hyvzz5') format('truetype'),
-    url('fonts/common-webfont.woff?hyvzz5') format('woff'),
-    url('fonts/common-webfont.svg?hyvzz5#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?fw66m5');
+  src:  url('fonts/common-webfont.eot?fw66m5#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?fw66m5') format('truetype'),
+    url('fonts/common-webfont.woff?fw66m5') format('woff'),
+    url('fonts/common-webfont.svg?fw66m5#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-chart:before {
+  content: "\ec71";
+}
+.common-icon-doc:before {
+  content: "\ec72";
+}
 .common-icon-sap-logo:before {
   content: "\ec70";
 }

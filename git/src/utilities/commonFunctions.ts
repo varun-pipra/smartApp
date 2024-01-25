@@ -284,3 +284,16 @@ export const setLoadMask = (flag: any, gridCls: any) => {
 		loader && loader.classList.remove('showloadmask');
 	}, 90000);
 }
+
+export const modifyMarkupData = (data: any) => {
+  console.log(data, "getTextOccurences data");
+  const modifyedData = data.map((markup: any) => {
+    return {
+      x1: markup.left,
+      y1: markup.top,
+      x2: markup.left + markup.width,
+      y2: markup.top + markup.height,
+    };
+  });
+  return modifyedData;
+};

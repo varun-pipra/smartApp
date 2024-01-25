@@ -170,8 +170,14 @@ const IQGridWindowDetail = ({
 				</IconButton>
 			</Stack>
 		</Stack>
-		{dynamicPageProps?.headContent?.showBCInfo && <BlockchainIB className='topdown' />}
-		{presenceId && <Stack id={presenceId} className='presence-box'></Stack>}
+		<Stack sx={{
+			padding: '0 0.5em',
+			display: 'grid !important',
+			gridTemplateColumns: '3fr 1fr 1fr 2fr'
+		}}>
+			{dynamicPageProps?.headContent?.showBCInfo && <BlockchainIB className='topdown' />}
+			{presenceId && <Stack id={presenceId} className='presence-box'></Stack>}
+		</Stack>
 		<Stack className='body'>
 			<DynamicPage className='body-content' {...dynamicPageProps} />
 		</Stack>

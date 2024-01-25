@@ -1,6 +1,7 @@
 
+import { getServerInfo } from 'app/hooks';
 import { isLocalhost } from 'app/utils';
-import { BidResponseData } from 'data/bids/bidList';
+import { BidResponseData, getTextOccurencesRes } from 'data/bids/bidList';
 import { triggerEvent } from 'utilities/commonFunctions';
 
 const moduleName = "Bid Response Manager: Grid Data";
@@ -22,4 +23,23 @@ export const patchDeclineAndIntendToBid = async (appInfo: any, packageId: any, b
 	}
 
 	callback && callback(response);
+};
+
+export const getTextOccurences = async (body:any) => {
+    let response;
+    const server: any = getServerInfo();
+    if(!isLocalhost) {
+        response = await fetch(`${server?.hostUrl}/EnterpriseDesktop/Editor/GetTextOccurences?sessionId=${server?.sessionId}`, {
+            method: 'POST',
+            body: body
+        });
+
+        if(!response.ok) {
+            const message = `API Request Error (${moduleName}): ${response.status}`;
+            throw new Error(message);
+        }
+        const responseData = await response.json();
+        return responseData;
+    }
+    return getTextOccurencesRes;
 };

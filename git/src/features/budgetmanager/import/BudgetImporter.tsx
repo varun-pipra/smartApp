@@ -15,12 +15,6 @@ const BudgetImporter = (props: any) => {
 		tools={{
 			closable: true
 		}}
-		PaperProps={{
-			sx: {
-				width: '55em',
-				height: '60%'
-			}
-		}}
 		actions={
 			<IQButton color="orange">
 				START IMPORT

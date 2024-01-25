@@ -423,7 +423,7 @@ const BudgetManagerToolbar = (props: any) => {
 			</div>
 			<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 				{<ReportAndAnalyticsToggle />}
-				<ToggleButtonGroup
+				{/* <ToggleButtonGroup
 					exclusive
 					value={tableViewType}
 					size="small"
@@ -431,14 +431,14 @@ const BudgetManagerToolbar = (props: any) => {
 					aria-label="Inventory tab view buttons"
 				>
 					<ToggleButton value={"Calendar"} aria-label="Budget details tab">
-						{/* <CalendarViewMonth /> */}
+						<CalendarViewMonth />
 						<GridOn />
 					</ToggleButton>
 					<ToggleButton value={"Chart"} aria-label="Analytics tab">
-						{/* <Leaderboard /> */}
+						<Leaderboard />
 						<AssessmentOutlinedIcon />
 					</ToggleButton>
-				</ToggleButtonGroup>
+				</ToggleButtonGroup> */}
 				
 				{appInfo?.gblConfig?.ConnectorType == "sap" && <Button
 					variant="outlined"

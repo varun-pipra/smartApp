@@ -138,6 +138,18 @@ const LineItemDetails = (props: headerprops) => {
 					data: participantCtrl.getParticipants()
 				});
 			});
+			participantCtrl.addEventListener('printbuttonclick', function (e: any) {
+				console.log('printbuttonclick',e.event);
+				postMessage({
+					event: 'openitemlevelreport',
+					body: {
+						targetLocation: {
+							x: e.event.pageX,
+							y: e.event.pageY
+						}
+					}
+				});
+			});
 			participantCtrl.addEventListener('commentbuttonclick', function (e: any) {
 				postMessage({
 					event: 'launchcommoncomment',
@@ -329,8 +341,8 @@ const LineItemDetails = (props: headerprops) => {
 							<span className='budgetid-label grey-font'>Budget ID:</span>
 							<span className='grey-font budgetid-content'> 
 								<span>{selectedRow?.name}</span>
-								<span className='sapnumber common-icon-sap-logo'></span>
-								<span className='sapnumber'>{selectedRow?.id?.substring(0,10)?.toUpperCase()}</span>
+								{appInfo?.gblConfig?.ConnectorType == "sap" && <span className='sapnumber common-icon-sap-logo'></span>}
+								{appInfo?.gblConfig?.ConnectorType == "sap" &&<span className='sapnumber'>{selectedRow?.id?.substring(0,10)?.toUpperCase()}</span>}
 							</span>
 							<span className='last-modified-label grey-font'>Last Modified:</span><span className='grey-font'> {stringToUSDateTime2(selectedRow.modifiedDate)} by {selectedRow.modifiedBy?.displayName}</span>
 						</div>
