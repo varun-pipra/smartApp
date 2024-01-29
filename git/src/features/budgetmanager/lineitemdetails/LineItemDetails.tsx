@@ -41,6 +41,7 @@ export interface headerprops {
 const LineItemDetails = (props: headerprops) => {
 	const dispatch = useAppDispatch();
 	const ref = React.useRef<HTMLDivElement | null>(null);
+	const { connectors } = useAppSelector((state) => state.gridData);	
 	const { selectedRow } = useAppSelector(state => state.rightPanel);
 	const { transactionsData } = useAppSelector(state => state.transactionsData);
 	const { forecastData } = useAppSelector(state => state.forecast);
@@ -341,8 +342,12 @@ const LineItemDetails = (props: headerprops) => {
 							<span className='budgetid-label grey-font'>Budget ID:</span>
 							<span className='grey-font budgetid-content'> 
 								<span>{selectedRow?.name}</span>
-								{appInfo?.gblConfig?.ConnectorType == "sap" && <span className='sapnumber common-icon-sap-logo'></span>}
-								{appInfo?.gblConfig?.ConnectorType == "sap" &&<span className='sapnumber'>{selectedRow?.id?.substring(0,10)?.toUpperCase()}</span>}
+								{connectors?.length && <img
+														className="sapnumber"
+														src={connectors?.[0]?.primaryIconUrl}
+														alt="connector Image"
+													/>}
+								{connectors?.length && <span className='sapnumber'>{selectedRow?.id?.substring(0,10)?.toUpperCase()}</span>}
 							</span>
 							<span className='last-modified-label grey-font'>Last Modified:</span><span className='grey-font'> {stringToUSDateTime2(selectedRow.modifiedDate)} by {selectedRow.modifiedBy?.displayName}</span>
 						</div>

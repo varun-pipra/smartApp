@@ -11,7 +11,7 @@ import {
 import {useAppDispatch, useAppSelector} from 'app/hooks';
 
 import {fetchSettings, fetchSettingsCostCodeAndType, fetchdefaultdrodown, fetchSecurity, fetchCostCodeDropdownList, fetchDivisionCostCodeFilterList, fetchCostTypeDropdownList} from '../operations/settingsSlice';
-import {fetchGridData} from '../operations/gridSlice';
+import {fetchConnectors, fetchGridData} from '../operations/gridSlice';
 
 import {fetchVendorData} from '../operations/vendorInfoSlice';
 import {isLocalhost,postMessage} from 'app/utils';
@@ -82,6 +82,7 @@ const HeaderPinning = (props: any) => {
 		dispatch(fetchdefaultdrodown(appInfo));
 		dispatch(fetchSecurity(appInfo));
 		dispatch(fetchViewBuilderList(appInfo));
+		dispatch(fetchConnectors(appInfo));
 		return () => {};
 	}, []);
 

@@ -17,6 +17,7 @@ import {getAttachments as getSentAttachments} from 'features/vendorpayapplicatio
 import {getAttachments as getReceivedAttachments} from 'features/vendorpayapplications/stores/payment/PayAppPaymentReceivedSlice';
 import {setToastMessage} from 'features/vendorpayapplications/stores/VendorPayAppSlice';
 import { fetchCompanyList } from 'features/vendorcontracts/stores/VendorContractsSlice';
+import { postMessage } from 'app/utils';
 
 // Component definition
 const VendorPayAppToolbarLeftButtons = () => {
@@ -122,7 +123,17 @@ const VendorPayAppToolbarLeftButtons = () => {
 	// 	},);
 	// 	return data;
 	// }, []);
-
+	const PrintOnclick = (event: any) => {
+		postMessage({
+			event: 'openitemlevelreport',
+			body: {
+				targetLocation: {
+					x: event.pageX,
+					y: event.pageY
+				}
+			}
+		});
+	};
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
 			<IconButton
@@ -142,7 +153,7 @@ const VendorPayAppToolbarLeftButtons = () => {
 			</IconButton>
 		</IQTooltip> */}
 		<IQTooltip title='Print' placement='bottom'>
-			<IconButton disabled={disablePrint} >
+			<IconButton disabled={disablePrint} onClick={(e: any) => { PrintOnclick(e) }}>
 				<span className='common-icon-print' />
 			</IconButton>
 		</IQTooltip>

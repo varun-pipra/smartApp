@@ -14,6 +14,7 @@ import {
 	getChangeEventList, setChangeEventsListRefreshed, setCurrentChangeEventId, setToast
 } from '../../stores/ChangeEventSlice';
 import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
+import { postMessage } from 'app/utils';
 
 // Component definition
 export const CERLeftButtons = memo(() => {
@@ -21,6 +22,7 @@ export const CERLeftButtons = memo(() => {
 	const appInfo = useAppSelector(getServer);
 
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
+
 	const [alert, setAlert] = useState<boolean>(false);
 	const { selectedChangeEvents, selectedChangeEventsCount } = useAppSelector((state) => state.changeEventRequest);
 
@@ -49,6 +51,17 @@ export const CERLeftButtons = memo(() => {
 			}
 		});
 	};
+	const PrintOnclick = (event: any) => {
+		postMessage({
+			event: 'openitemlevelreport',
+			body: {
+				targetLocation: {
+					x: event.pageX,
+					y: event.pageY
+				}
+			}
+		});
+	};
 
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
@@ -66,12 +79,13 @@ export const CERLeftButtons = memo(() => {
 			<IconButton>
 				<span className='common-icon-Export'/>
 			</IconButton>
-		</IQTooltip>
+		</IQTooltip> */}
 		<IQTooltip title='Print' placement='bottom'>
-			<IconButton>
+			<IconButton disabled={selectedChangeEventsCount === 0}
+			 onClick={(e: any) => { PrintOnclick(e) }}>
 				<span className='common-icon-print' />
 			</IconButton>
-		</IQTooltip> */}
+		</IQTooltip>
 		<IQTooltip title='Delete' placement='bottom'>
 			<IconButton aria-label='Delete Bid response Line Item'
 				disabled={selectedChangeEventsCount === 0}

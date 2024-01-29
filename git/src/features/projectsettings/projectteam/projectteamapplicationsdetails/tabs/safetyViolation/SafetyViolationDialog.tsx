@@ -32,6 +32,7 @@ export interface SafetyViolationDialogProps extends DialogProps {
 	customButtonsContent?: React.ReactNode;
 	showPositiveBtn?:boolean;
 	showNegativeBtn?:boolean;
+	onHelpOpen?:any;
 
 }
 
@@ -65,7 +66,8 @@ const SafetyViolationDialog = (props: SafetyViolationDialogProps) => {
 	};
 	const handleHelp =() => {
 		console.log('violationExpungeHelp postMessage');
-		postMessage({ event: 'projectteam', body: { evt: 'violationExpungeHelp', record: {}}})
+		postMessage({ event: 'projectteam', body: { evt: 'violationExpungeHelp', record: {}}});
+		if(props?.onHelpOpen) props?.onHelpOpen(true);
 	};
 	useEffect(() => {
 		setOpenDlg(open);

@@ -8,6 +8,7 @@ import {GridOn, TableRows, Lock} from '@mui/icons-material';
 import {useAppSelector, useAppDispatch} from 'app/hooks';
 
 import './VendorContractsToolbar.scss';
+import { postMessage } from 'app/utils';
 
 import {getServer, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/appInfoSlice';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
@@ -37,6 +38,7 @@ const VendorContractsToolbar = (props: any) => {
 	const {selectedRows, gridData} = useAppSelector((state) => state.vendorContractsGrid);
 	const {loginUserData} = useAppSelector((state) => state.vendorContracts);
 	const appInfo = useAppSelector(getServer);
+	const [disablePrint, setDisablePrint] = useState<boolean>(true);
 	const [disableDelete, setDisableDelete] = React.useState<boolean>(true);
 	const [disablePostContract, setDisablePostContract] = React.useState<boolean>(true);
 	const [alert, setAlert] = React.useState<any>({show: false, message: '', type: ''});
@@ -121,8 +123,8 @@ const VendorContractsToolbar = (props: any) => {
 	};
 
 	React.useEffect(() => {
-		console.log('selectedRows', selectedRows);
-		selectedRows.length > 0 ? setDisableDelete(false) : setDisableDelete(true);
+		if (selectedRows.length > 0) { setDisableDelete(false); setDisablePrint(false); }
+		else { setDisableDelete(true); setDisablePrint(true); }
 		selectedRows[0]?.status == 'ReadyToSubmit' ? setDisablePostContract(false) : setDisablePostContract(true);
 	}, [selectedRows]);
 
@@ -221,6 +223,17 @@ const VendorContractsToolbar = (props: any) => {
 		const typeValue: number = moduleType['VendorContracts'];
 		blockchainAction(event.target.checked, typeValue);
 	};
+	const PrintOnclick = (event: any) => {
+		postMessage({
+			event: 'openitemlevelreport',
+			body: {
+				targetLocation: {
+					x: event.pageX,
+					y: event.pageY
+				}
+			}
+		});
+	};
 	return <Stack direction='row' className='toolbar-root-container-vendor-contracts'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -256,6 +269,15 @@ const VendorContractsToolbar = (props: any) => {
 						<span className='common-icon-print' style={{ fontSize: '1.5rem' }} />
 					</IconButton>
 				</IQTooltip> */}
+				<IQTooltip title='Print' placement='bottom'>
+					<IconButton
+						aria-label='Print Bid Line Item'
+						disabled={disablePrint}
+						onClick={(e: any) => { PrintOnclick(e) }}
+					>
+						<span className="common-icon-Print1"></span>
+					</IconButton>
+				</IQTooltip>
 				<IQTooltip title='Delete' placement='bottom'>
 					<IconButton
 						aria-label='Delete Vendor Contract Item'

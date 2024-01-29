@@ -160,7 +160,8 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   }, [searchText]);
 
   const handelSearchChange = () => {
-    let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`;
+    if (bidRefernceagePUId && sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.specBookId) {
+      let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`;
     getTextOccurences(params).then((resp: any) => {
       let updatedRes = modifyMarkupData(resp.data).map((item: any) => {
         return { ...item, locked: true };
@@ -171,6 +172,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       console.log("udated markup data", data, sketchPageinfo);
       sketchPageinfo?.callback(data);
     });
+    }
   };
 
   const getMarkupsPerpage = () => {

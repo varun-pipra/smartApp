@@ -24,13 +24,14 @@ export const budgetManagerMainGridRTListener = (path: any, event: any) => {
 		if(gridData.length > 0 && update?.length > 0) {
 			const updateIdList = update.map((el: any) => el.id);
 			const {selectedRow} = rootState?.rightPanel;
-			const filteredArray = gridData.filter((item: any) => {
+			let filteredArray: any = [...gridData];
+			filteredArray.forEach((item: any) => {
 				if(updateIdList.indexOf(item.id) !== -1) {
 					diffObject[item.id] = objDiff(item, update.find((el: any) => el.id === item.id));
+					item = {...update};
 				}
-				return updateIdList.indexOf(item.id) === -1;
 			});
-			dataList = filteredArray.concat(update);
+			//dataList = filteredArray.concat(update);
 
 			if(selectedRow && updateIdList.indexOf(selectedRow.id) > -1) {
 				const currentItem = update.find((item: any) => item.id === selectedRow.id);

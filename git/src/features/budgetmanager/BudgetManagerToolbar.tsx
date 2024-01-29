@@ -7,6 +7,7 @@ import {
 	Button,
 	Box
 } from "@mui/material";
+import { postMessage } from 'app/utils';
 import {
 	Lock, Close, GridOn, TableRows
 } from "@mui/icons-material";
@@ -61,9 +62,10 @@ const BudgetManagerToolbar = (props: any) => {
 	const openImportCSVPopup = useAppSelector(getImportPopup);
 	const costCodeDivisionOpts = useAppSelector(getCostCodeDivisionList);
 	const costTypeOpts = useAppSelector(getCostTypeList);
-	const { gridData, originalGridApiData } = useAppSelector((state) => state.gridData);
+	const { gridData, originalGridApiData, connectors } = useAppSelector((state) => state.gridData);
 	const appInfo = useAppSelector(getServer);
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
+	const [disablePrint, setDisablePrint] = useState<boolean>(true);
 	const [showNewAddLineItemBtn, setShowNewAddLineItemBtn] = useState<boolean>(false);
 	const { viewData } = useAppSelector(state => state.viewBuilder);
 	const [alert, setAlert] = useState<boolean>(false);
@@ -320,7 +322,8 @@ const BudgetManagerToolbar = (props: any) => {
 	}, [bidPackagesList, vendorContractsList, clientContractsList, costTypeOpts, costCodeDivisionOpts, locations, vendors, divisions, costCodeList]);
 
 	useEffect(() => {
-		selectedRows.length > 0 ? setDisableDelete(false) : setDisableDelete(true);
+		if (selectedRows.length > 0) { setDisableDelete(false); setDisablePrint(false); }
+		else { setDisableDelete(true); setDisablePrint(true); }
 	}, [selectedRows, gridData]);
 
 	const handleUploadedFile = (file: any) => { };
@@ -377,6 +380,17 @@ const BudgetManagerToolbar = (props: any) => {
 		dispatch(setSelectedGroupKey(selectedVal));
 	};
 
+	const PrintOnclick = (event: any) => {
+		postMessage({
+			event: 'openitemlevelreport',
+			body: {
+				targetLocation: {
+					x: event.pageX,
+					y: event.pageY
+				}
+			}
+		});
+	};
 	return (
 		<Stack direction={"row"} className={"toolbar-root-container-budgetmanger"}>
 			<div key="toolbar-buttons" className="toolbar-item-wrapper options-wrapper">
@@ -387,6 +401,15 @@ const BudgetManagerToolbar = (props: any) => {
 							onClick={handleRefresh}
 						>
 							<span className="common-icon-refresh"></span>
+						</IconButton>
+					</IQTooltip>
+					<IQTooltip title='Print' placement='bottom'>
+						<IconButton
+							aria-label='Print Bid Line Item'
+							disabled={disablePrint}
+							onClick={(e: any) => { PrintOnclick(e) }}
+						>
+							<span className="common-icon-Print1"></span>
 						</IconButton>
 					</IQTooltip>
 					<IQTooltip title="Delete" placement={"bottom"}>
@@ -440,14 +463,18 @@ const BudgetManagerToolbar = (props: any) => {
 					</ToggleButton>
 				</ToggleButtonGroup> */}
 				
-				{appInfo?.gblConfig?.ConnectorType == "sap" && <Button
+				{connectors?.length && <Button
 					variant="outlined"
 					startIcon={<span className='common-icon-redo' />}
 					className="sap-button"
 					// onClick={handleLockBudget}
 				>
 					<span className='postto'>Post to</span>
-					<span className='common-icon-sap-logo sapicon'></span>
+					<img
+						// className="sapicon"
+						src={connectors?.[0]?.primaryIconUrl}
+						alt="connector Image"
+					/>
 				</Button>}
 				<Button
 					variant="outlined"

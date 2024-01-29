@@ -52,18 +52,18 @@
         display: flex;
         justify-content: end;
         margin: 15px 20px 0px 0;
-        button {
-            padding-top: 4px !important;
-            padding-bottom: 4px !important;
-            border: 1px solid #059cdf;
-            background-color: #059cdf;
-            border-radius: 2px;
-            margin: 4px 2px;
-            &:hover {
-                border: 1px solid #099cdd;
-                background-color: #099cdd;
-            }
-        }
+        // button {
+        //     padding-top: 4px !important;
+        //     padding-bottom: 4px !important;
+        //     border: 1px solid #059cdf;
+        //     background-color: #059cdf;
+        //     border-radius: 2px;
+        //     margin: 4px 2px;
+        //     &:hover {
+        //         border: 1px solid #099cdd;
+        //         background-color: #099cdd;
+        //     }
+        // }
     }
     &_text-field {
         .MuiFormControl-root {

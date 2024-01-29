@@ -59,10 +59,10 @@ export const ReportAndAnalyticsToggle = (props: any) => {
             className="report-analytics-cls"
         >
             <ToggleButton value={'Reports'} className="ra-btn-cls" aria-label='Reports'>
-            <span className="common-icon-report-bid-manager" title="Reports"></span>
+            <span className="common-icon-doc" title="Reports"></span>
             </ToggleButton>
             <ToggleButton value={'Analytics'} className="ra-btn-cls" aria-label='Analytics'>
-            <span className="common-icon-orgconsole-analytics" title="Analytics"></span>
+            <span className="common-icon-chart" title="Analytics"></span>
             </ToggleButton>
         </ToggleButtonGroup>
     );

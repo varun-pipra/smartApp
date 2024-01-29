@@ -18,7 +18,7 @@ import {
   AddFiles,
   deleteFiles,
 } from "features/safety/sbsmanager/operations/sbsManagerAPI";
-import { getSBSDetailsById , setSbsRefFileCount} from "features/safety/sbsmanager/operations/sbsManagerSlice";
+import { getSBSDetailsById } from "features/safety/sbsmanager/operations/sbsManagerSlice";
 import _ from "lodash";
 import { findAndUpdateFiltersData } from "features/safety/sbsmanager/utils";
 const referenceData = [
@@ -128,8 +128,6 @@ const ReferenceFiles =(props: any) => {
   const [refFiles, setRefFiles] = useState<any>([]);
   React.useEffect(() => {
     if((detailsData?.referencefiles?.length ?? [])) {
-      console.log(detailsData?.referencefiles?.length,'detailsData?.referencefiles?.length')
-      dispatch(setSbsRefFileCount(detailsData?.referencefiles?.length))
       const data: any = (detailsData?.referencefiles || []).map((item: any) => ({
 				...item,
         phaseValue : item.phase.name === null || item.phase.name === undefined || item.phase.name === '' ? 'NA' : item.phase.name,
@@ -166,15 +164,15 @@ const ReferenceFiles =(props: any) => {
           return (
             params.data && (
               <div className={`app-items-cell-contentt`}>
-                <div className="ref-name-icon">
-                  <div className="common-icon-drawings"></div>
-                </div>
-                <div
+                <span className="ref-name-icon">
+                  <span className="common-icon-drawings"></span>
+                </span>
+                <span
                   className="ref-name-tag"
                   style={{ color: params.data?.smartAppId ? "#059CDF" : "" }}
                 >
                   {params.value}
-                </div>
+                </span>
               </div>
             )
           );
@@ -279,7 +277,6 @@ const ReferenceFiles =(props: any) => {
       selected?.map((file: any) => file.fileId),
       (response: any) => {
         dispatch(getSBSDetailsById(detailsData?.uniqueid))
-        setSelected([]);
       }
     );
   };
@@ -409,7 +406,7 @@ const ReferenceFiles =(props: any) => {
           headers={headers}
           data={gridData}
           rowSelected={(e: any) => rowSelected(e)}
-          getRowId={(record: any) => record.data.fileId}
+          getRowId={(record: any) => record?.data?.fileId ?? record?.data?.objectId}
         />
       </div>
     </div>

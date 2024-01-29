@@ -10,6 +10,8 @@ import { useAppDispatch, showLoadMask, hideLoadMask, useAppSelector } from 'app/
 import { TextField } from "@mui/material";
 import { deletePhase, createNewPhase, updatePhases } from "../operations/sbsManagerAPI";
 import {PhasesColors} from '../utils';
+import IQButton from "components/iqbutton/IQButton";
+import _ from "lodash";
 
 const PhasesGridList = () => {
   const dispatch = useAppDispatch()
@@ -18,6 +20,7 @@ const PhasesGridList = () => {
   const gridRef = useRef<any>();
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [newPhase, setNewPhase] = useState<any>('');
+  const [saveEnable, setSaveEnable] = useState<boolean>(true);
   
   const [alert, setAlert] = React.useState<any>({
     open: false,
@@ -68,11 +71,13 @@ const PhasesGridList = () => {
                     if (type === "yes") {
                       params.node.setData({ ...params.data, color: color });
                       setAlert({ open: false });
+                      setSaveEnable(false);
                     }
                   },
                 });
               } else {
                 params.node.setData({ ...params.data, color: color });
+                setSaveEnable(false);
               }
             }}
           ></PhasesColorPicker>
@@ -81,8 +86,12 @@ const PhasesGridList = () => {
     },
     { field: "sequence", width: 70, rowDrag: true, cellRenderer: () => "" },
   ]);
-
+  const EnableSaveBtn = (prev:any, current:any) => {
+    if(!_.isEqual(prev, current)) setSaveEnable(false);
+    else setSaveEnable(true);
+  };
   const onRowDragEnd = useCallback((e: any) => {
+    EnableSaveBtn(gridRef.current?.api?.rowModel?.rowsToDisplay, getUpdatedRowDataWithSequence());
     console.log("onRowDragEnd", getUpdatedRowDataWithSequence());
   }, []);
 
@@ -229,9 +238,11 @@ const PhasesGridList = () => {
         hideLoadMask();
         onRefreshButtonClick();
         setNewPhase("");
+        setSaveEnable(false);
       })
       .catch((err: any) => {
         hideLoadMask();
+        setSaveEnable(false);
         console.log("Failed to add new phase", err);
       });
   };
@@ -300,9 +311,9 @@ const PhasesGridList = () => {
           ></AgGridReact>
         </div>
         <div className="phases-grid-wrapper_footer">
-          <Button variant="contained" onClick={() => onSaveBtnClick()}>
+          <IQButton disabled={saveEnable} onClick={() => onSaveBtnClick()}>
             SAVE
-          </Button>
+          </IQButton>
         </div>
         <SUIAlert
           open={alert.open}

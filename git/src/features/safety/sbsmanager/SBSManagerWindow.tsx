@@ -126,6 +126,7 @@ const SBSManagerWindow = (props: any) => {
   const [driveFileQueue, setDriveFileQueue] = useState<any>([]);
   const [smartItemLink, setSmartItemLink] = useState<any>({});
   const [toastMessage, setToastMessage] = useState<string>("");
+  const [selectedSettingsCat, setSelectedSettingsCat] = useState<any>({});
   const [isRightPanelOpened, setIsRightPanelOpened] = React.useState(false);
   const [filters, setFilters] = useState<any>([]);
   const isAppMaximized = useAppSelector(
@@ -513,11 +514,13 @@ const SBSManagerWindow = (props: any) => {
     };
   }, []);
   const handleSelectedCategory = (type: string) => {
+    console.log("managerr", type)
     switch (type) {
       case "sbs": {
         break;
       }
       case "managerSbs": {
+        console.log("managerr1")
         setShowManagePhasesModal(true);
         break;
       }
@@ -528,6 +531,7 @@ const SBSManagerWindow = (props: any) => {
             iframeId: iframeID,
             appType: appType,
             dataEntity: 9,
+            category: selectedSettingsCat?.name || 'System Breakdown Structure Categories (SBS)',
           },
         });
         break;
@@ -543,6 +547,7 @@ const SBSManagerWindow = (props: any) => {
   };
   const handleSbsCategoryChange = (val: string) => {
     console.log("Category val", val);
+    setSelectedSettingsCat(val);
   };
   const onFilterChange = (filterValues: any) => {
     setSelectedFilters(filterValues);
@@ -780,6 +785,7 @@ const SBSManagerWindow = (props: any) => {
           if (showPhaseModel) dispatch(setShowPhaseModel(false));
         }}
         customButtons={true}
+        onHelpOpen={(value:any) => setShowManagePhasesModal(false)}
         customButtonsContent={<></>}
       />
     </div>

@@ -19,13 +19,9 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
   const { smEnableButton } = useAppSelector(
     (state) => state.specificationManager
   );
-  const { detailsData,sbsSaveEnableBtn,sbsDetailsPayload , sbsRefFileCount} = useAppSelector((state) => state.sbsManager);
+  const { detailsData,sbsSaveEnableBtn,sbsDetailsPayload } = useAppSelector((state) => state.sbsManager);
   const [lidTitle, setLidTitle] = useState(data?.name);
-	
 
-	useEffect(()=>{
-		console.log(sbsRefFileCount,'console.log(sbsRefFileCount);');
-	},[sbsRefFileCount])
   const loadData = (id: any) => {
 		dispatch(getSBSDetailsById(id));
 	};
@@ -58,8 +54,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
     {
       tabId: "SBSReferenceFiles",
       label: "Reference Files",
-      showCount: sbsRefFileCount > 0 ? true : false,
-		count: sbsRefFileCount,
+      showCount: false,
 	  iconCls: "common-icon-referance",
 	  content:(<ReferenceFiles selectedRec={data}/>)
     },
@@ -72,7 +67,6 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
     },
   ];
   const handleSave = () => {
-	console.log(sbsDetailsPayload,'sbsDetailsPayload')
     saveRightPanelData(sbsDetailsPayload)
 			.then((res: any) => {
 				if(res) {
@@ -95,7 +89,6 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
         className="textField"
         variant="outlined"
         onChange={(e: any) => {
-			console.log({...sbsDetailsPayload?.[0], name : e.target.value},'e.target.value')
 			setLidTitle(e.target?.value);
 			dispatch(setEnableSaveButton(true));
 			if(sbsDetailsPayload.length === 0) {

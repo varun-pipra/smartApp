@@ -35,11 +35,16 @@ const SBSCategoryRightPanel = (props:any) => {
         setSelectedCategory([...settingsCategoryList].find((rec:any) => rec.name === "System Breakdown Structure Categories (SBS)")?.id ?? "");
       }
   },[sbsSettings])
+
+  React.useEffect(() => {    
+    let selectedSBSCat = settingsCategoryList.find((rec:any) => rec.id === selectedCategory);
+    handleSbsCategoryChange(selectedSBSCat);
+  },[selectedCategory])
+
   const onCategoryItemClick = (type:string) => {
       handleSelectedCategory(type);
   };
   const handleCategoryOnChange = (val:string) => {
-    handleSbsCategoryChange(val);
     setSelectedCategory(val);
     let payload = {"details":{ "id": null, "categoryId": val }};
     UpdateSettings(payload)
@@ -96,12 +101,20 @@ const SBSCategoryRightPanel = (props:any) => {
                 className="generalsettingtext"
               />
             </ListItem>
+            <Typography
+            variant="h6"
+            component="h6"
+            className="sup-conf"
+            style={{textAlign:'left'}}
+          >
+            Supplemental info
+          </Typography>
            <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('supplemental')}>
             <ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
 								<span className="common-icon-orgconsole-project-supplemental-info"></span>
 							</ListItemIcon>
               <ListItemText
-                primary="Associate Supplemental App"
+                primary="Supplemental info Configuration"
                 className="generalsettingtext"
               />
             </ListItem>

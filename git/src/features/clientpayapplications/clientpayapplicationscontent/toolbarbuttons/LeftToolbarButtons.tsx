@@ -20,6 +20,7 @@ import { setToastMessage } from 'features/clientpayapplications/stores/ClientPay
 import { getAttachments as getSentAttachments } from 'features/vendorpayapplications/stores/payment/PayAppPaymentSentSlice';
 import { getAttachments as getReceivedAttachments } from 'features/vendorpayapplications/stores/payment/PayAppPaymentReceivedSlice';
 import { getClientCompanies } from 'features/clientContracts/stores/ClientContractsSlice';
+import { postMessage } from 'app/utils';
 
 // Component definition
 const ClientPayAppToolbarLeftButtons = () => {
@@ -130,6 +131,18 @@ const ClientPayAppToolbarLeftButtons = () => {
 			setWarningMessage(false);
 		}
 	}
+	const PrintOnclick = (event: any) => {
+		postMessage({
+			event: 'openitemlevelreport',
+			body: {
+				targetLocation: {
+					x: event.pageX,
+					y: event.pageY
+				}
+			}
+		});
+	};
+
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
 			<IconButton
@@ -149,7 +162,7 @@ const ClientPayAppToolbarLeftButtons = () => {
 			</IconButton>
 		</IQTooltip> */}
 		<IQTooltip title='Print' placement='bottom'>
-			<IconButton disabled={disablePrint}>
+			<IconButton disabled={disablePrint} onClick={(e: any) => { PrintOnclick(e) }}>
 				<span className='common-icon-print' />
 			</IconButton>
 		</IQTooltip>

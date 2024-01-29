@@ -1,4 +1,5 @@
 import {isLocalhost} from 'app/utils';
+import { connectorsData } from 'data/Budgetmanger/connectors';
 import {gridData} from 'data/Budgetmanger/griddata';
 /**
  * This function fetches the list of Costcode dropdown optins
@@ -130,4 +131,21 @@ export const updateBudgetLineItem = async (appInfo: any, lineItemId: any, body: 
 	// }, 5000);
 
 	callback && callback(data);
+};
+
+export const fetchPostToConnector = async (appInfo: any) => {
+	console.log("connectors", appInfo);
+	if(!isLocalhost) {
+		if(appInfo) {
+		console.log("connectors1", appInfo);			
+			let response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/connectors?sessionId=${appInfo?.sessionId}`);
+			if(!response.ok) {
+				const message = `API Request Error (${moduleName}): ${response.status}`;
+				throw new Error(message);
+			}
+			const result = await response.json();
+			return result.data;
+		}
+	}
+	else return connectorsData?.data;
 };

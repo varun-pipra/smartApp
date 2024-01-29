@@ -121,6 +121,11 @@
 				.common-icon-sap-setting:before {
 					font-size: 15px !important;
 				}
+                img.sapnumber {
+                    height: 1.5rem;
+                    object-fit: contain;
+                    margin-top: -3px;
+                }
 				.sapnumber{
 					color:#059cdf;
                     &.common-icon-sap-logo:before {

@@ -297,6 +297,31 @@ const Links = () => {
 			suppressMenu: true,
 		},
 		{
+			headerName: "Phases",
+			field: "phase.name",
+			minWidth: 250,
+			suppressMenu: true,
+			cellRenderer: (params: any) => {
+			  const phase = params.data?.phase?.name;
+			  const buttonStyle = {
+				backgroundColor: params.data?.phase?.color ?? "red",
+				color: "#fff",
+				alignItems: "center",
+			  };
+	  
+			  return (
+				<>
+				  {phase ? (
+					<Button style={buttonStyle} className="phase-btn">
+					  <span className="common-icon-phase"></span>
+					  {phase}
+					</Button>
+				  ) : 'NA'}
+				</>
+			  );
+			},
+		  },
+		{
 			headerName: 'Created By',
 			field: 'createdBy',
 			minWidth: 150,

@@ -192,15 +192,18 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   },[searchText])
 
   const handelSearchChange =() =>{
-    let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`
-    getTextOccurences(params).then((resp:any)=>{
-      let updatedRes = modifyMarkupData(resp.data).map((item:any) => { return {...item, locked: true} })
-      let data = {
-        "extractionAreas": updatedRes
-      };
-      console.log('udated markup data',data, sketchPageinfo);
-      sketchPageinfo?.callback(data)
-    })
+    if(bidRefernceagePUId && sepcSelectedRecord?.specBookId) {
+      let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`
+      getTextOccurences(params).then((resp:any)=>{
+        let updatedRes = modifyMarkupData(resp.data).map((item:any) => { return {...item, locked: true} })
+        let data = {
+          "extractionAreas": updatedRes
+        };
+        console.log('udated markup data',data, sketchPageinfo);
+        sketchPageinfo?.callback(data)
+      })
+    }
+   
   }
 
   return (

@@ -5,7 +5,6 @@ import { EastOutlined, KeyboardArrowLeft, KeyboardArrowRight, Gavel } from '@mui
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 
 import './BidResponseManagerToolbar.scss';
-
 import { getServer } from 'app/common/appInfoSlice';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
@@ -39,7 +38,7 @@ const BidResponseManagerToolbar = (props: any) => {
 
 	const [showLeftButton, setShowLeftButton] = useState<boolean>(false);
 	const [showRightButton, setShowRightButton] = useState<boolean>(false);
-
+	const [disablePrint, setDisablePrint] = useState<boolean>(true);
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
 	const [declineBid, setDeclineBid] = useState<any>({ show: true, disable: false });
 	const [submitBid, setSubmitBid] = useState<any>({ show: false, disable: true });
@@ -124,7 +123,8 @@ const BidResponseManagerToolbar = (props: any) => {
 	useEffect(() => {
 		setDeclineBid({ ...declineBid, show: selectedRecord?.responseStatus == 0 && selectedRecord?.packageStatus == 3 ? true : false });
 		setSubmitBid({ ...submitBid, show: [2, 3].includes(selectedRecord?.responseStatus) && selectedTabName == 'bidResponse' ? true : false, disable: selectedRecord?.responseStatus == 3 || selectedRows[0]?.responseStatus == 3 ? false : true });
-		selectedRows.length > 0 ? setDisableDelete(false) : setDisableDelete(true);
+		if (selectedRows.length > 0) { setDisableDelete(false); setDisablePrint(false); }
+		else { setDisableDelete(true); setDisablePrint(true); }
 	}, [bidResponseData, selectedRecord, selectedTabName, selectedRows]);
 
 	const onRightPanelClose = () => {
@@ -221,7 +221,17 @@ const BidResponseManagerToolbar = (props: any) => {
 		}
 		setAlert({ open: false });
 	};
-
+	const PrintOnclick = (event: any) => {
+		postMessage({
+			event: 'openitemlevelreport',
+			body: {
+				targetLocation: {
+					x: event.pageX,
+					y: event.pageY
+				}
+			}
+		});
+	};
 	return (
 		<Stack direction='row' className='toolbar-root-container-bidmanager bid-response'>
 			<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper bid-response-toolbar'>
@@ -246,6 +256,15 @@ const BidResponseManagerToolbar = (props: any) => {
 							<Box component='img' alt='CSV' src={CSV} className='image' width={22} height={22} />
 						</IconButton>
 					</IQTooltip> */}
+					<IQTooltip title='Print' placement='bottom'>
+						<IconButton
+							aria-label='Print Bid Line Item'
+							disabled={disablePrint}
+							onClick={(e: any) => { PrintOnclick(e) }}
+						>
+							<span className="common-icon-Print1"></span>
+						</IconButton>
+					</IQTooltip>
 					<IQTooltip title='Delete' placement='bottom'>
 						<IconButton
 							aria-label='Delete Bid Line Item'

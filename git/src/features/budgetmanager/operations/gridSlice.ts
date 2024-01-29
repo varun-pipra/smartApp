@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {fetchGridDataList, fetchLineItem} from './gridAPI';
+import {fetchGridDataList, fetchLineItem, fetchPostToConnector} from './gridAPI';
 
 export interface BudgetManagerGridDataState {
 	loading: boolean;
@@ -15,6 +15,7 @@ export interface BudgetManagerGridDataState {
 	selectedGroupKey: any;
 	selectedFilters: any;
 	searchText: any;
+	connectors:any
 };
 
 const initialState: BudgetManagerGridDataState = {
@@ -30,7 +31,8 @@ const initialState: BudgetManagerGridDataState = {
 	clientContractsList: [],
 	selectedGroupKey: 'division',
 	selectedFilters: {},
-	searchText: undefined
+	searchText: undefined,
+	connectors:{}
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -55,6 +57,13 @@ export const fetchLineItemData = createAsyncThunk<any, any>(
 	async (appInfo) => {
 		const response = await fetchLineItem(appInfo.appInfo, appInfo.id);
 		// The value we return becomes the `fulfilled` action payload
+		return response;
+	}
+);
+export const fetchConnectors = createAsyncThunk<any, any>(
+	'connectors',
+	async (appInfo) => {
+		const response = await fetchPostToConnector(appInfo);
 		return response;
 	}
 );
@@ -170,6 +179,16 @@ export const gridDataSlice = createSlice({
 				state.lineItem = action.payload;
 			})
 			.addCase(fetchLineItemData.rejected, (state) => {
+				state.loading = false;
+			})
+			.addCase(fetchConnectors.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(fetchConnectors.fulfilled, (state, action) => {
+				state.loading = false;
+				state.connectors = action.payload;
+			})
+			.addCase(fetchConnectors.rejected, (state) => {
 				state.loading = false;
 			});
 	}
