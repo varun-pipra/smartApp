@@ -188,9 +188,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   };
 
   useEffect(()=> {
-    if(searchText) {
       handelSearchChange()
-    }
   },[searchText])
 
   const handelSearchChange =() =>{

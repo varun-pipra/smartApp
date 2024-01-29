@@ -286,14 +286,17 @@ export const setLoadMask = (flag: any, gridCls: any) => {
 }
 
 export const modifyMarkupData = (data: any) => {
-  console.log(data, "getTextOccurences data");
   const modifyedData = data.map((markup: any) => {
-    return {
-      x1: markup.left,
-      y1: markup.top,
-      x2: markup.left + markup.width,
-      y2: markup.top + markup.height,
+	return {
+        "coordinates": {
+            x1: markup.left,
+			y1: markup.top,
+			x2: markup.left + markup.width,
+			y2: markup.top + markup.height,
+        },
+        "stroke": "#efb239",
     };
   });
+  console.log(modifyedData, "getTextOccurences data");
   return modifyedData;
 };

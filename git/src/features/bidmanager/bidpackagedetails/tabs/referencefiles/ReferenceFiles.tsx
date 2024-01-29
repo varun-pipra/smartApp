@@ -1,5 +1,4 @@
 import { getServer, getSketchPageInfo } from "app/common/appInfoSlice";
-
 import {
   useAppDispatch,
   useAppSelector,
@@ -44,6 +43,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
     const { data } = event;
     handelFileClick(data);
   };
+
   const specColumns = [
     {
       headerName: "Spec Number",
@@ -55,7 +55,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       headerCheckboxSelection: !readOnly,
       resizable: true,
       minWidth: 200,
-      pinned : 'left'
+      pinned: "left",
     },
     {
       headerName: "Spec Section Title",
@@ -63,7 +63,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       cellClass: "sm-title",
       resizable: true,
       minWidth: 250,
-      pinned : 'left'
+      pinned: "left",
     },
     {
       headerName: "Spec Book",
@@ -71,7 +71,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       minWidth: 150,
       suppressMenu: true,
       resizable: true,
-      cellClass: "sm-specBookName"
+      cellClass: "sm-specBookName",
     },
     {
       headerName: "Division",
@@ -79,7 +79,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       cellClass: "sm-division",
       minWidth: 250,
       resizable: true,
-      suppressMenu: true
+      suppressMenu: true,
     },
 
     {
@@ -106,14 +106,17 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
         display: "flex",
         alignItems: "normal",
         justifyContent: "left",
-        cursor : 'pointer'
-
+        cursor: "pointer",
       },
       cellRenderer: (params: any) => {
-        return <img
-        src={'https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media'}
-        className="thumbnailUrl-cls"
-      />;
+        return (
+          <img
+            src={
+              "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media"
+            }
+            className="thumbnailUrl-cls"
+          />
+        );
       },
     },
   ];
@@ -135,65 +138,70 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   const { specSelectedRecInAddSpecDlg } = useAppSelector(
     (state) => state.bidManager
   );
-  const [specificationsData,setSpecificationsData] = useState(bidPackage?.specifications || []);
-  const [searchText,setSearchText] = useState<any>('')
-  const sketchPageinfo= useAppSelector(getSketchPageInfo);
+  const [specificationsData, setSpecificationsData] = useState(
+    bidPackage?.specifications || []
+  );
+  const [searchText, setSearchText] = useState<any>("");
+  const sketchPageinfo = useAppSelector(getSketchPageInfo);
   const [bidRefernceagePUId, setBidRefernceagePUId] = useState();
-  
+
   useEffect(() => {
-    if(sketchPageinfo){
-      if((searchText.length)){
-        handelSearchChange()
-      }else{
+    if (sketchPageinfo) {
+      if (searchText.length) {
+        handelSearchChange();
+      } else {
         getMarkupsPerpage();
       }
-    }    
+    }
   }, [sketchPageinfo]);
 
-  useEffect(()=> {
-    if(searchText) {
-      handelSearchChange()
-    }
-  },[searchText])
+  useEffect(() => {
+    handelSearchChange();
+  }, [searchText]);
 
-  const handelSearchChange =() =>{
-    let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`
-    getTextOccurences(params).then((resp:any)=>{
-      let updatedRes = modifyMarkupData(resp.data).map((item:any) => { return {...item, locked: true} })
+  const handelSearchChange = () => {
+    let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`;
+    getTextOccurences(params).then((resp: any) => {
+      let updatedRes = modifyMarkupData(resp.data).map((item: any) => {
+        return { ...item, locked: true };
+      });
       let data = {
-        "extractionAreas": updatedRes
+        extractionAreas: updatedRes,
       };
-      console.log('udated markup data',data, sketchPageinfo);
-      sketchPageinfo?.callback(data)
-    })
-  }
+      console.log("udated markup data", data, sketchPageinfo);
+      sketchPageinfo?.callback(data);
+    });
+  };
 
-  const getMarkupsPerpage = ()=>{
+  const getMarkupsPerpage = () => {
     let payload = {
-      specbookId: sepcSelectedRecord?.specBookId,
-      pageNo:sketchPageinfo?.currentPage?.page
-    }
+      specbookId:
+        sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.specBookId,
+      pageNo: sketchPageinfo?.currentPage?.page,
+    };
     getMarkupsByPageForSubmittals(payload)
-      .then((res:any)=>{
-        let updatedRes = res.map((item:any) => { return {...item, locked: true} })
+      .then((res: any) => {
+        let updatedRes = res.map((item: any) => {
+          return { ...item, locked: true };
+        });
         let data = {
-          "extractionAreas": updatedRes
+          extractionAreas: updatedRes,
         };
-        setBidRefernceagePUId(res[0]?.data?.pageUId)
+        setBidRefernceagePUId(res[0]?.data?.pageUId);
         sketchPageinfo.callback(data);
       })
-      .catch((error:any)=>{
-        console.log('error',error);
-      })
-  }
+      .catch((error: any) => {
+        console.log("error", error);
+      });
+  };
 
   useEffect(() => {
-      if(bidPackage?.specifications && bidPackage?.specifications?.length) {
-        setSpecificationsData(bidPackage?.specifications);
-      } else {
-        setSpecificationsData([]);
-      }
-  },[bidPackage?.specifications]);
+    if (bidPackage?.specifications && bidPackage?.specifications?.length) {
+      setSpecificationsData(bidPackage?.specifications);
+    } else {
+      setSpecificationsData([]);
+    }
+  }, [bidPackage?.specifications]);
 
   useEffect(() => {
     if (specBookpages.hasOwnProperty("totalCount")) {
@@ -237,9 +245,9 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       };
     });
     saveReferenceFiles({
-      remove:  files
+      remove: files,
     });
-  }
+  };
   const handelFileClick = (data: any) => {
     setSepcSelectedRecord(data);
     let payload = {
@@ -431,49 +439,49 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
           download(data, "Files");
         }}
       ></DocUploader>
-        <div className="doc-uploadd-header">
-          <span className="doc-lbl-hdr-bold">Specifications</span>
-        </div>
-        {!readOnly && (
-            <div className="specifications-container">
-              <IQButton
-                className="specifications-add-btn"
-                onClick={() => setOpenAddSpecDlg(true)}
+      <div className="doc-uploadd-header">
+        <span className="doc-lbl-hdr-bold">Specifications</span>
+      </div>
+      {!readOnly && (
+        <div className="specifications-container">
+          <IQButton
+            className="specifications-add-btn"
+            onClick={() => setOpenAddSpecDlg(true)}
+          >
+            <span
+              style={{ marginRight: "6px", fontSize: "19px" }}
+              className="common-icon-Add"
+            ></span>
+            <span> Add Specifications</span>
+          </IQButton>
+          <div className="icon-section">
+            <IQTooltip title="Delete" placement="bottom">
+              <IconButton
+                className="ref-delete-btn"
+                disabled={selected.length === 0}
+                onClick={handelDeleteSpecifications}
               >
-                <span
-                  style={{ marginRight: "6px", fontSize: "19px" }}
-                  className="common-icon-Add"
-                ></span>
-                <span> Add Specifications</span>
-              </IQButton>
-              <div className="icon-section">
-                <IQTooltip title="Delete" placement="bottom">
-                  <IconButton
-                    className="ref-delete-btn"
-                    disabled={selected.length === 0}
-                    onClick={handelDeleteSpecifications}
-                  >
-                    <span className="common-icon-delete"></span>
-                  </IconButton>
-                </IQTooltip>
-              </div>
-            </div>
-        )} 
-        <div className="grid">
-          <SUIGrid
-            headers={headers}
-            data={specificationsData}
-            rowSelected={(e: any) => rowSelected(e)}
-            getRowId={(record: any) => record.data.id}
-            nowRowsMsg={'Click on Add Specifications Button'}
-          />
+                <span className="common-icon-delete"></span>
+              </IconButton>
+            </IQTooltip>
+          </div>
+        </div>
+      )}
+      <div className="grid">
+        <SUIGrid
+          headers={headers}
+          data={specificationsData}
+          rowSelected={(e: any) => rowSelected(e)}
+          getRowId={(record: any) => record.data.id}
+          nowRowsMsg={"Click on Add Specifications Button"}
+        />
       </div>
       {openSpecDocViewer ? (
         <SpecDocViewer
           specBookPagesData={specBookPagesData}
           selectedRecord={sepcSelectedRecord}
           closeSpecDocViewer={closeSpecDocViewer}
-          onDocSearch={(text:any)=>setSearchText(text)}
+          onDocSearch={(text: any) => setSearchText(text)}
         />
       ) : (
         <></>
