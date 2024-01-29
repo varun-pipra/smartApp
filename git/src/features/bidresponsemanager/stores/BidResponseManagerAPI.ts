@@ -31,7 +31,8 @@ export const getTextOccurences = async (body:any) => {
     if(!isLocalhost) {
         response = await fetch(`${server?.hostUrl}/EnterpriseDesktop/Editor/GetTextOccurences?sessionId=${server?.sessionId}`, {
             method: 'POST',
-            body: body
+            body: body,
+            headers: {'content-type': 'application/x-www-form-urlencoded;charset=UTF-8'}
         });
 
         if(!response.ok) {

@@ -1,4 +1,4 @@
-import { getServer } from "app/common/appInfoSlice";
+import { getServer, getSketchPageInfo } from "app/common/appInfoSlice";
 
 import {
   useAppDispatch,
@@ -35,6 +35,10 @@ import IconButton from "@mui/material/IconButton";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import SpecDocViewer from "./SpecificationDocviewer/SpecDocViewer";
 import IQTooltip from "components/iqtooltip/IQTooltip";
+import { modifyMarkupData } from "utilities/commonFunctions";
+import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
+import { getMarkupsByPageForSubmittals } from "features/field/specificationmanager/stores/SpecificationManagerAPI";
+
 export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   const onImagePreview = (event: any) => {
     const { data } = event;
@@ -127,11 +131,62 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   );
   const [openSpecDocViewer, setOpenSpecDocViewer] = useState(false);
   const [specBookPagesData, setSpecBookPagesData] = useState({});
-  const [sepcSelectedRecord, setSepcSelectedRecord] = useState({});
+  const [sepcSelectedRecord, setSepcSelectedRecord] = useState<any>({});
   const { specSelectedRecInAddSpecDlg } = useAppSelector(
     (state) => state.bidManager
   );
   const [specificationsData,setSpecificationsData] = useState(bidPackage?.specifications || []);
+  const [searchText,setSearchText] = useState<any>('')
+  const sketchPageinfo= useAppSelector(getSketchPageInfo);
+  const [bidRefernceagePUId, setBidRefernceagePUId] = useState();
+  
+  useEffect(() => {
+    if(sketchPageinfo){
+      if((searchText.length)){
+        handelSearchChange()
+      }else{
+        getMarkupsPerpage();
+      }
+    }    
+  }, [sketchPageinfo]);
+
+  useEffect(()=> {
+    if(searchText) {
+      handelSearchChange()
+    }
+  },[searchText])
+
+  const handelSearchChange =() =>{
+    let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`
+    getTextOccurences(params).then((resp:any)=>{
+      let updatedRes = modifyMarkupData(resp.data).map((item:any) => { return {...item, locked: true} })
+      let data = {
+        "extractionAreas": updatedRes
+      };
+      console.log('udated markup data',data, sketchPageinfo);
+      sketchPageinfo?.callback(data)
+    })
+  }
+
+  const getMarkupsPerpage = ()=>{
+    let payload = {
+      specbookId: sepcSelectedRecord?.specBookId,
+      pageNo:sketchPageinfo?.currentPage?.page
+    }
+    getMarkupsByPageForSubmittals(payload)
+      .then((res:any)=>{
+        let updatedRes = res.map((item:any) => { return {...item, locked: true} })
+        let data = {
+          "extractionAreas": updatedRes
+        };
+        setBidRefernceagePUId(res[0]?.data?.pageUId)
+        sketchPageinfo.callback(data);
+      })
+      .catch((error:any)=>{
+        console.log('error',error);
+      })
+  }
+
   useEffect(() => {
       if(bidPackage?.specifications && bidPackage?.specifications?.length) {
         setSpecificationsData(bidPackage?.specifications);
@@ -418,6 +473,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
           specBookPagesData={specBookPagesData}
           selectedRecord={sepcSelectedRecord}
           closeSpecDocViewer={closeSpecDocViewer}
+          onDocSearch={(text:any)=>setSearchText(text)}
         />
       ) : (
         <></>

@@ -66,7 +66,7 @@ export const fetchCategoryList = async (name:any) => {
   const appInfo: any = getServerInfo();
   if (!isLocalhost) {
     response = await fetch(
-      `${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetByName?name=${name}&sessionId=${appInfo?.sessionId}`
+      `${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetByName?name=${name}&projectId=${appInfo?.projectId}&sessionId=${appInfo?.sessionId}`
     );
     if (!response.ok) {
       const message = `API Request Error (${moduleName}): ${response.status}`;
