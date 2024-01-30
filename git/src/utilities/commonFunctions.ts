@@ -293,8 +293,10 @@ export const modifyMarkupData = (data: any) => {
 			y1: markup.top,
 			x2: markup.left + markup.width,
 			y2: markup.top + markup.height,
+			
         },
-        "stroke": "#efb239",
+        "stroke": "#379000",
+		locked: true 
     };
   });
   console.log(modifyedData, "getTextOccurences data");

@@ -28,6 +28,7 @@ export interface SBSManagerState {
   toast: string;
   sbsSettings: any;
   settingsCategoryList:any;
+  sbsRefFileCount:any;
 }
 
 const initialState: SBSManagerState = {
@@ -47,7 +48,8 @@ const initialState: SBSManagerState = {
   sbsDetailsPayload:[],
   toast: '',
   sbsSettings: {},
-  settingsCategoryList : []
+  settingsCategoryList : [],
+  sbsRefFileCount:0
 };
 
 export const getSBSGridList = createAsyncThunk<any>(
@@ -143,6 +145,9 @@ export const SBSManagerSlice = createSlice({
     },
 		setToast: (state, action: PayloadAction<any>) => {
 			state.toast = action.payload;
+		},
+    setSbsRefFileCount: (state, action: PayloadAction<any>) => {
+			state.sbsRefFileCount = action.payload;
 		},
   },
   extraReducers: (builder) => {
@@ -257,6 +262,6 @@ export const SBSManagerSlice = createSlice({
   },
 });
 
-export const { setToastMessage, setShowSbsPanel, setSelectedNodes,setShowPhaseModel,setAddPhaseText,setEnableSaveButton,setSaveDetailsObj, setDetailsData,setToast } = SBSManagerSlice.actions;
+export const { setToastMessage, setShowSbsPanel, setSelectedNodes,setShowPhaseModel,setAddPhaseText,setEnableSaveButton,setSaveDetailsObj, setDetailsData,setToast , setSbsRefFileCount} = SBSManagerSlice.actions;
 
 export default SBSManagerSlice.reducer;

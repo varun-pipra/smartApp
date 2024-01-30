@@ -18,7 +18,7 @@ import {
   AddFiles,
   deleteFiles,
 } from "features/safety/sbsmanager/operations/sbsManagerAPI";
-import { getSBSDetailsById } from "features/safety/sbsmanager/operations/sbsManagerSlice";
+import { getSBSDetailsById, setSbsRefFileCount } from "features/safety/sbsmanager/operations/sbsManagerSlice";
 import _ from "lodash";
 import { findAndUpdateFiltersData } from "features/safety/sbsmanager/utils";
 const referenceData = [
@@ -134,6 +134,7 @@ const ReferenceFiles =(props: any) => {
         creationDateValue : item?.createdDate ? formatDate(item?.createdDate) : "",
         folderType : (typeof item?.folderType === 'number') ? item?.folderType?.toString() : item?.folderType
 			}));
+      dispatch(setSbsRefFileCount(data.length))
       setModifiedList(data);
       setGridData(data);
       setFilters(findAndUpdateFiltersData(filterOptions, data, "phase", true, "name"));

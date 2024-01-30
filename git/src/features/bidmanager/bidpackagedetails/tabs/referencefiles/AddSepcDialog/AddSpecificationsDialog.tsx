@@ -21,6 +21,7 @@ import SmartDialog from "components/smartdialog/SmartDialog";
 import { HeadsetMic } from "@mui/icons-material";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import IQButton from "components/iqbutton/IQButton";
+import SpecDocViewer from "../SpecificationDocviewer/SpecDocViewer";
 
 const AddSpecificationsDialog = (props: any) => {
   const { open = false, ...rest } = props;
@@ -446,6 +447,16 @@ const AddSpecificationsDialog = (props: any) => {
           </div>
         </div>
       </SmartDialog>
+      {/* {openSpecDocViewer ? (
+        <SpecDocViewer
+          specBookPagesData={specBookPagesData}
+          selectedRecord={sepcSelectedRecord}
+          closeSpecDocViewer={closeSpecDocViewer}
+          onDocSearch={(text: any) => setSearchText(text)}
+        />
+      ) : (
+        <></>
+      )} */}
     </div>
   );
 };

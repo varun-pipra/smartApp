@@ -10,6 +10,7 @@ import {
   getSelectedRecord,
   setSelectedRecord,
   setShowContracts,
+  setMarkupsByPageForBid
 } from "features/bidmanager/stores/BidManagerSlice";
 import { uploadReferenceFile } from "features/bidmanager/stores/FilesAPI";
 import {
@@ -135,7 +136,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   const [openSpecDocViewer, setOpenSpecDocViewer] = useState(false);
   const [specBookPagesData, setSpecBookPagesData] = useState({});
   const [sepcSelectedRecord, setSepcSelectedRecord] = useState<any>({});
-  const { specSelectedRecInAddSpecDlg } = useAppSelector(
+  const { specSelectedRecInAddSpecDlg , markupsByPageForBid} = useAppSelector(
     (state) => state.bidManager
   );
   const [specificationsData, setSpecificationsData] = useState(
@@ -156,21 +157,23 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   }, [sketchPageinfo]);
 
   useEffect(() => {
-    handelSearchChange();
+    if(searchText.length){
+      handelSearchChange()
+    }else{
+      console.log(markupsByPageForBid , 'markupsByPageForBidResp')
+      sketchPageinfo?.callback(markupsByPageForBid || {})
+    }
   }, [searchText]);
 
   const handelSearchChange = () => {
-    console.log('sepcSelectedRecord', sepcSelectedRecord)
-    if (bidRefernceagePUId && sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.specBookId) {
-      let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.specBookId}`;
+    if (bidRefernceagePUId && sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.id) {
+      let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.id}`;
     getTextOccurences(params).then((resp: any) => {
-      let updatedRes = modifyMarkupData(resp.data).map((item: any) => {
-        return { ...item, locked: true };
-      });
-      let data = {
-        extractionAreas: updatedRes,
-      };
-      console.log("udated markup data", data, sketchPageinfo);
+      let updatedRes = [...modifyMarkupData(resp.data) , ...markupsByPageForBid.extractionAreas]
+        let data = {
+          "extractionAreas": updatedRes
+        };
+        console.log(data,'data')
       sketchPageinfo?.callback(data);
     });
     }
@@ -190,6 +193,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
         let data = {
           extractionAreas: updatedRes,
         };
+        dispatch(setMarkupsByPageForBid(data))
         setBidRefernceagePUId(res[0]?.data?.pageUId);
         sketchPageinfo.callback(data);
       })
@@ -214,6 +218,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   }, [specBookpages]);
 
   useEffect(() => {
+    console.log(specSelectedRecInAddSpecDlg, ' specSelectedRecInAddSpecDlg')
     setSepcSelectedRecord(specSelectedRecInAddSpecDlg);
   }, [specSelectedRecInAddSpecDlg]);
 
@@ -266,7 +271,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
 
   const rowSelected = (sltdRows: any) => {
     const selectedRowData = sltdRows.api.getSelectedRows();
-
+    console.log(selectedRowData,'selectedRowData')
     setSelected(selectedRowData);
   };
 

@@ -19,7 +19,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
   const { smEnableButton } = useAppSelector(
     (state) => state.specificationManager
   );
-  const { detailsData,sbsSaveEnableBtn,sbsDetailsPayload } = useAppSelector((state) => state.sbsManager);
+  const { detailsData,sbsSaveEnableBtn,sbsDetailsPayload , sbsRefFileCount} = useAppSelector((state) => state.sbsManager);
   const [lidTitle, setLidTitle] = useState(data?.name);
 
   const loadData = (id: any) => {
@@ -54,8 +54,9 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
     {
       tabId: "SBSReferenceFiles",
       label: "Reference Files",
-      showCount: false,
 	  iconCls: "common-icon-referance",
+	  showCount: (sbsRefFileCount > 0),
+	  count: sbsRefFileCount,
 	  content:(<ReferenceFiles selectedRec={data}/>)
     },
     {

@@ -14,6 +14,7 @@ export interface bidResponseManagerState {
 	presenceData: any;
 	selectedTabName: any;
 	showToastMessage: any;
+	markupsByPageForBidResp:any
 };
 
 const initialState: bidResponseManagerState = {
@@ -28,6 +29,7 @@ const initialState: bidResponseManagerState = {
 	presenceData: undefined,
 	selectedTabName: null,
 	showToastMessage: {displayToast: false, message: ''},
+	markupsByPageForBidResp:{}
 };
 
 export const fetchBidResponseDetailsData = createAsyncThunk<any, any>(
@@ -71,6 +73,9 @@ export const bidResponseManagerSlice = createSlice({
 		},
 		setToastMessage: (state, action: PayloadAction<any>) => {
 			state.showToastMessage = action.payload;
+		},
+		setMarkupsByPageForBid:(state, action: PayloadAction<any>)=>{
+			state.markupsByPageForBidResp = action.payload
 		}
 	},
 	extraReducers: (builder) => {
@@ -87,7 +92,7 @@ export const bidResponseManagerSlice = createSlice({
 });
 
 export const {setBidId, setTab, setBidderId, setShowLineItemDetails, setSelectedRecord, setPresenceData,
-	setSelectedTabName, setSelectedNode, setToastMessage, setBidDetails} = bidResponseManagerSlice.actions;
+	setSelectedTabName, setSelectedNode, setToastMessage, setBidDetails, setMarkupsByPageForBid } = bidResponseManagerSlice.actions;
 
 export const getShowLineItemDetails = (state: RootState) => state.bidResponseManager.showLineItemDetails;
 export const getSelectedRecord = (state: RootState) => state.bidResponseManager.selectedRecord;

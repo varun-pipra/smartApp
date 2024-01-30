@@ -7,6 +7,7 @@ import SUIDialog from "sui-components/Dialog/Dialog";
 import "./SpecDocViewer.scss";
 import SMBrenaSearch from "features/field/specificationmanager/smbrena/content/leftpanel/SMBrenaSearch";
 import _ from "lodash";
+import SmartDialog from "components/smartdialog/SmartDialog";
 const SpecDocViewer = (props: any) => {
   const dispatch = useAppDispatch();
   const {
@@ -28,23 +29,19 @@ const SpecDocViewer = (props: any) => {
 
   return (
     <div>
-      <SUIDialog
+      <SmartDialog
+        className={"barcode-model"}
         open={true}
-        headerTitle={selectedRecord.number + ": " + selectedRecord.title}
-        toolsOpts={{
-          closable: true,
-        }}
         PaperProps={{
           sx: { height: "75%", width: "70%", padding: "0px !important" },
         }}
         onClose={closeSpecDocViewer}
-        style={{
-          color: "#333333",
-          fontSize: "1.12rem",
-          fontWeight: "bolder",
-          fontFamily: "Roboto-regular",
-          padding: "0px !important",
-        }}
+  
+        custom={{
+					closable: true,
+					resizable: true,
+					title: <><span style={{color: "#333333",fontSize: "1.12rem",fontWeight: "bolder",fontFamily: "Roboto-regular",padding: "0px !important"}}>{selectedRecord.number + ": " + selectedRecord.title}</span></>
+				}}
       >
         <div className="spec-doc-viewer">
           <div className="iq-brena-search-cont" style={{ display: "flex" }}>
@@ -63,16 +60,8 @@ const SpecDocViewer = (props: any) => {
             stopFocus={true}
             defaultPageToNavigate={selectedRecord?.startPage}
           />
-          {/* {showSearchpanel && (
-          <SMBrenaSearch
-            renderModel={true}
-            open={showSearchpanel}
-            handleClose={() => setShowSearchpanel(false)}
-            readonly={false}
-          />
-        )} */}
         </div>
-      </SUIDialog>
+      </SmartDialog>
     </div>
   );
 };

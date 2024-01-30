@@ -11,6 +11,7 @@ import SpecDocViewer from "features/bidmanager/bidpackagedetails/tabs/referencef
 import { getMarkupsByPageForSubmittals } from "features/field/specificationmanager/stores/SpecificationManagerAPI";
 import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
 import { modifyMarkupData } from "utilities/commonFunctions";
+import { setMarkupsByPageForBid } from "features/bidresponsemanager/stores/BidResponseManagerSlice";
 
 export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   const appInfo = useAppSelector(getServer);
@@ -24,7 +25,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   const [sepcSelectedRecord, setSepcSelectedRecord] = useState<any>({});
   const [searchText,setSearchText] = useState<any>('')
   const [bidRefernceagePUId, setBidRefernceagePUId] = useState();
-  const { selectedRecord, bidDetails } = useAppSelector(
+  const { selectedRecord, bidDetails , markupsByPageForBidResp} = useAppSelector(
     (state) => state.bidResponseManager
   );
   const [files, setFiles] = useState<any>({});
@@ -50,6 +51,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         let data = {
           "extractionAreas": updatedRes
         };
+        dispatch(setMarkupsByPageForBid(data))
         setBidRefernceagePUId(res[0]?.data?.pageUId)
         sketchPageinfo.callback(data);
       })
@@ -188,14 +190,22 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   };
 
   useEffect(()=> {
+    if(searchText.length){
       handelSearchChange()
+    }else{
+      console.log(markupsByPageForBidResp , 'markupsByPageForBidResp')
+      sketchPageinfo?.callback(markupsByPageForBidResp || {})
+    }
+      
   },[searchText])
 
   const handelSearchChange =() =>{
-    if(bidRefernceagePUId && sepcSelectedRecord?.specBookId) {
+    console.log(sepcSelectedRecord,'sepcSelectedRecord')
+    if(bidRefernceagePUId && sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.specBookId) {
       let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`
       getTextOccurences(params).then((resp:any)=>{
-        let updatedRes = modifyMarkupData(resp.data).map((item:any) => { return {...item, locked: true} })
+        console.log(modifyMarkupData(resp.data),markupsByPageForBidResp , 'markupsByPageForBidResp')
+        let updatedRes = [...modifyMarkupData(resp.data) , ...markupsByPageForBidResp.extractionAreas]
         let data = {
           "extractionAreas": updatedRes
         };
@@ -239,7 +249,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         <span className="common-icon-Upload-File"></span>
         <span>Specifications</span>
       </div>
-	  <div className="bid-res-spec-grid">
+    <div className="bid-res-spec-grid">
 		<SUIGrid
 			headers={specColumns}
 			data={bidDetails.specifications}

@@ -24,6 +24,7 @@ export interface BidManagerState {
 	showToastMessage2: any;
 	showContracts: boolean;
 	specSelectedRecInAddSpecDlg:any;
+	markupsByPageForBid:any
 };
 
 const initialState: BidManagerState = {
@@ -43,7 +44,8 @@ const initialState: BidManagerState = {
 	showToastMessage: {displayToast: false, message: ''},
 	showToastMessage2: {displayToast: false, message: ''},
 	showContracts: false,
-	specSelectedRecInAddSpecDlg:{}
+	specSelectedRecInAddSpecDlg:{},
+	markupsByPageForBid:{}
 };
 
 export const fetchBudgetLineItems = createAsyncThunk<any, any>(
@@ -150,6 +152,9 @@ export const bidManagerSlice = createSlice({
 		},
 		setSepcSelectedRecord:(state, action: PayloadAction<any>)=>{
 			state.specSelectedRecInAddSpecDlg = action.payload
+		},
+		setMarkupsByPageForBid:(state, action: PayloadAction<any>)=>{
+			state.markupsByPageForBid = action.payload
 		}
 	},
 	extraReducers: (builder) => {
@@ -213,7 +218,7 @@ export const bidManagerSlice = createSlice({
 
 export const {setBidId, setTab, setShowLineItemDetails, setPresenceData,
 	setSelectedNode, setSelectedTabName, setSelectedRecord,
-	setToastMessage, setToastMessage2, setShowContracts , setSepcSelectedRecord} = bidManagerSlice.actions;
+	setToastMessage, setToastMessage2, setShowContracts , setSepcSelectedRecord, setMarkupsByPageForBid} = bidManagerSlice.actions;
 
 export const getShowLineItemDetails = (state: RootState) => state.bidManager.showLineItemDetails;
 export const getSelectedRecord = (state: RootState) => state.bidManager.selectedRecord;
