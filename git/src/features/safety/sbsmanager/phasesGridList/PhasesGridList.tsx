@@ -5,7 +5,7 @@ import PhasesColorPicker from "../phasesColorPicker/PhasesColorPicker";
 import { Button, IconButton } from "@mui/material";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import SUIAlert from "sui-components/Alert/Alert";
-import { getPhaseDropdownValues, getSBSGridList } from "../operations/sbsManagerSlice";
+import { getPhaseDropdownValues, getSBSGridList, setToast } from "../operations/sbsManagerSlice";
 import { useAppDispatch, showLoadMask, hideLoadMask, useAppSelector } from 'app/hooks';
 import { TextField } from "@mui/material";
 import { deletePhase, createNewPhase, updatePhases } from "../operations/sbsManagerAPI";
@@ -86,13 +86,9 @@ const PhasesGridList = () => {
     },
     { field: "sequence", width: 70, rowDrag: true, cellRenderer: () => "" },
   ]);
-  const EnableSaveBtn = (prev:any, current:any) => {
-    if(!_.isEqual(prev, current)) setSaveEnable(false);
-    else setSaveEnable(true);
-  };
   const onRowDragEnd = useCallback((e: any) => {
-    EnableSaveBtn(gridRef.current?.api?.rowModel?.rowsToDisplay, getUpdatedRowDataWithSequence());
     console.log("onRowDragEnd", getUpdatedRowDataWithSequence());
+    setSaveEnable(false);
   }, []);
 
   /**
@@ -137,6 +133,7 @@ const PhasesGridList = () => {
     dispatch(getPhaseDropdownValues());
     setSelectedRows([]);
     gridRef.current.api.deselectAll();
+    setSaveEnable(true);
   };
 
   /**
@@ -164,9 +161,11 @@ const PhasesGridList = () => {
         hideLoadMask();
         setAlert({ open: false });
         onRefreshButtonClick();
+        setSaveEnable(false);
       })
       .catch((err: any) => {
         hideLoadMask();
+        setSaveEnable(true);
         console.log("error", err);
       });
   };
@@ -233,16 +232,17 @@ const PhasesGridList = () => {
       }],
     };
     showLoadMask();
+    setSaveEnable(false);
     createNewPhase(payload)
       .then((res: any) => {
         hideLoadMask();
         onRefreshButtonClick();
         setNewPhase("");
-        setSaveEnable(false);
+        
+        dispatch(setToast('New Phase Created Successfully'));
       })
       .catch((err: any) => {
         hideLoadMask();
-        setSaveEnable(false);
         console.log("Failed to add new phase", err);
       });
   };

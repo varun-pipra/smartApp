@@ -67,6 +67,10 @@ export const gridData = {
 			"markupFeeAmount": 1000,
 			allowMarkupFee: true,
 			providerSource: 1,
+			sbsPhaseId: 2,
+			sbs: [{id: 16, name: "19Jan"}, {id: 21, name: "001 Test"}],
+			sbsPhaseName:"In Construction",
+
 		},
 		{
 			"id": "9e9e21d0-a1e4-4e04-8643-003c55952352",

@@ -229,7 +229,9 @@ const ClientContractsContent = (props: any) => {
 	const afterItemAction = (response: any) => {
 		if(response) {
 			dispatch(setSelectedRecord(response));
-			!isUserGCForCC(appInfo) && setToast({show: true, message: 'Contract Status has been updated and notified the response to the Contract Manager'});
+			if (!(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled)) {
+				!isUserGCForCC(appInfo) && setToast({show: true, message: 'Contract Status has been updated and notified the response to the Contract Manager'});
+			}
 		}
 		dispatch(getClientContractsList(appInfo));
 
@@ -303,7 +305,7 @@ const ClientContractsContent = (props: any) => {
 					</div>
 				</div>
 				: ''}
-			<div className='bid-manager-grid-box'>
+			<div className='bid-manager-grid-box check-box-customize'>
 				<ClientContractsToolbar />
 				<ClientContractsGrid onRefChange={(ref: any) => handleRef(ref)} />
 				{toastMessage?.displayToast && <Toast message={toastMessage.message} interval={3000} />}

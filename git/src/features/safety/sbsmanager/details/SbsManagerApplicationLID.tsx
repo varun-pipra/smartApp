@@ -9,71 +9,83 @@ import SBSDetailsTab from "./tabs/SBSDetails/SBSDetails";
 import Links from './tabs/links/Links';
 import moment from "moment";
 import { AdditionalInfo } from "./tabs/additionalInfo/AdditionalInfo";
-
-import {getSBSDetailsById, getSBSGridList, setDetailsData, setEnableSaveButton, setSaveDetailsObj} from "../operations/sbsManagerSlice"
+import Toast from 'components/toast/Toast';
+import { getSBSDetailsById, getSBSGridList, setDetailsData, setEnableSaveButton, setSaveDetailsObj } from "../operations/sbsManagerSlice"
 import { saveRightPanelData } from "../operations/sbsManagerAPI";
 import { getServer } from "app/common/appInfoSlice";
+import { stringToUSDateTime2 } from 'utilities/commonFunctions';
+
 const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
-  const { smEnableButton } = useAppSelector(
-    (state) => state.specificationManager
-  );
-  const { detailsData,sbsSaveEnableBtn,sbsDetailsPayload , sbsRefFileCount} = useAppSelector((state) => state.sbsManager);
-  const [lidTitle, setLidTitle] = useState(data?.name);
+	const { smEnableButton } = useAppSelector(
+		(state) => state.specificationManager
+	);
+	const { detailsData, sbsSaveEnableBtn, sbsDetailsPayload, sbsRefFileCount } = useAppSelector((state) => state.sbsManager);
+	const [lidTitle, setLidTitle] = useState(data?.name);
+	const [toastMessage, setToastMessage] = useState<any>({ displayToast: false, message: '' });
+	const [sbsData, setSbsData] = useState<any>({});
 
-  const loadData = (id: any) => {
+	const loadData = (id: any) => {
 		dispatch(getSBSDetailsById(id));
 	};
 
-  useEffect(() => {
+	useEffect(() => {
 		// To show the grid data if GET Api fails
-		if (data?.uniqueid) {
-			dispatch(setDetailsData(data))
-			loadData(data.uniqueid);
-			setLidTitle(data?.name) 
+		if (data) {
+			//dispatch(setDetailsData(data))
+			data.uniqueid && loadData(data.uniqueid);
+			setLidTitle(data?.name)
 		}
-	}, [data?.uniqueid]);
+	}, [data]);
 
-  const tabConfig = [
-    {
-      tabId: "SBSDetails",
-      label: "Details",
-      showCount: false,
-      iconCls: "common-icon-SBS",
-      content: <SBSDetailsTab selectedRec={data} />,
-    },
-    // {
-    //   tabId: "SBSAdditionalInfo",
-    //   label: "Additional Info",
-    //   showCount: false,
-    //   iconCls: "common-icon-orgconsole-project-supplemental-info",
-	// 		content: <AdditionalInfo />
-      
-    // },
-    {
-      tabId: "SBSReferenceFiles",
-      label: "Reference Files",
-	  iconCls: "common-icon-referance",
-	  showCount: (sbsRefFileCount > 0),
-	  count: sbsRefFileCount,
-	  content:(<ReferenceFiles selectedRec={data}/>)
-    },
-    {
-      tabId: "SBSLink",
-      label: "Links",
-      showCount: false,
-      iconCls: "common-icon-Links",
-	  content: <Links></Links>
-    },
-  ];
-  const handleSave = () => {
-    saveRightPanelData(sbsDetailsPayload)
+	useEffect(() => {
+		console.log('detailsData', detailsData)
+		setSbsData(detailsData)
+	}, [detailsData]);
+
+	const tabConfig = [
+		{
+			tabId: "SBSDetails",
+			label: "Details",
+			showCount: false,
+			iconCls: "common-icon-SBS",
+			content: <SBSDetailsTab selectedRec={data} />,
+		},
+		// {
+		//   tabId: "SBSAdditionalInfo",
+		//   label: "Additional Info",
+		//   showCount: false,
+		//   iconCls: "common-icon-orgconsole-project-supplemental-info",
+		// 		content: <AdditionalInfo />
+
+		// },
+		{
+			tabId: "SBSReferenceFiles",
+			label: "Reference Files",
+			showCount: (sbsRefFileCount > 0),
+			count: sbsRefFileCount,
+			iconCls: "common-icon-referance",
+			content: (<ReferenceFiles selectedRec={data} />)
+		},
+		{
+			tabId: "SBSLink",
+			label: "Links",
+			showCount: sbsData?.links?.length > 0 ? true : false,
+			iconCls: "common-icon-Links",
+			content: <Links></Links>,
+			count: sbsData?.links?.length
+		},
+	];
+
+	const handleSave = () => {
+		saveRightPanelData(sbsDetailsPayload)
 			.then((res: any) => {
-				if(res) {
+				if (res) {
+					setToastMessage({ displayToast: true, message: 'System Breakdown Structure  updated Successfully' });
 					dispatch(setEnableSaveButton(false));
 					dispatch(setSaveDetailsObj([]));
-          			dispatch(getSBSGridList());
+					dispatch(getSBSGridList());
 					loadData(data.uniqueid);
 				}
 			})
@@ -81,55 +93,60 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
 				console.log("error", err);
 				dispatch(setEnableSaveButton(false));
 				dispatch(setSaveDetailsObj([]));
-        		dispatch(getSBSGridList());
+				dispatch(getSBSGridList());
 			});
-  };
-  const lidProps = {
-    title: (
-      <TextField
-        className="textField"
-        variant="outlined"
-        onChange={(e: any) => {
-			setLidTitle(e.target?.value);
-			dispatch(setEnableSaveButton(true));
-			if(sbsDetailsPayload.length === 0) {
-				let payload = {
-					name : e.target.value,
-					uniqueID : detailsData?.uniqueid
-				};
-				dispatch(setSaveDetailsObj([payload]));
-			} else {
-				dispatch(setSaveDetailsObj([{...sbsDetailsPayload?.[0], name : e.target.value}]));
-			};
-		}}
-        value={lidTitle}
-      />
-    ),
-    defaultTabId: "SBSDetails",
-    // defaultSpacing: true,
-    tabPadValue:10,
-    headContent: {
-      showCollapsed: true,
-      regularContent: <HeaderContent data={detailsData} />,
-      collapsibleContent: <CollapseContent data={detailsData} />,
-    },
-    tabs: tabConfig,
-    footer: {
-      hideNavigation: false,
-      rightNode: (
-        <>
-          <IQButton
-            className="ce-buttons"
-            color="blue"
-            disabled={!sbsSaveEnableBtn}
-            onClick={() => handleSave()}
-          >
-            SAVE
-          </IQButton>
-        </>
-      ),
-      leftNode: <></>,
+	};
+
+	const lidProps = {
+		title: (
+			<TextField
+				className="textField"
+				variant="outlined"
+				onChange={(e: any) => {
+					setLidTitle(e.target?.value);
+					dispatch(setEnableSaveButton(true));
+					if (sbsDetailsPayload.length === 0) {
+						let payload = {
+							name: e.target.value,
+							uniqueID: sbsData?.uniqueid
+						};
+						dispatch(setSaveDetailsObj([payload]));
+					} else {
+						dispatch(setSaveDetailsObj([{ ...sbsDetailsPayload?.[0], name: e.target.value }]));
+					};
+				}}
+				value={lidTitle}
+			/>
+		),
+		defaultTabId: "SBSDetails",
+		// defaultSpacing: true,
+		tabPadValue: 10,
+		headContent: {
+			showCollapsed: true,
+			regularContent: <HeaderContent data={sbsData} />,
+			collapsibleContent: <CollapseContent data={sbsData} />,
 		},
+		tabs: tabConfig,
+		footer: {
+			hideNavigation: false,
+			rightNode: (
+				<>
+					<IQButton
+						className="ce-buttons"
+						color="blue"
+						disabled={!sbsSaveEnableBtn}
+						onClick={() => handleSave()}
+					>
+						SAVE
+					</IQButton>
+				</>
+			),
+			leftNode: <></>,
+			toast: <>
+				{toastMessage.displayToast ? <Toast message={toastMessage.message} interval={3000} /> : null}
+			</>
+		},
+
 		appInfo: appInfo,
 		iFrameId: "sbsManagerIFrame",
 		appType: "SBSManagerLineItem",
@@ -144,7 +161,7 @@ const SbsManagerApplicationLID = memo(({ data, ...props }: any) => {
 			showChat: false,
 			hideProfile: false
 		},
-  };
+	};
 
 	return (
 		<div className="sbs-lineitem-detail">
@@ -172,8 +189,9 @@ const HeaderContent = memo((props: any) => {
 					</span>
 					<span className="last-modified-label grey-font">Last Modified:</span>
 					<span className="budgetid-label grey-fontt">
-						{`${moment(data?.modifiedOn).format("MM/DD/YYYY hh:mm A")} by`}{" "}
-						{`${data?.modifiedBy?.name ?? ""}`}
+						{/* {`${moment(data?.modifiedOn).format("MM/DD/YYYY hh:mm A")} by`}{" "} */}
+						{`${data?.modifiedDate != null ? stringToUSDateTime2(data?.modifiedDate) : ''} by`}{" "}
+						{`${data?.modifiedBy?.name ? data?.modifiedBy?.name : ""}`}
 					</span>
 				</div>
 			</div>
@@ -202,8 +220,9 @@ const CollapseContent = memo((props: any) => {
 						className="budgetid-label grey-fontt"
 						style={{ marginTop: "4px" }}
 					>
-						{`${moment(data?.modifiedOn).format("MM/DD/YYYY hh:mm A")} by`}{" "}
-						{`${data?.modifiedBy?.name ?? ""}`}
+						{/* {`${moment(data?.modifiedOn).format("MM/DD/YYYY hh:mm A")} by`}{" "} */}
+						{`${data?.modifiedDate != null ? stringToUSDateTime2(data?.modifiedDate) : ''} by`}{" "}
+						{`${data?.modifiedBy?.name ? data?.modifiedBy?.name : ""}`}
 					</span>
 				</span>
 			</div>

@@ -76,7 +76,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const { selectedRow } = useAppSelector(state => state.rightPanel);
 	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);
 	const { settingsData, costCodeDropdownData, divisionCostCodeFilterData, CostCodeAndTypeData } = useAppSelector(state => state.settings);
-
+	const { phaseDropDownOptions, sbsGridData } = useAppSelector((state) => state.sbsManager);
 	const { tabSelectedValue = 'budget-details', toast } = props;
 	const costCodeDivisionOpts = useAppSelector(getCostCodeDivisionList);
 	const costTypeOpts = useAppSelector(getCostTypeList);
@@ -99,6 +99,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const [catalogLocalData, setCatalogLocalData] = useState<any>(catalogData);
 	const companyDataRef = useRef<any>([]);
 	const [divisionDefaultFilters, setDivisionDefaultFilters] = React.useState<any>([]);
+	const [sbsOptions, setSbsOptions] = React.useState<any>([]);
+	
 
 	// const [wbsAddButton, setWbsAddButton] = useState<any>(false);
 	// const [wbsSearchText, setWbsSearchText] = useState<any>('');
@@ -108,6 +110,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 
 	const isReadOnly = isBudgetLocked;
 
+	
 	const isCostCodeExists = (options: any, costCodeVal: any) => {
 		let isExists: any = false;
 		(options || []).forEach((rec: any) => {
@@ -125,6 +128,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		});
 		return isExists;
 	}
+	
+	useEffect(() => {
+		const options = sbsGridData?.map((item:any) => {
+			return {...item, label: item?.name, value: item?.id}
+		})
+		setSbsOptions([...options]);
+	}, [sbsGridData]);
 
 	useEffect(() => {
 		if (formData?.costCode && costCodeDropdownData?.length > 0) {
@@ -225,12 +235,16 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	}, [wbsOptions]);
 
 	const handleDropdownChange = (value: any, name: string) => {
+		console.log("value, name", value, name)
 		if (name === 'costCode') {
 			const costCodeTuple = value.split('|');
 			setFormData({ ...formData, 'division': costCodeTuple[0], 'costCode': costCodeTuple[1] });
 		}
 		else if (name === 'providerSource') {
 			setAlert({ show: true, type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}` });
+
+		} else if (name === 'sbsPhaseId') {
+			setFormData({ ...formData, [name]: value?.id, sbsPhaseName: value?.name });
 
 		} else {
 			// if (name == 'markupFeeAmount' && Number(value) > formData?.originalAmount) setAlert({ show: true, msg: 'Amount Should Not be greater then Original Amount.' });
@@ -285,7 +299,9 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 			equipmentManufacturer: formData?.equipmentManufacturer?.[0]?.name || '',
 			equipmentManufacturerId: formData?.equipmentManufacturer?.[0]?.objectId || '',
 			equipmentCatalogId: formData?.equipmentCatalogId,
-			providerSource: formData?.providerSource
+			providerSource: formData?.providerSource,
+			sbsIds: formData?.sbs?.length ? formData?.sbs?.map((item:any) => { return item?.id }) : [],
+			sbsPhaseId: formData?.sbsPhaseId ? formData?.sbsPhaseId : null
 		};
 
 		console.log('data', data);
@@ -475,6 +491,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		else setAlert({ show: false, type: '', msg: '' })
 	}
 
+	// const handleSearchProp= (items:any, key:any) => {
+	// 	if(items?.length === 0) setShowAddIcon(true);
+	// 	else setShowAddIcon(false);
+	// };
 
 	return (
 		<div className="budget-details-box">
@@ -1307,21 +1327,23 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					</div>
 				</span>
 
-				{/* <span className='budget-info-tile span-2'>
+				<span className='budget-info-tile span-2'>
 					<div className='budget-info-label' style={{fontWeight:'bold',fontSize:'16px',color:'Black'}}>System BreakDown Structure (SBS)</div>
 					<div className='budget-info-data-box'>
 						<SmartDropDown
-							options={[]}
+							options={sbsOptions ? sbsOptions : []}
 							required={true}
 							LeftIcon={<div className='budget-info-icon common-icon-Location-filled'></div>}
 							isSearchField
 							isFullWidth
 							outSideOfGrid={false}
-							selectedValue={''}
+							selectedValue={formData?.sbs?.map((item:any) => {return item?.id})}
+							isMultiple={true}
 							menuProps={classes.menuPaper}
 							sx={{ fontSize: '18px' }}
-							handleChange={(value: string | undefined | string[]) => {
-								// handleDropdownChange(value ? value[0] : '', 'costType');
+							handleChange={(value: any) => {
+								const selRec = value?.map((id: any) => { return {id: id}});
+								handleDropdownChange(selRec, 'sbs');
 							}}
 						/>
 					</div>
@@ -1329,7 +1351,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				<span className='budget-info-tile'>
 					<div className='budget-info-label'>Phase</div>
 					<div className='budget-info-data-box'>
-						<SmartDropDown
+						{/* <SmartDropDown
 							options={ []}
 							required={true}
 							LeftIcon={<div className='budget-info-icon common-icon-Location-filled'></div>}
@@ -1342,9 +1364,31 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							handleChange={(value: string | undefined | string[]) => {
 								// handleDropdownChange(value ? value[0] : '', 'costType');
 							}}
+						/> */}
+						<SmartDropDown
+							LeftIcon={<div className="common-icon-phase"></div>}
+							options={phaseDropDownOptions || []}
+							outSideOfGrid={true}
+							isSearchField={true}
+							isFullWidth
+							Placeholder={"Select"}
+							selectedValue={formData?.sbsPhaseName}
+							menuProps={classes.menuPaper}
+							handleChange={(value: any) => {
+							const selRec: any = phaseDropDownOptions.find(
+								(rec: any) => rec.value === value[0]
+							);
+							handleDropdownChange(selRec, "sbsPhaseId");
+							}}
+							ignoreSorting={true}
+							showIconInOptionsAtRight={true}
+							// handleAddCategory={(val:any) => handlePhaseAdd('phase', val)}
+							// isCustomSearchField={showAddIcon}
+							dynamicClose={dynamicClose}
+							// handleSearchProp={(items:any, key:any) => handleSearchProp(items, key)}
 						/>
 					</div>
-				</span> */}
+				</span>
 
 				<div className="budget-info-subheader">
 					Work Breakdown Structure (WBS)

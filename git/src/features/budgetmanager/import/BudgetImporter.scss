@@ -7,16 +7,17 @@
     }
     .MuiPaper-root {
         min-width: unset;
-		min-height: unset;
-    	height: max-content;
+        min-height: unset;
+        height: max-content;
         border-radius: 0.5em;
     }
     .MuiDialogContent-root {
         padding: 1.5em 2em !important;
         display: flex;
         flex-direction: column;
-        gap: 2em;
+        gap: 1.5em;
         border: 0px;
+        min-height: 334px;
         .bm-type {
             .MuiFormGroup-root {
                 padding-left: 0.5em;
@@ -84,6 +85,6 @@
         gap: 0.4em;
     }
     .MuiDialogActions-root {
-        padding: 2.0em 2em !important;
+        padding: 1.0em 2em 2em 2em !important;
     }
 }

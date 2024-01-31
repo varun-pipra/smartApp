@@ -7,11 +7,14 @@ import SMBrenaSearch from "features/field/specificationmanager/smbrena/content/l
 import { getSpecBookPages } from "features/field/specificationmanager/stores/SpecificationManagerSlice";
 import { getSketchPageInfo } from "app/common/appInfoSlice";
 import { getMarkupsByPageForSubmittals } from "features/field/specificationmanager/stores/SpecificationManagerAPI";
+import { setBrenaMarkups } from "features/field/smartsubmittals/stores/SmartSubmitalSlice";
+import { modifyMarkupData } from "utilities/commonFunctions";
+import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
 
 const SSBrenalRightPanel = () => {
   const dispatch = useAppDispatch();
   const { uploadQueue } = useAppSelector((state) => state.SMFile);
-  const {SSBrenaOpen, selectedRecord } = useAppSelector((state:any)=> state.smartSubmittals);
+  const {SSBrenaOpen, selectedRecord , brenaMarkups} = useAppSelector((state:any)=> state.smartSubmittals);
   const { specBookpages } = useAppSelector(
     (state) => state.specificationManager
   );
@@ -20,6 +23,7 @@ const SSBrenalRightPanel = () => {
   const [search, setSearch] = useState("");
   const [specBookPagesData, setSpecBookPagesData] = useState("");
   const sketchPageinfo= useAppSelector(getSketchPageInfo);
+  const [smRefPUId, setSmRefPUId] = useState();
 
   useEffect(()=>{
     if(selectedRecord && SSBrenaOpen) {
@@ -35,17 +39,22 @@ const SSBrenalRightPanel = () => {
   }, [specBookpages]);
 
   useEffect(() => {
-    if (search.length > 0) {
-      setShowSearchpanel(true);
-    } else {
-      setShowSearchpanel(false);
+    if(search.length){
+      handelSearchChange()
+    }else{
+      console.log(brenaMarkups , 'markupsByPageForBidResp')
+      sketchPageinfo?.callback(brenaMarkups || {})
     }
   }, [search]);
 
   useEffect(() => {
     if(sketchPageinfo){
-      getMarkupsPerpage();
-    }    
+      if((search.length)){
+        handelSearchChange()
+      }else{
+        getMarkupsPerpage();
+      }
+    } 
   }, [sketchPageinfo]);
 
   const getMarkupsPerpage = ()=>{
@@ -55,10 +64,12 @@ const SSBrenalRightPanel = () => {
     }
     getMarkupsByPageForSubmittals(payload)
       .then((res:any)=>{
+        setSmRefPUId(res[0]?.data?.pageUId)
         let updatedRes = res.map((item:any) => { return {...item, locked: true} })
         let data = {
           "extractionAreas": updatedRes
         };
+        dispatch(setBrenaMarkups(data))
         sketchPageinfo.callback(data);
       })
       .catch((error:any)=>{
@@ -66,11 +77,26 @@ const SSBrenalRightPanel = () => {
       })
   }
 
+  const handelSearchChange =() =>{
+    if(smRefPUId && selectedRecord?.specBook?.id) {
+      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${selectedRecord?.specBook?.id}`
+      getTextOccurences(params).then((resp:any)=>{
+        console.log(modifyMarkupData(resp.data),brenaMarkups , 'markupsByPageForBidResp')
+        let updatedRes = [...modifyMarkupData(resp.data) , ...brenaMarkups.extractionAreas]
+        let data = {
+          "extractionAreas": updatedRes
+        };
+        console.log('udated markup data',data, sketchPageinfo);
+        sketchPageinfo?.callback(data)
+      })
+    }
+  }
+
   return (
     <div className="ss-right-panel">
       <div
         className="ss-doc-cont"
-        style={{ width: showSearchpanel ? "60%" : "100%" }}
+        style={{ width:"100%" }}
       >
         <div className="iq-brena-search-cont">
           <IQSearchField
@@ -87,7 +113,7 @@ const SSBrenalRightPanel = () => {
           defaultPageToNavigate={selectedRecord?.startPage}
         />
       </div>
-      {showSearchpanel && (
+      {/* {showSearchpanel && (
         <div className="ss-search-cont">
           <SMBrenaSearch
             renderModel={false}
@@ -96,7 +122,7 @@ const SSBrenalRightPanel = () => {
             readonly={false}
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

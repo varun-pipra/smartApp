@@ -74,7 +74,7 @@ export const bidResponseManagerSlice = createSlice({
 		setToastMessage: (state, action: PayloadAction<any>) => {
 			state.showToastMessage = action.payload;
 		},
-		setMarkupsByPageForBid:(state, action: PayloadAction<any>)=>{
+		setMarkupsByPageForBidResp:(state, action: PayloadAction<any>)=>{
 			state.markupsByPageForBidResp = action.payload
 		}
 	},
@@ -92,7 +92,7 @@ export const bidResponseManagerSlice = createSlice({
 });
 
 export const {setBidId, setTab, setBidderId, setShowLineItemDetails, setSelectedRecord, setPresenceData,
-	setSelectedTabName, setSelectedNode, setToastMessage, setBidDetails, setMarkupsByPageForBid } = bidResponseManagerSlice.actions;
+	setSelectedTabName, setSelectedNode, setToastMessage, setBidDetails, setMarkupsByPageForBidResp } = bidResponseManagerSlice.actions;
 
 export const getShowLineItemDetails = (state: RootState) => state.bidResponseManager.showLineItemDetails;
 export const getSelectedRecord = (state: RootState) => state.bidResponseManager.selectedRecord;

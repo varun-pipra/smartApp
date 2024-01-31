@@ -59,7 +59,7 @@
         }
         .lock-post-btn {
             background-color: #fff !important;
-			border: 1px solid #059cdf;
+            border: 1px solid #059cdf;
             color: #059cdf;
             box-shadow: none;
         }
@@ -150,6 +150,25 @@
                 box-shadow: none;
                 &.Mui-disabled {
                     opacity: 0.5;
+                }
+            }
+        }
+    }
+}
+
+.check-box-customize {
+    & .vendor-contracts-grid {
+        .ag-pinned-left-cols-container {
+            .ag-row {
+                .ag-cell {
+                    padding-left: 34px;
+                }
+            }
+        }
+        .ag-pinned-left-header {
+            .ag-header-row {
+                .ag-header-cell {
+                    padding-left: 42px;
                 }
             }
         }

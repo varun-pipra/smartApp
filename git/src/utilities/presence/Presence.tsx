@@ -46,21 +46,20 @@ export const addPresenceListener = (presenceManager: any, appInfo: any, iFrameId
 		});
 
 		participantCtrl.addEventListener('printbuttonclick', function (e: any) {
+			const bodyData ={targetLocation: {x: e.event.pageX,y: e.event.pageY}}
+			console.log('printbuttonclick', bodyData)
 			postMessage({
 				event: 'openitemlevelreport',
-				body: {
-					targetLocation: {
-						x: e.event.pageX,
-						y: e.event.pageY
-					}
-				}
+				body: bodyData
 			});
 		});
 
 		participantCtrl.addEventListener('streambuttonclick', function (e: any) {
+			const bodyData = { iframeId: iFrameId, roomId: lineItemId ? lineItemId : appInfo.presenceRoomId, appType: appType }
+			console.log('streambuttonclick', bodyData)
 			postMessage({
 				event: 'launchcommonstream',
-				body: { iframeId: iFrameId, roomId: lineItemId ? lineItemId : appInfo.presenceRoomId, appType: appType },
+				body: bodyData,
 				data: participantCtrl.getParticipants()
 			});
 		});

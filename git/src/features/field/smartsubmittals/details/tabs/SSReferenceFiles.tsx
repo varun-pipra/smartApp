@@ -10,7 +10,9 @@ import { getMarkupsByPageForSubmitals } from "features/field/specificationmanage
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import { updateStatusToCommit } from "../../smartsubmittalbrena/content/leftpanel/stores/SmartSubmitalLeftToolbarApi";
 import SSMittalLeftForm from "../../content/toolbar/sslefttoolbar/SSAddForm";
-import { getSubmitalById, setRightPanelUpdated } from "../../stores/SmartSubmitalSlice";
+import { getSubmitalById, setRightPanelUpdated, setSSRefMarkups } from "../../stores/SmartSubmitalSlice";
+import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
+import { modifyMarkupData } from "utilities/commonFunctions";
 
 const SSReferenceFiles = (props: any) => {
   const { selectedRec, ...rest } = props;
@@ -18,24 +20,29 @@ const SSReferenceFiles = (props: any) => {
   const { specBookpages } = useAppSelector(
     (state) => state.specificationManager
   );
-  const { submittalData, ssRightPanelData } = useAppSelector((state) => state.smartSubmittals);
+  const { submittalData, ssRightPanelData , ssRefMarkups} = useAppSelector((state) => state.smartSubmittals);
   const sketchPageinfo = useAppSelector(getSketchPageInfo);
   const docViewElementId = "ss-details-canvasWrapper-ref-files";
   const [showSearchpanel, setShowSearchpanel] = useState(false);
   const [search, setSearch] = useState("");
   const [specBookPagesData, setSpecBookPagesData] = useState("");
   const [isOpen, setOpen] = useState(false);
+  const [smRefPUId, setSmRefPUId] = useState();
+
   const handleOpen = () => {
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
+
   useEffect(() => {
-    if (search.length > 0) {
-      setShowSearchpanel(true);
-    } else {
-      setShowSearchpanel(false);
+    if(search.length){
+      handelSearchChange()
+    }else{
+      console.log(ssRefMarkups , 'markupsByPageForBidResp')
+      sketchPageinfo?.callback(ssRefMarkups || {})
     }
   }, [search]);
 
@@ -53,9 +60,13 @@ const SSReferenceFiles = (props: any) => {
   }, [specBookpages]);
 
   useEffect(() => {
-    if (sketchPageinfo) {
-      getMarkupsPerpage();
-    }
+    if(sketchPageinfo){ 
+      if((search.length)){
+        handelSearchChange()
+      }else{
+        getMarkupsPerpage();
+      }
+    }    
   }, [sketchPageinfo]);
 
   const getMarkupsPerpage = () => {
@@ -65,18 +76,36 @@ const SSReferenceFiles = (props: any) => {
     };
     getMarkupsByPageForSubmitals(payload)
       .then((res: any) => {
+        setSmRefPUId(res[0]?.data?.pageUId)
         let updatedRes = res.map((item: any) => {
           return { ...item, locked: true };
         });
         let data = {
           extractionAreas: updatedRes,
         };
+        dispatch(setSSRefMarkups(data))
         sketchPageinfo.callback(data);
       })
       .catch((error: any) => {
         console.log("error", error);
       });
   };
+
+  const handelSearchChange =() =>{
+    if(smRefPUId && ssRightPanelData?.specBook?.id) {
+      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${ssRightPanelData?.specBook?.id}`
+      getTextOccurences(params).then((resp:any)=>{
+        console.log(modifyMarkupData(resp.data),ssRefMarkups , 'markupsByPageForBidResp')
+        let updatedRes = [...modifyMarkupData(resp.data) , ...ssRefMarkups.extractionAreas]
+        let data = {
+          "extractionAreas": updatedRes
+        };
+        console.log('udated markup data',data, sketchPageinfo);
+        sketchPageinfo?.callback(data)
+      })
+    }   
+  }
+  
   const updateCardStatus = (rec: any) => {
     let payload = [{"uniqueId":ssRightPanelData?.uniqueid, 'Status': 2}];
     
@@ -144,14 +173,14 @@ const SSReferenceFiles = (props: any) => {
         stopFocus={true}
         defaultPageToNavigate={ssRightPanelData?.startPage}
       />
-      {showSearchpanel && (
+      {/* {showSearchpanel && (
         <SMBrenaSearch
           renderModel={true}
           open={showSearchpanel}
           handleClose={() => setShowSearchpanel(false)}
           readonly={false}
         />
-      )}
+      )} */}
     </div>
       {isOpen && (
         <SSMittalLeftForm

@@ -65,7 +65,9 @@ export const AddDescription = ({ value, showicon = true }: AddDescriptionProps) 
 				equipmentManufacturer: selectedRow?.equipmentManufacturer,
 				equipmentManufacturerId: selectedRow?.equipmentManufacturerId,
 				equipmentCatalogId: selectedRow?.equipmentCatalogId,
-				providerSource: selectedRow?.providerSource				
+				providerSource: selectedRow?.providerSource,
+				sbsIds: selectedRow?.sbs?.length ? selectedRow?.sbs?.map((item:any) => { return item?.id }) : [],
+				sbsPhaseId: selectedRow?.sbsPhaseId ? selectedRow?.sbsPhaseId : null		
 			}
 
 			updateBudgetLineItem(appInfo, selectedRow.id, payload, (response: any) => {

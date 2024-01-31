@@ -183,7 +183,9 @@ const SUIGrid = (props: TableGridProps) => {
 					markupFeeType: payloadObj?.markupFeeType,
 					markupFeeAmount: payloadObj?.markupFeeAmount,
 					markupFeePercentage: payloadObj?.markupFeePercentage,
-					providerSource: payloadObj?.providerSource									
+					providerSource: payloadObj?.providerSource,
+					sbsIds: payloadObj?.sbs?.length ? payloadObj?.sbs?.map((item:any) => { return item?.id }) : [],
+					sbsPhaseId: payloadObj?.sbsPhaseId ? payloadObj?.sbsPhaseId : null								
 				};
 				console.log('Payloaddd', payload);
 				updateBudgetLineItem(appInfo, payloadObj.id, payload, (response: any) => {

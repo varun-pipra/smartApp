@@ -155,3 +155,22 @@
         }
     }
 }
+
+.check-box-customize {
+    &.client-contracts-grid {
+        .ag-pinned-left-cols-container {
+            .ag-row {
+                .ag-cell {
+                    padding-left: 34px;
+                }
+            }
+        }
+        .ag-pinned-left-header {
+            .ag-header-row {
+                .ag-header-cell {
+                    padding-left: 42px;
+                }
+            }
+        }
+    }
+}

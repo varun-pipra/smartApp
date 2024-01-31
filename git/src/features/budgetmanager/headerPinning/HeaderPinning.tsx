@@ -38,6 +38,7 @@ import BMSettings from '../settings/BMSettings';
 import {useTranslation} from 'react-i18next';
 import {fetchViewBuilderList} from '../operations/viewBuilderSlice';
 import {settingcostcodetypeData} from 'data/SettingsCosttypeData';
+import { getPhaseDropdownValues, getSBSGridList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
 
 const HeaderPinning = (props: any) => {
 	const {t, i18n} = useTranslation();
@@ -83,6 +84,8 @@ const HeaderPinning = (props: any) => {
 		dispatch(fetchSecurity(appInfo));
 		dispatch(fetchViewBuilderList(appInfo));
 		dispatch(fetchConnectors(appInfo));
+		dispatch(getPhaseDropdownValues());
+		dispatch(getSBSGridList())
 		return () => {};
 	}, []);
 

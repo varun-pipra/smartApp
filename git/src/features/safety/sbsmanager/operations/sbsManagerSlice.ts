@@ -18,17 +18,17 @@ export interface SBSManagerState {
   sbsGridData: any;
   showSbsPanel: boolean;
   detailsData: any;
-  appsList:any;
-  appDependentFields:any;
-  selectedNodes:any;
-  showPhaseModel?:boolean;
-  addPhaseText?:String;
-  sbsSaveEnableBtn?:boolean;
-  sbsDetailsPayload?:any;
+  appsList: any;
+  appDependentFields: any;
+  selectedNodes: any;
+  showPhaseModel?: boolean;
+  addPhaseText?: String;
+  sbsSaveEnableBtn?: boolean;
+  sbsDetailsPayload?: any;
   toast: string;
   sbsSettings: any;
-  settingsCategoryList:any;
-  sbsRefFileCount:any;
+  settingsCategoryList: any;
+  sbsRefFileCount: number;
 }
 
 const initialState: SBSManagerState = {
@@ -41,15 +41,15 @@ const initialState: SBSManagerState = {
   detailsData: {},
   appsList: [],
   appDependentFields: [],
-  selectedNodes:[],
-  showPhaseModel:false,
-  addPhaseText:'',
-  sbsSaveEnableBtn:false,
-  sbsDetailsPayload:[],
-  toast: '',
+  selectedNodes: [],
+  showPhaseModel: false,
+  addPhaseText: "",
+  sbsSaveEnableBtn: false,
+  sbsDetailsPayload: [],
+  toast: "",
   sbsSettings: {},
-  settingsCategoryList : [],
-  sbsRefFileCount:0
+  settingsCategoryList: [],
+  sbsRefFileCount: 0,
 };
 
 export const getSBSGridList = createAsyncThunk<any>(
@@ -69,7 +69,7 @@ export const getPhaseDropdownValues = createAsyncThunk<any>(
 );
 export const getCategoryDropDownOptions = createAsyncThunk<any, any>(
   "categoryDropDownOptions",
-  async (name:any) => {
+  async (name: any) => {
     const response = await fetchCategoryList(name);
     return response;
   }
@@ -83,17 +83,14 @@ export const getSBSDetailsById = createAsyncThunk<any, any>(
   }
 );
 
-export const getAppsList = createAsyncThunk<any>(
-  "getApps",
-  async () => {
-    const response = await fetchAppsList();
-    return response;
-  }
-);
+export const getAppsList = createAsyncThunk<any>("getApps", async () => {
+  const response = await fetchAppsList();
+  return response;
+});
 
 export const getAppDependentFields = createAsyncThunk<any, any>(
   "getAppDependentFields",
-  async (appId:any) => {
+  async (appId: any) => {
     const response = await fetchDependentAppFields(appId);
     return response;
   }
@@ -125,14 +122,14 @@ export const SBSManagerSlice = createSlice({
     setShowSbsPanel: (state, action: PayloadAction<boolean>) => {
       state.showSbsPanel = action.payload;
     },
-    setSelectedNodes:(state, action: PayloadAction<any>)=>{
-      state.selectedNodes = action.payload
+    setSelectedNodes: (state, action: PayloadAction<any>) => {
+      state.selectedNodes = action.payload;
     },
-    setShowPhaseModel:(state, action: PayloadAction<any>)=>{
-      state.showPhaseModel = action.payload
+    setShowPhaseModel: (state, action: PayloadAction<any>) => {
+      state.showPhaseModel = action.payload;
     },
-    setAddPhaseText:(state, action: PayloadAction<any>)=>{
-      state.addPhaseText = action.payload
+    setAddPhaseText: (state, action: PayloadAction<any>) => {
+      state.addPhaseText = action.payload;
     },
     setEnableSaveButton: (state, action: PayloadAction<any>) => {
       state.sbsSaveEnableBtn = action.payload;
@@ -143,12 +140,12 @@ export const SBSManagerSlice = createSlice({
     setDetailsData: (state, action: PayloadAction<any>) => {
       state.detailsData = action.payload;
     },
-		setToast: (state, action: PayloadAction<any>) => {
-			state.toast = action.payload;
-		},
+    setToast: (state, action: PayloadAction<any>) => {
+      state.toast = action.payload;
+    },
     setSbsRefFileCount: (state, action: PayloadAction<any>) => {
-			state.sbsRefFileCount = action.payload;
-		},
+      state.sbsRefFileCount = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -203,13 +200,15 @@ export const SBSManagerSlice = createSlice({
       })
       .addCase(getAppsList.fulfilled, (state, action) => {
         state.loading = false;
-        state.appsList = action.payload?.map((appObj:any) => 	{ return {
-          id: appObj?.id,
-          objectId: appObj?.appid,
-          thumbnailUrl: appObj?.iconUrl,
-          name: appObj?.name,
-          displayField: appObj?.name,
-        }});
+        state.appsList = action.payload?.map((appObj: any) => {
+          return {
+            id: appObj?.id,
+            objectId: appObj?.appid,
+            thumbnailUrl: appObj?.iconUrl,
+            name: appObj?.name,
+            displayField: appObj?.name,
+          };
+        });
       })
       .addCase(getAppsList.rejected, (state) => {
         state.loading = false;
@@ -243,25 +242,39 @@ export const SBSManagerSlice = createSlice({
       .addCase(getSettingsCategoriesList.fulfilled, (state, action) => {
         state.loading = false;
         const categories = action.payload;
-        let data:any  = categories?.filter((item:any) => {
-            let index = item?.listCategories?.findIndex((rec:any) => rec.name === 'Planner');
-            if(index !== -1) {
-              return item;
-            };
+        let data: any = categories?.filter((item: any) => {
+          let index = item?.listCategories?.findIndex(
+            (rec: any) => rec.name === "Planner"
+          );
+          if (index !== -1) {
+            return item;
+          }
         });
-        data = data?.filter((x:any) => x?.listCategories).map((item:any) => ({
-          ...item, 
-          label:item.name,
-          value: item.id
-        }));
+        data = data
+          ?.filter((x: any) => x?.listCategories)
+          .map((item: any) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }));
         state.settingsCategoryList = data || [];
       })
       .addCase(getSettingsCategoriesList.rejected, (state) => {
         state.loading = false;
-      })
+      });
   },
 });
 
-export const { setToastMessage, setShowSbsPanel, setSelectedNodes,setShowPhaseModel,setAddPhaseText,setEnableSaveButton,setSaveDetailsObj, setDetailsData,setToast , setSbsRefFileCount} = SBSManagerSlice.actions;
-
+export const {
+  setToastMessage,
+  setShowSbsPanel,
+  setSelectedNodes,
+  setShowPhaseModel,
+  setAddPhaseText,
+  setEnableSaveButton,
+  setSaveDetailsObj,
+  setDetailsData,
+  setToast,
+  setSbsRefFileCount,
+} = SBSManagerSlice.actions;
 export default SBSManagerSlice.reducer;

@@ -209,13 +209,13 @@ const ClientContractsGrid = (props: any) => {
 					const bcStatus = params.data?.blockChainStatus;
 					const showBCIcon = (clientContractBlockchain && blockchainStates.indexOf(bcStatus) === -1);
 					return <>
-						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '7%', marginTop: '12px', fontSize: '1.25em'}}></span>}
+						{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '7%', marginTop: '12px', fontSize: '1.25em'}}></span>}
 						{params?.data?.hasChangeOrder && <IQTooltip
 							title={'Billing Schedule of the Contract to be updated due to recent approval of the Change Event Request.'}
 							placement={'bottom'}
 							arrow={true}
 						>
-							<span className='common-icon-c-mark' style={{color: '#26d8b1', position: 'absolute', left: '1%', marginTop: '8px', fontSize: '24px', cursor: 'pointer'}} />
+							<span className='common-icon-c-mark' style={{color: '#26d8b1', position: 'absolute', left: '-0.2%', marginTop: '8px', fontSize: '24px', cursor: 'pointer'}} />
 						</IQTooltip>}
 						<span className="ag-costcodegroup" style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#059CDF'}}>{params.data?.title} </span>
 					</>;
@@ -410,7 +410,7 @@ const ClientContractsGrid = (props: any) => {
 	}, []);
 
 	return (
-		<div className="client-contracts-grid" style={containerStyle}>
+		<div className="client-contracts-grid check-box-customize" style={containerStyle}>
 			<div style={gridStyle} className="ag-theme-alpine">
 				<SUIGrid
 					ref={gridRef}

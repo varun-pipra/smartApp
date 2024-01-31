@@ -60,7 +60,10 @@
                  color: #fff;
              }
              .ref-name-tag {
-                 color: #059cdf;
+                color: #059cdf;
+                width: calc(100% - 40px);
+                text-overflow: ellipsis;
+                overflow: hidden;
              }
          }
      }

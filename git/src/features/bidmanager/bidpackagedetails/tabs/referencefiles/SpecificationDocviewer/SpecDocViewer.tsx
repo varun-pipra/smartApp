@@ -38,10 +38,10 @@ const SpecDocViewer = (props: any) => {
         onClose={closeSpecDocViewer}
   
         custom={{
-					closable: true,
-					resizable: true,
-					title: <><span style={{color: "#333333",fontSize: "1.12rem",fontWeight: "bolder",fontFamily: "Roboto-regular",padding: "0px !important"}}>{selectedRecord.number + ": " + selectedRecord.title}</span></>
-				}}
+          closable: true,
+          resizable: true,
+          title: <><span style={{color: "#333333",fontSize: "1.12rem",fontWeight: "bolder",fontFamily: "Roboto-regular",padding: "0px !important"}}>{selectedRecord.number + ": " + selectedRecord.title}</span></>
+        }}
       >
         <div className="spec-doc-viewer">
           <div className="iq-brena-search-cont" style={{ display: "flex" }}>

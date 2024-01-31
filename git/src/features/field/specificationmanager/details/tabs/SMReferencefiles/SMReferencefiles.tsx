@@ -7,6 +7,9 @@ import { getSpecBookPages } from "features/field/specificationmanager/stores/Spe
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { getSketchPageInfo } from "app/common/appInfoSlice";
 import { getMarkupsByPageForSections } from "features/field/specificationmanager/stores/SpecificationManagerAPI";
+import { modifyMarkupData } from "utilities/commonFunctions";
+import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
+import { setSpecRefMarkups } from "features/field/smartsubmittals/stores/SmartSubmitalSlice";
 
 
 const SMReferenceFiles = (props: any) => {
@@ -15,17 +18,21 @@ const SMReferenceFiles = (props: any) => {
   const { specBookpages,selectedRecsData } = useAppSelector(
     (state) => state.specificationManager
   );
+  const {specRefMarkups} = useAppSelector((state:any)=> state.smartSubmittals);
+
   const sketchPageinfo= useAppSelector(getSketchPageInfo);
   const docViewElementId = "canvasWrapper-ref-files";
-  const [showSearchpanel, setShowSearchpanel] = useState(false);
+  // const [showSearchpanel, setShowSearchpanel] = useState(false);
   const [search, setSearch] = useState("");
   const [specBookPagesData, setSpecBookPagesData] = useState("");
-  
+  const [smRefPUId, setSmRefPUId] = useState();
+
   useEffect(() => {
-    if (search.length > 0) {
-      setShowSearchpanel(true);
-    } else {
-      setShowSearchpanel(false);
+    if(search.length){
+      handelSearchChange()
+    }else{
+      console.log(specRefMarkups , 'markupsByPageForBidResp')
+      sketchPageinfo?.callback(specRefMarkups || {})
     }
   }, [search]);
 
@@ -49,7 +56,11 @@ const SMReferenceFiles = (props: any) => {
 
   useEffect(() => {
     if(sketchPageinfo){
-      getMarkupsPerpage();
+      if((search.length)){
+        handelSearchChange()
+      }else{
+        getMarkupsPerpage();
+      }
     }    
   }, [sketchPageinfo]);
 
@@ -60,15 +71,34 @@ const SMReferenceFiles = (props: any) => {
     }
     getMarkupsByPageForSections(payload)
       .then((res:any)=>{
+        setSmRefPUId(res[0]?.data?.pageUId)
         let updatedRes = res.map((item:any) => { return {...item, locked: true} })
         let data = {
           "extractionAreas": updatedRes
         };
+        dispatch(setSpecRefMarkups(data))
         sketchPageinfo.callback(data);
       })
       .catch((error:any)=>{
         console.log('error',error);
       })
+  }
+
+  const handelSearchChange =() =>{
+    console.log('selectedRecsData', selectedRecsData, selectedRec);
+    if(smRefPUId && selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id) {
+      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id}`
+      getTextOccurences(params).then((resp:any)=>{
+        console.log(modifyMarkupData(resp.data),specRefMarkups , 'markupsByPageForBidResp')
+        let updatedRes = [...modifyMarkupData(resp.data) , ...specRefMarkups.extractionAreas]
+        let data = {
+          "extractionAreas": updatedRes
+        };
+        console.log('udated markup data',data, sketchPageinfo);
+        sketchPageinfo?.callback(data)
+      })
+    }
+   
   }
 
   return (
@@ -99,14 +129,14 @@ const SMReferenceFiles = (props: any) => {
         stopFocus={true}
         defaultPageToNavigate={selectedRec?.startPage}
       />
-      {showSearchpanel && (
+      {/* {showSearchpanel && (
         <SMBrenaSearch
           renderModel={true}
           open={showSearchpanel}
           handleClose={() => setShowSearchpanel(false)}
           readonly={false}
         />
-      )}
+      )} */}
     </div>
   );
 };

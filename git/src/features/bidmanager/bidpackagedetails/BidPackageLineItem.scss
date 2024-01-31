@@ -1,13 +1,13 @@
 .bid-package-lineitem-detail {
     height: 100%;
     display: flex;
-	flex-direction: column;
-	.tabicon {
+    flex-direction: column;
+    .tabicon {
         font-size: 20px;
-	}
-	.bidqueries_tabicon{
-		font-size: 26px;
-	}
+    }
+    .bidqueries_tabicon {
+        font-size: 26px;
+    }
     .tabicon_orange {
         color: #ed7431
     }
@@ -21,19 +21,17 @@
         justify-content: space-between;
     }
     .presence-section {
-		padding: 0 0.5em;
+        padding: 0 0.5em;
         display: grid !important;
-    	grid-template-columns: 25%;
-
-		.bubble-box {
-			grid-column: 2;
-		}
-
-		.presence-tools {
-			grid-column: 4;
-			align-self: center;
-			justify-self: end;
-		}
+        grid-template-columns: 25%;
+        .bubble-box {
+            grid-column: 2;
+        }
+        .presence-tools {
+            grid-column: 4;
+            align-self: center;
+            justify-self: end;
+        }
     }
     .details-header {
         padding-left: 1em;
@@ -159,8 +157,8 @@
     .tab-panel-container {
         flex: auto;
         padding-top: 1.2em;
-		#bid-details,
-		#bid-queries,
+        #bid-details,
+        #bid-queries,
         #award-bids,
         #reference-files {
             height: fit-content !important;

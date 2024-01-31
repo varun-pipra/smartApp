@@ -104,6 +104,7 @@ export const updateBudgetLineItem = async (appInfo: any, lineItemId: any, body: 
 	// This is the ,mock api which contains same data of original api. 
 	// Once if we can read the project id and session token you can replace this with original api
 	// console.log("line item payload", body)
+	console.log("updateBudgetLineItem payload", body);
 	let response;
 	if(!isLocalhost) {
 		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/budgets/${appInfo?.uniqueId}/lineitems/${lineItemId}?sessionId=${appInfo?.sessionId}`, {

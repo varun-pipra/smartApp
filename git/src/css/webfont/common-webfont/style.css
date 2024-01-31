@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?fw66m5');
-  src:  url('fonts/common-webfont.eot?fw66m5#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?fw66m5') format('truetype'),
-    url('fonts/common-webfont.woff?fw66m5') format('woff'),
-    url('fonts/common-webfont.svg?fw66m5#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?8urswv');
+  src:  url('fonts/common-webfont.eot?8urswv#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?8urswv') format('truetype'),
+    url('fonts/common-webfont.woff?8urswv') format('woff'),
+    url('fonts/common-webfont.svg?8urswv#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-Block-chain:before {
+  content: "\ec73";
+}
 .common-icon-chart:before {
   content: "\ec71";
 }

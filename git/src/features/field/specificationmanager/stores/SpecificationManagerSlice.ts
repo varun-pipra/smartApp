@@ -39,7 +39,8 @@ export interface SpecificationManagerState {
   specBrenaFilters?:any;
   changedSMDetailsValue?:any;
   smEnableButton?:any,
-  showExtractSpecAI?:boolean
+  showExtractSpecAI?:boolean;
+  smBrenaRaightPanelMarkups:any
 }
 
 const initialState: SpecificationManagerState = {
@@ -73,6 +74,7 @@ const initialState: SpecificationManagerState = {
   changedSMDetailsValue:[],
   smEnableButton:false,
   showExtractSpecAI:true,
+  smBrenaRaightPanelMarkups:{}
 };
 
 export const getSMList = createAsyncThunk<any>(
@@ -200,6 +202,10 @@ export const SpecificationManagerSlice = createSlice({
     },
     setShowExtractSpecAI: (state, action: PayloadAction<any>) => {
       state.showExtractSpecAI = action.payload;
+    },
+    setSmBrenaRaightPanelMarkups: (state, action: PayloadAction<any>) => {
+      console.log(action.payload,'action.payload')
+      state.smBrenaRaightPanelMarkups = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -331,7 +337,8 @@ export const {
   setSpecBrenaFilters,
   setChangedSMDetailsValue,
   setEnableSaveButton,
-  setShowExtractSpecAI 
+  setShowExtractSpecAI,
+  setSmBrenaRaightPanelMarkups
 } = SpecificationManagerSlice.actions;
 
 export default SpecificationManagerSlice.reducer;

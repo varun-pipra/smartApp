@@ -353,7 +353,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 					</div>
 				</div>
 				: ''}
-			<div className='bid-manager-grid-box'>
+			<div className='bid-manager-grid-box check-box-customize'>
 				<VendorContractsToolbar />
 				<VendorContractsGrid onRefChange={(ref: any) => handleRef(ref)} />
 			</div>
@@ -500,7 +500,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 							SCActions?.show && <>
 								{
 									SCActions?.decline?.show && <IQButton
-										disabled={SCActions?.decline?.disable}
+										disabled={SCActions?.decline?.disable || disableBlockchainActionButtons}
 										className='btn-cancel-contract'
 										onClick={() => setContractDialog({show: true, type: 'decline'})}
 									// onClick={handleDecline}
@@ -511,7 +511,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 								}
 								{
 									SCActions?.revise?.show && <IQButton
-										disabled={SCActions?.revise?.disable}
+										disabled={SCActions?.revise?.disable || disableBlockchainActionButtons}
 										className='btn-save-changes'
 										variant="outlined"
 										onClick={() => setContractDialog({show: true, type: 'revise'})}
@@ -522,7 +522,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 								}
 								{
 									SCActions?.accept?.show && <IQButton
-										disabled={SCActions?.accept?.disable}
+										disabled={SCActions?.accept?.disable || disableBlockchainActionButtons}
 										className='btn-post-contract'
 										onClick={() => setContractDialog({show: true, type: 'sign'})}
 									// startIcon={<Gavel />}

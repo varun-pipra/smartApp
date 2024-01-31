@@ -21,6 +21,7 @@ import {
 import { getSBSDetailsById, setSbsRefFileCount } from "features/safety/sbsmanager/operations/sbsManagerSlice";
 import _ from "lodash";
 import { findAndUpdateFiltersData } from "features/safety/sbsmanager/utils";
+import CustomTooltip from "features/budgetmanager/aggrid/customtooltip/CustomToolTip";
 const referenceData = [
   {
     id: 1,
@@ -54,9 +55,9 @@ const filterOptions = [
   },
   {
     text: "Type",
-    value: "folderType",
-    key: "folderType",
-    keyValue: "folderType",
+    value: "type",
+    key: "type",
+    keyValue: "type",
     children: {
       type: "checkbox",
       items: [],
@@ -138,12 +139,12 @@ const ReferenceFiles =(props: any) => {
       setModifiedList(data);
       setGridData(data);
       setFilters(findAndUpdateFiltersData(filterOptions, data, "phase", true, "name"));
-      setFilters(findAndUpdateFiltersData(filterOptions, data, "folderType"));
+      setFilters(findAndUpdateFiltersData(filterOptions, data, "type"));
     } else if((detailsData?.referencefiles?.length === 0 ?? false)){
       setModifiedList([]);
       setGridData([]);
       setFilters(findAndUpdateFiltersData(filterOptions, detailsData?.referencefiles, "phase", true, "name"));
-      setFilters(findAndUpdateFiltersData(filterOptions, detailsData?.referencefiles, "folderType"));
+      setFilters(findAndUpdateFiltersData(filterOptions, detailsData?.referencefiles, "type"));
     }
   }, [detailsData?.referencefiles]);
 
@@ -158,6 +159,11 @@ const ReferenceFiles =(props: any) => {
         checkboxSelection: true,
         headerCheckboxSelection: true,
         width: 300,
+        ignoreDefaultTooltip: true,
+        tooltipComponent: CustomTooltip,
+        tooltipValueGetter: (params: any) => {
+          return params?.data?.name && params?.data?.name?.length > 27 ? params?.data?.name : null;
+        },
         valueGetter: (params: any) => params.data?.name,
         comparator: (valueA: any, valueB: any) =>
           valueA?.toLowerCase().localeCompare(valueB?.toLowerCase()),
@@ -202,7 +208,7 @@ const ReferenceFiles =(props: any) => {
       {
         headerName: "Type",
         maxWidth: 120,
-        field: "folderType",
+        field: "type",
       },
       {
         headerName: "Phases",

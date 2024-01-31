@@ -4,16 +4,18 @@ import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQSearchField from "components/iqsearchfield/IQSearchField";
 import "./SMBrenaRightPanel.scss";
 import SMBrenaSearch from "features/field/specificationmanager/smbrena/content/leftpanel/SMBrenaSearch";
-import { getSpecBookPages, setResizeBrenaPanel } from "features/field/specificationmanager/stores/SpecificationManagerSlice";
+import { getSpecBookPages, setResizeBrenaPanel, setSmBrenaRaightPanelMarkups } from "features/field/specificationmanager/stores/SpecificationManagerSlice";
 import { getUploadQueue } from "features/field/specificationmanager/stores/FilesSlice";
 import { getMarkupsByPageForSections } from "features/field/specificationmanager/stores/SpecificationManagerAPI";
 import { getSketchIns, getSketchPageInfo } from "app/common/appInfoSlice";
+import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
+import { modifyMarkupData } from "utilities/commonFunctions";
 
 const SMBrenaRightPanel = (props: any) => {
   const dispatch = useAppDispatch();
   const { uploadQueue } = useAppSelector((state) => state.SMFile);
   const fileQueue = useAppSelector(getUploadQueue);
-  const { specBookpages } = useAppSelector(
+  const { specBookpages , smBrenaRaightPanelMarkups } = useAppSelector(
     (state) => state.specificationManager
   );
   const [docViewImg, setDocViewImg] = useState(
@@ -27,6 +29,7 @@ const SMBrenaRightPanel = (props: any) => {
   const sketchInstance = useAppSelector(getSketchIns);
   const sketchPageinfo= useAppSelector(getSketchPageInfo);
   const [docViewerins, setDocViewerins] = useState<any>({});
+  const [smRefPUId, setSmRefPUId] = useState();
 
   useEffect(() => {
     dispatch(getSpecBookPages(fileQueue?.[0]));
@@ -37,13 +40,13 @@ const SMBrenaRightPanel = (props: any) => {
   }, [specBookpages]);
 
   useEffect(() => {
-    if (search.length > 0) {
-      setShowSearchpanel(true);
-        docViewerins?.rerenderCanvas();
+    if(search.length){
+      handelSearchChange()
+      docViewerins?.rerenderCanvas();
       dispatch(setResizeBrenaPanel(true));
-    } else {
-      setShowSearchpanel(false);
+    }else{
       dispatch(setResizeBrenaPanel(false));
+      sketchPageinfo?.callback(smBrenaRaightPanelMarkups || {})
     }
   }, [search]);
 
@@ -60,7 +63,11 @@ const SMBrenaRightPanel = (props: any) => {
 
   useEffect(() => {
     if(sketchPageinfo){
-      getMarkupsPerpage();
+      if((search.length)){
+        handelSearchChange()
+      }else{
+        getMarkupsPerpage();
+      }
     }    
   }, [sketchPageinfo]);
 
@@ -72,15 +79,33 @@ const SMBrenaRightPanel = (props: any) => {
     getMarkupsByPageForSections(payload)
       .then((res:any)=>{
         console.log('res',res);
+        setSmRefPUId(res[0]?.data?.pageUId)
         let updatedRes = res.map((item:any) => { return {...item, locked: true} })
         let data = {
           "extractionAreas": updatedRes
         };
+        dispatch(setSmBrenaRaightPanelMarkups(data))
         sketchPageinfo.callback(data);
       })
       .catch((error:any)=>{
         console.log('error',error);
       })
+  }
+
+  const handelSearchChange =() =>{
+    if(smRefPUId && fileQueue?.[0]?.id) {
+      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${fileQueue?.[0]?.id}`
+      getTextOccurences(params).then((resp:any)=>{
+        console.log(modifyMarkupData(resp.data),smBrenaRaightPanelMarkups , 'markupsByPageForBidResp')
+        let updatedRes = [...modifyMarkupData(resp.data) , ...smBrenaRaightPanelMarkups.extractionAreas]
+        let data = {
+          "extractionAreas": updatedRes
+        };
+        console.log('udated markup data',data, sketchPageinfo);
+        sketchPageinfo?.callback(data)
+      })
+    }
+   
   }
 
   return (
@@ -104,7 +129,7 @@ const SMBrenaRightPanel = (props: any) => {
           sketchData={specBookPagesData}
         />
       </div>
-      {showSearchpanel && (
+      {/* {showSearchpanel && (
         <div className="sm-search-cont">
           <SMBrenaSearch
             renderModel={false}
@@ -113,7 +138,7 @@ const SMBrenaRightPanel = (props: any) => {
             readonly={false}
           />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

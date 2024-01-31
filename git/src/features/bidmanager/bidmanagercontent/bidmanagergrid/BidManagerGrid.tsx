@@ -284,7 +284,7 @@ const BidManagerGrid = (props: any) => {
 					const bcStatus = params.data?.blockChainStatus;
 					const showBCIcon = (bidManagerBlockchain && blockchainStates.indexOf(bcStatus) === -1);
 					return <>
-						{showBCIcon && <span className='common-icon-blockchain' style={{position: 'absolute', left: '7%', marginTop: '12px', fontSize: '1.25em'}}></span>}
+						{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '7%', marginTop: '12px', fontSize: '1.25em'}}></span>}
 						{/* <IQTooltip
 						title={'Scheduled'}
 						placement={'bottom'} arrow={true}

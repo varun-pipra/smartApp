@@ -12,6 +12,7 @@ const BudgetImporter = (props: any) => {
 		open={true}
 		title='Budget Importer'
 		className="bm-importer"
+		minHeight='300px'
 		tools={{
 			closable: true
 		}}

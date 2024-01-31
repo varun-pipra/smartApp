@@ -17,6 +17,9 @@ export interface SmartSubmitalState {
   rightPanelNavCount?:any;
   rightPanelNavFlag?:any;
   showManageSubmittalsAI?:boolean;
+  ssRefMarkups:any;
+  brenaMarkups:any;
+  specRefMarkups:any;
 }
 
 const initialState: SmartSubmitalState = {
@@ -35,6 +38,9 @@ const initialState: SmartSubmitalState = {
   rightPanelNavCount: {startPage: 0,endPage: 0},
   rightPanelNavFlag: 0,
   showManageSubmittalsAI:true,
+  ssRefMarkups:{},
+  brenaMarkups:{},
+  specRefMarkups:{}
 };
 export const getSmartSubmitalGridList = createAsyncThunk<any, any>(
   "smartSubmitalList",
@@ -87,6 +93,15 @@ const smartSubmitalSlice = createSlice({
     setShowManageSubmittalsAI: (state, action: PayloadAction<any>) => {
       state.showManageSubmittalsAI = action.payload;
     },
+    setSSRefMarkups: (state, action: PayloadAction<any>) => {
+      state.ssRefMarkups = action.payload;
+    },
+    setBrenaMarkups: (state, action: PayloadAction<any>) => {
+      state.brenaMarkups = action.payload;
+    },
+    setSpecRefMarkups: (state, action: PayloadAction<any>) => {
+      state.specRefMarkups = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -130,7 +145,10 @@ export const {
   setRightPanelUpdated,
   setRightPanelNavCount,
   setRightPanelNavFlag,
-  setShowManageSubmittalsAI
+  setShowManageSubmittalsAI,
+  setSSRefMarkups,
+  setBrenaMarkups,
+  setSpecRefMarkups
 } = smartSubmitalSlice.actions;
 
 export default smartSubmitalSlice.reducer;

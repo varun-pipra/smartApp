@@ -11,7 +11,7 @@ import SpecDocViewer from "features/bidmanager/bidpackagedetails/tabs/referencef
 import { getMarkupsByPageForSubmittals } from "features/field/specificationmanager/stores/SpecificationManagerAPI";
 import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
 import { modifyMarkupData } from "utilities/commonFunctions";
-import { setMarkupsByPageForBid } from "features/bidresponsemanager/stores/BidResponseManagerSlice";
+import { setMarkupsByPageForBidResp } from "features/bidresponsemanager/stores/BidResponseManagerSlice";
 
 export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   const appInfo = useAppSelector(getServer);
@@ -51,7 +51,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         let data = {
           "extractionAreas": updatedRes
         };
-        dispatch(setMarkupsByPageForBid(data))
+        dispatch(setMarkupsByPageForBidResp(data))
         setBidRefernceagePUId(res[0]?.data?.pageUId)
         sketchPageinfo.callback(data);
       })
@@ -201,7 +201,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
 
   const handelSearchChange =() =>{
     console.log(sepcSelectedRecord,'sepcSelectedRecord')
-    if(bidRefernceagePUId && sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.specBookId) {
+    if(bidRefernceagePUId && sepcSelectedRecord?.specBookId) {
       let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`
       getTextOccurences(params).then((resp:any)=>{
         console.log(modifyMarkupData(resp.data),markupsByPageForBidResp , 'markupsByPageForBidResp')
@@ -249,7 +249,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         <span className="common-icon-Upload-File"></span>
         <span>Specifications</span>
       </div>
-    <div className="bid-res-spec-grid">
+	  <div className="bid-res-spec-grid">
 		<SUIGrid
 			headers={specColumns}
 			data={bidDetails.specifications}
