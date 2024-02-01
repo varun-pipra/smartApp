@@ -4,7 +4,11 @@ import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQSearchField from "components/iqsearchfield/IQSearchField";
 import "./SMBrenaRightPanel.scss";
 import SMBrenaSearch from "features/field/specificationmanager/smbrena/content/leftpanel/SMBrenaSearch";
-import { getSpecBookPages, setResizeBrenaPanel, setSmBrenaRaightPanelMarkups } from "features/field/specificationmanager/stores/SpecificationManagerSlice";
+import {
+  getSpecBookPages,
+  setResizeBrenaPanel,
+  setSmBrenaRaightPanelMarkups,
+} from "features/field/specificationmanager/stores/SpecificationManagerSlice";
 import { getUploadQueue } from "features/field/specificationmanager/stores/FilesSlice";
 import { getMarkupsByPageForSections } from "features/field/specificationmanager/stores/SpecificationManagerAPI";
 import { getSketchIns, getSketchPageInfo } from "app/common/appInfoSlice";
@@ -16,7 +20,7 @@ const SMBrenaRightPanel = (props: any) => {
   const dispatch = useAppDispatch();
   const { uploadQueue } = useAppSelector((state) => state.SMFile);
   const fileQueue = useAppSelector(getUploadQueue);
-  const { specBookpages , smBrenaRaightPanelMarkups } = useAppSelector(
+  const { specBookpages, smBrenaRaightPanelMarkups } = useAppSelector(
     (state) => state.specificationManager
   );
   const [docViewImg, setDocViewImg] = useState(
@@ -27,7 +31,7 @@ const SMBrenaRightPanel = (props: any) => {
   const [search, setSearch] = useState("");
   const [specBookPagesData, setSpecBookPagesData] = useState("");
   const sketchInstance = useAppSelector(getSketchIns);
-  const sketchPageinfo= useAppSelector(getSketchPageInfo);
+  const sketchPageinfo = useAppSelector(getSketchPageInfo);
   const [docViewerins, setDocViewerins] = useState<any>({});
   const [smRefPUId, setSmRefPUId] = useState();
 
@@ -41,20 +45,18 @@ const SMBrenaRightPanel = (props: any) => {
 
   const debounceOnSearch = useCallback(
     _.debounce((search) => {
-      setSearch(search)
-      if(search.length){
-        handelSearchChange()
+      setSearch(search);
+      if (search.length) {
+        handelSearchChange();
         docViewerins?.rerenderCanvas();
         dispatch(setResizeBrenaPanel(true));
-      }else{
+      } else {
         dispatch(setResizeBrenaPanel(false));
-        sketchPageinfo?.callback(smBrenaRaightPanelMarkups || {})
+        sketchPageinfo?.callback(smBrenaRaightPanelMarkups || {});
       }
     }, 2000),
     [search]
   );
-
-  
 
   useEffect(() => {
     console.log("fileQueue smw rightpanel", uploadQueue);
@@ -64,63 +66,67 @@ const SMBrenaRightPanel = (props: any) => {
   }, [uploadQueue]);
 
   useEffect(() => {
-    console.log('uhjvdbujvhbejx')
     setDocViewerins(sketchInstance);
   }, [sketchInstance]);
 
   useEffect(() => {
-    if(sketchPageinfo){
-        getMarkupsPerpage();
-    }    
+    if (sketchPageinfo) {
+      getMarkupsPerpage();
+    }
   }, [sketchPageinfo]);
 
-  const getMarkupsPerpage = ()=>{
+  const getMarkupsPerpage = () => {
     let payload = {
-      specbookId:fileQueue?.[0]?.id,
-      pageNo:sketchPageinfo?.currentPage?.page
-    }
+      specbookId: fileQueue?.[0]?.id,
+      pageNo: sketchPageinfo?.currentPage?.page,
+    };
     getMarkupsByPageForSections(payload)
-      .then((res:any)=>{
-        console.log('res',res);
-        setSmRefPUId(res[0]?.data?.pageUId)
-        let updatedRes = res.map((item:any) => { return {...item, locked: true} })
+      .then((res: any) => {
+        console.log("res", res);
+        setSmRefPUId(res[0]?.data?.pageUId);
+        let updatedRes = res.map((item: any) => {
+          return { ...item, locked: true };
+        });
         let data = {
-          "extractionAreas": updatedRes
+          extractionAreas: updatedRes,
         };
-        dispatch(setSmBrenaRaightPanelMarkups(data))
+        dispatch(setSmBrenaRaightPanelMarkups(data));
         if (search.length) {
-					handelSearchChange();
-				} else{
-					sketchPageinfo.callback(data);
-				}
+          handelSearchChange();
+        } else {
+          sketchPageinfo.callback(data);
+        }
       })
-      .catch((error:any)=>{
-        console.log('error',error);
-      })
-  }
+      .catch((error: any) => {
+        console.log("error", error);
+      });
+  };
 
-  const handelSearchChange =() =>{
-    if(smRefPUId && fileQueue?.[0]?.id) {
-      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${fileQueue?.[0]?.id}`
-      getTextOccurences(params).then((resp:any)=>{
-        console.log(modifyMarkupData(resp.data),smBrenaRaightPanelMarkups , 'markupsByPageForBidResp')
-        let updatedRes = [...modifyMarkupData(resp.data) , ...smBrenaRaightPanelMarkups.extractionAreas]
+  const handelSearchChange = () => {
+    if (smRefPUId && fileQueue?.[0]?.id) {
+      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${fileQueue?.[0]?.id}`;
+      getTextOccurences(params).then((resp: any) => {
+        console.log(
+          modifyMarkupData(resp.data),
+          smBrenaRaightPanelMarkups,
+          "markupsByPageForBidResp"
+        );
+        let updatedRes = [
+          ...modifyMarkupData(resp.data),
+          ...smBrenaRaightPanelMarkups.extractionAreas,
+        ];
         let data = {
-          "extractionAreas": updatedRes
+          extractionAreas: updatedRes,
         };
-        console.log('udated markup data',data, sketchPageinfo);
-        sketchPageinfo?.callback(data)
-      })
+        console.log("udated markup data", data, sketchPageinfo);
+        sketchPageinfo?.callback(data);
+      });
     }
-   
-  }
+  };
 
   return (
     <div className="sm-right-panel">
-      <div
-        className="sm-doc-cont"
-        style={{ width:"100%" }}
-      >
+      <div className="sm-doc-cont" style={{ width: "100%" }}>
         <div className="iq-brena-search-cont">
           <IQSearchField
             placeholder={"Search Text"}

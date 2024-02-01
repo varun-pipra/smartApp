@@ -58,7 +58,7 @@ const CCBillingSchedule = (props: any) => {
 	// const totalBudgetValue = selectedRecord?.includeEntireBudget ? selectedRecord?.totalAmount : getValuesOfAllEntries(selectedRecord?.budgetItems, 'budgetAmount')?.reduce((a: any, b: any) => Number(a) + Number(b), 0)
 
 	const [tilesData, setTilesData] = useState<any>(tilesConstData);
-	const [pinnedTopData, setPinnedTopData] = useState<any>([]);
+	const [pinnedTopData, setPinnedTopData] = useState<any>(emptyObj);
 
 	useEffect(() => {
 		if(selectedRecord?.billingSchedule) {
@@ -846,6 +846,7 @@ const CCBillingSchedule = (props: any) => {
 									maxWidth: 80,
 								}}
 								readOnly={props.readOnly}
+								moduleName={'clientContracts'}								
 								pinnedTopRowData={pinnedTopData}
 								hasPinnedTopRow={pinnedTopData?.length}
 								deleteConfirmationRequired={true}
@@ -871,6 +872,7 @@ const CCBillingSchedule = (props: any) => {
 									maxWidth: 80,
 								}}
 								readOnly={props.readOnly}
+								moduleName={'clientContracts'}
 								pinnedTopRowData={pinnedTopData}
 								hasPinnedTopRow={pinnedTopData?.length}
 								deleteConfirmationRequired={true}

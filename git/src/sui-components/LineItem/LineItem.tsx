@@ -30,6 +30,7 @@ export interface SuiLineItemProps extends TableGridProps {
 	rowMessageHeading?: any;
 	rowMessageIcon?: any;
 	headers?: any;
+	moduleName?:string;
 }
 
 const SUILineItem = (props: SuiLineItemProps) => {
@@ -48,7 +49,8 @@ const SUILineItem = (props: SuiLineItemProps) => {
 		rowHeight = null,
 		rowSelected = () => { },
 		rowMessageHeading = '',
-		rowMessageIcon = ''
+		rowMessageIcon = '',
+		moduleName=null
 	} = props;
 	const [updatedheaders, setUpdatedHeaders] = useState([]);
 
@@ -247,6 +249,7 @@ const SUILineItem = (props: SuiLineItemProps) => {
 				pinnedBottomRowConfig={pinnedBottomRowConfig}
 				onCellEditRequest={onCellEditRequest}
 				nowRowsMsg={nowRowsMsg}
+				moduleName={props?.moduleName}													
 				pinnedTopRowData={props.pinnedTopRowData}
 				rowHeight={rowHeight}
 				getRowClass={props?.getRowClass}

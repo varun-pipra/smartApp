@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from 'app/store';
 import { getUserImage, getRollupTaskData, fetchCompanyData } from './rightPanelAPI';
 
 export interface RightPanelState {
@@ -115,6 +116,8 @@ export const rightPanelSlice = createSlice({
 
 	}
 });
+
+export const getRollupsData = (state: RootState) => state?.rightPanel?.rollupTaskData;
 
 export const { setSelectedRowData, setSelectedRowIndex, setOpenTransactionList, setOpenCostForm, setOpenBudgetTransferForm } = rightPanelSlice.actions;
 export default rightPanelSlice.reducer;

@@ -15,9 +15,9 @@ import {fetchConnectors, fetchGridData} from '../operations/gridSlice';
 
 import {fetchVendorData} from '../operations/vendorInfoSlice';
 import {isLocalhost,postMessage} from 'app/utils';
-import {setOpenBudgetTransferForm, setOpenCostForm} from 'features/budgetmanager/operations/rightPanelSlice';
+import {fetchRollupTaskData, setOpenBudgetTransferForm, setOpenCostForm} from 'features/budgetmanager/operations/rightPanelSlice';
 import {
-	showRightPannel, setRightPannel, setLineItemDescription, setShowSettingPopup2, getShowSettingPopup2
+	showRightPannel, setRightPannel, setLineItemDescription, setShowSettingPopup2, getShowSettingPopup2, getTemplateForBudget
 } from '../operations/tableColumnsSlice';
 
 import LineItemDetails from '../lineitemdetails/LineItemDetails';
@@ -85,7 +85,9 @@ const HeaderPinning = (props: any) => {
 		dispatch(fetchViewBuilderList(appInfo));
 		dispatch(fetchConnectors(appInfo));
 		dispatch(getPhaseDropdownValues());
-		dispatch(getSBSGridList())
+		dispatch(getSBSGridList());
+		dispatch(fetchRollupTaskData({ 'appInfo': appInfo }));	
+		// dispatch(getTemplateForBudget(appInfo))	;
 		return () => {};
 	}, []);
 

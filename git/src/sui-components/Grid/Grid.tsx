@@ -544,6 +544,11 @@ const SUIGrid = (props: TableGridProps) => {
 		};
 	};
 
+	// React.useEffect(() => {
+	// 	props?.tableref?.current?.api.pinnedRowModel?.setPinnedTopRowData(props.pinnedTopRowData);
+	// 	console.log("geid useEffect", tableRef, props?.pinnedTopRowData)
+	// }, [props?.pinnedTopRowData])
+
 	const onGridReady = (params: any) => {
 		let gridApi: any = params.api;
 		let gridColumnApi: any = params.columnApi;
@@ -557,7 +562,7 @@ const SUIGrid = (props: TableGridProps) => {
 				gridApi.setPinnedBottomRowData([pinnedBottomData]);
 			}, 500);
 		}
-		if (props.pinnedTopRowData?.length > 0) {
+		if (props.pinnedTopRowData?.length > 0 && props?.moduleName == 'vendorContracts') {
 			setTimeout(()=> {
 				gridApi.setPinnedTopRowData(props.pinnedTopRowData);
 			}, 800);
@@ -722,7 +727,8 @@ const SUIGrid = (props: TableGridProps) => {
 				detailCellRendererParams={detailCellRendererParams}
 				onFirstDataRendered={onFirstDataRendered}
 				isRowMaster={isRowMaster}
-				//pinnedTopRowData={props.pinnedTopRowData}
+				// enabled this prop for temp
+				pinnedTopRowData={props?.moduleName == 'vendorContracts' ?  '': props.pinnedTopRowData}
 				rowHeight={rowHeight}
 				getRowClass={props?.getRowClass}
 				groupSelectsChildren={groupSelectsChildren}

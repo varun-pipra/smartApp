@@ -38,15 +38,6 @@ const SSReferenceFiles = (props: any) => {
     setOpen(false);
   };
 
-  // useEffect(() => {
-  //   if(search.length){
-  //     handelSearchChange()
-  //   }else{
-  //     console.log(ssRefMarkups , 'markupsByPageForBidResp')
-  //     sketchPageinfo?.callback(ssRefMarkups || {})
-  //   }
-  // }, [search]);
-
   const debounceOnSearch = useCallback(
     _.debounce((search) => {
       setSearch(search)
@@ -102,7 +93,7 @@ const SSReferenceFiles = (props: any) => {
         if (search.length) {
 					handelSearchChange();
 				} else{
-        sketchPageinfo.callback(data);
+          sketchPageinfo.callback(data);
 				}
       })
       .catch((error: any) => {

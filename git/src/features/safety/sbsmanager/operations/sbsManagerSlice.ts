@@ -265,6 +265,8 @@ export const SBSManagerSlice = createSlice({
   },
 });
 
+export const getPhaseDropDownOptions = (state: RootState) => state?.sbsManager?.phaseDropDownOptions;
+
 export const {
   setToastMessage,
   setShowSbsPanel,

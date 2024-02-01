@@ -1225,6 +1225,7 @@ const VendorContractsScheduleValues = (props: any) => {
 										maxWidth: 80,
 									}}
 									readOnly={props.readOnly}
+									moduleName={'vendorContracts'}																		
 									pinnedTopRowData={pinnedTopData}
 									hasPinnedTopRow={pinnedTopData?.length}
 									deleteConfirmationRequired={true}
@@ -1249,6 +1250,7 @@ const VendorContractsScheduleValues = (props: any) => {
 										maxWidth: 80,
 									}}
 									readOnly={props.readOnly}
+									moduleName={'vendorContracts'}																		
 									pinnedTopRowData={pinnedTopData}
 									hasPinnedTopRow={pinnedTopData?.length}
 									deleteConfirmationRequired={true}
@@ -1274,6 +1276,7 @@ const VendorContractsScheduleValues = (props: any) => {
 										maxWidth: 80,
 									}}
 									readOnly={props.readOnly}
+									moduleName={'vendorContracts'}									
 									pinnedTopRowData={pinnedTopData}
 									hasPinnedTopRow={pinnedTopData?.length}
 									deleteConfirmationRequired={true}

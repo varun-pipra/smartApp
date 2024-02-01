@@ -1,39 +1,51 @@
 .report-analytics-cls {
     // margin-right: 20px;
-    box-shadow: 0px 0px 2px #999;
-    border: 1px solid #fff;
+    //box-shadow: 0px 0px 2px #999;
+    //border: 2px solid #ee7433;
     border-radius: 18px !important;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
+    margin-right: 10px;
     .ra-btn-cls {
-        background-color: #ed7532 !important;
+        background-color: #fff !important;
         border: none;
-        color: #fff !important;
+        color: #ee7433 !important;
         font-size: 14px;
-        min-width: 60px;
+        min-width: 46px;
         padding: 6px 5px;
         text-transform: none;
-        border-right: 1px solid #fff !important;
-        border-radius: 18px;
+        border-radius: 20px;
+        border: 2px solid #ee7433;
         .common-icon-doc:before {
-            font-size: 23px;
-            // margin-right: 6px;
+            font-size: 23px; // margin-right: 6px;
             line-height: 0.8;
         }
         .common-icon-chart:before {
-            font-size: 23px;
-            // margin-right: 5px;
+            font-size: 23px; // margin-right: 5px;
         }
         &:hover {
-            background-color: #ef8923 !important;
+            background-color: #ee7433 !important;
+            color: #fff !important;
+            border-radius: 18px;
+            transition-delay: 0.2s;
         }
+    }
+    .first {
+        border-right: 2px solid #ee7433; //border-right: 0px;
     }
     .MuiToggleButton-root {
         &.Mui-selected {
             color: #fff !important;
-            background-color: #e33c00 !important;
-            border-color: #e33c00 !important;
+            background-color: #e55000 !important;
+            border-color: #e55000 !important; // border: 2px solid #ee7433;
+            border-top-right-radius: 18px;
+            border-bottom-right-radius: 18px;
+            border-top-left-radius: 18px;
+            border-bottom-left-radius: 18px;
         }
     }
     .ra-btn-cls.MuiToggleButtonGroup-grouped:not(:first-of-type) {
-        border-left: 1px solid #fff !important;
+        // border-left: 1px solid #fff !important;
+        margin-left: -1px;
+        border-left: 1px solid #ee7433;
     }
 }

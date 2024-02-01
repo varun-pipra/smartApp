@@ -289,7 +289,7 @@ const BidManagerGrid = (props: any) => {
 						title={'Scheduled'}
 						placement={'bottom'} arrow={true}
 		> */}
-						<span className={getGridStatusIcons(params?.data?.status)} style={{position: 'absolute', left: '3%', marginTop: '12px', color: `#${StatusColors[params.data?.status]}`}} />
+						<span className={getGridStatusIcons(params?.data?.status)} style={{position: 'absolute', left: '2%', marginTop: '12px', color: `#${StatusColors[params.data?.status]}`}} />
 						{/* </IQTooltip> */}
 						<span className='ag-costcodegroup' style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#059CDF'}}>{params.data?.name} </span>
 					</>;

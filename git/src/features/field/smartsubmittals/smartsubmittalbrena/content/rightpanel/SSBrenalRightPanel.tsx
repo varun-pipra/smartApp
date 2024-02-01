@@ -15,7 +15,9 @@ import _ from "lodash";
 const SSBrenalRightPanel = () => {
   const dispatch = useAppDispatch();
   const { uploadQueue } = useAppSelector((state) => state.SMFile);
-  const {SSBrenaOpen, selectedRecord , brenaMarkups} = useAppSelector((state:any)=> state.smartSubmittals);
+  const { SSBrenaOpen, selectedRecord, brenaMarkups } = useAppSelector(
+    (state: any) => state.smartSubmittals
+  );
   const { specBookpages } = useAppSelector(
     (state) => state.specificationManager
   );
@@ -23,17 +25,17 @@ const SSBrenalRightPanel = () => {
   const [showSearchpanel, setShowSearchpanel] = useState(false);
   const [search, setSearch] = useState("");
   const [specBookPagesData, setSpecBookPagesData] = useState("");
-  const sketchPageinfo= useAppSelector(getSketchPageInfo);
+  const sketchPageinfo = useAppSelector(getSketchPageInfo);
   const [smRefPUId, setSmRefPUId] = useState();
 
-  useEffect(()=>{
-    if(selectedRecord && SSBrenaOpen) {
+  useEffect(() => {
+    if (selectedRecord && SSBrenaOpen) {
       let payload = {
-        id : selectedRecord?.specBook?.id
+        id: selectedRecord?.specBook?.id,
       };
       dispatch(getSpecBookPages(payload));
     }
-  },[SSBrenaOpen,selectedRecord])
+  }, [SSBrenaOpen, selectedRecord]);
 
   useEffect(() => {
     setSpecBookPagesData(specBookpages);
@@ -41,68 +43,74 @@ const SSBrenalRightPanel = () => {
 
   const debounceOnSearch = useCallback(
     _.debounce((search) => {
-      setSearch(search)
-       if(search.length){
-        handelSearchChange()
-      }else{
-        console.log(brenaMarkups , 'markupsByPageForBidResp')
-        sketchPageinfo?.callback(brenaMarkups || {})
+      setSearch(search);
+      if (search.length) {
+        handelSearchChange();
+      } else {
+        console.log(brenaMarkups, "markupsByPageForBidResp");
+        sketchPageinfo?.callback(brenaMarkups || {});
       }
     }, 2000),
     [search]
   );
 
   useEffect(() => {
-    if(sketchPageinfo){
-        getMarkupsPerpage();
-    } 
+    if (sketchPageinfo) {
+      getMarkupsPerpage();
+    }
   }, [sketchPageinfo]);
 
-  const getMarkupsPerpage = ()=>{
+  const getMarkupsPerpage = () => {
     let payload = {
-      specbookId:selectedRecord?.specBook?.id,
-      pageNo:sketchPageinfo?.currentPage?.page
-    }
+      specbookId: selectedRecord?.specBook?.id,
+      pageNo: sketchPageinfo?.currentPage?.page,
+    };
     getMarkupsByPageForSubmittals(payload)
-      .then((res:any)=>{
-        setSmRefPUId(res[0]?.data?.pageUId)
-        let updatedRes = res.map((item:any) => { return {...item, locked: true} })
+      .then((res: any) => {
+        setSmRefPUId(res[0]?.data?.pageUId);
+        let updatedRes = res.map((item: any) => {
+          return { ...item, locked: true };
+        });
         let data = {
-          "extractionAreas": updatedRes
+          extractionAreas: updatedRes,
         };
-        dispatch(setBrenaMarkups(data))
+        dispatch(setBrenaMarkups(data));
         if (search.length) {
-					handelSearchChange();
-				} else{
-					sketchPageinfo.callback(data);
-				}
+          handelSearchChange();
+        } else {
+          sketchPageinfo.callback(data);
+        }
       })
-      .catch((error:any)=>{
-        console.log('error',error);
-      })
-  }
+      .catch((error: any) => {
+        console.log("error", error);
+      });
+  };
 
-  const handelSearchChange =() =>{
-    if(smRefPUId && selectedRecord?.specBook?.id) {
-      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${selectedRecord?.specBook?.id}`
-      getTextOccurences(params).then((resp:any)=>{
-        console.log(modifyMarkupData(resp.data),brenaMarkups , 'markupsByPageForBidResp')
-        let updatedRes = [...modifyMarkupData(resp.data) , ...brenaMarkups.extractionAreas]
+  const handelSearchChange = () => {
+    if (smRefPUId && selectedRecord?.specBook?.id) {
+      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${selectedRecord?.specBook?.id}`;
+      getTextOccurences(params).then((resp: any) => {
+        console.log(
+          modifyMarkupData(resp.data),
+          brenaMarkups,
+          "markupsByPageForBidResp"
+        );
+        let updatedRes = [
+          ...modifyMarkupData(resp.data),
+          ...brenaMarkups.extractionAreas,
+        ];
         let data = {
-          "extractionAreas": updatedRes
+          extractionAreas: updatedRes,
         };
-        console.log('udated markup data',data, sketchPageinfo);
-        sketchPageinfo?.callback(data)
-      })
+        console.log("udated markup data", data, sketchPageinfo);
+        sketchPageinfo?.callback(data);
+      });
     }
-  }
+  };
 
   return (
     <div className="ss-right-panel">
-      <div
-        className="ss-doc-cont"
-        style={{ width:"100%" }}
-      >
+      <div className="ss-doc-cont" style={{ width: "100%" }}>
         <div className="iq-brena-search-cont">
           <IQSearchField
             placeholder={"Search Text"}

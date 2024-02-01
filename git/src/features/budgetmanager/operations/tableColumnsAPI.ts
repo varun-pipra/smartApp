@@ -66,3 +66,19 @@ export const lockAndUnlockBudget = async (appInfo: any, body: any, callback?: an
 	const data = await response.json();
 	callback && callback(data);
 };
+
+export const fetchBudgetManagerDownloadTemplete = async (appInfo: any) => {
+	// This is the ,mock api which contains same data of original api. 
+	// Once if we can read the project id and session token you can replace this with original api
+	let response;
+	if (!isLocalhost) {
+		response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/budgets/${appInfo?.uniqueId}/import/downloadtemplate?sessionId=${appInfo?.sessionId}`);
+	
+		if (!response.ok) {
+			const message = `API Request Error (${moduleName}): ${response.status}`;
+			throw new Error(message);
+		}
+		const responseData = await response.json();
+	}
+	else return 'https://file-examples.com/wp-content/storage/2017/02/file_example_XLSX_1000.xlsx';
+};

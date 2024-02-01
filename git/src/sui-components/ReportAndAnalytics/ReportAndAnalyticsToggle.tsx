@@ -58,10 +58,10 @@ export const ReportAndAnalyticsToggle = (props: any) => {
             aria-label='Reaport and Analytics'
             className="report-analytics-cls"
         >
-            <ToggleButton value={'Reports'} className="ra-btn-cls" aria-label='Reports'>
+            <ToggleButton value={'Reports'} className="ra-btn-cls first" aria-label='Reports'>
             <span className="common-icon-doc" title="Reports"></span>
             </ToggleButton>
-            <ToggleButton value={'Analytics'} className="ra-btn-cls" aria-label='Analytics'>
+            <ToggleButton value={'Analytics'} className="ra-btn-cls last" aria-label='Analytics'>
             <span className="common-icon-chart" title="Analytics"></span>
             </ToggleButton>
         </ToggleButtonGroup>

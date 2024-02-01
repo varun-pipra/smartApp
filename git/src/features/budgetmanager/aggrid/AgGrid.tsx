@@ -1,21 +1,21 @@
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import {Button, Stack} from '@mui/material';
-import {createStyles, makeStyles} from '@mui/styles';
-import {ColDef} from 'ag-grid-community/dist/lib/entities/colDef';
+import { Button, Stack } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
+import { ColDef } from 'ag-grid-community/dist/lib/entities/colDef';
 import {
 	getCostTypeList,
 	getServer
 } from 'app/common/appInfoSlice';
 import _ from 'lodash';
 // import {getAmountAlignmentNew} from 'utilities/commonutills';
-import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
-import {useAppDispatch, useAppSelector, useHotLink} from 'app/hooks';
-import {postMessage} from 'app/utils';
+import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import { useAppDispatch, useAppSelector, useHotLink } from 'app/hooks';
+import { postMessage } from 'app/utils';
 import DatePickerComponent from 'components/datepicker/DatePicker';
-import IQTooltip, {IQGridTooltip} from 'components/iqtooltip/IQTooltip';
+import IQTooltip, { IQGridTooltip } from 'components/iqtooltip/IQTooltip';
 import SmartDropDown from 'components/smartDropdown';
-import {setOpenBudgetTransferForm, setOpenCostForm} from 'features/budgetmanager/operations/rightPanelSlice';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { setOpenBudgetTransferForm, setOpenCostForm } from 'features/budgetmanager/operations/rightPanelSlice';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import SUIGrid from 'sui-components/Grid/Grid';
 import convertDateToDisplayFormat, {
 	getCurveText,
@@ -25,7 +25,7 @@ import PresenceManager from 'utilities/presence/PresenceManager.js';
 import {primaryIconSize} from '../BudgetManagerGlobalStyles';
 import {curveList} from '../headerpage/HeaderPage';
 import {setBidPackagesList, setClientContractsList, setSelectedRows, setVendorContractsList} from '../operations/gridSlice';
-import {setSelectedRowData, setSelectedRowIndex} from '../operations/rightPanelSlice';
+import {setSelectedRowData, setSelectedRowIndex, getRollupsData} from '../operations/rightPanelSlice';
 import {
 	getGridColumnHide,
 	setColumnDefsHeaders,
@@ -34,15 +34,16 @@ import {
 } from '../operations/tableColumnsSlice';
 import './AgGrid.scss';
 import CustomTooltip from './customtooltip/CustomToolTip';
-import {CustomDateComponent} from './example';
+import { CustomDateComponent } from './example';
 import VendorList from './vendor/Vendor';
 
-import {getBidStatus, getBidStatusIdFromText, StatusColors, StatusIcons} from 'utilities/bid/enums';
-import {formatDate} from 'utilities/datetime/DateTimeUtils';
-import {vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons} from 'utilities/vendorContracts/enums';
+import { getBidStatus, getBidStatusIdFromText, StatusColors, StatusIcons } from 'utilities/bid/enums';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import { vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons } from 'utilities/vendorContracts/enums';
 import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
 import {getCostCodeDropdownList, getCostCodeFilterList} from '../operations/settingsSlice';
 import {providerSourceObj} from 'utilities/commonutills';
+import { getPhaseDropDownOptions } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
 // import {setInterval} from 'timers/promises';
 var tinycolor = require('tinycolor2');
 
@@ -62,7 +63,7 @@ const useStyles: any = makeStyles((theme: any) =>
 );
 
 const minmaxDate = (date: any, type: any) => {
-	if(type == 'minDate') {
+	if (type == 'minDate') {
 		return date.reduce((acc: any, date: any) => {
 
 			return acc && new Date(acc) < new Date(date) ? acc : date;
@@ -85,11 +86,13 @@ const TableGrid = (props: TableGridProps) => {
 		selectedFilters, searchText} = useAppSelector((state) => state.gridData);
 	const {settingsData} = useAppSelector(state => state.settings);
 	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);	
+	const { phaseDropDownOptions } = useAppSelector((state) => state.sbsManager);
+	const { rollupTaskData } = useAppSelector((state) => state.rightPanel);		
 
 	const rightPannel = useAppSelector(showRightPannel);
-	const {viewData, viewBuilderData} = useAppSelector((state) => state.viewBuilder);
+	const { viewData, viewBuilderData } = useAppSelector((state) => state.viewBuilder);
 	const appInfo = useAppSelector(getServer);
-	const {currencySymbol, currencyCode} = useAppSelector((state) => state.appInfo);
+	const { currencySymbol, currencyCode } = useAppSelector((state) => state.appInfo);
 	const [collapsedGroupHeaders, setCollapsedGroupHeaders] = useState<any>([]);
 	const [showTooltip, setShowTooltip] = useState(false);
 	const hideShowGridColumn = useAppSelector<any>(getGridColumnHide);
@@ -100,9 +103,8 @@ const TableGrid = (props: TableGridProps) => {
 	const selectedGroupKey = useAppSelector(state => state.gridData?.selectedGroupKey);
 	const [gridRef, setGridRef] = React.useState<any>();
 	const [multiLevelDefaultFilters, setMultiLevelDefaultFilters] = React.useState<any>([]);
-	const isReadOnly = isBudgetLocked;
-	console.log("isReadOnly", isBudgetLocked, isReadOnly);
-	
+	const [isReadOnly, setIsReadOnly] = useState<Boolean>(false);
+
 	const selectedRecord = useAppSelector((state) => state.rightPanel.selectedRow);
 	const RemoveDuplicates = (array: any, key: any) => {
 		let unique: any = [];
@@ -110,8 +112,10 @@ const TableGrid = (props: TableGridProps) => {
 		return unique;
 	};
 
+
+
 	useEffect(() => {
-		const filterOptions: any = {bidList: [], vendorContractsList: [], clientContractsList: []};
+		const filterOptions: any = { bidList: [], vendorContractsList: [], clientContractsList: [] };
 		originalGridApiData?.map((item: any) => {
 			// console.log('companiesList?.map((a:any) => a.id)', item);
 			item?.bidPackage && filterOptions?.bidList?.push({
@@ -136,26 +140,26 @@ const TableGrid = (props: TableGridProps) => {
 	}, [originalGridApiData]);
 
 	const addPresenceListener = (presenceManager: any, roomId?: any) => {
-		if(presenceManager && presenceManager.control) {
+		if (presenceManager && presenceManager.control) {
 			let participantCtrl = presenceManager.control;
 			participantCtrl.addEventListener('presencecountclick', function (e: any) {
 				let participantsjson = participantCtrl.getParticipants(),
 					participantids = [];
-				if(participantsjson) {
-					for(var i = 0;i < participantsjson.length;i++) {
+				if (participantsjson) {
+					for (var i = 0; i < participantsjson.length; i++) {
 						participantids.push((participantsjson[i].userid));
 					}
 				}
 				postMessage({
 					event: 'launchlivechat',
-					body: {iframeId: 'budgetManagerIframe', roomId: roomId, appType: 'BudgetManagerLineItem_' + roomId},
-					livechatData: {participantsIds: participantids}
+					body: { iframeId: 'budgetManagerIframe', roomId: roomId, appType: 'BudgetManagerLineItem_' + roomId },
+					livechatData: { participantsIds: participantids }
 				});
 			});
 			participantCtrl.addEventListener('presenceuserclick', function (e: any) {
 				postMessage({
 					event: 'launchcontactcard',
-					body: {iframeId: 'budgetManagerIframe', roomId: roomId, appType: 'BudgetManagerLineItem_' + roomId},
+					body: { iframeId: 'budgetManagerIframe', roomId: roomId, appType: 'BudgetManagerLineItem_' + roomId },
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -167,7 +171,7 @@ const TableGrid = (props: TableGridProps) => {
 			participantCtrl.addEventListener('presenceuserhover', function (e: any) {
 				postMessage({
 					event: 'launchcontactcard',
-					body: {iframeId: 'budgetManagerIframe', roomId: roomId, appType: 'BudgetManagerLineItem_' + roomId},
+					body: { iframeId: 'budgetManagerIframe', roomId: roomId, appType: 'BudgetManagerLineItem_' + roomId },
 					data: {
 						pageX: e.event.pageX,
 						pageY: e.event.pageY,
@@ -192,8 +196,8 @@ const TableGrid = (props: TableGridProps) => {
 	}, [gridData]);
 
 	useEffect(() => {
-		if(tableReff && Object.keys(tableReff).length > 0) {
-			if(hideShowGridColumn.length > 0) {
+		if (tableReff && Object.keys(tableReff).length > 0) {
+			if (hideShowGridColumn.length > 0) {
 				tableReff.setColumnDefs(hideShowGridColumn);
 			}
 		}
@@ -202,7 +206,7 @@ const TableGrid = (props: TableGridProps) => {
 	const handleOnChange = (newvalue: any, event: any) => {
 		const fieldName = event.colDef.field;
 		const value = fieldName === 'costCode' ? newvalue.split('|')[1] : fieldName === 'costType' ? newvalue[0] : newvalue;
-		setUpdateObj(fieldName === 'costCode' ? {id: event.data.id, newValue: value, field: fieldName, division: newvalue.split('|')[0]} : {id: event.data.id, newValue: value, field: fieldName});
+		setUpdateObj(fieldName === 'costCode' ? { id: event.data.id, newValue: value, field: fieldName, division: newvalue.split('|')[0] } : { id: event.data.id, newValue: value, field: fieldName });
 	};
 
 	const handleChangeVendor = (vendor: string[], params: any) => {
@@ -211,10 +215,10 @@ const TableGrid = (props: TableGridProps) => {
 
 	useEffect(() => {
 		let updatedColumns: any = [...columnDefs].map((rec: any) => {
-			if(selectedGroupKey) {
-				return {...rec, rowGroup: rec.field === selectedGroupKey, sort: rec.field === selectedGroupKey ? 'asc' : null};
+			if (selectedGroupKey) {
+				return { ...rec, rowGroup: rec.field === selectedGroupKey, sort: rec.field === selectedGroupKey ? 'asc' : null };
 			} else {
-				return {...rec, rowGroup: false, sort: null};
+				return { ...rec, rowGroup: false, sort: null };
 			}
 		});
 
@@ -225,12 +229,12 @@ const TableGrid = (props: TableGridProps) => {
 	const isCostCodeExists = (options: any, costCodeVal: any) => {
 		let isExists: any = false;
 		(options || []).forEach((rec: any) => {
-			if(rec.value === costCodeVal) {
+			if (rec.value === costCodeVal) {
 				isExists = true;
 			} else {
-				if(rec.children?.length > 0) {
+				if (rec.children?.length > 0) {
 					rec.children.forEach((childRec: any) => {
-						if(childRec.value === costCodeVal) {
+						if (childRec.value === costCodeVal) {
 							isExists = true;
 						}
 					});
@@ -239,6 +243,15 @@ const TableGrid = (props: TableGridProps) => {
 		});
 		return isExists;
 	};
+	const getSBSPhaseColor = (phaseId:any) => {
+		let phaseColor = 'red';
+		console.log("getSBSPhaseColor", getPhaseDropDownData(), phaseId)
+		getPhaseDropDownData()?.forEach((option:any) => {
+			if(option?.id == phaseId) phaseColor = option.color
+
+		})
+		return phaseColor
+	}
 
 	const columns: any = [
 		{
@@ -257,7 +270,7 @@ const TableGrid = (props: TableGridProps) => {
 			valueGetter: (params: any) => customValueGetter(params),
 			keyCreator: (params: any) => params.data.division || 'None',
 			aggFunc: (params: any) => {
-				if(!params.rowNode?.key) {
+				if (!params.rowNode?.key) {
 					return 'Grand Total';
 				}
 				return params.rowNode?.key;
@@ -266,21 +279,20 @@ const TableGrid = (props: TableGridProps) => {
 				innerRenderer: (params: any) => customCellRendererClass(params),
 			}
 		},
-		{headerName: 'Budget ID/CBS', field: 'name', hide: false, suppressMenu: true},
+		{ headerName: 'Budget ID/CBS', field: 'name', hide: false, suppressMenu: true },
 		{
 			headerName: 'Description',
 			field: 'description',
-			// editable: !isReadOnly,
 			editable: true,
 			hide: false,
 			suppressMenu: true,
 			cellRenderer: (context: any) => {
-				if(context.data?.source === 1)
+				if (context.data?.source === 1)
 					return <IQGridTooltip
 						className='budget-desc-tooltip'
 						title={<>
 							<div>{context.value}</div>
-							<div>Change Event ID: <a style={{cursor: 'pointer', color: '#059cdf'}}
+							<div>Change Event ID: <a style={{ cursor: 'pointer', color: '#059cdf' }}
 								onClick={() => window.open(useHotLink(`change-event-requests?inlineModule=true&id=${context.data?.changeEvent?.id}`), '_blank')}
 							>{context.data?.changeEvent?.code}</a>
 							</div>
@@ -288,7 +300,7 @@ const TableGrid = (props: TableGridProps) => {
 						placement={'bottom'}
 						arrow={true}
 					>
-						<div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>{context.value}</div>
+						<div style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{context.value}</div>
 					</IQGridTooltip>;
 				else return context.value;
 			}
@@ -309,7 +321,7 @@ const TableGrid = (props: TableGridProps) => {
 				let selectOptions: any = [...getDivisionOptions()];
 				let hiddenOptions: any = [];
 				let isCostCodeExistsInOptions: any = params?.data?.costCode ? isCostCodeExists(selectOptions, params?.data?.costCode) : false;
-				if(!isCostCodeExistsInOptions) {
+				if (!isCostCodeExistsInOptions) {
 					let obj: any =
 					{
 						value: params?.data?.costCode,
@@ -321,7 +333,7 @@ const TableGrid = (props: TableGridProps) => {
 				}
 				let inLinefilter: any = [];
 				getDivisionFilterOptions()?.map((option: any) => {
-					if(option?.value == params?.data?.division) {
+					if (option?.value == params?.data?.division) {
 						// setMultiLevelDefaultFilters([option?.hierarchy]);
 						inLinefilter = [option?.hierarchy];
 					}
@@ -361,66 +373,66 @@ const TableGrid = (props: TableGridProps) => {
 				return (
 					params?.data && (
 						isReadOnly ? `${params?.data?.division}-${params?.data?.costCode}`
-						: <>
-							{(
-								<CostCodeSelect
-									label=" "
-									options={selectOptions}
-									hiddenOptions={hiddenOptions}
-									onChange={(value: any) => handleOnChange(value, params)}
-									// required={true}
-									// startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
-									checkedColor={"#0590cd"}
-									showFilter={false}
-									selectedValue={
-										params?.data?.division && params?.data?.costCode
-											? (!isCostCodeExistsInOptions ? params?.data?.costCode : (params?.data?.division + "|" + params?.data?.costCode))
-											: ""
-									}
-									Placeholder={"Select"}
-									outSideOfGrid={false}
-									showFilterInSearch={true}
-									isFullWidth={true}
-									sx={{
-										fontSize: "13px",
-										"&:before": {
-											border: "none",
-										},
-										"&:after": {
-											border: "none",
-										},
-										".MuiSelect-icon": {
-											display: "none",
-										},
-									}}
-									filteroptions={getDivisionFilterOptions()}
-									filteringValue={params?.data?.division}
-									onFiltersUpdate={(filters: any) =>
-										setMultiLevelDefaultFilters(filters)
-									}
-									defaultFilters={
-										multiLevelDefaultFilters?.length
-											? multiLevelDefaultFilters?.length
-											: inLinefilter
-									}
-								/>
-							)
-								// : (
-								//   <div
-								//     onClick={(e: any) => {
-								// 		console.log('srini on click');
-								//     //   e.stopPropagation();
-								//     //   params.node.setData({
-								//     //     ...params.node.data,
-								//     //     isCostCodeExistsInOptions: true,
-								//     //   });
-								//     }}
-								//   >
-								//     Srini {params.data?.costCode}
-								//   </div>
-								// )
-							}
-						</>
+							: <>
+								{(
+									<CostCodeSelect
+										label=" "
+										options={selectOptions}
+										hiddenOptions={hiddenOptions}
+										onChange={(value: any) => handleOnChange(value, params)}
+										// required={true}
+										// startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
+										checkedColor={"#0590cd"}
+										showFilter={false}
+										selectedValue={
+											params?.data?.division && params?.data?.costCode
+												? (!isCostCodeExistsInOptions ? params?.data?.costCode : (params?.data?.division + "|" + params?.data?.costCode))
+												: ""
+										}
+										Placeholder={"Select"}
+										outSideOfGrid={false}
+										showFilterInSearch={true}
+										isFullWidth={true}
+										sx={{
+											fontSize: "13px",
+											"&:before": {
+												border: "none",
+											},
+											"&:after": {
+												border: "none",
+											},
+											".MuiSelect-icon": {
+												display: "none",
+											},
+										}}
+										filteroptions={getDivisionFilterOptions()}
+										filteringValue={params?.data?.division}
+										onFiltersUpdate={(filters: any) =>
+											setMultiLevelDefaultFilters(filters)
+										}
+										defaultFilters={
+											multiLevelDefaultFilters?.length
+												? multiLevelDefaultFilters?.length
+												: inLinefilter
+										}
+									/>
+								)
+									// : (
+									//   <div
+									//     onClick={(e: any) => {
+									// 		console.log('srini on click');
+									//     //   e.stopPropagation();
+									//     //   params.node.setData({
+									//     //     ...params.node.data,
+									//     //     isCostCodeExistsInOptions: true,
+									//     //   });
+									//     }}
+									//   >
+									//     Srini {params.data?.costCode}
+									//   </div>
+									// )
+								}
+							</>
 					)
 				);
 				// ) : null;
@@ -464,11 +476,11 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			minWidth: 220,
 			keyCreator: (params: any) => {
-				const {value} = params;
+				const { value } = params;
 				return (Array.isArray(value) && value?.length > 0) ? (value || [])?.map((location: any) => location?.name)?.join(', ') : 'NA';
 			},
 			cellRenderer: (params: any) => {
-				const {value} = params;
+				const { value } = params;
 				return Array.isArray(value) ? (value || [])?.map((location: any) => location?.name)?.join(', ') : '';
 			}
 		},
@@ -484,7 +496,7 @@ const TableGrid = (props: TableGridProps) => {
 			hide: false,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(params?.value && (
+				if (params?.value && (
 					params?.node?.footer ||
 					params?.node?.level > 0 ||
 					!params?.node?.expanded)
@@ -521,7 +533,7 @@ const TableGrid = (props: TableGridProps) => {
 			headerName: 'Mark-up Fee',
 			field: 'markupFee',
 			valueGetter: (params: any) => {
-				if(params?.data?.allowMarkupFee) {
+				if (params?.data?.allowMarkupFee) {
 					return params?.data?.markupFeeType == 0 ? params?.data?.markupFeeAmount ?? 'N/A'
 						: params?.data?.markupFeePercentage ? params?.data?.markupFeeAmount
 							: 'N/A';
@@ -537,13 +549,13 @@ const TableGrid = (props: TableGridProps) => {
 			// hide: !settingsData?.allowMarkupFee,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(params?.value && params?.node?.footer) {
+				if (params?.value && params?.node?.footer) {
 					return currencySymbol + ' ' + params?.value?.toLocaleString("en-US");
 				}
-				else if(params?.data && params?.value && params?.data?.markupFeePercentage) {
+				else if (params?.data && params?.value && params?.data?.markupFeePercentage) {
 					return currencySymbol + ' ' + params?.value?.toLocaleString("en-US") + `(${params?.data?.markupFeePercentage}%)`;
 				}
-				else if(params?.data && params?.value && params?.data?.markupFeePercentage == null) {
+				else if (params?.data && params?.value && params?.data?.markupFeePercentage == null) {
 					return params?.value == 'N/A' ? 'N/A' : currencySymbol + ' ' + params?.value?.toLocaleString("en-US");
 				}
 			}
@@ -557,7 +569,7 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => 0,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -578,7 +590,7 @@ const TableGrid = (props: TableGridProps) => {
 			type: 'rightAligned',
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(params?.value && (
+				if (params?.value && (
 					params?.node?.footer ||
 					params?.node?.level > 0 ||
 					!params?.node?.expanded)
@@ -596,7 +608,7 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data ? params?.data?.revisedBudget : '',
 			cellRenderer: (params: any) => {
-				if(params?.value && (
+				if (params?.value && (
 					params?.node?.footer ||
 					params?.node?.level > 0 ||
 					!params?.node?.expanded)
@@ -612,6 +624,68 @@ const TableGrid = (props: TableGridProps) => {
 			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],
 		},
 		{
+			headerName: 'Work Break Down Structure (WBS)',
+			field: 'rollupTaskIds',
+			minWidth: 380,			
+			hide: false,
+			cellRenderer: (params: any) => {
+				if(params?.data?.rollupTaskIds?.length) {
+					console.log("params.data?.rollupTaskIds", params.data?.rollupTaskIds, getRollupTasksData())
+					let values: any = '';
+					getRollupTasksData()?.map((obj: any) => {
+						if(params.data?.rollupTaskIds?.includes(obj?.value)) { 
+							console.log("rollup obj", obj, values)
+							values = (`${values} ${obj?.label},`);
+						};
+					});
+					console.log("valueee", values)
+					return values?.slice(0,-1);
+				}
+				else return '';
+			}
+		},
+		{
+			headerName: 'System Break Down Structure (SBS)',
+			field: 'sbs',
+			hide: false,
+			minWidth: 380,			
+			valueGetter: (params: any) => {
+				if(params.data?.sbs?.length) {
+					let values: any = '';
+					params?.data?.sbs?.map((obj: any, index:number) => {
+						if(obj?.name) values = (`${values} ${obj?.name},`);
+					});
+					return values?.slice(0, -1);
+				}
+				return '';
+			}
+		},
+		{
+			headerName: "Phase",
+			field: "sbsPhaseName",
+			suppressMenu: true,
+			minWidth: 260,
+			cellRenderer: (params: any) => {
+				const phase = params.data?.sbsPhaseName;
+				const buttonStyle = {
+					backgroundColor: getSBSPhaseColor(params.data?.sbsPhaseId),
+					color: "#fff",
+					alignItems: "center",
+				};
+
+				return (
+					<>
+						{phase ? (
+							<Button style={buttonStyle} className="phase-btn">
+								<span className="common-icon-phase"></span>
+								{phase}
+							</Button>
+						) : null}
+					</>
+				);
+			},
+		},
+		{
 			headerName: 'Transaction Amount',
 			field: 'balanceModifications',
 			hide: false,
@@ -621,7 +695,7 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data ? params?.data?.balanceModifications : '',
 			cellRenderer: (params: any) => {
-				if(params?.value && (
+				if (params?.value && (
 					params?.node?.footer ||
 					params?.node?.level > 0 ||
 					!params?.node?.expanded)
@@ -640,7 +714,7 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => (params?.data ? params?.data?.balance : ''),
 			cellRenderer: (params: any) => {
-				if(params?.value && (
+				if (params?.value && (
 					params?.node?.footer ||
 					params?.node?.level > 0 ||
 					!params?.node?.expanded)
@@ -687,7 +761,7 @@ const TableGrid = (props: TableGridProps) => {
 			field: 'Vendors',
 			hide: false,
 			minWidth: 210,
-			editable: false,
+			// editable: false,
 			suppressMenu: true,
 			keyCreator: (params: any) => {
 				return params?.data?.Vendors?.length > 0 ? params?.data?.Vendors?.map((rec: any) => rec.name) : 'None';
@@ -730,9 +804,9 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data ? convertDateToDisplayFormat(params?.data?.estimatedStart) : '',
 			aggFunc: (params: any) => {
-				if(params && params?.values) {
+				if (params && params?.values) {
 					const newArr = params?.values.filter((a: any) => a);
-					if(newArr.length > 0) return minmaxDate(newArr, 'minDate');
+					if (newArr.length > 0) return minmaxDate(newArr, 'minDate');
 				}
 			},
 			cellRenderer: (params: any) => {
@@ -750,7 +824,7 @@ const TableGrid = (props: TableGridProps) => {
 								fontFamily: 'Roboto-Regular'
 							}}
 						/>
-						: params && params?.value ? <span style={{marginLeft: '4px'}}>{params?.value}</span>
+						: params && params?.value ? <span style={{ marginLeft: '4px' }}>{params?.value}</span>
 							// : params && params.node.footer && params.value ? <span style={{ marginLeft: '4px' }}>{params.value}</span>
 							: null
 				);
@@ -765,9 +839,9 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data ? convertDateToDisplayFormat(params?.data?.estimatedEnd) : '',
 			aggFunc: (params: any) => {
-				if(params && params?.values) {
+				if (params && params?.values) {
 					const newArr = params?.values.filter((a: any) => a);
-					if(newArr.length > 0) return minmaxDate(newArr, 'maxDate');
+					if (newArr.length > 0) return minmaxDate(newArr, 'maxDate');
 				}
 			},
 			cellRenderer: (params: any) => {
@@ -786,7 +860,7 @@ const TableGrid = (props: TableGridProps) => {
 							}}
 
 						/>
-						: params && params?.value ? <span style={{marginLeft: '4px'}}>{params?.value}</span>
+						: params && params?.value ? <span style={{ marginLeft: '4px' }}>{params?.value}</span>
 							: null
 				);
 			}
@@ -799,9 +873,9 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data && params?.data?.projectedScheduleStart ? convertDateToDisplayFormat(params?.data?.projectedScheduleStart) : '',
 			aggFunc: (params: any) => {
-				if(params && params?.values) {
+				if (params && params?.values) {
 					const newArr = params?.values.filter((a: any) => a);
-					if(newArr.length > 0) return minmaxDate(newArr, 'minDate');
+					if (newArr.length > 0) return minmaxDate(newArr, 'minDate');
 				}
 			}
 		},
@@ -813,9 +887,9 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data && params?.data?.projectedScheduleEnd ? convertDateToDisplayFormat(params?.data?.projectedScheduleEnd) : '',
 			aggFunc: (params: any) => {
-				if(params && params?.values) {
+				if (params && params?.values) {
 					const newArr = params?.values.filter((a: any) => a);
-					if(newArr.length > 0) return minmaxDate(newArr, 'maxDate');
+					if (newArr.length > 0) return minmaxDate(newArr, 'maxDate');
 				}
 			}
 		},
@@ -827,9 +901,9 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data && params?.data?.actualScheduleStart ? convertDateToDisplayFormat(params?.data?.actualScheduleStart) : '',
 			aggFunc: (params: any) => {
-				if(params && params?.values) {
+				if (params && params?.values) {
 					const newArr = params?.values.filter((a: any) => a);
-					if(newArr.length > 0) return minmaxDate(newArr, 'minDate');
+					if (newArr.length > 0) return minmaxDate(newArr, 'minDate');
 				}
 			}
 		},
@@ -841,13 +915,13 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data && params?.data?.actualScheduleEnd ? convertDateToDisplayFormat(params?.data?.actualScheduleEnd) : '',
 			aggFunc: (params: any) => {
-				if(params && params?.values) {
+				if (params && params?.values) {
 					const newArr = params?.values.filter((a: any) => a);
-					if(newArr.length > 0) return minmaxDate(newArr, 'maxDate');
+					if (newArr.length > 0) return minmaxDate(newArr, 'maxDate');
 				}
 			}
 		},
-		{headerName: 'Unit Of Measure', field: 'unitOfMeasure', hide: false, },
+		{ headerName: 'Unit Of Measure', field: 'unitOfMeasure', hide: false, },
 		{
 			headerName: 'Unit Quantity',
 			field: 'unitQuantity',
@@ -867,7 +941,7 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data ? params?.data?.unitCost : '',
 			cellRenderer: (params: any) => {
-				if(params?.value && (
+				if (params?.value && (
 					params?.node?.footer ||
 					params?.node?.level > 0 ||
 					!params?.node?.expanded)
@@ -886,7 +960,7 @@ const TableGrid = (props: TableGridProps) => {
 			type: 'rightAligned',
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(params?.value &&
+				if (params?.value &&
 					(
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -907,7 +981,7 @@ const TableGrid = (props: TableGridProps) => {
 			type: 'rightAligned',
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value &&
 					(
 						params?.node?.footer ||
@@ -928,7 +1002,7 @@ const TableGrid = (props: TableGridProps) => {
 			type: 'rightAligned',
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -948,7 +1022,7 @@ const TableGrid = (props: TableGridProps) => {
 			type: 'rightAligned',
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -965,7 +1039,7 @@ const TableGrid = (props: TableGridProps) => {
 			hide: false,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -973,7 +1047,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return <span className='hot-link'
-						onClick={() => {window.open(useHotLink(`bid-manager/home?id=${params?.data?.bidPackage?.id}`), '_blank');}}
+						onClick={() => { window.open(useHotLink(`bid-manager/home?id=${params?.data?.bidPackage?.id}`), '_blank'); }}
 					>
 						{params?.data?.bidPackage?.name && params?.data?.bidPackage?.name}
 					</span>;
@@ -985,7 +1059,7 @@ const TableGrid = (props: TableGridProps) => {
 			field: 'bidPackage.awardedOn',
 			hide: false,
 			suppressMenu: true,
-			valueGetter: (params: any) => params?.data?.bidPackage?.awardedOn ? formatDate(params?.data?.bidPackage?.awardedOn, {year: 'numeric', month: '2-digit', day: '2-digit'}) : ''
+			valueGetter: (params: any) => params?.data?.bidPackage?.awardedOn ? formatDate(params?.data?.bidPackage?.awardedOn, { year: 'numeric', month: '2-digit', day: '2-digit' }) : ''
 		},
 		{
 			headerName: 'Bid Status',
@@ -993,7 +1067,7 @@ const TableGrid = (props: TableGridProps) => {
 			hide: false,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -1018,7 +1092,7 @@ const TableGrid = (props: TableGridProps) => {
 			minWidth: 220,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -1039,7 +1113,7 @@ const TableGrid = (props: TableGridProps) => {
 			minWidth: 240,
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data?.vendorContract?.startDate && params?.data?.vendorContract?.endDate ?
-				`${formatDate(params?.data?.vendorContract?.startDate, {year: 'numeric', month: '2-digit', day: '2-digit'})} - ${formatDate(params?.data?.vendorContract?.endDate, {year: 'numeric', month: '2-digit', day: '2-digit'})}` :
+				`${formatDate(params?.data?.vendorContract?.startDate, { year: 'numeric', month: '2-digit', day: '2-digit' })} - ${formatDate(params?.data?.vendorContract?.endDate, { year: 'numeric', month: '2-digit', day: '2-digit' })}` :
 				''
 		},
 		{
@@ -1049,7 +1123,7 @@ const TableGrid = (props: TableGridProps) => {
 			minWidth: 220,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -1057,7 +1131,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return params?.data?.vendorContract?.status ? <Button disabled className='status-pill'
-						startIcon={<span className={vendorContractsStatusIcons[params?.data?.vendorContract?.status]} style={{color: 'white'}} />}
+						startIcon={<span className={vendorContractsStatusIcons[params?.data?.vendorContract?.status]} style={{ color: 'white' }} />}
 						style={{
 							backgroundColor: vendorContractsStatusColors[params?.data?.vendorContract?.status],
 							color: tinycolor(vendorContractsStatusColors[params?.data?.vendorContract?.status]).isDark() ? 'white' : 'black'
@@ -1074,7 +1148,7 @@ const TableGrid = (props: TableGridProps) => {
 			minWidth: 220,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -1096,7 +1170,7 @@ const TableGrid = (props: TableGridProps) => {
 			minWidth: 240,
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data?.clientContract?.startDate && params?.data?.clientContract?.endDate ?
-				`${formatDate(params?.data?.clientContract?.startDate, {year: 'numeric', month: '2-digit', day: '2-digit'})} - ${formatDate(params?.data?.clientContract?.endDate, {year: 'numeric', month: '2-digit', day: '2-digit'})}` :
+				`${formatDate(params?.data?.clientContract?.startDate, { year: 'numeric', month: '2-digit', day: '2-digit' })} - ${formatDate(params?.data?.clientContract?.endDate, { year: 'numeric', month: '2-digit', day: '2-digit' })}` :
 				''
 		},
 		{
@@ -1106,7 +1180,7 @@ const TableGrid = (props: TableGridProps) => {
 			minWidth: 220,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if(
+				if (
 					params?.value && (
 						params?.node?.footer ||
 						params?.node?.level > 0 ||
@@ -1114,7 +1188,7 @@ const TableGrid = (props: TableGridProps) => {
 					)
 				) {
 					return params?.data?.clientContract?.status ? <Button disabled className='status-pill'
-						startIcon={<span className={vendorContractsStatusIcons[params?.data?.clientContract?.status]} style={{color: 'white'}} />}
+						startIcon={<span className={vendorContractsStatusIcons[params?.data?.clientContract?.status]} style={{ color: 'white' }} />}
 						style={{
 							backgroundColor: vendorContractsStatusColors[params?.data?.clientContract?.status],
 							color: tinycolor(vendorContractsStatusColors[params?.data?.clientContract?.status]).isDark() ? 'white' : 'black'
@@ -1124,24 +1198,24 @@ const TableGrid = (props: TableGridProps) => {
 				}
 			}
 		},
-		{headerName: 'Manufacturer', field: 'equipmentManufacturer', hide: false, suppressMenu: true},
-		{headerName: 'Model Number', field: 'equipmentModel', hide: false, suppressMenu: true},
+		{ headerName: 'Manufacturer', field: 'equipmentManufacturer', hide: false, suppressMenu: true },
+		{ headerName: 'Model Number', field: 'equipmentModel', hide: false, suppressMenu: true },
 	];
 
 	const [columnDefs, setColumnDefs] = useState<any>(columns);
+	const [columnDefsDuplicate, setColumnDefsDuplicate] = useState<any>(columns);
 
 	useEffect(() => {
-		if(viewBuilderData.length && viewData?.columnsForLayout?.length) {
+		if (viewBuilderData.length && viewData?.columnsForLayout?.length) {
 
 			let updatedColumndDefList: any = [];
 			updatedColumndDefList[0] = columnDefs[0];
 			viewData?.columnsForLayout.forEach((viewItem: any) => {
 				columnDefs.forEach((cDef: any) => {
-					if(viewItem.field == cDef.field) {
+					if (viewItem.field == cDef.field) {
 						let newColumnDef = {
 							...cDef,
 							...viewItem,
-							editable:!isReadOnly,
 							hide: viewItem.field == 'markupFee' ? !settingsData?.allowMarkupFee : viewItem?.hide
 						};
 						updatedColumndDefList.push(newColumnDef);
@@ -1152,25 +1226,58 @@ const TableGrid = (props: TableGridProps) => {
 		}
 	}, [viewData, settingsData, isReadOnly]);
 
-	useEffect(() => {
-		if(columnDefs.length > 0) {
-			dispatch(setColumnDefsHeaders(columnDefs));
+	useMemo(() => {
+		console.log('isBudgetLocked', isBudgetLocked);
+		setIsReadOnly(isBudgetLocked);
+		if (isBudgetLocked) {
+			console.log('columnDefs', columnDefs)
+			const array = ['costCode', 'costType', 'curve', 'estimatedStart', 'estimatedEnd'];
+			let updatedColumndDefList: any = columnDefs.map((cDef: any) => {
+				if (cDef.hasOwnProperty('editable') && isBudgetLocked) {
+					return { ...cDef, editable: !isBudgetLocked };
+				}
+				if (array?.includes(cDef.field) && isBudgetLocked) {
+					return { ...cDef, cellRenderer: (params: any) => { return params.value } };
+				}
+				if (cDef.field == 'Vendors' && isBudgetLocked) {
+					console.log('Vendors')
+					return { ...cDef, cellRenderer: (params: any) => { 
+						return params?.data?.Vendors?.length > 0 ? params?.data?.Vendors?.map((rec: any) => rec.name) : 'None'; 
+					} };
+				}
+				return cDef;
+			});
+				console.log('updatedColumndDefList', updatedColumndDefList)
+				setColumnDefs(updatedColumndDefList);
 		}
-	}, [columnDefs]);
+		else {
+			setColumnDefs(columnDefsDuplicate)
+		}
 
-	const getCostTypeOptions = () => {
-		return useAppSelector(getCostTypeList);
+	}, [isBudgetLocked]);
+
+useEffect(() => {
+	if (columnDefs.length > 0) {
+		dispatch(setColumnDefsHeaders(columnDefs));
+	}
+}, [columnDefs]);
+
+const getCostTypeOptions = () => {
+	return useAppSelector(getCostTypeList);
+};
+
+const getDivisionOptions = () => {
+	// return useAppSelector(getCostCodeDivisionList);
+	return useAppSelector(getCostCodeDropdownList);
+};
+
+	const getRollupTasksData = () => {
+		// return useAppSelector(getCostCodeDivisionList);
+		return useAppSelector(getRollupsData);
 	};
 
-	const getDivisionOptions = () => {
-		// return useAppSelector(getCostCodeDivisionList);
-		return useAppSelector(getCostCodeDropdownList);
-	};
-
-
-	const getDivisionFilterOptions = () => {
-		// return useAppSelector(getCostCodeDivisionList);
-		return useAppSelector(getCostCodeFilterList);
+	const getPhaseDropDownData = () => {
+		return useAppSelector(getPhaseDropDownOptions)
 	};
 
 	useEffect(() => {
@@ -1179,492 +1286,503 @@ const TableGrid = (props: TableGridProps) => {
 		}
 	}, [hideShowGridColumn]);
 
-	const defaultColDef = useMemo<ColDef>(() => {
-		return {
-			flex: 1,
-			minWidth: 190,
-			sortable: true,
-			resizable: true,
-		};
-	}, []);
+const getDivisionFilterOptions = () => {
+	// return useAppSelector(getCostCodeDivisionList);
+	return useAppSelector(getCostCodeFilterList);
+};
 
-	const generatePresenceToolIds = (data: any) => {
-		const presenceId = data.id;
-		const presenceTools = <React.Fragment>{
-			<>
-				<div id={presenceId} className='budgetmanager-presence'></div>
-			</>
-		}</React.Fragment>;
-		return presenceTools;
+useEffect(() => {
+	if (hideShowGridColumn.length > 0) {
+		dispatch(setColumnDefsHeaders(hideShowGridColumn));
+	}
+}, [hideShowGridColumn]);
+
+const defaultColDef = useMemo<ColDef>(() => {
+	return {
+		flex: 1,
+		minWidth: 190,
+		sortable: true,
+		resizable: true,
 	};
+}, []);
 
-	useEffect(() => {
+const generatePresenceToolIds = (data: any) => {
+	const presenceId = data.id;
+	const presenceTools = <React.Fragment>{
+		<>
+			<div id={presenceId} className='budgetmanager-presence'></div>
+		</>
+	}</React.Fragment>;
+	return presenceTools;
+};
+
+useEffect(() => {
+	updateRowwisePresence();
+}, [presenceData]);
+
+const updateRowwisePresence = () => {
+	let pids = Object.keys(presenceData);
+	if (presencePrevState.length) {
+		presencePrevState.forEach((id: any) => {
+			if (!pids.includes(id)) {
+				updatePresenceData(id, []);
+			}
+		});
+	}
+	setPresencePrevState(pids);
+	pids.forEach((pId) => {
+		updatePresenceData(pId, presenceData[pId]);
+	});
+};
+const updatePresenceData = (pId: any, data: any) => {
+	let presenceCmpRef = document.getElementById(pId) as any | null;
+	if (presenceCmpRef) {
+		let presenceManager = (presenceCmpRef.children && presenceCmpRef.children[0]) as any | null;
+		if (presenceManager != null) {
+			presenceManager.updateParticipants(data);
+		}
+	}
+	return '';
+};
+
+const updatePresenceOnScrollandCollapse = () => {
+	setTimeout(() => {
 		updateRowwisePresence();
-	}, [presenceData]);
+	}, 1000);
+};
 
-	const updateRowwisePresence = () => {
-		let pids = Object.keys(presenceData);
-		if(presencePrevState.length) {
-			presencePrevState.forEach((id: any) => {
-				if(!pids.includes(id)) {
-					updatePresenceData(id, []);
-				}
-			});
+const renderPresence = (presenceId: any) => {
+	let presenceManager = new PresenceManager({
+		domElementId: presenceId,
+		initialconfig: {
+			'showLiveSupport': false,
+			'showLiveLink': false,
+			'showStreams': false,
+			'showComments': false,
+			'showChat': false,
+			'hideProfile': true,
+			'participants': [],
+			'maxUser': 1
 		}
-		setPresencePrevState(pids);
-		pids.forEach((pId) => {
-			updatePresenceData(pId, presenceData[pId]);
-		});
-	};
-	const updatePresenceData = (pId: any, data: any) => {
-		let presenceCmpRef = document.getElementById(pId) as any | null;
-		if(presenceCmpRef) {
-			let presenceManager = (presenceCmpRef.children && presenceCmpRef.children[0]) as any | null;
-			if(presenceManager != null) {
-				presenceManager.updateParticipants(data);
+	});
+	addPresenceListener(presenceManager, presenceId);
+	return '';
+};
+
+const customCellRendererClass = (params: any) => {
+	const { data } = params;
+	if (!data) {
+		const isFooter = params?.node?.footer;
+		const isRootLevel = params?.node?.level === -1;
+		if (isFooter) {
+			if (isRootLevel) {
+				return 'Grand Total';
 			}
+			return `Sub Total - ${params?.value}`;
+		} else {
+			return `${params?.value}`;
 		}
-		return '';
-	};
+	}
 
-	const updatePresenceOnScrollandCollapse = () => {
-		setTimeout(() => {
-			updateRowwisePresence();
-		}, 1000);
-	};
+	let { name, costCodeGroup, costType } = data,
+		multiLevelList = costCodeGroup && costCodeGroup.length > 0 ? [...costCodeGroup] : [];
 
-	const renderPresence = (presenceId: any) => {
-		let presenceManager = new PresenceManager({
-			domElementId: presenceId,
-			initialconfig: {
-				'showLiveSupport': false,
-				'showLiveLink': false,
-				'showStreams': false,
-				'showComments': false,
-				'showChat': false,
-				'hideProfile': true,
-				'participants': [],
-				'maxUser': 1
-			}
-		});
-		addPresenceListener(presenceManager, presenceId);
-		return '';
-	};
+	if (multiLevelList && multiLevelList.length > 0) {
+		multiLevelList.shift();
+	}
 
-	const customCellRendererClass = (params: any) => {
-		const {data} = params;
-		if(!data) {
-			const isFooter = params?.node?.footer;
-			const isRootLevel = params?.node?.level === -1;
-			if(isFooter) {
-				if(isRootLevel) {
-					return 'Grand Total';
-				}
-				return `Sub Total - ${params?.value}`;
-			} else {
-				return `${params?.value}`;
-			}
-		}
-
-		let {name, costCodeGroup, costType} = data,
-			multiLevelList = costCodeGroup && costCodeGroup.length > 0 ? [...costCodeGroup] : [];
-
-		if(multiLevelList && multiLevelList.length > 0) {
-			multiLevelList.shift();
-		}
-
-		const multilevelString = multiLevelList.length > 0 ? multiLevelList?.join(' - ') : '';
-		return <><div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', position: 'absolute', left: 0}}>
-			<div className='presence-tools'>
-				{[generatePresenceToolIds(params?.data)].map((presenceTool: any) => presenceTool)}
-				<span>{renderPresence(params?.data?.id)}</span>
-			</div>
-			{params?.data?.isCostCodeInvalid ?
+	const multilevelString = multiLevelList.length > 0 ? multiLevelList?.join(' - ') : '';
+	return <><div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', position: 'absolute', left: 0 }}>
+		<div className='presence-tools'>
+			{[generatePresenceToolIds(params?.data)].map((presenceTool: any) => presenceTool)}
+			<span>{renderPresence(params?.data?.id)}</span>
+		</div>
+		{params?.data?.isCostCodeInvalid ?
+			<IQTooltip
+				title={
+					<Stack direction='row' className='tooltipcontent'>
+						<WarningAmberIcon fontSize={primaryIconSize} style={{ color: 'red' }} />
+						<p className='tooltiptext'>The Division / Cost Code number does not match any code in the new list. Please update a new code.</p>
+					</Stack>}
+				placement={'bottom'}
+				arrow={true}
+			>
+				<WarningAmberIcon fontSize={primaryIconSize} style={{ color: 'red' }} />
+			</IQTooltip>
+			: (params?.data?.balance < 0 &&
 				<IQTooltip
 					title={
-						<Stack direction='row' className='tooltipcontent'>
-							<WarningAmberIcon fontSize={primaryIconSize} style={{color: 'red'}} />
-							<p className='tooltiptext'>The Division / Cost Code number does not match any code in the new list. Please update a new code.</p>
+						<Stack direction='column'>
+							<Stack direction='row' className='tooltipcontent'>
+								<WarningAmberIcon fontSize={primaryIconSize} style={{ color: 'red' }} />
+								<p className='tooltiptext'>Your Remaining Balance is Negative</p>
+							</Stack>
+							<Stack direction='row' mt={-2} className='tooltipcontent'>
+								<WarningAmberIcon fontSize={primaryIconSize} style={{ color: '#f4e39f' }} />
+								<p className='tooltiptext'>Your Forecasted Remaining Balance is Negative</p>
+							</Stack>
 						</Stack>}
 					placement={'bottom'}
 					arrow={true}
 				>
-					<WarningAmberIcon fontSize={primaryIconSize} style={{color: 'red'}} />
-				</IQTooltip>
-				: (params?.data?.balance < 0 &&
-					<IQTooltip
-						title={
-							<Stack direction='column'>
-								<Stack direction='row' className='tooltipcontent'>
-									<WarningAmberIcon fontSize={primaryIconSize} style={{color: 'red'}} />
-									<p className='tooltiptext'>Your Remaining Balance is Negative</p>
-								</Stack>
-								<Stack direction='row' mt={-2} className='tooltipcontent'>
-									<WarningAmberIcon fontSize={primaryIconSize} style={{color: '#f4e39f'}} />
-									<p className='tooltiptext'>Your Forecasted Remaining Balance is Negative</p>
-								</Stack>
-							</Stack>}
-						placement={'bottom'}
-						arrow={true}
-					>
-						<WarningAmberIcon fontSize={primaryIconSize} style={{color: 'red'}} />
-					</IQTooltip>)
-			}
-			{params?.data?.source === 1 &&
-				<IQTooltip
-					title={'Schedule Of Values of the Contract to be updated due to recent approval of the Change Event Request.'}
-					placement={'bottom'}
-					arrow={true}
-				>
-					<span className='common-icon-c-mark' style={{color: '#26d8b1', width: 20, height: 20, cursor: 'pointer'}} />
-				</IQTooltip>
-			}
-		</div>
-			<span className='ag-costcodegroup' style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>
-				{params?.data?.name + ' - ' + params.data.costCode + ' : ' + params.data.costType}
-				{/* {`${name ? `${name} - ` : ''}${multilevelString ? `${multilevelString} : ` : ''}${costType}`} */}
-			</span>
-		</>;
-	};
-
-	const customValueGetter = (params: any) => {
-		if(!params.data) {
-			return params.value;
+					<WarningAmberIcon fontSize={primaryIconSize} style={{ color: 'red' }} />
+				</IQTooltip>)
 		}
-		return params?.data?.name + ' - ' + params.data?.costCode + ' : ' + params.data?.costType;
-	};
+		{params?.data?.source === 1 &&
+			<IQTooltip
+				title={'Schedule Of Values of the Contract to be updated due to recent approval of the Change Event Request.'}
+				placement={'bottom'}
+				arrow={true}
+			>
+				<span className='common-icon-c-mark' style={{ color: '#26d8b1', width: 20, height: 20, cursor: 'pointer' }} />
+			</IQTooltip>
+		}
+	</div>
+		<span className='ag-costcodegroup' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+			{params?.data?.name + ' - ' + params.data.costCode + ' : ' + params.data.costType}
+			{/* {`${name ? `${name} - ` : ''}${multilevelString ? `${multilevelString} : ` : ''}${costType}`} */}
+		</span>
+	</>;
+};
 
-	const autoGroupColumnDef = useMemo<ColDef>(() => {
-		return {
-			headerName: 'Cost Code Group',
-			field: 'division',
-			valueGetter: (params: any) => customValueGetter(params),
-			pinned: 'left',
-			sort: 'asc',
-			width: 550,
-			resizable: true,
-			// tooltipComponent: CustomTooltip,
-			suppressRowClickSelection: true,
-			// tooltipValueGetter: (params: any) => {
-			// 	return params.value ? params.value : null;
-			// },
-			cellRenderer: 'agGroupCellRenderer',
-			cellRendererParams: {
-				suppressCount: false,
-				checkbox: true,
-				footerValueGetter: (params: any) => {
-					const isRootLevel = params?.node?.level === -1;
-					if(isRootLevel) {
-						return 'Grand Total';
-					}
-					return `Sub Total - ${params?.value}`;
-				},
-				innerRenderer: (params: any) => customCellRendererClass(params),
+const customValueGetter = (params: any) => {
+	if (!params.data) {
+		return params.value;
+	}
+	return params?.data?.name + ' - ' + params.data?.costCode + ' : ' + params.data?.costType;
+};
+
+const autoGroupColumnDef = useMemo<ColDef>(() => {
+	return {
+		headerName: 'Cost Code Group',
+		field: 'division',
+		valueGetter: (params: any) => customValueGetter(params),
+		pinned: 'left',
+		sort: 'asc',
+		width: 550,
+		resizable: true,
+		// tooltipComponent: CustomTooltip,
+		suppressRowClickSelection: true,
+		// tooltipValueGetter: (params: any) => {
+		// 	return params.value ? params.value : null;
+		// },
+		cellRenderer: 'agGroupCellRenderer',
+		cellRendererParams: {
+			suppressCount: false,
+			checkbox: true,
+			footerValueGetter: (params: any) => {
+				const isRootLevel = params?.node?.level === -1;
+				if (isRootLevel) {
+					return 'Grand Total';
+				}
+				return `Sub Total - ${params?.value}`;
 			},
-		};
-
-	}, []);
-
-	const gridOptions = {
-		frameworkComponents: {'mySimpleEditor': CustomDateComponent},
-		columnDefs: columnDefs,
-		defaultColDef: defaultColDef,
-		tooltipShowDelay: 0
+			innerRenderer: (params: any) => customCellRendererClass(params),
+		},
 	};
 
-	const rowDoubleClicked = useCallback((rowData: any, tableRef: any) => {
-		if(rowData && rowData.data) {
-			if(props.onRefChange) props.onRefChange(tableRef);
-			rowData.node.setSelected(true, true);
-			dispatch(setRightPannel(true));
-			dispatch(setSelectedRowData(rowData.data));
-			dispatch(setSelectedRowIndex(rowData.node));
-			dispatch(setOpenBudgetTransferForm(false));
-			dispatch(setOpenCostForm(false));
-		}
-	}, []);
+}, []);
 
-	const rowClicked = useCallback((rowData: any, tableRef: any) => {
-		if(rowData && rowData.data) {
-			if(props.onRefChange) props.onRefChange(tableRef);
-			dispatch(setSelectedRowData(rowData.data));
-			dispatch(setSelectedRowIndex(rowData.node));
-		}
-	}, []);
+const gridOptions = {
+	frameworkComponents: { 'mySimpleEditor': CustomDateComponent },
+	columnDefs: columnDefs,
+	defaultColDef: defaultColDef,
+	tooltipShowDelay: 0
+};
 
-	const rowSelected = (sltdRows: any) => {
-		dispatch(setSelectedRows(sltdRows));
-		if(sltdRows?.node?.selected) {
-			postMessage({
-				event: 'joinroom',
-				body: {iframeId: 'budgetManagerIframe', roomId: sltdRows?.data?.id, appType: 'BudgetManagerLineItem_' + sltdRows?.data?.id, roomTitle: sltdRows?.name}
+const rowDoubleClicked = useCallback((rowData: any, tableRef: any) => {
+	if (rowData && rowData.data) {
+		if (props.onRefChange) props.onRefChange(tableRef);
+		rowData.node.setSelected(true, true);
+		dispatch(setRightPannel(true));
+		dispatch(setSelectedRowData(rowData.data));
+		dispatch(setSelectedRowIndex(rowData.node));
+		dispatch(setOpenBudgetTransferForm(false));
+		dispatch(setOpenCostForm(false));
+	}
+}, []);
+
+const rowClicked = useCallback((rowData: any, tableRef: any) => {
+	if (rowData && rowData.data) {
+		if (props.onRefChange) props.onRefChange(tableRef);
+		dispatch(setSelectedRowData(rowData.data));
+		dispatch(setSelectedRowIndex(rowData.node));
+	}
+}, []);
+
+const rowSelected = (sltdRows: any) => {
+	dispatch(setSelectedRows(sltdRows));
+	if (sltdRows?.node?.selected) {
+		postMessage({
+			event: 'joinroom',
+			body: { iframeId: 'budgetManagerIframe', roomId: sltdRows?.data?.id, appType: 'BudgetManagerLineItem_' + sltdRows?.data?.id, roomTitle: sltdRows?.name }
+		});
+	} else {
+		postMessage({
+			event: 'exitroom',
+			body: { iframeId: 'budgetManagerIframe', roomId: sltdRows?.data?.id, appType: 'BudgetManagerLineItem_' + sltdRows?.data?.id }
+		});
+	}
+};
+
+const onCellEditingStopped = useCallback((event: any) => {
+	handleOnChange(event.newValue, event);
+}, []);
+
+// const getRowStyle = (params: any) => {
+// 	if(
+// 		params?.data !== undefined && rightPannel === true
+// 			? params?.rowIndex === selectedRowIndexData.rowIndex
+// 			: null
+// 	) {
+// 		params.api.ensureIndexVisible(Number(params.rowIndex + 3));
+// 		return {background: '#fff9cc'};
+// 	}
+// 	return {background: 'white'};
+// };
+
+const onRowGroupOpened = (params: any) => {
+	if (params.expanded === false) {
+		setCollapsedGroupHeaders([...collapsedGroupHeaders, params?.node?.key]);
+	}
+	else {
+		setCollapsedGroupHeaders((products: any) => products.filter((value: any, index: any) => value !== params?.node?.key));
+		updatePresenceOnScrollandCollapse();
+	}
+};
+
+const isGroupOpenByDefault = useCallback((params: any) => {
+	const groupedData: any = gridData.map((data: any) => { return data.division; });
+	const divisionData: any = groupedData.filter((item: any, index: any) => groupedData.indexOf(item) === index); //removing duplicate division
+
+	const localData: any = sessionStorage.getItem('collapsedGroupHeaders'); // getting collapsed grouped array data 
+
+	const lScollapsedGroupHeaders = JSON.parse(localData);
+
+	const finalHeaderOpenedData = divisionData.filter((x: any) => !lScollapsedGroupHeaders.includes(x)); //Removing the collapsed data from the main division array
+
+	if (finalHeaderOpenedData.length > 0) {
+		return finalHeaderOpenedData.includes(params.key);
+	} {
+		return true;
+	}
+
+}, [gridData]);
+
+const [mousePos, setMousePos] = useState<any>({
+	top: '-9999px',
+	left: '-9999px', // hide div first
+	data: '',
+	display: false
+});
+
+const onCellMouseOver = (params: any) => {
+	const costcodegroup = params?.data?.costCode + '-' + params?.data?.costType;
+	const el = params.event.target;
+	const boundingClient = el.getBoundingClientRect();
+	const topPosition = boundingClient.y - (2 * boundingClient.height + 25) + 'px';
+	const leftPosition = boundingClient.width + boundingClient.left - 140 + 'px';
+
+	if (el.classList.contains('ag-cell') || el.classList.contains('ag-cell-wrapper') || el.classList.contains('ag-group-value')) {
+		const groupCell = el?.querySelector('.ag-costcodegroup');
+		if (groupCell) {
+			setShowTooltip(groupCell.offsetWidth < groupCell.scrollWidth);
+			setMousePos({
+				...mousePos,
+				top: topPosition,
+				left: leftPosition,
+				data: costcodegroup,
+				display: groupCell.offsetWidth < groupCell.scrollWidth,
 			});
 		} else {
-			postMessage({
-				event: 'exitroom',
-				body: {iframeId: 'budgetManagerIframe', roomId: sltdRows?.data?.id, appType: 'BudgetManagerLineItem_' + sltdRows?.data?.id}
+			setShowTooltip(false);
+			setMousePos({
+				...mousePos,
+				top: topPosition,
+				left: leftPosition,
+				data: costcodegroup,
+				display: false,
 			});
 		}
-	};
-
-	const onCellEditingStopped = useCallback((event: any) => {
-		handleOnChange(event.newValue, event);
-	}, []);
-
-	// const getRowStyle = (params: any) => {
-	// 	if(
-	// 		params?.data !== undefined && rightPannel === true
-	// 			? params?.rowIndex === selectedRowIndexData.rowIndex
-	// 			: null
-	// 	) {
-	// 		params.api.ensureIndexVisible(Number(params.rowIndex + 3));
-	// 		return {background: '#fff9cc'};
-	// 	}
-	// 	return {background: 'white'};
-	// };
-
-	const onRowGroupOpened = (params: any) => {
-		if(params.expanded === false) {
-			setCollapsedGroupHeaders([...collapsedGroupHeaders, params?.node?.key]);
+	} else {
+		if (el) {
+			setShowTooltip(el.offsetWidth < el.scrollWidth);
+			setMousePos({
+				...mousePos,
+				top: topPosition,
+				left: leftPosition,
+				data: costcodegroup,
+				display: el.offsetWidth < el.scrollWidth,
+			});
+		} else {
+			setShowTooltip(false);
+			setMousePos({
+				...mousePos,
+				top: topPosition,
+				left: leftPosition,
+				data: costcodegroup,
+				display: false,
+			});
 		}
-		else {
-			setCollapsedGroupHeaders((products: any) => products.filter((value: any, index: any) => value !== params?.node?.key));
-			updatePresenceOnScrollandCollapse();
+	}
+};
+
+const Divelement = () => {
+	return (
+		mousePos.display && (
+			<div
+				className='suiGrid-tooltip'
+				style={{
+					top: mousePos.top,
+					left: mousePos.left,
+				}}
+			>
+				{mousePos.data ? mousePos.data : null}
+			</div>
+		)
+	);
+};
+
+const objDiff = (oldRec: any, newRec: any) => {
+	// console.log('Object.keys(oldRec, newRec)-->', Object.values(oldRec), Object.values(newRec));
+	let keyValues;
+	keyValues = Object.keys(oldRec).filter(key => {
+		if (typeof (oldRec[key]) != 'object') {
+			// if(((oldRec[key] != undefined && oldRec[key] != null) &&  (newRec[key] != undefined && newRec[key] != null))){
+			if (oldRec[key] != newRec[key]) {
+				if (!['modifiedDate', 'rowId'].includes(key)) {
+					console.log('Object key-->', key);
+					return key;
+				}
+			}
+			// }				
 		}
-	};
-
-	const isGroupOpenByDefault = useCallback((params: any) => {
-		const groupedData: any = gridData.map((data: any) => {return data.division;});
-		const divisionData: any = groupedData.filter((item: any, index: any) => groupedData.indexOf(item) === index); //removing duplicate division
-
-		const localData: any = sessionStorage.getItem('collapsedGroupHeaders'); // getting collapsed grouped array data 
-
-		const lScollapsedGroupHeaders = JSON.parse(localData);
-
-		const finalHeaderOpenedData = divisionData.filter((x: any) => !lScollapsedGroupHeaders.includes(x)); //Removing the collapsed data from the main division array
-
-		if(finalHeaderOpenedData.length > 0) {
-			return finalHeaderOpenedData.includes(params.key);
-		} {
-			return true;
-		}
-
-	}, [gridData]);
-
-	const [mousePos, setMousePos] = useState<any>({
-		top: '-9999px',
-		left: '-9999px', // hide div first
-		data: '',
-		display: false
 	});
 
-	const onCellMouseOver = (params: any) => {
-		const costcodegroup = params?.data?.costCode + '-' + params?.data?.costType;
-		const el = params.event.target;
-		const boundingClient = el.getBoundingClientRect();
-		const topPosition = boundingClient.y - (2 * boundingClient.height + 25) + 'px';
-		const leftPosition = boundingClient.width + boundingClient.left - 140 + 'px';
+	// console.log('keyValues--->', keyValues);
+	return keyValues.filter((element) => {
+		return element != undefined || element != null;
+	});
+};
 
-		if(el.classList.contains('ag-cell') || el.classList.contains('ag-cell-wrapper') || el.classList.contains('ag-group-value')) {
-			const groupCell = el?.querySelector('.ag-costcodegroup');
-			if(groupCell) {
-				setShowTooltip(groupCell.offsetWidth < groupCell.scrollWidth);
-				setMousePos({
-					...mousePos,
-					top: topPosition,
-					left: leftPosition,
-					data: costcodegroup,
-					display: groupCell.offsetWidth < groupCell.scrollWidth,
-				});
-			} else {
-				setShowTooltip(false);
-				setMousePos({
-					...mousePos,
-					top: topPosition,
-					left: leftPosition,
-					data: costcodegroup,
-					display: false,
-				});
-			}
-		} else {
-			if(el) {
-				setShowTooltip(el.offsetWidth < el.scrollWidth);
-				setMousePos({
-					...mousePos,
-					top: topPosition,
-					left: leftPosition,
-					data: costcodegroup,
-					display: el.offsetWidth < el.scrollWidth,
-				});
-			} else {
-				setShowTooltip(false);
-				setMousePos({
-					...mousePos,
-					top: topPosition,
-					left: leftPosition,
-					data: costcodegroup,
-					display: false,
-				});
+useEffect(() => {
+	try {
+		console.log('liveData--------->', liveData);
+		if (liveData) {
+			for (let id in liveData) {
+				const diffKeys = liveData[id];
+				let rowNode = gridRef.current?.api?.getRowNode(id);
+				console.log('liveData--------->row', rowNode);
+
+				if (diffKeys && diffKeys.length > 0)
+					console.log('liveData--------->if', rowNode, diffKeys), gridRef.current?.api?.flashCells({ rowNodes: [rowNode], columns: ['division', ...diffKeys] });
+				else
+					console.log('liveData--------->else', rowNode, diffKeys), gridRef.current?.api?.flashCells({ rowNodes: [rowNode], columns: ['division'] });
 			}
 		}
-	};
+	} catch (e) {
+		console.log(e);
+	}
+}, [liveData]);
 
-	const Divelement = () => {
-		return (
-			mousePos.display && (
-				<div
-					className='suiGrid-tooltip'
-					style={{
-						top: mousePos.top,
-						left: mousePos.left,
-					}}
-				>
-					{mousePos.data ? mousePos.data : null}
-				</div>
-			)
-		);
+const tableref = (value: any) => {
+	setTableReff(value);
+};
+const groupRowRendererParams = () => {
+	return {
+		checkbox: true,
+		suppressCount: false,
+		suppressGroupRowsSticky: true
 	};
+};
 
-	const objDiff = (oldRec: any, newRec: any) => {
-		// console.log('Object.keys(oldRec, newRec)-->', Object.values(oldRec), Object.values(newRec));
-		let keyValues;
-		keyValues = Object.keys(oldRec).filter(key => {
-			if(typeof (oldRec[key]) != 'object') {
-				// if(((oldRec[key] != undefined && oldRec[key] != null) &&  (newRec[key] != undefined && newRec[key] != null))){
-				if(oldRec[key] != newRec[key]) {
-					if(!['modifiedDate', 'rowId'].includes(key)) {
-						console.log('Object key-->', key);
-						return key;
-					}
+/**
+ * Method to apply search and filters selected in the main window toolbar
+ * Kindly do not edit this method without understanding the complete logic
+ * @param list input list of budget items
+ * @returns list of filtered budget items
+ */
+const searchAndFilter = (list: any) => {
+	return list.filter((item: any) => {
+		const regex = new RegExp(searchText, 'gi');
+		const locationText = item.locations?.map((location: any) => location.name)?.join(',');
+		const locationIds = item.locations?.map((location: any) => location.id?.toString());
+		const vendorsIds = item.Vendors?.map((vendor: any) => vendor.id?.toString());
+		const vendorText = item.Vendors?.map((vendor: any) => vendor.name)?.join(',');
+		const curveText = _.find(curveList, { value: item.curve })?.label;
+		const estimatedStartText = formatDate(item.estimatedStart, { year: 'numeric', month: '2-digit', day: '2-digit' });
+		const estimatedEndText = formatDate(item.estimatedEnd, { year: 'numeric', month: '2-digit', day: '2-digit' });
+		const providerSourceText = providerSourceObj?.[item?.providerSource];
+
+		return (!searchText || (searchText && (item.name?.match(regex) || item.description?.match(regex) ||
+			item.division.match(regex) || item.costCode.match(regex) || item.costType?.match(regex) ||
+			item.unitOfMeasure?.match(regex) || item.vendorContract?.name.match(regex) ||
+			item.vendorContract?.code.match(regex) || item.vendorContract?.status.match(regex) ||
+			item.clientContract?.name?.match(regex) || item.clientContract?.code?.match(regex) ||
+			item.clientContract?.status?.match(regex) || locationText?.match(regex) ||
+			vendorText?.match(regex) || curveText?.match(regex) || providerSourceText?.match(regex) || estimatedStartText?.match(regex) ||
+			estimatedEndText?.match(regex) || item.originalAmount?.toString()?.match(regex) ||
+			item.revisedBudget?.toString()?.match(regex) || item.balance?.toString()?.match(regex) ||
+			item.originalAmount?.toString()?.match(regex) ||
+			item.equipmentManufacturer?.match(regex) || item.equipmentModel?.match(regex))))
+			&& (_.isEmpty(selectedFilters) || (!_.isEmpty(selectedFilters)
+				&& (_.isEmpty(selectedFilters.costCode) || selectedFilters.costCode?.length === 0 || selectedFilters.costCode?.indexOf(item.costCode) > -1)
+				&& (_.isEmpty(selectedFilters.division) || selectedFilters.division?.length === 0 || selectedFilters.division?.indexOf(item.division) > -1)
+				&& (_.isEmpty(selectedFilters.costType) || selectedFilters.costType?.length === 0 || selectedFilters.costType?.indexOf(item.costType) > -1)
+				&& (_.isEmpty(selectedFilters.curve) || selectedFilters.curve?.length === 0 || selectedFilters.curve?.indexOf(item.curve?.toString()) > -1)
+				&& (_.isEmpty(selectedFilters.bidPackage) || selectedFilters.bidPackage?.length === 0 || selectedFilters.bidPackage?.indexOf(item.bidPackage?.id) > -1)
+				&& (_.isEmpty(selectedFilters.bidStatus) || selectedFilters.bidStatus?.length === 0 || selectedFilters.bidStatus?.indexOf(getBidStatusIdFromText(item?.bidPackage?.status)?.toString()) > -1)
+				&& (_.isEmpty(selectedFilters.vendorContract) || selectedFilters.vendorContract?.length === 0 || selectedFilters.vendorContract?.indexOf(item.vendorContract?.id) > -1)
+				&& (_.isEmpty(selectedFilters.vendorStatus) || selectedFilters.vendorStatus?.length === 0 || selectedFilters.vendorStatus?.indexOf(item.vendorContract?.status) > -1)
+				&& (_.isEmpty(selectedFilters.clientContract) || selectedFilters.clientContract?.length === 0 || selectedFilters.clientContract?.indexOf(item.clientContract?.id) > -1)
+				&& (_.isEmpty(selectedFilters.clientStatus) || selectedFilters.clientStatus?.length === 0 || selectedFilters.clientStatus?.indexOf(item.clientContract?.status) > -1)
+				&& (_.isEmpty(selectedFilters.location) || selectedFilters.location?.length === 0 || _.intersection(selectedFilters.location, locationIds).length > 0)
+				&& (_.isEmpty(selectedFilters.Vendors) || selectedFilters.Vendors?.length === 0 || _.intersection(selectedFilters.Vendors, vendorsIds).length > 0)
+				&& (_.isEmpty(selectedFilters.providerSource) || selectedFilters.providerSource?.length === 0 || selectedFilters.providerSource?.indexOf(item.providerSource?.toString()) > -1)
+			));
+	});
+};
+
+const modifiedData = searchAndFilter(gridData);
+
+return (
+	<>
+		<div style={containerStyle} className='budget-grid-cls'>
+			<div style={gridStyle} className='ag-theme-alpine'>
+				{
+					<SUIGrid
+						headers={columnDefs}
+						data={modifiedData}
+						grouped={true}
+						animateRows={true}
+						// realTimeDocPrefix='budgetManagerLineItems@'
+						autoGroupColumnDef={autoGroupColumnDef}
+						isGroupOpenByDefault={isGroupOpenByDefault}
+						onRowDoubleClicked={(e: any, tableRef: any) => rowDoubleClicked(e, tableRef)}
+						onRowClicked={(e: any, tableRef: any) => rowClicked(e, tableRef)}
+						onRowGroupOpened={onRowGroupOpened}
+						onCellEditingStopped={onCellEditingStopped}
+						getRowId={(params: any) => params?.data?.id}
+						rowSelected={(e: any) => rowSelected(e)}
+						tableref={(value: any) => tableref(value)}
+						onCellMouseOver={onCellMouseOver}
+						updatedObj={updateObj}
+						nowRowsMsg={'<div>Create new budget line item from above</div>'}
+						onBodyScrollEnd={(e: any) => updatePresenceOnScrollandCollapse()}
+						isMainGrid={true}
+						openLID={rightPannel}
+						selectedRecord={selectedRecord}
+						groupRowRendererParams={groupRowRendererParams}
+						groupDisplayType={'groupRows'}
+						groupSelectsChildren={true}
+						getReference={(value: any) => setGridRef(value)}
+					></SUIGrid>
 				}
-				// }				
-			}
-		});
-
-		// console.log('keyValues--->', keyValues);
-		return keyValues.filter((element) => {
-			return element != undefined || element != null;
-		});
-	};
-
-	useEffect(() => {
-		try {
-			console.log('liveData--------->', liveData);
-			if(liveData) {
-				for(let id in liveData) {
-					const diffKeys = liveData[id];
-					let rowNode = gridRef.current?.api?.getRowNode(id);
-					console.log('liveData--------->row', rowNode);
-
-					if(diffKeys && diffKeys.length > 0)
-						console.log('liveData--------->if', rowNode, diffKeys), gridRef.current?.api?.flashCells({rowNodes: [rowNode], columns: ['division', ...diffKeys]});
-					else
-						console.log('liveData--------->else', rowNode, diffKeys), gridRef.current?.api?.flashCells({rowNodes: [rowNode], columns: ['division']});
-				}
-			}
-		} catch(e) {
-			console.log(e);
-		}
-	}, [liveData]);
-
-	const tableref = (value: any) => {
-		setTableReff(value);
-	};
-	const groupRowRendererParams = () => {
-		return {
-			checkbox: true,
-			suppressCount: false,
-			suppressGroupRowsSticky: true
-		};
-	};
-
-	/**
-	 * Method to apply search and filters selected in the main window toolbar
-	 * Kindly do not edit this method without understanding the complete logic
-	 * @param list input list of budget items
-	 * @returns list of filtered budget items
-	 */
-	const searchAndFilter = (list: any) => {
-		return list.filter((item: any) => {
-			const regex = new RegExp(searchText, 'gi');
-			const locationText = item.locations?.map((location: any) => location.name)?.join(',');
-			const locationIds = item.locations?.map((location: any) => location.id?.toString());
-			const vendorsIds = item.Vendors?.map((vendor: any) => vendor.id?.toString());
-			const vendorText = item.Vendors?.map((vendor: any) => vendor.name)?.join(',');
-			const curveText = _.find(curveList, {value: item.curve})?.label;
-			const estimatedStartText = formatDate(item.estimatedStart, {year: 'numeric', month: '2-digit', day: '2-digit'});
-			const estimatedEndText = formatDate(item.estimatedEnd, {year: 'numeric', month: '2-digit', day: '2-digit'});
-			const providerSourceText = providerSourceObj?.[item?.providerSource];
-
-			return (!searchText || (searchText && (item.name?.match(regex) || item.description?.match(regex) ||
-				item.division.match(regex) || item.costCode.match(regex) || item.costType?.match(regex) ||
-				item.unitOfMeasure?.match(regex) || item.vendorContract?.name.match(regex) ||
-				item.vendorContract?.code.match(regex) || item.vendorContract?.status.match(regex) ||
-				item.clientContract?.name?.match(regex) || item.clientContract?.code?.match(regex) ||
-				item.clientContract?.status?.match(regex) || locationText?.match(regex) ||
-				vendorText?.match(regex) || curveText?.match(regex) || providerSourceText?.match(regex) || estimatedStartText?.match(regex) ||
-				estimatedEndText?.match(regex) || item.originalAmount?.toString()?.match(regex) ||
-				item.revisedBudget?.toString()?.match(regex) || item.balance?.toString()?.match(regex) ||
-				item.originalAmount?.toString()?.match(regex) ||
-				item.equipmentManufacturer?.match(regex) || item.equipmentModel?.match(regex))))
-				&& (_.isEmpty(selectedFilters) || (!_.isEmpty(selectedFilters)
-					&& (_.isEmpty(selectedFilters.costCode) || selectedFilters.costCode?.length === 0 || selectedFilters.costCode?.indexOf(item.costCode) > -1)
-					&& (_.isEmpty(selectedFilters.division) || selectedFilters.division?.length === 0 || selectedFilters.division?.indexOf(item.division) > -1)
-					&& (_.isEmpty(selectedFilters.costType) || selectedFilters.costType?.length === 0 || selectedFilters.costType?.indexOf(item.costType) > -1)
-					&& (_.isEmpty(selectedFilters.curve) || selectedFilters.curve?.length === 0 || selectedFilters.curve?.indexOf(item.curve?.toString()) > -1)
-					&& (_.isEmpty(selectedFilters.bidPackage) || selectedFilters.bidPackage?.length === 0 || selectedFilters.bidPackage?.indexOf(item.bidPackage?.id) > -1)
-					&& (_.isEmpty(selectedFilters.bidStatus) || selectedFilters.bidStatus?.length === 0 || selectedFilters.bidStatus?.indexOf(getBidStatusIdFromText(item?.bidPackage?.status)?.toString()) > -1)
-					&& (_.isEmpty(selectedFilters.vendorContract) || selectedFilters.vendorContract?.length === 0 || selectedFilters.vendorContract?.indexOf(item.vendorContract?.id) > -1)
-					&& (_.isEmpty(selectedFilters.vendorStatus) || selectedFilters.vendorStatus?.length === 0 || selectedFilters.vendorStatus?.indexOf(item.vendorContract?.status) > -1)
-					&& (_.isEmpty(selectedFilters.clientContract) || selectedFilters.clientContract?.length === 0 || selectedFilters.clientContract?.indexOf(item.clientContract?.id) > -1)
-					&& (_.isEmpty(selectedFilters.clientStatus) || selectedFilters.clientStatus?.length === 0 || selectedFilters.clientStatus?.indexOf(item.clientContract?.status) > -1)
-					&& (_.isEmpty(selectedFilters.location) || selectedFilters.location?.length === 0 || _.intersection(selectedFilters.location, locationIds).length > 0)
-					&& (_.isEmpty(selectedFilters.Vendors) || selectedFilters.Vendors?.length === 0 || _.intersection(selectedFilters.Vendors, vendorsIds).length > 0)
-					&& (_.isEmpty(selectedFilters.providerSource) || selectedFilters.providerSource?.length === 0 || selectedFilters.providerSource?.indexOf(item.providerSource?.toString()) > -1)
-				));
-		});
-	};
-
-	const modifiedData = searchAndFilter(gridData);
-
-	return (
-		<>
-			<div style={containerStyle} className='budget-grid-cls'>
-				<div style={gridStyle} className='ag-theme-alpine'>
-					{
-						<SUIGrid
-							headers={columnDefs}
-							data={modifiedData}
-							grouped={true}
-							animateRows={true}
-							// realTimeDocPrefix='budgetManagerLineItems@'
-							autoGroupColumnDef={autoGroupColumnDef}
-							isGroupOpenByDefault={isGroupOpenByDefault}
-							onRowDoubleClicked={(e: any, tableRef: any) => rowDoubleClicked(e, tableRef)}
-							onRowClicked={(e: any, tableRef: any) => rowClicked(e, tableRef)}
-							onRowGroupOpened={onRowGroupOpened}
-							onCellEditingStopped={onCellEditingStopped}
-							getRowId={(params: any) => params?.data?.id}
-							rowSelected={(e: any) => rowSelected(e)}
-							tableref={(value: any) => tableref(value)}
-							onCellMouseOver={onCellMouseOver}
-							updatedObj={updateObj}
-							nowRowsMsg={'<div>Create new budget line item from above</div>'}
-							onBodyScrollEnd={(e: any) => updatePresenceOnScrollandCollapse()}
-							isMainGrid={true}
-							openLID={rightPannel}
-							selectedRecord={selectedRecord}
-							groupRowRendererParams={groupRowRendererParams}
-							groupDisplayType={'groupRows'}
-							groupSelectsChildren={true}
-							getReference={(value: any) => setGridRef(value)}
-						></SUIGrid>
-					}
-				</div>
-			</div >
-			<Divelement />
-		</>
-	);
+			</div>
+		</div >
+		<Divelement />
+	</>
+);
 };
 
 export default TableGrid;

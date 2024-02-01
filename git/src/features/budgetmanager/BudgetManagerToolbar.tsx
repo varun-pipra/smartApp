@@ -55,7 +55,7 @@ const BudgetManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
 	const { selectedRows, bidPackagesList, vendorContractsList, clientContractsList } = useAppSelector(state => state.gridData);
 	const { selectedRow } = useAppSelector(state => state.rightPanel);
-	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);
+	const { isBudgetLocked, budgetTemplate } = useAppSelector(state => state.tableColumns);
 	const tableViewType = useAppSelector(getTableViewType);
 	const openSettingPopup = useAppSelector(getShowSettingPopup);
 	const viewBuilderPopup = useAppSelector(getViewBuilderPopup);
@@ -515,7 +515,7 @@ const BudgetManagerToolbar = (props: any) => {
 			) : (
 				<></>
 			)} */}
-			{isImportVisible && <BudgetImporter onClose={() => setImportVisible(false)} />}
+			{isImportVisible && <BudgetImporter onClose={() => setImportVisible(false)} noOfBudgetItems={gridData?.length} downloadTemplateUrl={budgetTemplate} />}
 			{openSettingPopup && (
 				<SUIDrawer
 					PaperProps={{

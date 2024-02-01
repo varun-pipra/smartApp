@@ -6,8 +6,24 @@ import {memo} from "react";
 import './BudgetImporter.scss';
 import IQFileUploadField from "components/iqfileuploadfield/IQFileUploadField";
 import IQButton from "components/iqbutton/IQButton";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { getTemplateForBudget } from "../operations/tableColumnsSlice";
+import { getServer } from "app/common/appInfoSlice";
+import React from "react";
 
 const BudgetImporter = (props: any) => {
+	const dispatch = useAppDispatch();	
+	const appInfo = useAppSelector(getServer);
+	const ref = React.useRef<HTMLAnchorElement | null>(null);	
+
+	const onDownloadTemplate = () => {
+		dispatch(getTemplateForBudget(appInfo))?.then((data:any) => {
+			console.log("downloadTemplateUrl", data)
+			const url = URL.createObjectURL(new Blob([data]));
+			ref.current?.click();
+			URL.revokeObjectURL(url);
+		});
+	}
 	return <IQBaseWindow
 		open={true}
 		title='Budget Importer'
@@ -29,26 +45,28 @@ const BudgetImporter = (props: any) => {
 				name="import-type"
 				value={'new'}
 			>
-				<FormControlLabel
+				{props?.noOfBudgetItems == 0 && <FormControlLabel
 					value="new"
 					control={<Radio />}
 					label="New"
-					disabled={props?.readOnly}
-				/>
+				/>}
 				<FormControlLabel
 					value="replace"
 					control={<Radio />}
 					label="Replace"
+					disabled={!props?.noOfBudgetItems}					
 				/>
 				<FormControlLabel
 					value="append"
 					control={<Radio />}
 					label="Append"
+					disabled={!props?.noOfBudgetItems}					
 				/>
 				<FormControlLabel
 					value="merge"
 					control={<Radio />}
 					label="Merge"
+					disabled={!props?.noOfBudgetItems}					
 				/>
 			</RadioGroup>
 		</Stack>
@@ -67,7 +85,9 @@ const BudgetImporter = (props: any) => {
 					<IQButton
 						className="download-template-btn"
 						color="orange"
-						variant="outlined">
+						variant="outlined"
+						onClick={() => onDownloadTemplate()}
+					>
 						DOWNLOAD TEMPLATE
 					</IQButton>
 				</span>

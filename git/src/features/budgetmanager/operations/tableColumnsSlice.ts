@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ColDef } from "ag-grid-community";
 import { RootState } from "app/store";
-import { fetchBudgetIsLockedOrUnlocked, fetchTableColumnList } from "./tableColumnsAPI";
+import { fetchBudgetIsLockedOrUnlocked, fetchBudgetManagerDownloadTemplete, fetchTableColumnList } from "./tableColumnsAPI";
 
 export interface BudgetManagerTableColumnState {
 	loading: boolean;
@@ -23,6 +23,7 @@ export interface BudgetManagerTableColumnState {
 	showSettingPopup3: boolean;
 	showHideGridColumn: any;
 	showToastMessage: any
+	budgetTemplate:any;
 }
 
 const initialState: BudgetManagerTableColumnState = {
@@ -44,7 +45,8 @@ const initialState: BudgetManagerTableColumnState = {
 	columnDefs: <ColDef[]>([]),
 	showSettingPopup3: false,
 	showHideGridColumn: [],
-	showToastMessage: { displayToast: false, message: '' }
+	showToastMessage: { displayToast: false, message: '' },
+	budgetTemplate: null,
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -62,6 +64,12 @@ export const fetchBudgetLock = createAsyncThunk<any, any>("lock", async (appInfo
 	const budgetLockDetails = await fetchBudgetIsLockedOrUnlocked(appInfo);
 	// The value we return becomes the `fulfilled` action payload
 	return budgetLockDetails;
+});
+
+export const getTemplateForBudget = createAsyncThunk<any, any>("BMTemplate", async (appInfo) => {
+	const budgetTemplateURL = await fetchBudgetManagerDownloadTemplete(appInfo);
+	// The value we return becomes the `fulfilled` action payload
+	return budgetTemplateURL;
 });
 
 export const tableColumnSlice = createSlice({
@@ -137,6 +145,16 @@ export const tableColumnSlice = createSlice({
 			})
 			.addCase(fetchBudgetLock.fulfilled, (state, action) => {
 				state.isBudgetLocked = action.payload.status === 2 ? true : false;
+			})
+			.addCase(getTemplateForBudget.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(getTemplateForBudget.fulfilled, (state, action) => {
+				state.loading = false;
+				state.budgetTemplate = action.payload;
+			})
+			.addCase(getTemplateForBudget.rejected, (state) => {
+				state.loading = false;
 			})
 	},
 });

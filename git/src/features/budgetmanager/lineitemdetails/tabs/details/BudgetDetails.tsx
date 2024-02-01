@@ -495,6 +495,29 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	// 	if(items?.length === 0) setShowAddIcon(true);
 	// 	else setShowAddIcon(false);
 	// };
+	const getWbs = (rollUpIds:any) => {
+		let value: any = '';
+		rollupTaskData.map((obj: any, index:number) => {
+			if(rollUpIds?.includes(obj?.value)) value = (`${value} ${obj?.label},`);
+		});
+		return value?.slice(0, -1);
+	}
+
+	const getSbs = (sbs:any) => {
+		let value = '';
+		sbs?.forEach((obj:any, index:number) => {
+			value = `${value} ${obj?.name},`
+		})
+		return value?.slice(0, -1);
+	};
+
+	const getSBSPhaseColor = (phaseId:any) => {
+		let phaseColor = 'red';
+		phaseDropDownOptions?.forEach((option:any) => {
+			if(option?.id == phaseId) phaseColor = option.color
+		})
+		return phaseColor
+	}
 
 	return (
 		<div className="budget-details-box">
@@ -1327,10 +1350,24 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					</div>
 				</span>
 
+				<div className="budget-info-subheader">
+					System Breakdown Structure (SBS)
+				</div>
+
 				<span className='budget-info-tile span-2'>
-					<div className='budget-info-label' style={{fontWeight:'bold',fontSize:'16px',color:'Black'}}>System BreakDown Structure (SBS)</div>
+					<div className='budget-info-label'>System BreakDown Structure (SBS)</div>
 					<div className='budget-info-data-box'>
-						<SmartDropDown
+						{isReadOnly ?
+							<span
+								// className="budget-info-data hot-link"
+								// onClick={() =>
+								// 	window.open(useHotLink(`client-contracts/home?id=${formData?.clientContract?.id}`), "_blank")
+								// }
+							>
+								{formData?.sbs?.length ? getSbs(formData?.sbs) : "-"}
+								
+							</span>
+							:<SmartDropDown
 							options={sbsOptions ? sbsOptions : []}
 							required={true}
 							LeftIcon={<div className='budget-info-icon common-icon-Location-filled'></div>}
@@ -1346,6 +1383,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 								handleDropdownChange(selRec, 'sbs');
 							}}
 						/>
+						}
 					</div>
 				</span>
 				<span className='budget-info-tile'>
@@ -1365,28 +1403,42 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 								// handleDropdownChange(value ? value[0] : '', 'costType');
 							}}
 						/> */}
-						<SmartDropDown
-							LeftIcon={<div className="common-icon-phase"></div>}
-							options={phaseDropDownOptions || []}
-							outSideOfGrid={true}
-							isSearchField={true}
-							isFullWidth
-							Placeholder={"Select"}
-							selectedValue={formData?.sbsPhaseName}
-							menuProps={classes.menuPaper}
-							handleChange={(value: any) => {
-							const selRec: any = phaseDropDownOptions.find(
-								(rec: any) => rec.value === value[0]
-							);
-							handleDropdownChange(selRec, "sbsPhaseId");
-							}}
-							ignoreSorting={true}
-							showIconInOptionsAtRight={true}
-							// handleAddCategory={(val:any) => handlePhaseAdd('phase', val)}
-							// isCustomSearchField={showAddIcon}
-							dynamicClose={dynamicClose}
-							// handleSearchProp={(items:any, key:any) => handleSearchProp(items, key)}
-						/>
+						{isReadOnly ?
+							<span
+							>
+							{formData?.sbsPhaseName ? <Button style={{
+									backgroundColor: getSBSPhaseColor(formData?.sbsPhaseId),
+									color: "#fff",
+									alignItems: "center",
+								}} className="phase-btn">
+								<span className="common-icon-phase"></span>
+								{formData?.sbsPhaseName}
+							</Button> : '-'}
+								
+							</span>
+							:<SmartDropDown
+								LeftIcon={<div className="common-icon-phase"></div>}
+								options={phaseDropDownOptions || []}
+								outSideOfGrid={true}
+								isSearchField={true}
+								isFullWidth
+								Placeholder={"Select"}
+								selectedValue={formData?.sbsPhaseName}
+								menuProps={classes.menuPaper}
+								handleChange={(value: any) => {
+								const selRec: any = phaseDropDownOptions.find(
+									(rec: any) => rec.value === value[0]
+								);
+								handleDropdownChange(selRec, "sbsPhaseId");
+								}}
+								ignoreSorting={true}
+								showIconInOptionsAtRight={true}
+								// handleAddCategory={(val:any) => handlePhaseAdd('phase', val)}
+								// isCustomSearchField={showAddIcon}
+								dynamicClose={dynamicClose}
+								// handleSearchProp={(items:any, key:any) => handleSearchProp(items, key)}
+							/>
+						}
 					</div>
 				</span>
 
@@ -1403,7 +1455,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 								// 	window.open(useHotLink(`client-contracts/home?id=${formData?.clientContract?.id}`), "_blank")
 								// }
 							>
-								{wbsSelectedData(formData?.rollupTaskIds) || "-"}
+								{formData?.rollupTaskIds?.length ? getWbs(formData?.rollupTaskIds) : "-"}
+								
 							</span>
 							: <SmartDropDown
 								Placeholder={"Select"}

@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?8urswv');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?8urswv#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?8urswv') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?8urswv') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?8urswv##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?o99nbm');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?o99nbm#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?o99nbm') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?o99nbm') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?o99nbm##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -27,6 +27,41 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-D-models {
+  &:before {
+    content: $common-icon-D-models; 
+  }
+}
+.common-icon-schedule-new {
+  &:before {
+    content: $common-icon-schedule-new; 
+  }
+}
+.common-icon-photo-new {
+  &:before {
+    content: $common-icon-photo-new; 
+  }
+}
+.common-icon-site-reconstruction {
+  &:before {
+    content: $common-icon-site-reconstruction; 
+  }
+}
+.common-icon-bim-new {
+  &:before {
+    content: $common-icon-bim-new; 
+  }
+}
+.common-icon-quality {
+  &:before {
+    content: $common-icon-quality; 
+  }
+}
+.common-icon-drive {
+  &:before {
+    content: $common-icon-drive; 
+  }
+}
 .common-icon-Block-chain {
   &:before {
     content: $common-icon-Block-chain; 

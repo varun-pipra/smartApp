@@ -237,7 +237,10 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 		if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 		else {
 			dispatch(setSelectedRecord(response));
-			!isUserGC(appInfo) && setToast({show: true, message: 'Contract Status has been updated and notified the response to the Contract Manager'});
+			if (!(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled)) { 
+				!isUserGC(appInfo) && setToast({show: true, message: 'Contract Status has been updated and notified the response to the Contract Manager'});
+			}
+			
 			dispatch(getVendorContractsList(appInfo));
 		}
 		// dispatch(getContractDetailsById({ appInfo: appInfo, id: selectedRecord?.id }));

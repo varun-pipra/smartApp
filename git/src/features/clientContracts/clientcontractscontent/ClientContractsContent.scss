@@ -80,10 +80,9 @@
             justify-content: flex-end;
             height: 2.7em;
             border-radius: 2px; // background-color: #059cdf !important;
-            // &.Mui-disabled {
-            //     opacity: 0.6;
-            //     // background-color: #059cdf;
-            // }
+            &.Mui-disabled {
+                color: black !important;
+            }
         }
         .btn-decline-bid {
             display: flex;

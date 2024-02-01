@@ -12,110 +12,114 @@ import { getTextOccurences } from "features/bidresponsemanager/stores/BidRespons
 import { setSpecRefMarkups } from "features/field/smartsubmittals/stores/SmartSubmitalSlice";
 import _ from "lodash";
 
-
 const SMReferenceFiles = (props: any) => {
   const { selectedRec, ...rest } = props;
   const dispatch = useAppDispatch();
-  const { specBookpages,selectedRecsData } = useAppSelector(
+  const { specBookpages, selectedRecsData } = useAppSelector(
     (state) => state.specificationManager
   );
-  const {specRefMarkups} = useAppSelector((state:any)=> state.smartSubmittals);
+  const { specRefMarkups } = useAppSelector(
+    (state: any) => state.smartSubmittals
+  );
 
-  const sketchPageinfo= useAppSelector(getSketchPageInfo);
+  const sketchPageinfo = useAppSelector(getSketchPageInfo);
   const docViewElementId = "canvasWrapper-ref-files";
   // const [showSearchpanel, setShowSearchpanel] = useState(false);
   const [search, setSearch] = useState("");
   const [specBookPagesData, setSpecBookPagesData] = useState("");
-  const [smRefPUId, setSmRefPUId] = useState<any>('');
-
-  // useEffect(() => {
-  //   if(search.length){
-  //     handelSearchChange()
-  //   }else{
-  //     console.log(specRefMarkups , 'markupsByPageForBidResp')
-  //     sketchPageinfo?.callback(specRefMarkups || {})
-  //   }
-  // }, [search]);
+  const [smRefPUId, setSmRefPUId] = useState();
 
   const debounceOnSearch = useCallback(
-    _.debounce((search,pageUID) => {
-      // setSearch(search)
-      if(search.length){
-        handelSearchChange(search,pageUID)
-      }else{
-        console.log(specRefMarkups , 'markupsByPageForBidResp')
-        sketchPageinfo?.callback(specRefMarkups || {})
+    _.debounce((search) => {
+      setSearch(search);
+      if (search.length) {
+        handelSearchChange();
+      } else {
+        console.log(specRefMarkups, "markupsByPageForBidResp");
+        sketchPageinfo?.callback(specRefMarkups || {});
       }
     }, 2000),
     [search]
   );
 
   useEffect(() => {
-    if(selectedRec ?? false){
+    if (selectedRec ?? false) {
       let payload = {
-        id:selectedRec?.specBook?.id
-      }
+        id: selectedRec?.specBook?.id,
+      };
       dispatch(getSpecBookPages(payload));
-    } else if(selectedRecsData?.[0]?.data?.specBook?.id ?? false) {
+    } else if (selectedRecsData?.[0]?.data?.specBook?.id ?? false) {
       let payload = {
-        id:selectedRecsData?.[0]?.data?.specBook?.id
-      }
+        id: selectedRecsData?.[0]?.data?.specBook?.id,
+      };
       dispatch(getSpecBookPages(payload));
     }
-  }, [selectedRec])
+  }, [selectedRec]);
 
   useEffect(() => {
     setSpecBookPagesData(specBookpages);
   }, [specBookpages]);
 
   useEffect(() => {
-    if(sketchPageinfo){
-      
-        getMarkupsPerpage();
-    }    
+    if (sketchPageinfo) {
+      getMarkupsPerpage();
+    }
   }, [sketchPageinfo]);
 
-  const getMarkupsPerpage = ()=>{
+  const getMarkupsPerpage = () => {
     let payload = {
-      specbookId: selectedRecsData?.[0]?.data?.specBook?.id ?? selectedRec?.specBook?.id,
-      pageNo:sketchPageinfo?.currentPage?.page
-    }
+      specbookId:
+        selectedRecsData?.[0]?.data?.specBook?.id ?? selectedRec?.specBook?.id,
+      pageNo: sketchPageinfo?.currentPage?.page,
+    };
     getMarkupsByPageForSections(payload)
-      .then((res:any)=>{
-        setSmRefPUId(res[0]?.data?.pageUId)
-        let updatedRes = res.map((item:any) => { return {...item, locked: true} })
+      .then((res: any) => {
+        setSmRefPUId(res[0]?.data?.pageUId);
+        let updatedRes = res.map((item: any) => {
+          return { ...item, locked: true };
+        });
         let data = {
-          "extractionAreas": updatedRes
+          extractionAreas: updatedRes,
         };
-        dispatch(setSpecRefMarkups(data))
+        dispatch(setSpecRefMarkups(data));
         if (search.length) {
-					handelSearchChange(search,res[0]?.data?.pageUId);
-				} else{
-					sketchPageinfo.callback(data);
-				}
+          handelSearchChange();
+        } else {
+          sketchPageinfo.callback(data);
+        }
       })
-      .catch((error:any)=>{
-        console.log('error',error);
-      })
-  }
+      .catch((error: any) => {
+        console.log("error", error);
+      });
+  };
 
-  const handelSearchChange =(searchText:any, pageId?:any) =>{
-    console.log('selectedRecsData', selectedRecsData, selectedRec);
-    debugger;
-    if(smRefPUId && selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id) {
-      let params = `searchText=${searchText}&pageId=${pageId}&contentId=${selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id}`
-      getTextOccurences(params).then((resp:any)=>{
-        console.log(modifyMarkupData(resp.data),specRefMarkups , 'markupsByPageForBidResp')
-        let updatedRes = [...modifyMarkupData(resp.data) , ...specRefMarkups.extractionAreas]
+  const handelSearchChange = () => {
+    console.log("selectedRecsData", selectedRecsData, selectedRec);
+    if (
+      (smRefPUId && selectedRecsData?.[0]?.data?.specBook?.id) ||
+      selectedRec?.specBook?.id
+    ) {
+      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${
+        selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id
+      }`;
+      getTextOccurences(params).then((resp: any) => {
+        console.log(
+          modifyMarkupData(resp.data),
+          specRefMarkups,
+          "markupsByPageForBidResp"
+        );
+        let updatedRes = [
+          ...modifyMarkupData(resp.data),
+          ...specRefMarkups.extractionAreas,
+        ];
         let data = {
-          "extractionAreas": updatedRes
+          extractionAreas: updatedRes,
         };
-        console.log('udated markup data',data, sketchPageinfo);
-        sketchPageinfo?.callback(data)
-      })
+        console.log("udated markup data", data, sketchPageinfo);
+        sketchPageinfo?.callback(data);
+      });
     }
-   
-  }
+  };
 
   return (
     <div className="sm-referencefiles">
@@ -135,7 +139,7 @@ const SMReferenceFiles = (props: any) => {
           showGroups={false}
           showFilter={false}
           filterHeader=""
-          onSearchChange={(searchText: any) => debounceOnSearch(searchText,smRefPUId)}
+          onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
         />
       </div>
       <IQBrenaDocViewer

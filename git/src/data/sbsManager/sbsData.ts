@@ -34,168 +34,379 @@ export const PhasesData = [
 ];
 
 export const GridData = [
-	{
-		"id": 16,
-		"uniqueid": "e93b0916-d619-4974-8df6-d9839127e667",
-		"displayId": "SBS0016",
-		"name": "Plumbing",
-		"startDate": "2023-11-22T00:00:00",
-		"endDate": "2023-11-28T00:00:00",
-		"description": "Desiciption update",
-		"category": {
-			"id": 1155,
-			"name": "Exterior Walls & Doors"
-		},
-		"phase": [
-			{
-				"id": 2,
-				"name": "In Construction",
-				"color": "#d6a827",
-				"uniqueId": null,
-				"sequenceNo": null
-			}
-		],
-		"trades": [
-			{
-				"id": 1,
-				"name": "Architectural"
-			}
-		],
-		"configureSupplementalInfo": true,
-		"supplementalInfoAppId": 532163,
-		"status": 0,
-		"additionalInfo": [],
-		"sbsNameFieldId": null,
-		"categoryFieldId": null,
-		"phaseFieldId": "fld41443c68",
-		"tradeFieldId": null,
-		"estStartDateFieldId": "fld9d953125",
-		"estEndDateFieldId": null,
-		"createdBy": {
-			"id": 534917,
-			"name": ""
-		},
-		"createdDate": "2023-11-20T12:57:28.86",
-		"modifiedBy": {
-			"id": 534917,
-			"name": "MK, Sudeep"
-		},
-		"modifiedDate": "2023-12-19T13:52:43.467",
-		"hasDifferentCategory": true,
-		"referencefiles": [],
-		"links": []
-	},
-	{
-		"id": 20,
-		"uniqueid": "1e40b642-4e82-4a63-aa2c-70d36e30b18a",
-		"displayId": "SBS0020",
-		"name": "File Test R 01",
-		"startDate": "2023-11-22T00:00:00",
-		"endDate": "2023-11-30T00:00:00",
-		"description": "",
-		"category": {
-			"id": 1162,
-			"name": "Consultant"
-		},
-		"phase": [
-			{
-				"id": 18,
-				"name": "Construction Complete",
-				"color": "#9E9E9E",
-				"uniqueId": null,
-				"sequenceNo": null
-			}
-		],
-		"trades": [
-			{
-				"id": 3,
-				"name": "Carpentry"
-			},
-			{
-				"id": 4,
-				"name": "Ceiling"
-			}
-		],
-		"configureSupplementalInfo": true,
-		"supplementalInfoAppId": 532073,
-		"status": 0,
-		"additionalInfo": [],
-		"sbsNameFieldId": null,
-		"categoryFieldId": null,
-		"phaseFieldId": null,
-		"tradeFieldId": null,
-		"estStartDateFieldId": null,
-		"estEndDateFieldId": null,
-		"createdBy": {
-			"id": 534917,
-			"name": ""
-		},
-		"createdDate": "2023-11-22T15:11:52.207",
-		"modifiedBy": {
-			"id": 613606,
-			"name": "Mani, Vimal Raj"
-		},
-		"modifiedDate": "2023-12-19T11:54:27.793",
-		"hasDifferentCategory": true,
-		"referencefiles": [],
-		"links": []
-	},
-	{
-		"id": 21,
-		"uniqueid": "3a022d97-b9e6-439e-b91e-c438bd79e5de",
-		"displayId": "SBS0021",
-		"name": "SBS Name",
-		"startDate": "2023-12-12T00:00:00",
-		"endDate": "2023-12-20T00:00:00",
-		"description": "SBS Manger",
-		"category": {
-			"id": 1162,
-			"name": "Consultant"
-		},
-		"phase": [
-			{
-				"id": 16,
-				"name": "Pre Construction",
-				"color": "#8BC34A",
-				"uniqueId": null,
-				"sequenceNo": null
-			}
-		],
-		"trades": [
-			{
-				"id": 1,
-				"name": "Architectural"
-			},
-			{
-				"id": 70,
-				"name": "aDD "
-			}
-		],
-		"configureSupplementalInfo": true,
-		"supplementalInfoAppId": 532073,
-		"status": 0,
-		"additionalInfo": [],
-		"sbsNameFieldId": null,
-		"categoryFieldId": null,
-		"phaseFieldId": null,
-		"tradeFieldId": null,
-		"estStartDateFieldId": null,
-		"estEndDateFieldId": null,
-		"createdBy": {
-			"id": 534917,
-			"name": ""
-		},
-		"createdDate": "2023-12-19T09:22:03.607",
-		"modifiedBy": {
-			"id": 613606,
-			"name": "Mani, Vimal Raj"
-		},
-		"modifiedDate": "2023-12-19T11:59:11.623",
-		"hasDifferentCategory": true,
-		"referencefiles": [],
-		"links": []
-	}
-];
+        {
+            "id": 1,
+            "uniqueid": "a052103f-e66e-4ad7-95d1-6c06717e9f93",
+            "displayId": "SBS0001",
+            "name": " Contract Amount",
+            "startDate": "2024-01-19T00:00:00",
+            "endDate": "2024-01-31T00:00:00",
+            "description": "Dest",
+            "category": {
+                "id": 1156,
+                "name": "Foundation"
+            },
+            "phase": [
+                {
+                    "id": 16,
+                    "name": "Pre Construction",
+                    "color": "#8BC34A",
+                    "uniqueId": null,
+                    "sequenceNo": null
+                }
+            ],
+            "trades": [
+                {
+                    "id": 1,
+                    "name": "Architectural"
+                },
+                {
+                    "id": 2,
+                    "name": "Audio / Video"
+                }
+            ],
+            "supplementalInfoAppId": 0,
+            "supplementalInfoItemId": null,
+            "status": 0,
+            "createdBy": {
+                "id": 613606,
+                "name": ""
+            },
+            "createdDate": "2024-01-19T07:18:05.94",
+            "modifiedBy": {
+                "id": 534917,
+                "name": "MK, Sudeep"
+            },
+            "modifiedDate": "2024-01-30T10:25:38.043",
+            "hasDifferentCategory": false,
+            "referencefiles": [],
+            "links": []
+        },
+        {
+            "id": 2,
+            "uniqueid": "ebd7e65b-4583-43b0-b730-7df756ab2e07",
+            "displayId": "SBS0002",
+            "name": "19Jan",
+            "startDate": "2024-01-19T00:00:00",
+            "endDate": "2024-01-31T00:00:00",
+            "description": "",
+            "category": {
+                "id": 1155,
+                "name": "Exterior Walls & Doors"
+            },
+            "phase": [
+                {
+                    "id": 2,
+                    "name": "In Construction",
+                    "color": "#d6a827",
+                    "uniqueId": null,
+                    "sequenceNo": null
+                }
+            ],
+            "trades": [
+                {
+                    "id": 1,
+                    "name": "Architectural"
+                }
+            ],
+            "supplementalInfoAppId": 0,
+            "supplementalInfoItemId": null,
+            "status": 0,
+            "createdBy": {
+                "id": 534917,
+                "name": ""
+            },
+            "createdDate": "2024-01-19T09:43:58.893",
+            "modifiedBy": {
+                "id": 534917,
+                "name": "MK, Sudeep"
+            },
+            "modifiedDate": "2024-01-30T08:07:25.367",
+            "hasDifferentCategory": false,
+            "referencefiles": [],
+            "links": []
+        },
+        {
+            "id": 3,
+            "uniqueid": "8bdb2364-fcd1-4126-a8e2-3c9fe0c9d07b",
+            "displayId": "SBS0003",
+            "name": "001 Test",
+            "startDate": "2024-01-22T00:00:00",
+            "endDate": "2024-01-22T00:00:00",
+            "description": "",
+            "category": {
+                "id": 1156,
+                "name": "Foundation"
+            },
+            "phase": [
+                {
+                    "id": 16,
+                    "name": "Pre Construction",
+                    "color": "#8BC34A",
+                    "uniqueId": null,
+                    "sequenceNo": null
+                }
+            ],
+            "trades": [
+                {
+                    "id": 1,
+                    "name": "Architectural"
+                }
+            ],
+            "supplementalInfoAppId": 0,
+            "supplementalInfoItemId": null,
+            "status": 0,
+            "createdBy": {
+                "id": 534917,
+                "name": ""
+            },
+            "createdDate": "2024-01-22T11:14:07.487",
+            "modifiedBy": {
+                "id": 613606,
+                "name": "Mani, Vimal Raj"
+            },
+            "modifiedDate": "2024-01-29T18:03:59.807",
+            "hasDifferentCategory": false,
+            "referencefiles": [],
+            "links": []
+        },
+        {
+            "id": 4,
+            "uniqueid": "da2250b4-0095-44a1-83a0-4fbf6b32c56a",
+            "displayId": "SBS0004",
+            "name": "test 29 ",
+            "startDate": "2024-01-29T00:00:00",
+            "endDate": "2024-01-30T00:00:00",
+            "description": "",
+            "category": {
+                "id": 1158,
+                "name": "Plumbing"
+            },
+            "phase": [
+                {
+                    "id": 16,
+                    "name": "Pre Construction",
+                    "color": "#8BC34A",
+                    "uniqueId": null,
+                    "sequenceNo": null
+                }
+            ],
+            "trades": [
+                {
+                    "id": 1,
+                    "name": "Architectural"
+                }
+            ],
+            "supplementalInfoAppId": 0,
+            "supplementalInfoItemId": null,
+            "status": 0,
+            "createdBy": {
+                "id": 534917,
+                "name": ""
+            },
+            "createdDate": "2024-01-29T06:04:57.79",
+            "modifiedBy": {
+                "id": 613606,
+                "name": "Mani, Vimal Raj"
+            },
+            "modifiedDate": "2024-01-29T18:05:59.45",
+            "hasDifferentCategory": false,
+            "referencefiles": [],
+            "links": []
+        },
+        {
+            "id": 5,
+            "uniqueid": "c5feeab4-7a8d-4aa0-b3ce-47b9ceae1b67",
+            "displayId": "SBS0005",
+            "name": "SBS Item 29 jan",
+            "startDate": "2024-01-29T00:00:00",
+            "endDate": "2024-01-30T00:00:00",
+            "description": "SBS Item 29 jan desc",
+            "category": {
+                "id": 670,
+                "name": "No access"
+            },
+            "phase": [
+                {
+                    "id": 2,
+                    "name": "In Construction",
+                    "color": "#d6a827",
+                    "uniqueId": null,
+                    "sequenceNo": null
+                }
+            ],
+            "trades": [
+                {
+                    "id": 1,
+                    "name": "Architectural"
+                },
+                {
+                    "id": 2,
+                    "name": "Audio / Video"
+                }
+            ],
+            "supplementalInfoAppId": 0,
+            "supplementalInfoItemId": null,
+            "status": 0,
+            "createdBy": {
+                "id": 534917,
+                "name": ""
+            },
+            "createdDate": "2024-01-29T09:52:35.113",
+            "modifiedBy": {
+                "id": 534917,
+                "name": "MK, Sudeep"
+            },
+            "modifiedDate": "2024-01-29T11:54:45.09",
+            "hasDifferentCategory": true,
+            "referencefiles": [],
+            "links": []
+        },
+        {
+            "id": 6,
+            "uniqueid": "ec74ef88-3a86-41b6-b7ec-eeca74f55b8e",
+            "displayId": "SBS0006",
+            "name": "iOS Mobile",
+            "startDate": "2024-01-29T00:00:00",
+            "endDate": "2024-01-31T00:00:00",
+            "description": "iOS Mobile - 1 ",
+            "category": {
+                "id": 1156,
+                "name": "Foundation"
+            },
+            "phase": [
+                {
+                    "id": 16,
+                    "name": "Pre Construction",
+                    "color": "#8BC34A",
+                    "uniqueId": null,
+                    "sequenceNo": null
+                }
+            ],
+            "trades": [
+                {
+                    "id": 1,
+                    "name": "Architectural"
+                },
+                {
+                    "id": 70,
+                    "name": "aDD "
+                }
+            ],
+            "supplementalInfoAppId": 0,
+            "supplementalInfoItemId": null,
+            "status": 0,
+            "createdBy": {
+                "id": 534917,
+                "name": ""
+            },
+            "createdDate": "2024-01-29T11:12:14.303",
+            "modifiedBy": {
+                "id": 613606,
+                "name": "Mani, Vimal Raj"
+            },
+            "modifiedDate": "2024-01-30T08:47:38.913",
+            "hasDifferentCategory": false,
+            "referencefiles": [],
+            "links": []
+        },
+        {
+            "id": 7,
+            "uniqueid": "62f91267-87dc-487d-a250-defff73a6331",
+            "displayId": "SBS0007",
+            "name": "iOS Mobile - 2",
+            "startDate": "2024-01-29T00:00:00",
+            "endDate": "2024-01-30T00:00:00",
+            "description": "iOS Mobile - 222",
+            "category": {
+                "id": 1154,
+                "name": "Excavation"
+            },
+            "phase": [
+                {
+                    "id": 2,
+                    "name": "In Construction",
+                    "color": "#d6a827",
+                    "uniqueId": null,
+                    "sequenceNo": null
+                }
+            ],
+            "trades": [
+                {
+                    "id": 1,
+                    "name": "Architectural"
+                },
+                {
+                    "id": 2,
+                    "name": "Audio / Video"
+                }
+            ],
+            "supplementalInfoAppId": 0,
+            "supplementalInfoItemId": null,
+            "status": 0,
+            "createdBy": {
+                "id": 534917,
+                "name": ""
+            },
+            "createdDate": "2024-01-29T13:42:51.623",
+            "modifiedBy": {
+                "id": 534917,
+                "name": "MK, Sudeep"
+            },
+            "modifiedDate": "2024-01-30T14:00:25.017",
+            "hasDifferentCategory": false,
+            "referencefiles": [],
+            "links": []
+        },
+        {
+            "id": 8,
+            "uniqueid": "9110c9aa-44f8-4194-ba83-3e6b762d2fcf",
+            "displayId": "SBS0008",
+            "name": "iOS Mobile - 3",
+            "startDate": "2024-01-29T00:00:00",
+            "endDate": "2024-01-31T00:00:00",
+            "description": "iOS Mobile - 3",
+            "category": {
+                "id": 1162,
+                "name": "Consultant"
+            },
+            "phase": [
+                {
+                    "id": 2,
+                    "name": "In Construction",
+                    "color": "#d6a827",
+                    "uniqueId": null,
+                    "sequenceNo": null
+                }
+            ],
+            "trades": [
+                {
+                    "id": 2,
+                    "name": "Audio / Video"
+                },
+                {
+                    "id": 71,
+                    "name": "ccc- long test name checking in advance quick view drawing discipline filter dropdown"
+                }
+            ],
+            "supplementalInfoAppId": 0,
+            "supplementalInfoItemId": null,
+            "status": 0,
+            "createdBy": {
+                "id": 534917,
+                "name": ""
+            },
+            "createdDate": "2024-01-29T13:50:45.84",
+            "modifiedBy": {
+                "id": 534917,
+                "name": "MK, Sudeep"
+            },
+            "modifiedDate": null,
+            "hasDifferentCategory": true,
+            "referencefiles": [],
+            "links": []
+        }
+    ];
 export const CategoryList = {
 	id: 13,
 	name: "Submittal Type",
@@ -614,124 +825,378 @@ export const CategoryList = {
 };
 
 export const getGridDataById = {
-	"id": 2,
-	"uniqueid": "ebd7e65b-4583-43b0-b730-7df756ab2e07",
-	"displayId": "SBS0002",
-	"name": "19Jan",
-	"startDate": "2024-01-19T00:00:00",
-	"endDate": "2024-01-31T00:00:00",
-	"description": "",
-	"category": {
-		"id": 670,
-		"name": "No access"
-	},
-	"phase": [
-		{
-			"id": 2,
-			"name": "In Construction",
-			"color": "#d6a827",
-			"uniqueId": null,
-			"sequenceNo": null
-		}
-	],
-	"trades": [
-		{
-			"id": 1,
-			"name": "Architectural"
-		}
-	],
-	"supplementalInfoAppId": 0,
-	"supplementalInfoItemId": null,
-	"status": 0,
-	"createdBy": {
-		"id": 534917,
-		"name": ""
-	},
-	"createdDate": "2024-01-19T09:43:58.893",
-	"modifiedBy": {
-		"id": 534917,
-		"name": "MK, Sudeep"
-	},
-	"modifiedDate": "2024-01-29T11:52:53.817",
-	"hasDifferentCategory": true,
-	"referencefiles": [
-		{
-			"sbsId": 2,
-			"name": "-110.-.pdf",
-			"folderType": 0,
-			"type": "",
-			"description": null,
-			"createdBy": {
-				"id": null,
-				"name": "Mani, Vimal Raj"
-			},
-			"createdDate": "2024-01-23T08:06:39.707",
-			"phase": {
-				"id": null,
-				"name": "In Construction",
-				"color": "#d6a827",
-				"uniqueId": null,
-				"sequenceNo": null
-			},
-			"contentType": null,
-			"thumbnail": null,
-			"downloadUrl": null,
-			"fileId": "2700451e-b2d6-4f41-b636-2bf6b17b1fe3",
-			"driveId": null,
-			"objectId": 3371598
-		},
-		{
-			"sbsId": 2,
-			"name": "image (2).png",
-			"folderType": 0,
-			"type": "",
-			"description": null,
-			"createdBy": {
-				"id": null,
-				"name": "Mani, Vimal Raj"
-			},
-			"createdDate": "2024-01-19T05:38:02.487",
-			"phase": {
-				"id": null,
-				"name": "In Construction",
-				"color": "#d6a827",
-				"uniqueId": null,
-				"sequenceNo": null
-			},
-			"contentType": null,
-			"thumbnail": null,
-			"downloadUrl": null,
-			"fileId": "e46a0689-fac5-45de-98ab-dfbf4e746138",
-			"driveId": null,
-			"objectId": 3344290
-		}
-	],
-	"links": [
-    {
-        "sbsId": 3,
-        "name": "AR - 0023",
-        "stagename": "Report Prepared",
-        "stageColor": "59D800",
-        "type": 0,
-        "linkType": "Accident Report",
-        "description": "test",
-        "createdBy": {
-            "id": null,
-            "name": "MK, Sudeep"
-        },
-        "createdDate": "2024-01-30T12:45:54.72",
-        "objectId": 3410732,
-        "id": "179ac9c4-d9eb-47e0-8fc2-013c45f31837",
-        "thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f6222293d88145acbc2ce2de6df8d9b5",
-        "phase": {
-            "id": null,
+    "id": 6,
+    "uniqueid": "ec74ef88-3a86-41b6-b7ec-eeca74f55b8e",
+    "displayId": "SBS0006",
+    "name": "iOS Mobile",
+    "startDate": "2024-01-29T00:00:00",
+    "endDate": "2024-01-31T00:00:00",
+    "description": "iOS Mobile - 1 ",
+    "category": {
+        "id": 1156,
+        "name": "Foundation"
+    },
+    "phase": [
+        {
+            "id": 16,
             "name": "Pre Construction",
             "color": "#8BC34A",
             "uniqueId": null,
             "sequenceNo": null
         }
-    }
-]
+    ],
+    "trades": [
+        {
+            "id": 1,
+            "name": "Architectural"
+        },
+        {
+            "id": 70,
+            "name": "aDD "
+        }
+    ],
+    "supplementalInfoAppId": 0,
+    "supplementalInfoItemId": null,
+    "status": 0,
+    "createdBy": {
+        "id": 534917,
+        "name": ""
+    },
+    "createdDate": "2024-01-29T11:12:14.303",
+    "modifiedBy": {
+        "id": 613606,
+        "name": "Mani, Vimal Raj"
+    },
+    "modifiedDate": "2024-01-30T08:47:38.913",
+    "hasDifferentCategory": false,
+    "referencefiles": [
+        {
+            "sbsId": 6,
+            "name": "46f10cdd-4e67-41d6-be46-3b7c0e1c1483.mp4",
+            "folderType": 7,
+            "type": "Video",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "MK, Sudeep"
+            },
+            "createdDate": "2023-02-10T11:23:36.333",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "b57de70e-88c8-48b8-855d-01ac0741de20",
+            "driveId": null,
+            "objectId": 910097
+        },
+        {
+            "sbsId": 6,
+            "name": "111111",
+            "folderType": 3,
+            "type": "Sketch",
+            "description": "",
+            "createdBy": {
+                "id": null,
+                "name": "Rao, Sandeep"
+            },
+            "createdDate": "2023-08-02T00:57:13.973",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "5a7d70da-a899-4929-ba84-18ceb3889261",
+            "driveId": null,
+            "objectId": 1793625
+        },
+        {
+            "sbsId": 6,
+            "name": "C2.0.pdf",
+            "folderType": 21,
+            "type": "ThreeDReconstruction",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "chauhan, kirtika"
+            },
+            "createdDate": "2023-08-07T01:55:52.74",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "7b6c2764-4370-45cd-a4c9-24eaadbdbb8a",
+            "driveId": null,
+            "objectId": 1823588
+        },
+        {
+            "sbsId": 6,
+            "name": "Jithu_Padayadi_12-08-2023_1-42 PM.mp4",
+            "folderType": 17,
+            "type": "LiveNote",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "Padayadi, Jithu"
+            },
+            "createdDate": "2023-12-08T03:12:55.377",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "092f53d9-46fa-4cb5-a540-30b0a292b1ec",
+            "driveId": null,
+            "objectId": 2970836
+        },
+        {
+            "sbsId": 6,
+            "name": "2062-105900.jpg",
+            "folderType": 1,
+            "type": "Photo",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "MK, Sudeep"
+            },
+            "createdDate": "2022-12-28T00:29:19.42",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "e6e7d4f2-880b-483c-9293-330fd992dbef",
+            "driveId": null,
+            "objectId": 860533
+        },
+        {
+            "sbsId": 6,
+            "name": "LAG20_lite_v3",
+            "folderType": 20,
+            "type": "SpecBooks",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "MK, Sudeep"
+            },
+            "createdDate": "2024-01-19T13:34:44.61",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "62232ed9-921e-4821-ab2f-544b8efc179f",
+            "driveId": null,
+            "objectId": 3349852
+        },
+        {
+            "sbsId": 6,
+            "name": "Osha-9.jpg",
+            "folderType": 10,
+            "type": "UserSpace",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "MK, Sudeep"
+            },
+            "createdDate": "2023-09-18T07:01:59.253",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "9c853926-4633-440e-990b-675525c5eb9d",
+            "driveId": null,
+            "objectId": 2127239
+        },
+        {
+            "sbsId": 6,
+            "name": "11032022-121207.jpg",
+            "folderType": 6,
+            "type": "IQ360",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "MK, Sudeep"
+            },
+            "createdDate": "2022-11-03T02:42:40.337",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "5c10ced7-bf9b-4395-aa6d-7561a9bd107b",
+            "driveId": null,
+            "objectId": 785709
+        },
+        {
+            "sbsId": 6,
+            "name": "Caas Project Bid Package.pdf",
+            "folderType": 8,
+            "type": "File",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "Mani, Vimal Raj"
+            },
+            "createdDate": "2023-09-25T13:58:20.343",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "cdb548f4-464e-4fc1-99dd-8c1db5a84fdf",
+            "driveId": null,
+            "objectId": 2167852
+        },
+        {
+            "sbsId": 6,
+            "name": "Adhoc_12-08-2023 07-02 AM.mp4",
+            "folderType": 16,
+            "type": "LiveLinkMeetings",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "Deb, Nabarupam"
+            },
+            "createdDate": "2023-12-08T02:05:33.39",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "a2400a63-f64a-46e1-8c64-9e7e84fbfa6c",
+            "driveId": null,
+            "objectId": 2968672
+        },
+        {
+            "sbsId": 6,
+            "name": "M.102.pdf",
+            "folderType": 2,
+            "type": "Drawing",
+            "description": "",
+            "createdBy": {
+                "id": null,
+                "name": "MK, Sudeep"
+            },
+            "createdDate": "2023-12-14T03:17:14.55",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "b0a43d0f-11c3-41d9-c65c-b2578a0d3400",
+            "driveId": null,
+            "objectId": 3060065
+        },
+        {
+            "sbsId": 6,
+            "name": "Demo.rvt",
+            "folderType": 5,
+            "type": "BIM",
+            "description": null,
+            "createdBy": {
+                "id": null,
+                "name": "MK, Sudeep"
+            },
+            "createdDate": "2022-08-09T03:20:08.973",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "ea976174-b03c-48f5-9aa4-e0032c8cbdde",
+            "driveId": null,
+            "objectId": 594989
+        },
+        {
+            "sbsId": 6,
+            "name": "makshd",
+            "folderType": 4,
+            "type": "Schedule",
+            "description": "reysmb",
+            "createdBy": {
+                "id": null,
+                "name": "MK, Sudeep"
+            },
+            "createdDate": "2023-12-19T01:20:56.467",
+            "phase": {
+                "id": null,
+                "name": "Pre Construction",
+                "color": "#8BC34A",
+                "uniqueId": null,
+                "sequenceNo": null
+            },
+            "contentType": null,
+            "thumbnail": null,
+            "downloadUrl": null,
+            "fileId": "c10871a7-ec97-47a9-a94d-e218ff19710a",
+            "driveId": null,
+            "objectId": 3113969
+        }
+    ],
+    "links": []
 }
 
 

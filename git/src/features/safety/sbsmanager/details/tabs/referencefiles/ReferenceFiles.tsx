@@ -22,26 +22,6 @@ import { getSBSDetailsById, setSbsRefFileCount } from "features/safety/sbsmanage
 import _ from "lodash";
 import { findAndUpdateFiltersData } from "features/safety/sbsmanager/utils";
 import CustomTooltip from "features/budgetmanager/aggrid/customtooltip/CustomToolTip";
-const referenceData = [
-  {
-    id: 1,
-    name: "Ground Floor Plan",
-    description: "test",
-    createdby: "Andrew Peterson",
-    date: "2023-12-29T18:30:00Z",
-    type: "Drawing",
-    phase: "Post Construction",
-  },
-  {
-    id: 2,
-    name: "Ground Floor Plan",
-    description: "test",
-    createdby: "Andrew Simmons",
-    date: "2023-12-29T18:30:00Z",
-    type: "Sketch",
-    phase: "Operations & Maintance",
-  },
-];
 const filterOptions = [
   {
     text: "Phase",
@@ -109,7 +89,31 @@ const UploadFileMethod = (props: any) => {
     </>
   );
 };
+const FolderIcons = 	[
+  { text: "SafetyPolicies", iconCls: 'common-icon-SafetyPermit' },
+  { text: "AppFiles", iconCls: 'common-icon-smartapp' },
+  { text: "Certifications Status", iconCls: 'common-icon-certification' },
 
+  { text: "Quality", iconCls: 'common-icon-quality' },
+  { text: "ThreeDModels", iconCls: 'common-icon-D-models' },
+  { text: "Schedule", iconCls: 'common-icon-schedule-new' },
+
+  { text: "BIM", iconCls: 'common-icon-bim-new' },
+  { text: "Drawing", iconCls: 'common-icon-drawings' },
+  { text: "LiveLinkMeetings", iconCls: 'common-icon-livelink' },
+
+  { text: "File", iconCls: 'common-icon-files' },
+  { text: "IQ360", iconCls: 'common-icon-iq360' },
+  { text: "UserSpace", iconCls: 'common-icon-drive' },
+
+  { text: "SpecBooks", iconCls: 'common-icon-specbook' },
+  { text: "Photo", iconCls: 'common-icon-photo-new' },
+  { text: "LiveNote", iconCls: 'common-icon-livenote-std' },
+
+  { text: "ThreeDReconstruction", iconCls: 'common-icon-site-reconstruction' },
+  { text: "Sketch", iconCls: 'common-icon-sketch' },
+  { text: "Video", iconCls: 'common-icon-video' }
+];
 const ReferenceFiles =(props: any) => {
   const { selectedRec, ...rest } = props;
   const appInfo = useAppSelector(getServer);
@@ -133,7 +137,7 @@ const ReferenceFiles =(props: any) => {
 				...item,
         phaseValue : item.phase.name === null || item.phase.name === undefined || item.phase.name === '' ? 'NA' : item.phase.name,
         creationDateValue : item?.createdDate ? formatDate(item?.createdDate) : "",
-        folderType : (typeof item?.folderType === 'number') ? item?.folderType?.toString() : item?.folderType
+        type : item?.type === 0 ? 'NA' : item?.type
 			}));
       dispatch(setSbsRefFileCount(data.length))
       setModifiedList(data);
@@ -147,7 +151,9 @@ const ReferenceFiles =(props: any) => {
       setFilters(findAndUpdateFiltersData(filterOptions, detailsData?.referencefiles, "type"));
     }
   }, [detailsData?.referencefiles]);
-
+  const GetFileIcon = (text:any) => {
+        return FolderIcons.find((rec:any) => rec.text === text)?.iconCls;
+  };
   const headers = useMemo(
     () => [
       {
@@ -172,7 +178,7 @@ const ReferenceFiles =(props: any) => {
             params.data && (
               <div className={`app-items-cell-contentt`}>
                 <span className="ref-name-icon">
-                  <span className="common-icon-drawings"></span>
+                  <span className={params?.data?.type ? GetFileIcon(params?.data?.type) : "common-icon-drawings"}></span>
                 </span>
                 <span
                   className="ref-name-tag"
@@ -211,7 +217,7 @@ const ReferenceFiles =(props: any) => {
         field: "type",
       },
       {
-        headerName: "Phases",
+        headerName: "Phase",
         field: "phase.name",
         minWidth: 250,
         suppressMenu: true,

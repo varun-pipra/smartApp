@@ -92,6 +92,10 @@
             .budget-info-data-box {
                 display: flex;
                 align-items: center;
+                .common-icon-phase:before {
+                    font-size: 25px;
+                    color: #ed7532;
+                }
                 .associated-to {
                     padding-left: 2.3em;
                     .enter-value-cls {
@@ -228,6 +232,7 @@
         margin-right: 6px;
     }
 }
+
 #budget-catalog-tooltip .MuiTooltip-arrow {
-    color: #333333 !important; 
+    color: #333333 !important;
 }

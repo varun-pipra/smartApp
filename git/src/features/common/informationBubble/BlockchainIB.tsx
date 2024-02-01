@@ -6,7 +6,7 @@ const InformationIB = ({className}: {className?: string;}) => {
 		<div className='icon common-icon-Block-chain'></div>
 		<div className='text'>
 			<div>Awaiting Blockchain Authentication.</div>
-			<div>Status will be updated one authentication is successful.</div>
+			<div>Status will be updated once authentication is successful.</div>
 		</div>
 	</div>;
 };

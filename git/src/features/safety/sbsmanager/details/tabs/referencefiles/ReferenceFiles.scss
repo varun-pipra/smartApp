@@ -58,12 +58,18 @@
                  flex-direction: column;
                  margin-right: 8px;
                  color: #fff;
+                 span {
+                     &:before {
+                         font-size: 20px;
+                         color: #fff;
+                     }
+                 }
              }
              .ref-name-tag {
-                color: #059cdf;
-                width: calc(100% - 40px);
-                text-overflow: ellipsis;
-                overflow: hidden;
+                 color: #059cdf;
+                 width: calc(100% - 40px);
+                 text-overflow: ellipsis;
+                 overflow: hidden;
              }
          }
      }
