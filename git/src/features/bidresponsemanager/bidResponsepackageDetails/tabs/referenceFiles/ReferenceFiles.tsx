@@ -2,7 +2,7 @@ import "./Reference.scss";
 import { getServer ,  getSketchPageInfo} from "app/common/appInfoSlice";
 import { useAppDispatch, useAppSelector, useFilePreview } from "app/hooks";
 import { prepareFileList } from "features/bidmanager/stores/FilesSlice";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DocUploader from "sui-components/DocUploader/DocUploader";
 import { fileDownload } from "app/hooks";
 import SUIGrid from "sui-components/Grid/Grid";
@@ -12,6 +12,7 @@ import { getMarkupsByPageForSubmittals } from "features/field/specificationmanag
 import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
 import { modifyMarkupData } from "utilities/commonFunctions";
 import { setMarkupsByPageForBidResp } from "features/bidresponsemanager/stores/BidResponseManagerSlice";
+import _ from "lodash";
 
 export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   const appInfo = useAppSelector(getServer);
@@ -53,7 +54,12 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         };
         dispatch(setMarkupsByPageForBidResp(data))
         setBidRefernceagePUId(res[0]?.data?.pageUId)
-        sketchPageinfo.callback(data);
+        if (searchText.length) {
+					handelSearchChange();
+				} else{
+          sketchPageinfo.callback(data);
+        }
+        
       })
       .catch((error:any)=>{
         console.log('error',error);

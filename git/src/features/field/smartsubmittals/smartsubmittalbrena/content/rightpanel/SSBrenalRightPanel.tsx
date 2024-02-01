@@ -1,5 +1,5 @@
 import IQBrenaDocViewer from "components/iqbrenadocviewer/IQBrenaDocViewer";
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQSearchField from "components/iqsearchfield/IQSearchField";
 import "./SSBrenalRightPanel.scss";
@@ -10,6 +10,7 @@ import { getMarkupsByPageForSubmittals } from "features/field/specificationmanag
 import { setBrenaMarkups } from "features/field/smartsubmittals/stores/SmartSubmitalSlice";
 import { modifyMarkupData } from "utilities/commonFunctions";
 import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
+import _ from "lodash";
 
 const SSBrenalRightPanel = () => {
   const dispatch = useAppDispatch();
@@ -38,22 +39,22 @@ const SSBrenalRightPanel = () => {
     setSpecBookPagesData(specBookpages);
   }, [specBookpages]);
 
-  useEffect(() => {
-    if(search.length){
-      handelSearchChange()
-    }else{
-      console.log(brenaMarkups , 'markupsByPageForBidResp')
-      sketchPageinfo?.callback(brenaMarkups || {})
-    }
-  }, [search]);
+  const debounceOnSearch = useCallback(
+    _.debounce((search) => {
+      setSearch(search)
+       if(search.length){
+        handelSearchChange()
+      }else{
+        console.log(brenaMarkups , 'markupsByPageForBidResp')
+        sketchPageinfo?.callback(brenaMarkups || {})
+      }
+    }, 2000),
+    [search]
+  );
 
   useEffect(() => {
     if(sketchPageinfo){
-      if((search.length)){
-        handelSearchChange()
-      }else{
         getMarkupsPerpage();
-      }
     } 
   }, [sketchPageinfo]);
 
@@ -70,7 +71,11 @@ const SSBrenalRightPanel = () => {
           "extractionAreas": updatedRes
         };
         dispatch(setBrenaMarkups(data))
-        sketchPageinfo.callback(data);
+        if (search.length) {
+					handelSearchChange();
+				} else{
+					sketchPageinfo.callback(data);
+				}
       })
       .catch((error:any)=>{
         console.log('error',error);
@@ -104,7 +109,7 @@ const SSBrenalRightPanel = () => {
             showGroups={false}
             showFilter={false}
             filterHeader=""
-            onSearchChange={(searchText: any) => setSearch(searchText)}
+            onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
           />
         </div>
         <IQBrenaDocViewer

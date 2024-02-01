@@ -1,5 +1,5 @@
 import IQBrenaDocViewer from "components/iqbrenadocviewer/IQBrenaDocViewer";
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQSearchField from "components/iqsearchfield/IQSearchField";
 import "./SMBrenaRightPanel.scss";
@@ -10,6 +10,7 @@ import { getMarkupsByPageForSections } from "features/field/specificationmanager
 import { getSketchIns, getSketchPageInfo } from "app/common/appInfoSlice";
 import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
 import { modifyMarkupData } from "utilities/commonFunctions";
+import _ from "lodash";
 
 const SMBrenaRightPanel = (props: any) => {
   const dispatch = useAppDispatch();
@@ -23,7 +24,6 @@ const SMBrenaRightPanel = (props: any) => {
   );
   const docViewElementId = "canvasWrapper-right-panel";
 
-  const [showSearchpanel, setShowSearchpanel] = useState(false);
   const [search, setSearch] = useState("");
   const [specBookPagesData, setSpecBookPagesData] = useState("");
   const sketchInstance = useAppSelector(getSketchIns);
@@ -39,16 +39,22 @@ const SMBrenaRightPanel = (props: any) => {
     setSpecBookPagesData(specBookpages);
   }, [specBookpages]);
 
-  useEffect(() => {
-    if(search.length){
-      handelSearchChange()
-      docViewerins?.rerenderCanvas();
-      dispatch(setResizeBrenaPanel(true));
-    }else{
-      dispatch(setResizeBrenaPanel(false));
-      sketchPageinfo?.callback(smBrenaRaightPanelMarkups || {})
-    }
-  }, [search]);
+  const debounceOnSearch = useCallback(
+    _.debounce((search) => {
+      setSearch(search)
+      if(search.length){
+        handelSearchChange()
+        docViewerins?.rerenderCanvas();
+        dispatch(setResizeBrenaPanel(true));
+      }else{
+        dispatch(setResizeBrenaPanel(false));
+        sketchPageinfo?.callback(smBrenaRaightPanelMarkups || {})
+      }
+    }, 2000),
+    [search]
+  );
+
+  
 
   useEffect(() => {
     console.log("fileQueue smw rightpanel", uploadQueue);
@@ -58,16 +64,13 @@ const SMBrenaRightPanel = (props: any) => {
   }, [uploadQueue]);
 
   useEffect(() => {
+    console.log('uhjvdbujvhbejx')
     setDocViewerins(sketchInstance);
   }, [sketchInstance]);
 
   useEffect(() => {
     if(sketchPageinfo){
-      if((search.length)){
-        handelSearchChange()
-      }else{
         getMarkupsPerpage();
-      }
     }    
   }, [sketchPageinfo]);
 
@@ -85,7 +88,11 @@ const SMBrenaRightPanel = (props: any) => {
           "extractionAreas": updatedRes
         };
         dispatch(setSmBrenaRaightPanelMarkups(data))
-        sketchPageinfo.callback(data);
+        if (search.length) {
+					handelSearchChange();
+				} else{
+					sketchPageinfo.callback(data);
+				}
       })
       .catch((error:any)=>{
         console.log('error',error);
@@ -112,7 +119,7 @@ const SMBrenaRightPanel = (props: any) => {
     <div className="sm-right-panel">
       <div
         className="sm-doc-cont"
-        style={{ width: showSearchpanel ? "65%" : "100%" }}
+        style={{ width:"100%" }}
       >
         <div className="iq-brena-search-cont">
           <IQSearchField
@@ -120,7 +127,7 @@ const SMBrenaRightPanel = (props: any) => {
             showGroups={false}
             showFilter={false}
             filterHeader=""
-            onSearchChange={(searchText: any) => setSearch(searchText)}
+            onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
           />
         </div>
         <IQBrenaDocViewer

@@ -2,7 +2,7 @@ import "./SMReferencefiles.scss";
 import IQBrenaDocViewer from "components/iqbrenadocviewer/IQBrenaDocViewer";
 import IQSearchField from "components/iqsearchfield/IQSearchField";
 import SMBrenaSearch from "features/field/specificationmanager/smbrena/content/leftpanel/SMBrenaSearch";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getSpecBookPages } from "features/field/specificationmanager/stores/SpecificationManagerSlice";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { getSketchPageInfo } from "app/common/appInfoSlice";
@@ -10,6 +10,7 @@ import { getMarkupsByPageForSections } from "features/field/specificationmanager
 import { modifyMarkupData } from "utilities/commonFunctions";
 import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
 import { setSpecRefMarkups } from "features/field/smartsubmittals/stores/SmartSubmitalSlice";
+import _ from "lodash";
 
 
 const SMReferenceFiles = (props: any) => {
@@ -25,16 +26,29 @@ const SMReferenceFiles = (props: any) => {
   // const [showSearchpanel, setShowSearchpanel] = useState(false);
   const [search, setSearch] = useState("");
   const [specBookPagesData, setSpecBookPagesData] = useState("");
-  const [smRefPUId, setSmRefPUId] = useState();
+  const [smRefPUId, setSmRefPUId] = useState<any>('');
 
-  useEffect(() => {
-    if(search.length){
-      handelSearchChange()
-    }else{
-      console.log(specRefMarkups , 'markupsByPageForBidResp')
-      sketchPageinfo?.callback(specRefMarkups || {})
-    }
-  }, [search]);
+  // useEffect(() => {
+  //   if(search.length){
+  //     handelSearchChange()
+  //   }else{
+  //     console.log(specRefMarkups , 'markupsByPageForBidResp')
+  //     sketchPageinfo?.callback(specRefMarkups || {})
+  //   }
+  // }, [search]);
+
+  const debounceOnSearch = useCallback(
+    _.debounce((search,pageUID) => {
+      // setSearch(search)
+      if(search.length){
+        handelSearchChange(search,pageUID)
+      }else{
+        console.log(specRefMarkups , 'markupsByPageForBidResp')
+        sketchPageinfo?.callback(specRefMarkups || {})
+      }
+    }, 2000),
+    [search]
+  );
 
   useEffect(() => {
     if(selectedRec ?? false){
@@ -56,11 +70,8 @@ const SMReferenceFiles = (props: any) => {
 
   useEffect(() => {
     if(sketchPageinfo){
-      if((search.length)){
-        handelSearchChange()
-      }else{
+      
         getMarkupsPerpage();
-      }
     }    
   }, [sketchPageinfo]);
 
@@ -77,17 +88,22 @@ const SMReferenceFiles = (props: any) => {
           "extractionAreas": updatedRes
         };
         dispatch(setSpecRefMarkups(data))
-        sketchPageinfo.callback(data);
+        if (search.length) {
+					handelSearchChange(search,res[0]?.data?.pageUId);
+				} else{
+					sketchPageinfo.callback(data);
+				}
       })
       .catch((error:any)=>{
         console.log('error',error);
       })
   }
 
-  const handelSearchChange =() =>{
+  const handelSearchChange =(searchText:any, pageId?:any) =>{
     console.log('selectedRecsData', selectedRecsData, selectedRec);
+    debugger;
     if(smRefPUId && selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id) {
-      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id}`
+      let params = `searchText=${searchText}&pageId=${pageId}&contentId=${selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id}`
       getTextOccurences(params).then((resp:any)=>{
         console.log(modifyMarkupData(resp.data),specRefMarkups , 'markupsByPageForBidResp')
         let updatedRes = [...modifyMarkupData(resp.data) , ...specRefMarkups.extractionAreas]
@@ -119,7 +135,7 @@ const SMReferenceFiles = (props: any) => {
           showGroups={false}
           showFilter={false}
           filterHeader=""
-          onSearchChange={(searchText: any) => setSearch(searchText)}
+          onSearchChange={(searchText: any) => debounceOnSearch(searchText,smRefPUId)}
         />
       </div>
       <IQBrenaDocViewer

@@ -151,11 +151,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
 
 	useEffect(() => {
 		if (sketchPageinfo) {
-			if (searchText.length) {
-				handelSearchChange();
-			} else {
-				getMarkupsPerpage();
-			}
+			getMarkupsPerpage();
 		}
 	}, [sketchPageinfo]);
 
@@ -198,7 +194,11 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
 				};
 				dispatch(setMarkupsByPageForBid(data))
 				setBidRefernceagePUId(res[0]?.data?.pageUId);
-				sketchPageinfo.callback(data);
+				if (searchText.length) {
+					handelSearchChange();
+				} else{
+					sketchPageinfo.callback(data);
+				}
 			})
 			.catch((error: any) => {
 				console.log("error", error);

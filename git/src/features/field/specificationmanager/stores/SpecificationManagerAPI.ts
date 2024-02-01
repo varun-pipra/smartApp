@@ -213,7 +213,21 @@ export const getMarkupsByPageForSections = async (payload: any) => {
 		const responseData = await response.json();
 		return responseData || [];
 	}
-	return markupsData;
+	return [
+		{
+			"coordinates": {
+				"x1": 112.41467837244272,
+				"x2": 900.7678851485252,
+				"y1": 189.9068190678954,
+				"y2": 206.57803423702717
+			},
+			"stroke": "#efb239",
+			"data": {
+				"value": "05 5100 METAL STAIRS WITH HANDRAILS – REVISE ENTIRE SECTION",
+				"pageUId": "f5b050d1-21a6-4d7f-9fda-b86eae62a3b7"
+			}
+		}
+	];
 };
 
 export const getMarkupsByPageForSubmitals = async (payload: any) => {

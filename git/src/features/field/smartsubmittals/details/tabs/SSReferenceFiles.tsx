@@ -2,7 +2,7 @@ import "./SSReferenceFiles.scss";
 import IQBrenaDocViewer from "components/iqbrenadocviewer/IQBrenaDocViewer";
 import IQSearchField from "components/iqsearchfield/IQSearchField";
 import SMBrenaSearch from "features/field/specificationmanager/smbrena/content/leftpanel/SMBrenaSearch";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getSpecBookPages } from "features/field/specificationmanager/stores/SpecificationManagerSlice";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { getSketchPageInfo } from "app/common/appInfoSlice";
@@ -13,6 +13,7 @@ import SSMittalLeftForm from "../../content/toolbar/sslefttoolbar/SSAddForm";
 import { getSubmitalById, setRightPanelUpdated, setSSRefMarkups } from "../../stores/SmartSubmitalSlice";
 import { getTextOccurences } from "features/bidresponsemanager/stores/BidResponseManagerAPI";
 import { modifyMarkupData } from "utilities/commonFunctions";
+import _ from "lodash";
 
 const SSReferenceFiles = (props: any) => {
   const { selectedRec, ...rest } = props;
@@ -37,14 +38,28 @@ const SSReferenceFiles = (props: any) => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    if(search.length){
-      handelSearchChange()
-    }else{
+  // useEffect(() => {
+  //   if(search.length){
+  //     handelSearchChange()
+  //   }else{
+  //     console.log(ssRefMarkups , 'markupsByPageForBidResp')
+  //     sketchPageinfo?.callback(ssRefMarkups || {})
+  //   }
+  // }, [search]);
+
+  const debounceOnSearch = useCallback(
+    _.debounce((search) => {
+      setSearch(search)
       console.log(ssRefMarkups , 'markupsByPageForBidResp')
-      sketchPageinfo?.callback(ssRefMarkups || {})
-    }
-  }, [search]);
+      if(search.length){
+        handelSearchChange()
+      }else{
+        console.log(ssRefMarkups , 'markupsByPageForBidResp')
+        sketchPageinfo?.callback(ssRefMarkups || {})
+      }
+    }, 2000),
+    [search]
+  );
 
   useEffect(() => {
     if (ssRightPanelData?.specBook?.id) {
@@ -84,7 +99,11 @@ const SSReferenceFiles = (props: any) => {
           extractionAreas: updatedRes,
         };
         dispatch(setSSRefMarkups(data))
+        if (search.length) {
+					handelSearchChange();
+				} else{
         sketchPageinfo.callback(data);
+				}
       })
       .catch((error: any) => {
         console.log("error", error);
@@ -163,7 +182,7 @@ const SSReferenceFiles = (props: any) => {
           showGroups={false}
           showFilter={false}
           filterHeader=""
-          onSearchChange={(searchText: any) => setSearch(searchText)}
+          onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
         />
       </div>
       <IQBrenaDocViewer
