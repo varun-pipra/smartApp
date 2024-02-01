@@ -44,10 +44,10 @@ const SMBrenaRightPanel = (props: any) => {
   }, [specBookpages]);
 
   const debounceOnSearch = useCallback(
-    _.debounce((search) => {
+    _.debounce((search,pageId) => {
       setSearch(search);
       if (search.length) {
-        handelSearchChange();
+        handelSearchChange(search,pageId);
         docViewerins?.rerenderCanvas();
         dispatch(setResizeBrenaPanel(true));
       } else {
@@ -92,7 +92,7 @@ const SMBrenaRightPanel = (props: any) => {
         };
         dispatch(setSmBrenaRaightPanelMarkups(data));
         if (search.length) {
-          handelSearchChange();
+          handelSearchChange(search,res[0]?.data?.pageUId);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -102,9 +102,9 @@ const SMBrenaRightPanel = (props: any) => {
       });
   };
 
-  const handelSearchChange = () => {
+  const handelSearchChange = (searchText:any,pageId:any) => {
     if (smRefPUId && fileQueue?.[0]?.id) {
-      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${fileQueue?.[0]?.id}`;
+      let params = `searchText=${searchText}&pageId=${pageId}&contentId=${fileQueue?.[0]?.id}`;
       getTextOccurences(params).then((resp: any) => {
         console.log(
           modifyMarkupData(resp.data),
@@ -113,7 +113,7 @@ const SMBrenaRightPanel = (props: any) => {
         );
         let updatedRes = [
           ...modifyMarkupData(resp.data),
-          ...smBrenaRaightPanelMarkups.extractionAreas,
+          ...smBrenaRaightPanelMarkups.extractionAreas || [],
         ];
         let data = {
           extractionAreas: updatedRes,
@@ -133,7 +133,7 @@ const SMBrenaRightPanel = (props: any) => {
             showGroups={false}
             showFilter={false}
             filterHeader=""
-            onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
+            onSearchChange={(searchText: any) => debounceOnSearch(searchText, smRefPUId)}
           />
         </div>
         <IQBrenaDocViewer

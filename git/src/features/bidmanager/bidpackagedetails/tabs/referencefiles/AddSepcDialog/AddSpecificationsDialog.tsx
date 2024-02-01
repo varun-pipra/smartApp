@@ -178,11 +178,12 @@ const AddSpecificationsDialog = (props: any) => {
 				cursor: 'pointer'
 			},
 			cellRenderer: (params: any) => {
+				console.log(
+					params.data.specBook.icon
+					)
 				return (
 					<img
-						src={
-							"https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media"
-						}
+						src={params.data.specBook.icon}
 						className="thumbnailUrl-cls"
 					/>
 				);

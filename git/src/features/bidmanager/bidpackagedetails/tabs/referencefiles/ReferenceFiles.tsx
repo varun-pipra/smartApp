@@ -164,19 +164,20 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
 
   useEffect(() => {
     if (searchText.length) {
-      handelSearchChange();
+      handelSearchChange(searchText, bidRefernceagePUId);
     } else {
       console.log(markupsByPageForBid, "markupsByPageForBidResp");
       sketchPageinfo?.callback(markupsByPageForBid || {});
     }
   }, [searchText]);
 
-  const handelSearchChange = () => {
+  const handelSearchChange = (search:any,pageId:any) => {
+    console.log(search,pageId)
     if (
-      (bidRefernceagePUId && sepcSelectedRecord?.specBook.id) ||
+      (pageId && sepcSelectedRecord?.specBook.id) ||
       sepcSelectedRecord?.specBookId
     ) {
-      let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${
+      let params = `searchText=${search}&pageId=${pageId}&contentId=${
         sepcSelectedRecord?.specBook.id || sepcSelectedRecord?.specBookId
       }`;
       getTextOccurences(params).then((resp: any) => {
@@ -207,10 +208,11 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
         let data = {
           extractionAreas: updatedRes,
         };
+        console.log('pageId',res[0]?.data?.pageUId)
         dispatch(setMarkupsByPageForBid(data));
         setBidRefernceagePUId(res[0]?.data?.pageUId);
         if (searchText.length) {
-          handelSearchChange();
+          handelSearchChange(searchText, res[0]?.data?.pageUId);
         } else {
           sketchPageinfo.callback(data);
         }

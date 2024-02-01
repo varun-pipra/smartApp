@@ -42,10 +42,10 @@ const SSBrenalRightPanel = () => {
   }, [specBookpages]);
 
   const debounceOnSearch = useCallback(
-    _.debounce((search) => {
+    _.debounce((search,pageId) => {
       setSearch(search);
       if (search.length) {
-        handelSearchChange();
+        handelSearchChange(search,pageId);
       } else {
         console.log(brenaMarkups, "markupsByPageForBidResp");
         sketchPageinfo?.callback(brenaMarkups || {});
@@ -76,7 +76,7 @@ const SSBrenalRightPanel = () => {
         };
         dispatch(setBrenaMarkups(data));
         if (search.length) {
-          handelSearchChange();
+          handelSearchChange(search,res[0]?.data?.pageUId);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -86,9 +86,9 @@ const SSBrenalRightPanel = () => {
       });
   };
 
-  const handelSearchChange = () => {
+  const handelSearchChange = (searchText:any,pageId:any) => {
     if (smRefPUId && selectedRecord?.specBook?.id) {
-      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${selectedRecord?.specBook?.id}`;
+      let params = `searchText=${searchText}&pageId=${pageId}&contentId=${selectedRecord?.specBook?.id}`;
       getTextOccurences(params).then((resp: any) => {
         console.log(
           modifyMarkupData(resp.data),
@@ -97,7 +97,7 @@ const SSBrenalRightPanel = () => {
         );
         let updatedRes = [
           ...modifyMarkupData(resp.data),
-          ...brenaMarkups.extractionAreas,
+          ...brenaMarkups.extractionAreas || [],
         ];
         let data = {
           extractionAreas: updatedRes,
@@ -117,7 +117,7 @@ const SSBrenalRightPanel = () => {
             showGroups={false}
             showFilter={false}
             filterHeader=""
-            onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
+            onSearchChange={(searchText: any) => debounceOnSearch(searchText, smRefPUId)}
           />
         </div>
         <IQBrenaDocViewer

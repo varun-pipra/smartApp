@@ -30,10 +30,11 @@ const SMReferenceFiles = (props: any) => {
   const [smRefPUId, setSmRefPUId] = useState();
 
   const debounceOnSearch = useCallback(
-    _.debounce((search) => {
+    _.debounce((search,pageId) => {
       setSearch(search);
       if (search.length) {
-        handelSearchChange();
+        console.log(smRefPUId)
+        handelSearchChange(search,pageId);
       } else {
         console.log(specRefMarkups, "markupsByPageForBidResp");
         sketchPageinfo?.callback(specRefMarkups || {});
@@ -74,6 +75,7 @@ const SMReferenceFiles = (props: any) => {
     };
     getMarkupsByPageForSections(payload)
       .then((res: any) => {
+        console.log(res[0]?.data?.pageUId)
         setSmRefPUId(res[0]?.data?.pageUId);
         let updatedRes = res.map((item: any) => {
           return { ...item, locked: true };
@@ -83,7 +85,7 @@ const SMReferenceFiles = (props: any) => {
         };
         dispatch(setSpecRefMarkups(data));
         if (search.length) {
-          handelSearchChange();
+          handelSearchChange(search,res[0]?.data?.pageUId);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -93,13 +95,13 @@ const SMReferenceFiles = (props: any) => {
       });
   };
 
-  const handelSearchChange = () => {
-    console.log("selectedRecsData", selectedRecsData, selectedRec);
+  const handelSearchChange = (searchText:any,pageId:any) => {
+    console.log("selectedRecsData", searchText, pageId);
     if (
-      (smRefPUId && selectedRecsData?.[0]?.data?.specBook?.id) ||
+      (pageId && selectedRecsData?.[0]?.data?.specBook?.id) ||
       selectedRec?.specBook?.id
     ) {
-      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${
+      let params = `searchText=${searchText}&pageId=${pageId}&contentId=${
         selectedRecsData?.[0]?.data?.specBook?.id || selectedRec?.specBook?.id
       }`;
       getTextOccurences(params).then((resp: any) => {
@@ -110,7 +112,7 @@ const SMReferenceFiles = (props: any) => {
         );
         let updatedRes = [
           ...modifyMarkupData(resp.data),
-          ...specRefMarkups.extractionAreas,
+          ...specRefMarkups?.extractionAreas || [],
         ];
         let data = {
           extractionAreas: updatedRes,
@@ -139,7 +141,7 @@ const SMReferenceFiles = (props: any) => {
           showGroups={false}
           showFilter={false}
           filterHeader=""
-          onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
+          onSearchChange={(searchText: any) => debounceOnSearch(searchText,smRefPUId)}
         />
       </div>
       <IQBrenaDocViewer

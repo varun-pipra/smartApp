@@ -36,7 +36,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
   useEffect(() => {
     if (sketchPageinfo) {
       if (searchText.length) {
-        handelSearchChange();
+        handelSearchChange(searchText,bidRefernceagePUId);
       } else {
         getMarkupsPerpage();
       }
@@ -59,7 +59,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         dispatch(setMarkupsByPageForBidResp(data));
         setBidRefernceagePUId(res[0]?.data?.pageUId);
         if (searchText.length) {
-          handelSearchChange();
+        handelSearchChange(searchText,res[0]?.data?.pageUId);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -200,17 +200,17 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
 
   useEffect(() => {
     if (searchText.length) {
-      handelSearchChange();
+      handelSearchChange(searchText,bidRefernceagePUId);
     } else {
       console.log(markupsByPageForBidResp, "markupsByPageForBidResp");
       sketchPageinfo?.callback(markupsByPageForBidResp || {});
     }
   }, [searchText]);
 
-  const handelSearchChange = () => {
+  const handelSearchChange = (search:any,pageId:any) => {
     console.log(sepcSelectedRecord, "sepcSelectedRecord");
     if (bidRefernceagePUId && sepcSelectedRecord?.specBookId) {
-      let params = `searchText=${searchText}&pageId=${bidRefernceagePUId}&contentId=${sepcSelectedRecord?.specBookId}`;
+      let params = `searchText=${search}&pageId=${pageId}&contentId=${sepcSelectedRecord?.specBookId}`;
       getTextOccurences(params).then((resp: any) => {
         console.log(
           modifyMarkupData(resp.data),
