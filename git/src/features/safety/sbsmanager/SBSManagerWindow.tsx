@@ -775,6 +775,7 @@ const SBSManagerWindow = (props: any) => {
 				showActions={false}
 				dialogClose={true}
 				helpIcon={true}
+				helpModule={'SBS'}
 				iconTitleContent={
 					<div style={{ display: "flex", alignItems: "center" }}>
 						<div>Manage Phases</div>

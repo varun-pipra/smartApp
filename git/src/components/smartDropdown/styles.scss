@@ -77,6 +77,12 @@
     }
 }
 
+.MuiList-root {
+    .MuiListSubheader-root {
+        color: #333;
+    }
+}
+
 .column-header-extra-cells-cls {
     display: flex;
     justify-content: space-between;

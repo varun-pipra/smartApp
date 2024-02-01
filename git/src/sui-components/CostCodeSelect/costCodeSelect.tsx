@@ -43,6 +43,7 @@ export interface CostCodeSelectProps {
 	onFiltersUpdate?:any;
 	defaultFilters?:any;
 	hiddenOptions?: any;
+	disabled?:boolean;
 }
 const useStyles: any = makeStyles((theme: any) =>
 	createStyles({
@@ -62,7 +63,7 @@ const useStyles: any = makeStyles((theme: any) =>
 	})
 );
 
-export default function CostCodeSelect({ label, options, onChange, required, startIcon, selectedValue, checkedColor, showFilter, sx, isFullWidth = true, tooltipShow = true, variant = "standard", Placeholder = 'Select', displayEmpty = false, outSideOfGrid = true, filteringValue, showFilterInSearch = false, filteroptions, onFiltersUpdate, defaultFilters=[], hiddenOptions=[] }: CostCodeSelectProps) {
+export default function CostCodeSelect({ label, options, onChange, required, startIcon, selectedValue, checkedColor, showFilter, sx, isFullWidth = true, tooltipShow = true, variant = "standard", Placeholder = 'Select', displayEmpty = false, outSideOfGrid = true, filteringValue, showFilterInSearch = false, filteroptions, onFiltersUpdate, defaultFilters = [], hiddenOptions = [], disabled= false }: CostCodeSelectProps) {
 	const classes = useStyles();
 	const [items, setItems] = useState(options);
 	const [value, setValue] = useState<any>(selectedValue);
@@ -301,7 +302,8 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
               // 	display: 'none'
               // }
             }}
-            displayEmpty={displayEmpty}
+			displayEmpty={displayEmpty}
+			disabled={disabled}
           >
             <Box p={1} className="search-wrapper">
               <TextField

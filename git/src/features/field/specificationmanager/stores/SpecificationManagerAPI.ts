@@ -213,21 +213,7 @@ export const getMarkupsByPageForSections = async (payload: any) => {
 		const responseData = await response.json();
 		return responseData || [];
 	}
-	 return [
-		{
-			"coordinates": {
-				"x1": 113.13993595540524,
-				"x2": 408.3190977573395,
-				"y1": 166.71209026128054,
-				"y2": 181.9336302727461
-			},
-			"stroke": "#efb239",
-			"data": {
-				"value": "ALTERNATES",
-				"pageUId": Math.random()
-			}
-		}
-	];;
+	return markupsData;
 };
 
 export const getMarkupsByPageForSubmitals = async (payload: any) => {
@@ -261,21 +247,7 @@ export const getMarkupsByPageForSubmittals = async (payload: any) => {
 		const responseData = await response.json();
 		return responseData || [];
 	}
-	return [
-		{
-			"coordinates": {
-				"x1": 113.13993595540524,
-				"x2": 408.3190977573395,
-				"y1": 166.71209026128054,
-				"y2": 181.9336302727461
-			},
-			"stroke": "#efb239",
-			"data": {
-				"value": "ALTERNATES",
-				"pageUId": Math.random()
-			}
-		}
-	];
+	return markupsData;
 };
 
 export const validateSheetName = async (payload: any) => {

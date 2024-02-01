@@ -112,12 +112,6 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 		else { q = quantity }
 		const amount = decimalmultiply(c, q);
 		setBudgetCost(amountFormatWithOutSymbol(amount));
-		console.log('dddd',{
-			unitOfMeasure: unitOfMeasure,
-			quantity: q,
-			cost: c,
-			amount: amount
-		})
 		if (onSubmit) onSubmit({
 			unitOfMeasure: unitOfMeasure,
 			quantity: q,

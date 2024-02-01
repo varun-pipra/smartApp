@@ -591,7 +591,9 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							</IQTooltip>
 						) : null}
 					</div>
+					
 					<div className="budget-info-data-box">
+					
 						{/* <CostCodeDropdown
               label=""
               required={true}
@@ -618,7 +620,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							hiddenOptions={costCodeHiddenOptions}
 							onChange={(value: any) => handleDropdownChange(value, 'costCode')}
 							// required={true}
-							startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
+							//startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
+							startIcon={<span className="common-icon-Budgetcalculator"></span>}
 							checkedColor={'#0590cd'}
 							showFilter={false}
 							selectedValue={formData?.division && formData?.costCode ? (isCostCodeExistsInOptions ? (formData?.division + '|' + formData?.costCode) : formData?.costCode) : ''}
@@ -887,7 +890,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					<div className="budget-info-label">Curve</div>
 					<div className="budget-info-data-box">
 						{isReadOnly ? formData?.curve : <SmartDropDown
-							LeftIcon={<div className="budget-info-icon budget-Curve"></div>}
+							LeftIcon={<span className="common-icon-Curve"></span>}
 							options={curveList}
 							outSideOfGrid={false}
 							isSearchField={false}
@@ -1496,7 +1499,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				</span>
 			</div>
 
-			{tabSelectedValue == "budget-details" ? (
+			{tabSelectedValue == "budget-details" && !isReadOnly ? (
 				<Fab
 					sx={{
 						position: "absolute",

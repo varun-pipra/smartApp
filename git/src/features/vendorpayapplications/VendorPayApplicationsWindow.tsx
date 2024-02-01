@@ -390,7 +390,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 				const showBCIcon = (vpaBlockchain && blockchainStates.indexOf(bcStatus) === -1);
 				return (
 					<>
-						{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '2%', marginTop: '12px', fontSize: '1.25em'}}></span>}
+						{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '2%', marginTop: '8px', fontSize: '1.6em'}}></span>}
 						<span
 							className="ag-costcodegroup"
 							style={{

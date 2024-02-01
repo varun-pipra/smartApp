@@ -178,9 +178,6 @@ const AddSpecificationsDialog = (props: any) => {
 				cursor: 'pointer'
 			},
 			cellRenderer: (params: any) => {
-				console.log(
-					params.data.specBook.icon
-					)
 				return (
 					<img
 						src={params.data.specBook.icon}

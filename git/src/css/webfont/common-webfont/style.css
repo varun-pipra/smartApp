@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?o99nbm');
-  src:  url('fonts/common-webfont.eot?o99nbm#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?o99nbm') format('truetype'),
-    url('fonts/common-webfont.woff?o99nbm') format('woff'),
-    url('fonts/common-webfont.svg?o99nbm#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?5z8c86');
+  src:  url('fonts/common-webfont.eot?5z8c86#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?5z8c86') format('truetype'),
+    url('fonts/common-webfont.woff?5z8c86') format('woff'),
+    url('fonts/common-webfont.svg?5z8c86#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-supplemental-info:before {
+  content: "\ec7b";
+}
+.common-icon-lock:before {
+  content: "\ec7c";
+}
+.common-icon-unlock .path1:before {
+  content: "\ec7d";
+  color: rgb(5, 156, 223);
+}
+.common-icon-unlock .path2:before {
+  content: "\ec7e";
+  margin-left: -0.900390625em;
+  color: rgb(255, 255, 255);
+}
 .common-icon-D-models:before {
   content: "\ec7a";
 }

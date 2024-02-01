@@ -41,11 +41,11 @@ export interface headerprops {
 const LineItemDetails = (props: headerprops) => {
 	const dispatch = useAppDispatch();
 	const ref = React.useRef<HTMLDivElement | null>(null);
-	const { connectors } = useAppSelector((state) => state.gridData);	
+	const { connectors } = useAppSelector((state) => state.gridData);
 	const { selectedRow } = useAppSelector(state => state.rightPanel);
 	const { transactionsData } = useAppSelector(state => state.transactionsData);
 	const { forecastData } = useAppSelector(state => state.forecast);
-	const { lineItemDescription } = useAppSelector(state => state?.tableColumns);
+	const { lineItemDescription, isBudgetLocked } = useAppSelector(state => state?.tableColumns);
 	const appInfo = useAppSelector(getServer);
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const { openCostForm, openBudgetTransferForm } = useAppSelector(state => state.rightPanel);
@@ -140,7 +140,7 @@ const LineItemDetails = (props: headerprops) => {
 				});
 			});
 			participantCtrl.addEventListener('printbuttonclick', function (e: any) {
-				console.log('printbuttonclick',e.event);
+				console.log('printbuttonclick', e.event);
 				postMessage({
 					event: 'openitemlevelreport',
 					body: {
@@ -338,16 +338,16 @@ const LineItemDetails = (props: headerprops) => {
 				</div> :
 					<div className='kpi-vertical-container'>
 						<div className='lid-details-container'>
-							<AddDescription value={!lineItemDescription ? '' : lineItemDescription} showicon={false} />
+							<AddDescription value={!lineItemDescription ? '' : lineItemDescription} showicon={false} disabled={isBudgetLocked}/>
 							<span className='budgetid-label grey-font'>Budget ID:</span>
-							<span className='grey-font budgetid-content'> 
+							<span className='grey-font budgetid-content'>
 								<span>{selectedRow?.name}</span>
 								{connectors?.length && <img
-														className="sapnumber"
-														src={connectors?.[0]?.primaryIconUrl}
-														alt="connector Image"
-													/>}
-								{connectors?.length && <span className='sapnumber'>{selectedRow?.id?.substring(0,10)?.toUpperCase()}</span>}
+									className="sapnumber"
+									src={connectors?.[0]?.primaryIconUrl}
+									alt="connector Image"
+								/>}
+								{connectors?.length && <span className='sapnumber'>{selectedRow?.id?.substring(0, 10)?.toUpperCase()}</span>}
 							</span>
 							<span className='last-modified-label grey-font'>Last Modified:</span><span className='grey-font'> {stringToUSDateTime2(selectedRow.modifiedDate)} by {selectedRow.modifiedBy?.displayName}</span>
 						</div>

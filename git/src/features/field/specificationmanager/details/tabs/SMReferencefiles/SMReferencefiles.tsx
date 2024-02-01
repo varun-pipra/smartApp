@@ -33,7 +33,6 @@ const SMReferenceFiles = (props: any) => {
     _.debounce((search,pageId) => {
       setSearch(search);
       if (search.length) {
-        console.log(smRefPUId)
         handelSearchChange(search,pageId);
       } else {
         console.log(specRefMarkups, "markupsByPageForBidResp");
@@ -75,7 +74,6 @@ const SMReferenceFiles = (props: any) => {
     };
     getMarkupsByPageForSections(payload)
       .then((res: any) => {
-        console.log(res[0]?.data?.pageUId)
         setSmRefPUId(res[0]?.data?.pageUId);
         let updatedRes = res.map((item: any) => {
           return { ...item, locked: true };
@@ -96,7 +94,7 @@ const SMReferenceFiles = (props: any) => {
   };
 
   const handelSearchChange = (searchText:any,pageId:any) => {
-    console.log("selectedRecsData", searchText, pageId);
+    console.log("selectedRecsData", selectedRecsData, selectedRec);
     if (
       (pageId && selectedRecsData?.[0]?.data?.specBook?.id) ||
       selectedRec?.specBook?.id

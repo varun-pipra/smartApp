@@ -147,6 +147,7 @@ const ReferenceFiles =(props: any) => {
     } else if((detailsData?.referencefiles?.length === 0 ?? false)){
       setModifiedList([]);
       setGridData([]);
+      dispatch(setSbsRefFileCount(detailsData?.referencefiles?.length));
       setFilters(findAndUpdateFiltersData(filterOptions, detailsData?.referencefiles, "phase", true, "name"));
       setFilters(findAndUpdateFiltersData(filterOptions, detailsData?.referencefiles, "type"));
     }

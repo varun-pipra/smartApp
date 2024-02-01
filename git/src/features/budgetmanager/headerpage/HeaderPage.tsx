@@ -212,6 +212,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 					filteroptions={divisionCostCodeFilterData.length > 0 ? divisionCostCodeFilterData : []}
 					onFiltersUpdate={(filters:any) => setDefaultFilters(filters)}
 					defaultFilters={defaultFilters}
+					disabled={isBudgetLocked}
 				/>
 
 			</MuiGrid>
@@ -233,6 +234,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 					displayEmpty={true}
 					Placeholder={'Select'}
 					ignoreSorting={true}
+					disabled={isBudgetLocked}
 				/>
 			</MuiGrid>
 			<MuiGrid item xl={1.5} lg={1.5} md={1.5} sm={6} xs={6} sx={{ color: '#333333!important' }} className='datepicker-Section'>
@@ -250,6 +252,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 							style={{ background: '#f7f7f7' }}
 						/>
 					}
+					disabled={isBudgetLocked}
 				/>
 			</MuiGrid>
 			<MuiGrid item xl={1.5} lg={1.5} md={1.5} sm={6} xs={6} sx={{ color: '#333333!important' }} className='datepicker-Section'>
@@ -267,7 +270,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 							style={{ background: '#f7f7f7' }}
 						/>
 					}
-
+					disabled={isBudgetLocked}
 				/>
 			</MuiGrid>
 			<MuiGrid item xl={1.5} lg={1.5} md={1.5} sm={6} xs={6}>
@@ -285,6 +288,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 					displayEmpty={true}
 					Placeholder={'Select'}
 					ignoreSorting={true}
+					disabled={isBudgetLocked}
 				/>
 			</MuiGrid>
 			<MuiGrid item xl={1.5} lg={1.5} md={1.5} sm={6} xs={6} sx={{ color: '#333333!important' }}>
@@ -296,6 +300,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 					onSubmit={(value) => handleOnChange(value, 'originalBudgetAmount')}
 					onBlur={(value) => handleOnChange(value, 'originalBudgetAmount')}
 					readOnly={false}
+					disabled={isBudgetLocked}
 				/>
 
 			</MuiGrid>

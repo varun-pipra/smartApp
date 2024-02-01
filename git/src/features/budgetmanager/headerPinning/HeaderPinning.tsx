@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {IconButton, Stack} from '@mui/material';
+import { IconButton, Stack } from '@mui/material';
 import {
 	KeyboardArrowLeft,
 	KeyboardArrowRight
@@ -8,14 +8,14 @@ import {
 	DynamicPage,
 	DynamicPageHeader
 } from '@ui5/webcomponents-react';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
 
-import {fetchSettings, fetchSettingsCostCodeAndType, fetchdefaultdrodown, fetchSecurity, fetchCostCodeDropdownList, fetchDivisionCostCodeFilterList, fetchCostTypeDropdownList} from '../operations/settingsSlice';
-import {fetchConnectors, fetchGridData} from '../operations/gridSlice';
+import { fetchSettings, fetchSettingsCostCodeAndType, fetchdefaultdrodown, fetchSecurity, fetchCostCodeDropdownList, fetchDivisionCostCodeFilterList, fetchCostTypeDropdownList } from '../operations/settingsSlice';
+import { fetchConnectors, fetchGridData } from '../operations/gridSlice';
 
-import {fetchVendorData} from '../operations/vendorInfoSlice';
-import {isLocalhost,postMessage} from 'app/utils';
-import {fetchRollupTaskData, setOpenBudgetTransferForm, setOpenCostForm} from 'features/budgetmanager/operations/rightPanelSlice';
+import { fetchVendorData } from '../operations/vendorInfoSlice';
+import { isLocalhost, postMessage } from 'app/utils';
+import { fetchRollupTaskData, setOpenBudgetTransferForm, setOpenCostForm } from 'features/budgetmanager/operations/rightPanelSlice';
 import {
 	showRightPannel, setRightPannel, setLineItemDescription, setShowSettingPopup2, getShowSettingPopup2, getTemplateForBudget
 } from '../operations/tableColumnsSlice';
@@ -26,26 +26,26 @@ import TableGrid from '../aggrid/AgGrid';
 import TableGridDemo from '../aggrid/AgGridNew';
 import BudgetManagerToolbar from '../BudgetManagerToolbar';
 import './HeaderPinning.scss';
-import {fetchUserImage, setSelectedRowData, setSelectedRowIndex} from '../operations/rightPanelSlice';
-import {getServer, getAppWindowMaximize, getFullView, getCostCodeDivisionList, setCostCodeDivisionList, setCostTypeList} from 'app/common/appInfoSlice';
-import {updateBudgetLineItem} from '../operations/gridAPI';
+import { fetchUserImage, setSelectedRowData, setSelectedRowIndex } from '../operations/rightPanelSlice';
+import { getServer, getAppWindowMaximize, getFullView, getCostCodeDivisionList, setCostCodeDivisionList, setCostTypeList } from 'app/common/appInfoSlice';
+import { updateBudgetLineItem } from '../operations/gridAPI';
 import Toast from 'components/toast/Toast';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import convertDateToDisplayFormat from 'utilities/commonFunctions';
-import {AddDescription} from './AddDescription';
+import { AddDescription } from './AddDescription';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import BMSettings from '../settings/BMSettings';
-import {useTranslation} from 'react-i18next';
-import {fetchViewBuilderList} from '../operations/viewBuilderSlice';
-import {settingcostcodetypeData} from 'data/SettingsCosttypeData';
+import { useTranslation } from 'react-i18next';
+import { fetchViewBuilderList } from '../operations/viewBuilderSlice';
+import { settingcostcodetypeData } from 'data/SettingsCosttypeData';
 import { getPhaseDropdownValues, getSBSGridList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
 
 const HeaderPinning = (props: any) => {
-	const {t, i18n} = useTranslation();
+	const { t, i18n } = useTranslation();
 	const dispatch = useAppDispatch();
-	const {demo, gridData, originalGridApiData} = useAppSelector((state: any) => state.gridData);
-	const {selectedRow, selectedRowIndexData, userImage} = useAppSelector(state => state.rightPanel);
-	const {lineItemDescription} = useAppSelector(state => state.tableColumns);
+	const { demo, gridData, originalGridApiData } = useAppSelector((state: any) => state.gridData);
+	const { selectedRow, selectedRowIndexData, userImage } = useAppSelector(state => state.rightPanel);
+	const { lineItemDescription } = useAppSelector(state => state.tableColumns);
 	const totalGridRows = gridData.length;
 	const [rowIndex, setRowIndex] = React.useState<number>(0);
 	const [toastMessage, setToastMessage] = React.useState<string>('');
@@ -56,23 +56,23 @@ const HeaderPinning = (props: any) => {
 	const appInfo = useAppSelector(getServer);
 	const costCodeDivisionOpts = useAppSelector(getCostCodeDivisionList);
 	const [budgetDetailsContent, setBudgetDetailsContent] = React.useState<any>('');
-	const [showToast, setShowToast] = React.useState<any>({displayToast: false, message: ''});
+	const [showToast, setShowToast] = React.useState<any>({ displayToast: false, message: '' });
 	const [lineItems, setLineItems] = React.useState(gridData);
 	const [updateData, setUpdateData] = React.useState<any>(null);
 	const [selectedLng, setSelectedLng] = React.useState<any>(i18n.language || 'en');
 	const openSettingPopup2 = useAppSelector(getShowSettingPopup2);
 	const budgetManagerMaximized = useAppSelector(getAppWindowMaximize);
 	const isFullView = useAppSelector(getFullView);
-	const {settingsData, CostCodeAndTypeData, openAlert, divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData} = useAppSelector(state => state.settings);
+	const { settingsData, CostCodeAndTypeData, openAlert, divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData } = useAppSelector(state => state.settings);
 	const [localhost] = React.useState(isLocalhost);
 	const realtimeRef = React.useRef(false);
 	const dataSetRef = React.useRef(false);
 	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);
 
 	const languageList = [
-		{label: 'English', value: 'en'},
-		{label: 'French', value: 'fr'},
-		{label: 'Spanish', value: 'es'}
+		{ label: 'English', value: 'en' },
+		{ label: 'French', value: 'fr' },
+		{ label: 'Spanish', value: 'es' }
 	];
 
 	React.useEffect(() => {
@@ -86,15 +86,15 @@ const HeaderPinning = (props: any) => {
 		dispatch(fetchConnectors(appInfo));
 		dispatch(getPhaseDropdownValues());
 		dispatch(getSBSGridList());
-		dispatch(fetchRollupTaskData({ 'appInfo': appInfo }));	
+		dispatch(fetchRollupTaskData({ 'appInfo': appInfo }));
 		// dispatch(getTemplateForBudget(appInfo))	;
-		return () => {};
+		return () => { };
 	}, []);
 
 	const getDivisionCostCodeValues = (data: any, id: any) => {
-		if(data.length > 0) {
+		if (data.length > 0) {
 			const values = data.map((obj: any) => {
-				if(obj.id === id) {
+				if (obj.id === id) {
 					return obj.listValues;
 				}
 			});
@@ -107,8 +107,8 @@ const HeaderPinning = (props: any) => {
 
 	React.useEffect(() => {
 		// console.log('settings in header pinning', CostCodeAndTypeData)
-		dispatch(fetchDivisionCostCodeFilterList({appInfo: appInfo, costCodeName: settingsData.divisionCostCode}));
-		dispatch(fetchCostCodeDropdownList({appInfo: appInfo, name: settingsData.divisionCostCode}));
+		dispatch(fetchDivisionCostCodeFilterList({ appInfo: appInfo, costCodeName: settingsData.divisionCostCode }));
+		dispatch(fetchCostCodeDropdownList({ appInfo: appInfo, name: settingsData.divisionCostCode }));
 		// dispatch(fetchCostTypeDropdownList({appInfo: appInfo, name: settingsData.divisionCostCode}));
 		// console.log("List divisionCostCodeFilterData",divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData)
 
@@ -128,12 +128,12 @@ const HeaderPinning = (props: any) => {
 	};
 
 	React.useEffect(() => {
-		const data = dispatch(fetchUserImage({'appInfo': appInfo, 'userId': selectedRow.modifiedBy ? selectedRow.modifiedBy.globalId : ''}));
+		const data = dispatch(fetchUserImage({ 'appInfo': appInfo, 'userId': selectedRow.modifiedBy ? selectedRow.modifiedBy.globalId : '' }));
 		dispatch(setLineItemDescription(selectedRow.description));
 	}, [selectedRow]);
 
 	React.useEffect(() => {
-		if(rightPannel && selectedRow?.id === updateData?.id) {
+		if (rightPannel && selectedRow?.id === updateData?.id) {
 			dispatch(setSelectedRowData(updateData));
 		}
 	}, [updateData]);
@@ -167,7 +167,7 @@ const HeaderPinning = (props: any) => {
 		let recordFound: boolean = false;
 		let isGrpExpanded: boolean = false;
 		api.forEachNode(function (node: any) {
-			if(selectedRowIndexData.rowIndex - 1 === node.rowIndex && node.data !== undefined) {
+			if (selectedRowIndexData.rowIndex - 1 === node.rowIndex && node.data !== undefined) {
 				node.setSelected(true, true);
 				dispatch(setSelectedRowData(node.data));
 				dispatch(setSelectedRowIndex(node));
@@ -175,7 +175,7 @@ const HeaderPinning = (props: any) => {
 			}
 		});
 		api.forEachNode(function (node: any) {
-			if(recordFound === false && selectedRowIndexData.rowIndex - 2 === node.rowIndex) {
+			if (recordFound === false && selectedRowIndexData.rowIndex - 2 === node.rowIndex) {
 				node.setExpanded(true);
 				isGrpExpanded = true;
 				setTimeout(() => {
@@ -186,7 +186,7 @@ const HeaderPinning = (props: any) => {
 				}, 1000);
 			}
 		});
-		if(recordFound === false && isGrpExpanded === false) {
+		if (recordFound === false && isGrpExpanded === false) {
 			const rowNode = api.getDisplayedRowAtIndex(selectedRowIndexData.rowIndex - 3);
 			rowNode.setSelected(true, true);
 			dispatch(setSelectedRowData(rowNode.data));
@@ -200,7 +200,7 @@ const HeaderPinning = (props: any) => {
 	const handleRightArrow = () => {
 		let recordFound: boolean = false;
 		api.forEachNode(function (node: any) {
-			if(selectedRowIndexData.rowIndex + 1 === node.rowIndex) {
+			if (selectedRowIndexData.rowIndex + 1 === node.rowIndex) {
 				node.setSelected(true, true);
 				dispatch(setSelectedRowData(node.data));
 				dispatch(setSelectedRowIndex(node));
@@ -208,7 +208,7 @@ const HeaderPinning = (props: any) => {
 			}
 		});
 		api.forEachNode(function (node: any) {
-			if(recordFound === false && selectedRowIndexData.rowIndex + 2 === node.rowIndex) {
+			if (recordFound === false && selectedRowIndexData.rowIndex + 2 === node.rowIndex) {
 				node.setExpanded(true);
 				setTimeout(() => {
 					const rowNode = api.getDisplayedRowAtIndex(selectedRowIndexData.rowIndex + 3);
@@ -224,7 +224,7 @@ const HeaderPinning = (props: any) => {
 
 	const handleOnLineItemAdded = (value: any) => {
 		// console.log('ddddddddddddd', value);
-		setShowToast({...value});
+		setShowToast({ ...value });
 	};
 
 	const budgetdetails = (data: any) => {
@@ -313,14 +313,14 @@ const HeaderPinning = (props: any) => {
 	return (
 		<div className='header-pinning'>
 			<DynamicPage className='dynamic-page-root'
-				headerTitle={<div className='' style={{background: '#fff'}}></div>}
+				headerTitle={<div className='' style={{ background: '#fff' }}></div>}
 				showHideHeaderButton={true}
-				onToggleHeaderContent={function noRefCheck() {}}
+				onToggleHeaderContent={function noRefCheck() { }}
 				headerContent={
 					<DynamicPageHeader>
 						<div className='title-description-container'>
 							<span className='title-text'>{t('BM_create_new_budget_line_item')}</span>
-							<AddDescription value={rightPannel ? '' : lineItemDescription} />
+							<AddDescription value={rightPannel ? '' : lineItemDescription} disabled={isBudgetLocked} />
 							<p className='right-spacer'></p>
 							{isBudgetLocked && <div className='bubble-box budget-locked-box'>
 								<div className='icon common-icon-info-white'></div>
@@ -358,7 +358,7 @@ const HeaderPinning = (props: any) => {
 
 			{rightPannel && (
 				<SUIDrawer
-					PaperProps={{style: {position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a'}}}
+					PaperProps={{ style: { position: 'absolute', minWidth: '60em', width: '65vw', borderRadius: '0.5em', boxShadow: '-2px 1px 8px #0000001a' } }}
 					anchor='right'
 					variant='permanent'
 					elevation={8}

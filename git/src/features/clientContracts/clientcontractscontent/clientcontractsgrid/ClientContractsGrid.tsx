@@ -209,7 +209,7 @@ const ClientContractsGrid = (props: any) => {
 					const bcStatus = params.data?.blockChainStatus;
 					const showBCIcon = (clientContractBlockchain && blockchainStates.indexOf(bcStatus) === -1);
 					return <>
-						{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '7%', marginTop: '12px', fontSize: '1.25em'}}></span>}
+						{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '8%', marginTop: '8px', fontSize: '1.6em'}}></span>}
 						{params?.data?.hasChangeOrder && <IQTooltip
 							title={'Billing Schedule of the Contract to be updated due to recent approval of the Change Event Request.'}
 							placement={'bottom'}

@@ -179,7 +179,7 @@ const Links = () => {
 		}, {
 			headerName: 'Stage',
 			field: 'stagename',
-			minWidth: 150,
+			minWidth: 200,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
 				return (
@@ -366,7 +366,7 @@ const Links = () => {
 					headers={headers}
 					data={gridData}
 					rowSelected={(e: any) => rowSelected(e)}
-					getRowId={(record: any) => record.data.id}
+					getRowId={(record: any) => record?.data?.objectId}
 				/>
 			</div>
 		</div>

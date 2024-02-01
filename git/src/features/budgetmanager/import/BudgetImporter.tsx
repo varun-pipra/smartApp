@@ -10,20 +10,14 @@ import { useAppDispatch, useAppSelector } from "app/hooks";
 import { getTemplateForBudget } from "../operations/tableColumnsSlice";
 import { getServer } from "app/common/appInfoSlice";
 import React from "react";
+import { fetchBudgetManagerDownloadTemplete } from "../operations/tableColumnsAPI";
 
 const BudgetImporter = (props: any) => {
 	const dispatch = useAppDispatch();	
 	const appInfo = useAppSelector(getServer);
 	const ref = React.useRef<HTMLAnchorElement | null>(null);	
 
-	const onDownloadTemplate = () => {
-		dispatch(getTemplateForBudget(appInfo))?.then((data:any) => {
-			console.log("downloadTemplateUrl", data)
-			const url = URL.createObjectURL(new Blob([data]));
-			ref.current?.click();
-			URL.revokeObjectURL(url);
-		});
-	}
+
 	return <IQBaseWindow
 		open={true}
 		title='Budget Importer'
@@ -86,7 +80,9 @@ const BudgetImporter = (props: any) => {
 						className="download-template-btn"
 						color="orange"
 						variant="outlined"
-						onClick={() => onDownloadTemplate()}
+						onClick={() => 								
+								window.open(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/budgets/${appInfo?.uniqueId}/import/downloadtemplate?sessionId=${appInfo?.sessionId}`, "_blank")
+						}
 					>
 						DOWNLOAD TEMPLATE
 					</IQButton>

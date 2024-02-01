@@ -42,7 +42,7 @@ const SSBrenalRightPanel = () => {
   }, [specBookpages]);
 
   const debounceOnSearch = useCallback(
-    _.debounce((search,pageId) => {
+    _.debounce((search, pageId) => {
       setSearch(search);
       if (search.length) {
         handelSearchChange(search,pageId);

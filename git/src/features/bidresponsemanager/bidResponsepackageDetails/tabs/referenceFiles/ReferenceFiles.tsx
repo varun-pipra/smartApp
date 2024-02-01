@@ -59,7 +59,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         dispatch(setMarkupsByPageForBidResp(data));
         setBidRefernceagePUId(res[0]?.data?.pageUId);
         if (searchText.length) {
-        handelSearchChange(searchText,res[0]?.data?.pageUId);
+          handelSearchChange(searchText, res[0]?.data?.pageUId);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -159,9 +159,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
       cellRenderer: (params: any) => {
         return (
           <img
-            src={
-              "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media"
-            }
+            src={params.data.specBookThumbnailUrl}
             className="thumbnailUrl-cls"
           />
         );

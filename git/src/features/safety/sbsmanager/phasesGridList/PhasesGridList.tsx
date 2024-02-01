@@ -256,6 +256,7 @@ const PhasesGridList = () => {
       const newValue = event.newValue;
       const updateData = {"id": data.id,"name": newValue,"color": data.color,"uniqueId": data.uniqueId,"value":newValue,"sequenceNo": data.sequenceNo,"label": newValue};
       event.node.setData(updateData);
+      setSaveEnable(false);
     },[]);
   return (
     <>

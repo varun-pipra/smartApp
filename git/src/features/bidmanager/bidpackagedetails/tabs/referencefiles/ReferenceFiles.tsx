@@ -112,9 +112,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       cellRenderer: (params: any) => {
         return (
           <img
-            src={
-              "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2F2023_8%2F0d3c3fc1ff62c1a29890817ac4ecb38c%2FLarge.png?generation=1692893852476902&alt=media"
-            }
+            src={params.data.specBookThumbnailUrl}
             className="thumbnailUrl-cls"
           />
         );
@@ -172,7 +170,6 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
   }, [searchText]);
 
   const handelSearchChange = (search:any,pageId:any) => {
-    console.log(search,pageId)
     if (
       (pageId && sepcSelectedRecord?.specBook.id) ||
       sepcSelectedRecord?.specBookId
@@ -208,9 +205,9 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
         let data = {
           extractionAreas: updatedRes,
         };
-        console.log('pageId',res[0]?.data?.pageUId)
         dispatch(setMarkupsByPageForBid(data));
         setBidRefernceagePUId(res[0]?.data?.pageUId);
+        console.log('pageId',res[0]?.data?.pageUId)
         if (searchText.length) {
           handelSearchChange(searchText, res[0]?.data?.pageUId);
         } else {

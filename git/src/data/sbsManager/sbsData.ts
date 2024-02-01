@@ -1196,7 +1196,56 @@ export const getGridDataById = {
             "objectId": 3113969
         }
     ],
-    "links": []
+    "links": [
+		{
+			"sbsId": 3,
+			"name": "AR - 0023",
+			"stagename": "Report Prepared",
+			"stageColor": "59D800",
+			"type": 0,
+			"linkType": "Accident Report",
+			"description": "test",
+			"createdBy": {
+				"id": null,
+				"name": "MK, Sudeep"
+			},
+			"createdDate": "2024-01-30T12:45:54.72",
+			"objectId": 3410732,
+			"id": "179ac9c4-d9eb-47e0-8fc2-013c45f31837",
+			"thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f6222293d88145acbc2ce2de6df8d9b5",
+			"phase": {
+				"id": null,
+				"name": "Pre Construction",
+				"color": "#8BC34A",
+				"uniqueId": null,
+				"sequenceNo": null
+			}
+		},
+		{
+			"sbsId": 3,
+			"name": "Add to Budget -18",
+			"stagename": "Awaiting Scheduling",
+			"stageColor": "0D47A1",
+			"type": 0,
+			"linkType": "Add to Budget",
+			"description": null,
+			"createdBy": {
+				"id": null,
+				"name": "MK, Sudeep"
+			},
+			"createdDate": "2024-01-30T15:06:44.383",
+			"objectId": 3316697,
+			"id": "ee73a9de-9111-43e3-94ec-0244465c8c5c",
+			"thumbnail": "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2Fiqthumbnail%2Fad97b41bafda4175810ce4cdee2d5dac?generation=1692177008752842&alt=media",
+			"phase": {
+				"id": null,
+				"name": "Pre Construction",
+				"color": "#8BC34A",
+				"uniqueId": null,
+				"sequenceNo": null
+			}
+		}
+	]
 }
 
 

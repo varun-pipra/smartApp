@@ -111,7 +111,7 @@ const SBSCategoryRightPanel = (props:any) => {
           </Typography>
            <ListItem className="generalSettings-listitem" onClick={() => onCategoryItemClick('supplemental')}>
             <ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
-								<span className="common-icon-orgconsole-project-supplemental-info"></span>
+								<span className="common-icon-supplemental-info"></span>
 							</ListItemIcon>
               <ListItemText
                 primary="Supplemental info Configuration"

@@ -17,8 +17,9 @@ import { makeStyles, createStyles } from '@mui/styles';
 export interface AddDescriptionProps {
 	value?: string;
 	showicon?: boolean;
+	disabled?:boolean;
 }
-export const AddDescription = ({ value, showicon = true }: AddDescriptionProps) => {
+export const AddDescription = ({ value, showicon = true,disabled=false }: AddDescriptionProps) => {
 	const dispatch = useAppDispatch();
 	const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 	const { showDescriptionModal, lineItemDescription } = useAppSelector(state => state.tableColumns);
@@ -122,6 +123,7 @@ export const AddDescription = ({ value, showicon = true }: AddDescriptionProps) 
 					onBlur={onBlurDescription}
 					style={{ width: rightPannel ? '25em' : '96.8%', marginTop: '-4px' }}
 					className='description'
+					disabled={disabled}
 				/>
 			</IQTooltip>
 		</div>

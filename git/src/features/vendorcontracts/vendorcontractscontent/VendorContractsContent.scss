@@ -160,14 +160,17 @@
         .ag-pinned-left-cols-container {
             .ag-row {
                 .ag-cell {
-                    padding-left: 34px;
+                    padding-left: 42px;
+                    .ag-row-group-leaf-indent {
+                        margin-left: 8px;
+                    }
                 }
             }
         }
         .ag-pinned-left-header {
             .ag-header-row {
                 .ag-header-cell {
-                    padding-left: 42px;
+                    padding-left: 50px;
                 }
             }
         }

@@ -44,7 +44,7 @@ const SMBrenaRightPanel = (props: any) => {
   }, [specBookpages]);
 
   const debounceOnSearch = useCallback(
-    _.debounce((search,pageId) => {
+    _.debounce((search, pageId) => {
       setSearch(search);
       if (search.length) {
         handelSearchChange(search,pageId);
@@ -103,7 +103,7 @@ const SMBrenaRightPanel = (props: any) => {
   };
 
   const handelSearchChange = (searchText:any,pageId:any) => {
-    if (smRefPUId && fileQueue?.[0]?.id) {
+    if (pageId && fileQueue?.[0]?.id) {
       let params = `searchText=${searchText}&pageId=${pageId}&contentId=${fileQueue?.[0]?.id}`;
       getTextOccurences(params).then((resp: any) => {
         console.log(

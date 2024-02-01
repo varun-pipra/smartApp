@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQSearchField from "components/iqsearchfield/IQSearchField";
 import IQBrenaDocViewer from "components/iqbrenadocviewer/IQBrenaDocViewer";
-import SUIDialog from "sui-components/Dialog/Dialog";
+import { getSketchIns } from "app/common/appInfoSlice";
 
 import "./SpecDocViewer.scss";
 import SMBrenaSearch from "features/field/specificationmanager/smbrena/content/leftpanel/SMBrenaSearch";
@@ -19,6 +19,7 @@ const SpecDocViewer = (props: any) => {
   } = props;
   const docViewElementId = "sbs-spec-canvasWrapper";
   const [search, setSearch] = useState("");
+  const sketchInstance = useAppSelector(getSketchIns);
 
   const debounceOnSearch = useCallback(
     _.debounce((searchText) => {
@@ -26,6 +27,13 @@ const SpecDocViewer = (props: any) => {
     }, 2000),
     [search]
   );
+
+  const test = ()=>{
+    console.log('test',sketchInstance);
+    setTimeout(()=>{
+      sketchInstance.rerenderCanvas();
+    },2000)
+  }
 
   return (
     <div>
@@ -40,7 +48,8 @@ const SpecDocViewer = (props: any) => {
         custom={{
           closable: true,
           resizable: true,
-          title: <><span style={{color: "#333333",fontSize: "1.12rem",fontWeight: "bolder",fontFamily: "Roboto-regular",padding: "0px !important"}}>{selectedRecord.number + ": " + selectedRecord.title}</span></>
+          title: <><span style={{color: "#333333",fontSize: "1.12rem",fontWeight: "bolder",fontFamily: "Roboto-regular",padding: "0px !important"}}>{selectedRecord.number + ": " + selectedRecord.title}</span></>,
+          onMaximize:test
         }}
       >
         <div className="spec-doc-viewer">

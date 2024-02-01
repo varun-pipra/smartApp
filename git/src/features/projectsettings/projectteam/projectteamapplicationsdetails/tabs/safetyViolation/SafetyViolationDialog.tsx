@@ -22,6 +22,7 @@ export interface SafetyViolationDialogProps extends DialogProps {
 	showActions?: boolean;
 	dialogClose?: boolean;
 	helpIcon?: boolean;
+	helpModule?:string;
 	width?: any;
 	positiveActionLabel?: string;
 	negativeActionLabel?: string;
@@ -66,7 +67,17 @@ const SafetyViolationDialog = (props: SafetyViolationDialogProps) => {
 	};
 	const handleHelp =() => {
 		console.log('violationExpungeHelp postMessage');
-		postMessage({ event: 'projectteam', body: { evt: 'violationExpungeHelp', record: {}}});
+		if(props?.helpModule === 'SBS'){
+			postMessage({
+				"event": "sbs",
+				"body": {
+					"evt": "managephasehelp",
+					"record": {}
+				}
+			})
+		}else {
+			postMessage({ event: 'projectteam', body: { evt: 'violationExpungeHelp', record: {}}});
+		}		
 		if(props?.onHelpOpen) props?.onHelpOpen(true);
 	};
 	useEffect(() => {

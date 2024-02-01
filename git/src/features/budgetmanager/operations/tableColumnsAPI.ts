@@ -67,18 +67,21 @@ export const lockAndUnlockBudget = async (appInfo: any, body: any, callback?: an
 	callback && callback(data);
 };
 
-export const fetchBudgetManagerDownloadTemplete = async (appInfo: any) => {
+export const fetchBudgetManagerDownloadTemplete = async (appInfo: any, callback?:any) => {
 	// This is the ,mock api which contains same data of original api. 
 	// Once if we can read the project id and session token you can replace this with original api
 	let response;
 	if (!isLocalhost) {
 		response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/budgets/${appInfo?.uniqueId}/import/downloadtemplate?sessionId=${appInfo?.sessionId}`);
-	
-		if (!response.ok) {
-			const message = `API Request Error (${moduleName}): ${response.status}`;
-			throw new Error(message);
-		}
-		const responseData = await response.json();
 	}
-	else return 'https://file-examples.com/wp-content/storage/2017/02/file_example_XLSX_1000.xlsx';
+	
+	else {
+		response = await fetch('https://5ba09a787d0a4ea1bc0f0c1420152d1c.smartappbeta.com/enterprisedesktop/api/v2/budgets/6e83792a-3e66-49d6-9442-c6a1e918b48f/import/downloadtemplate?sessionId=9e139005c10e4a6fa6b0f517007ed11a', {headers: {'Access-Control-Allow-Origin': '*'}});
+	}
+	if (!response.ok) {
+		const message = `API Request Error (${moduleName}): ${response.status}`;
+		throw new Error(message);
+	}
+	const data = await response;
+	callback && callback(data);
 };
