@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?5z8c86');
-  src:  url('fonts/common-webfont.eot?5z8c86#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?5z8c86') format('truetype'),
-    url('fonts/common-webfont.woff?5z8c86') format('woff'),
-    url('fonts/common-webfont.svg?5z8c86#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?vkkci7');
+  src:  url('fonts/common-webfont.eot?vkkci7#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?vkkci7') format('truetype'),
+    url('fonts/common-webfont.woff?vkkci7') format('woff'),
+    url('fonts/common-webfont.svg?vkkci7#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,20 +25,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-share-new:before {
+  content: "\ec7e";
+}
 .common-icon-supplemental-info:before {
   content: "\ec7b";
 }
 .common-icon-lock:before {
   content: "\ec7c";
 }
-.common-icon-unlock .path1:before {
+.common-icon-unlock:before {
   content: "\ec7d";
-  color: rgb(5, 156, 223);
-}
-.common-icon-unlock .path2:before {
-  content: "\ec7e";
-  margin-left: -0.900390625em;
-  color: rgb(255, 255, 255);
 }
 .common-icon-D-models:before {
   content: "\ec7a";
@@ -844,7 +841,6 @@
 }
 .common-icon-worker-application:before {
   content: "\eb86";
-  color: #666;
 }
 .common-icon-ascending:before {
   content: "\eb7f";
@@ -1868,11 +1864,9 @@
 }
 .common-icon-Select-Your-state:before {
   content: "\ea76";
-  color: #666;
 }
 .common-icon-SmartApp-BLE-RTLS:before {
   content: "\ea77";
-  color: #666;
 }
 .common-icon-Smartapp:before {
   content: "\ea78";
@@ -1979,9 +1973,6 @@
 }
 .common-icon-location-newtag:before {
   content: "\ea3e";
-}
-.common-icon-message-newtag:before {
-  content: "\ea3f";
 }
 .common-icon-note-newtag:before {
   content: "\ea40";

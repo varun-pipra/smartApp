@@ -17,7 +17,9 @@
             .MuiListItemIcon-root {
                 min-width: 30px;
                 .common-icon-new-smart-item,
-                .common-icon-existing-smart-items {
+				.common-icon-existing-smart-items,
+				.common-icon-rule-based-linking,
+				.common-icon-add-external-url {
                     font-size: 22px;
                     color: #666;
                 }

@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?5z8c86');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?5z8c86#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?5z8c86') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?5z8c86') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?5z8c86##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?vkkci7');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?vkkci7#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?vkkci7') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?vkkci7') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?vkkci7##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -27,6 +27,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-share-new {
+  &:before {
+    content: $common-icon-share-new; 
+  }
+}
 .common-icon-supplemental-info {
   &:before {
     content: $common-icon-supplemental-info; 
@@ -37,17 +42,9 @@
     content: $common-icon-lock; 
   }
 }
-.common-icon-unlock .path1 {
+.common-icon-unlock {
   &:before {
-    content: $common-icon-unlock-path1;  
-    color: rgb(5, 156, 223);
-  }
-}
-.common-icon-unlock .path2 {
-  &:before {
-    content: $common-icon-unlock-path2;  
-    margin-left: -0.900390625em;  
-    color: rgb(255, 255, 255);
+    content: $common-icon-unlock; 
   }
 }
 .common-icon-D-models {
@@ -1356,8 +1353,7 @@
 }
 .common-icon-worker-application {
   &:before {
-    content: $common-icon-worker-application;     
-    color: #666;
+    content: $common-icon-worker-application; 
   }
 }
 .common-icon-ascending {
@@ -2974,14 +2970,12 @@
 }
 .common-icon-Select-Your-state {
   &:before {
-    content: $common-icon-Select-Your-state;     
-    color: #666;
+    content: $common-icon-Select-Your-state; 
   }
 }
 .common-icon-SmartApp-BLE-RTLS {
   &:before {
-    content: $common-icon-SmartApp-BLE-RTLS;     
-    color: #666;
+    content: $common-icon-SmartApp-BLE-RTLS; 
   }
 }
 .common-icon-Smartapp {
@@ -3146,11 +3140,6 @@
 .common-icon-location-newtag {
   &:before {
     content: $common-icon-location-newtag; 
-  }
-}
-.common-icon-message-newtag {
-  &:before {
-    content: $common-icon-message-newtag; 
   }
 }
 .common-icon-note-newtag {

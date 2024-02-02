@@ -33,7 +33,7 @@ type IQGridWindowProps = IQBaseWindowProps & {
 };
 
 const IQGridWindow = ({ className, content = {}, companyInfo = false, lidCondition, manualLIDOpen, onDetailClose, showPinned = false, getLIDOpen = () => { },
-	titleMessage, presenceProps, gridRef = useRef<AgGridReact>(), handleMainWindowTab = () => { }, detailGridNavigation = false, currentRowSelectionData = null, ...props }: IQGridWindowProps) => {
+	titleMessage, presenceProps, righPanelPresenceProps, gridRef = useRef<AgGridReact>(), handleMainWindowTab = () => { }, detailGridNavigation = false, currentRowSelectionData = null, ...props }: IQGridWindowProps) => {
 	const [openLID, setOpenLID] = useState(false);
 	const [details, setDetails] = useState(undefined);
 	const [navFlag, setNavFlag] = useState(0);
@@ -216,10 +216,10 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 							iframeEventData={props?.iframeEventData}
 							setIframeEventData={props?.setIframeEventData}
 							presenceProps={{
-								showStreams: true,
-								showLiveSupport: presenceProps?.presenceId,
-								showPrint: presenceProps?.presenceId,
-								presenceId: (presenceProps?.presenceId && presenceProps?.presenceId + '-lid') || ''
+								showStreams: righPanelPresenceProps?.showStreams,
+								showLiveSupport: righPanelPresenceProps?.showLiveSupport,
+								showPrint: righPanelPresenceProps?.showPrint,
+								presenceId: (righPanelPresenceProps?.presenceId && righPanelPresenceProps?.presenceId + '-lid') || ''
 							}}
 							navigationPages={gridNavigationCount}
 						/> : ''}
@@ -284,10 +284,10 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 				iframeEventData={props?.iframeEventData}
 				setIframeEventData={props?.setIframeEventData}
 				presenceProps={{
-					showStreams: true,
-					showLiveSupport: presenceProps?.presenceId,
-					showPrint: presenceProps?.presenceId,
-					presenceId: (presenceProps?.presenceId && presenceProps?.presenceId + '-lid') || ''
+					showStreams: righPanelPresenceProps?.showStreams,
+					showLiveSupport: righPanelPresenceProps?.showLiveSupport,
+					showPrint: righPanelPresenceProps?.showPrint,
+					presenceId: (righPanelPresenceProps?.presenceId && righPanelPresenceProps?.presenceId + '-lid') || ''
 				}}
 			/> : ''}
 		</BaseWindowBody> : <IQObjectPage

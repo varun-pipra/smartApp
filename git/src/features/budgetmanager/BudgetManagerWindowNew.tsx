@@ -121,6 +121,12 @@ const BudgetManagerWindowNew = (props: any) => {
 			showChat: false,
 			hideProfile: false,
 		}}
+		righPanelPresenceProps={{
+			presenceId: "budgetmanager-presence",
+			showLiveSupport: true,
+			showStreams: true,
+			showPrint: true,
+		}}
 		tools={{
 			closable: true,
 			resizable: true,

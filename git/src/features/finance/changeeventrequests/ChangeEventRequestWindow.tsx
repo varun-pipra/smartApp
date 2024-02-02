@@ -518,6 +518,12 @@ const ChangeEventRequestsWindow = (props: any) => {
 				showChat: false,
 				hideProfile: false,
 			}}
+			righPanelPresenceProps={{
+				presenceId: "changeeventrequest-presence",
+				showLiveSupport: true,
+				showStreams: true,
+				showPrint: true,
+			}}
 			tools={{
 				closable: true,
 				resizable: true,

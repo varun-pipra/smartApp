@@ -342,12 +342,12 @@ const LineItemDetails = (props: headerprops) => {
 							<span className='budgetid-label grey-font'>Budget ID:</span>
 							<span className='grey-font budgetid-content'>
 								<span>{selectedRow?.name}</span>
-								{connectors?.length && <img
+								{connectors?.length ? <img
 									className="sapnumber"
 									src={connectors?.[0]?.primaryIconUrl}
 									alt="connector Image"
-								/>}
-								{connectors?.length && <span className='sapnumber'>{selectedRow?.id?.substring(0, 10)?.toUpperCase()}</span>}
+								/> : ''}
+								{connectors?.length ? <span className='sapnumber'>{selectedRow?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 							</span>
 							<span className='last-modified-label grey-font'>Last Modified:</span><span className='grey-font'> {stringToUSDateTime2(selectedRow.modifiedDate)} by {selectedRow.modifiedBy?.displayName}</span>
 						</div>

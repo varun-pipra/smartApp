@@ -675,7 +675,13 @@ const SpecificationManagerWindow = (props: any) => {
           showComments: true,
           showChat: false,
           hideProfile: false,
-        }}
+		}}
+		righPanelPresenceProps={{
+			presenceId: "spec-manager-presence",
+			showLiveSupport: true,
+			showStreams: true,
+			showPrint:true,
+		}}
         tools={{
           closable: true,
           resizable: true,

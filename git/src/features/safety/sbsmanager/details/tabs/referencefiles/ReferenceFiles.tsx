@@ -112,7 +112,8 @@ const FolderIcons = 	[
 
   { text: "ThreeDReconstruction", iconCls: 'common-icon-site-reconstruction' },
   { text: "Sketch", iconCls: 'common-icon-sketch' },
-  { text: "Video", iconCls: 'common-icon-video' }
+  { text: "Video", iconCls: 'common-icon-video' },
+  {text:"NA", iconCls: 'common-icon-browse-locally'}
 ];
 const ReferenceFiles =(props: any) => {
   const { selectedRec, ...rest } = props;
@@ -137,7 +138,7 @@ const ReferenceFiles =(props: any) => {
 				...item,
         phaseValue : item.phase.name === null || item.phase.name === undefined || item.phase.name === '' ? 'NA' : item.phase.name,
         creationDateValue : item?.createdDate ? formatDate(item?.createdDate) : "",
-        type : item?.type === 0 ? 'NA' : item?.type
+        type : item?.folderType === 0 ? 'NA' : item?.type
 			}));
       dispatch(setSbsRefFileCount(data.length))
       setModifiedList(data);
@@ -179,7 +180,7 @@ const ReferenceFiles =(props: any) => {
             params.data && (
               <div className={`app-items-cell-contentt`}>
                 <span className="ref-name-icon">
-                  <span className={params?.data?.type ? GetFileIcon(params?.data?.type) : "common-icon-drawings"}></span>
+                  <span className={GetFileIcon(params?.data?.type)}></span>
                 </span>
                 <span
                   className="ref-name-tag"
@@ -334,9 +335,9 @@ const ReferenceFiles =(props: any) => {
       const filterVal =
         _.isEmpty(selectedFilters) ||
         (!_.isEmpty(selectedFilters) &&
-          (_.isEmpty(selectedFilters.folderType) ||
-            selectedFilters.folderType?.length === 0 ||
-            selectedFilters.folderType?.indexOf(item.folderType) > -1) &&
+          (_.isEmpty(selectedFilters.type) ||
+            selectedFilters.type?.length === 0 ||
+            selectedFilters.type?.indexOf(item.type) > -1) &&
           (_.isEmpty(selectedFilters.phase) ||
             selectedFilters.phase?.length === 0 ||
             selectedFilters.phase?.indexOf(item.phaseValue) > -1));

@@ -893,6 +893,12 @@ const TimeLogWindow = (props: any) => {
 				showChat: false,
 				hideProfile: false,
 			}}
+			righPanelPresenceProps={{
+				presenceId: "timelog-presence",
+				showLiveSupport: true,
+				showStreams: true,
+				showPrint:true,
+			}}
 			tools={{
 				closable: true,
 				resizable: true,

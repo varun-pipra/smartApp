@@ -653,10 +653,16 @@ const SBSManagerWindow = (props: any) => {
 					presenceId: "sbs-manager-presence",
 					showLiveSupport: true,
 					showLiveLink: true,
-					showStreams: true,
+					showStreams: false,
 					showComments: true,
 					showChat: false,
 					hideProfile: false,
+				}}
+				righPanelPresenceProps={{
+					presenceId: "sbs-manager-presence",
+					showLiveSupport: true,
+					showStreams: false,
+					showPrint:true,
 				}}
 				tools={{
 					closable: true,

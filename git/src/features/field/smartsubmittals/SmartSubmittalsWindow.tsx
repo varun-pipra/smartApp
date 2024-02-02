@@ -1311,6 +1311,12 @@ const SmartSubmittalsWindow = (props: any) => {
 					showChat: false,
 					hideProfile: false,
 				}}
+				righPanelPresenceProps={{
+					presenceId: "smart-submittals-presence",
+					showLiveSupport: true,
+					showStreams: true,
+					showPrint:true,
+				}}
 				tools={{
 					closable: true,
 					resizable: true,

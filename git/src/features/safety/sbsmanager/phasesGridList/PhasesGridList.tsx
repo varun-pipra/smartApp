@@ -12,6 +12,7 @@ import { deletePhase, createNewPhase, updatePhases } from "../operations/sbsMana
 import {PhasesColors} from '../utils';
 import IQButton from "components/iqbutton/IQButton";
 import _ from "lodash";
+import Toast from "components/toast/Toast";
 
 const PhasesGridList = () => {
   const dispatch = useAppDispatch()
@@ -21,7 +22,8 @@ const PhasesGridList = () => {
   const [selectedRows, setSelectedRows] = useState<any>([]);
   const [newPhase, setNewPhase] = useState<any>('');
   const [saveEnable, setSaveEnable] = useState<boolean>(true);
-  
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState('New Phase Created Successfully');
   const [alert, setAlert] = React.useState<any>({
     open: false,
     contentText: "",
@@ -238,8 +240,8 @@ const PhasesGridList = () => {
         hideLoadMask();
         onRefreshButtonClick();
         setNewPhase("");
-        
-        dispatch(setToast('New Phase Created Successfully'));
+        setShowToast(true);
+        // dispatch(setToast('New Phase Created Successfully'));
       })
       .catch((err: any) => {
         hideLoadMask();
@@ -325,6 +327,7 @@ const PhasesGridList = () => {
           DailogClose={alert.dailogClose}
           className="phases-color-change-alert"
         />
+        {showToast ? <Toast message={toastMsg} interval={2000} onHide={() => { setShowToast(false); }} /> : ''}
       </div>
     </>
   );

@@ -31,6 +31,20 @@ const AddLinksData = [
 		children: [],
 		iconCls: "common-icon-existing-smart-items",
 	},
+	{
+		"text": "Rule Based linking",
+		"value": "Rule Based linking",
+		"id": 3,
+		"type": "Custom",
+		iconCls: "common-icon-rule-based-linking",
+	},
+	{
+		"text": "Add External URL",
+		"value": "Add External URL",
+		"id": 4,
+		"type": "Custom",
+		iconCls: "common-icon-add-external-url",
+	},
 ];
 // const linksData = [
 // 	{

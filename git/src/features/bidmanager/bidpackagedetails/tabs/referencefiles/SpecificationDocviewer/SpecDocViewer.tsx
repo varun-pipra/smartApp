@@ -28,8 +28,8 @@ const SpecDocViewer = (props: any) => {
     [search]
   );
 
-  const test = ()=>{
-    console.log('test',sketchInstance);
+  const onSpecMaximize = ()=>{
+    console.log('onSpecMaximize',sketchInstance);
     setTimeout(()=>{
       sketchInstance.rerenderCanvas();
     },2000)
@@ -49,7 +49,7 @@ const SpecDocViewer = (props: any) => {
           closable: true,
           resizable: true,
           title: <><span style={{color: "#333333",fontSize: "1.12rem",fontWeight: "bolder",fontFamily: "Roboto-regular",padding: "0px !important"}}>{selectedRecord.number + ": " + selectedRecord.title}</span></>,
-          onMaximize:test
+          onMaximize: onSpecMaximize
         }}
       >
         <div className="spec-doc-viewer">

@@ -39,11 +39,11 @@ const SSReferenceFiles = (props: any) => {
   };
 
   const debounceOnSearch = useCallback(
-    _.debounce((search) => {
+    _.debounce((search , pageId) => {
       setSearch(search)
       console.log(ssRefMarkups , 'markupsByPageForBidResp')
       if(search.length){
-        handelSearchChange()
+        handelSearchChange(search , pageId)
       }else{
         console.log(ssRefMarkups , 'markupsByPageForBidResp')
         sketchPageinfo?.callback(ssRefMarkups || {})
@@ -67,11 +67,7 @@ const SSReferenceFiles = (props: any) => {
 
   useEffect(() => {
     if(sketchPageinfo){ 
-      if((search.length)){
-        handelSearchChange()
-      }else{
         getMarkupsPerpage();
-      }
     }    
   }, [sketchPageinfo]);
 
@@ -91,7 +87,7 @@ const SSReferenceFiles = (props: any) => {
         };
         dispatch(setSSRefMarkups(data))
         if (search.length) {
-					handelSearchChange();
+					handelSearchChange(search , res[0]?.data?.pageUId);
 				} else{
           sketchPageinfo.callback(data);
 				}
@@ -101,12 +97,12 @@ const SSReferenceFiles = (props: any) => {
       });
   };
 
-  const handelSearchChange =() =>{
+  const handelSearchChange =(searchText:any , pageId:any) =>{
     if(smRefPUId && ssRightPanelData?.specBook?.id) {
-      let params = `searchText=${search}&pageId=${smRefPUId}&contentId=${ssRightPanelData?.specBook?.id}`
+      let params = `searchText=${searchText}&pageId=${pageId}&contentId=${ssRightPanelData?.specBook?.id}`
       getTextOccurences(params).then((resp:any)=>{
         console.log(modifyMarkupData(resp.data),ssRefMarkups , 'markupsByPageForBidResp')
-        let updatedRes = [...modifyMarkupData(resp.data) , ...ssRefMarkups.extractionAreas]
+        let updatedRes = [...modifyMarkupData(resp.data) , ...ssRefMarkups.extractionAreas || []]
         let data = {
           "extractionAreas": updatedRes
         };
@@ -173,7 +169,7 @@ const SSReferenceFiles = (props: any) => {
           showGroups={false}
           showFilter={false}
           filterHeader=""
-          onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
+          onSearchChange={(searchText: any) => debounceOnSearch(searchText , smRefPUId)}
         />
       </div>
       <IQBrenaDocViewer

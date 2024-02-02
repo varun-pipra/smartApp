@@ -36,6 +36,7 @@ export type IQBaseWindowProps = DialogProps & {
 	zIndex?: number;
 	tools?: IQBaseWindowToolsProp;
 	presenceProps?: IQBaseWindowPresenceProp;
+	righPanelPresenceProps?: IQBaseWindowPresenceProp;
 	maxByDefault?: boolean;
 	inlineModule?: boolean;
 	showBrena?: boolean;

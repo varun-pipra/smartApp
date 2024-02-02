@@ -463,9 +463,9 @@ const BudgetManagerToolbar = (props: any) => {
 					</ToggleButton>
 				</ToggleButtonGroup> */}
 				
-				{connectors?.length && <Button
+				{connectors?.length ? <Button
 					variant="outlined"
-					startIcon={<span className='common-icon-redo' />}
+					startIcon={<span className='common-icon-share-new' />}
 					className="sap-button"
 					// onClick={handleLockBudget}
 				>
@@ -475,10 +475,10 @@ const BudgetManagerToolbar = (props: any) => {
 						src={connectors?.[0]?.primaryIconUrl}
 						alt="connector Image"
 					/>
-				</Button>}
+				</Button> : ''}
 				<Button
 					variant="outlined"
-					startIcon={isBudgetLocked ? <LockOpenTwoToneIcon /> : <Lock />}
+					startIcon={isBudgetLocked ? <span className="common-icon-unlock"></span> : <span className="common-icon-lock"></span>}
 					className="lockbuget-button"
 					onClick={handleLockBudget}
 				>

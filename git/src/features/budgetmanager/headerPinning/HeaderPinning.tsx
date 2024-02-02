@@ -326,7 +326,7 @@ const HeaderPinning = (props: any) => {
 								<div className='icon common-icon-info-white'></div>
 								<div className='text'>
 									<div>Budget is locked and now is in Read Only Mode.</div>
-									<div>To Edit you may unlock the budget.</div>
+									<div>To Edit, you may unlock the budget.</div>
 								</div>
 							</div>}
 							{/* <MuiGrid item xl={1.5} lg={1.5} md={1.5} sm={6} xs={6}>

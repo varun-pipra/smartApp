@@ -139,6 +139,12 @@ const SafetyRequirementsWindow = (props: any) => {
 			showChat: false,
 			hideProfile: false,
 		}}
+		righPanelPresenceProps={{
+			presenceId: "safety-requirements-presence",
+			showLiveSupport: true,
+			showStreams: true,
+			showPrint: true,
+		}}
 		tools={{
 			closable: true,
 			resizable: true,
