@@ -2914,13 +2914,14 @@ class IQSketchLiteManager {
                 initialconfig.imageUrl = pages[initialconfig.currentPage - 1].imageUrl;
                 initialconfig.markups = pages[initialconfig.currentPage - 1].markups || initialconfig.markups;
             }
+            console.log(initialconfig)
             setTimeout(function() {
                 /* Navigation Control creation - Start */
                 var navigationDiv = document.createElement("div");
-                navigationDiv.setAttribute("class", "common-navigation-control");
-                navigationDiv.innerHTML = '<button action="prev" class="prev-cls ' + (initialconfig.currentPage == 1 ? "disabled-cls" : "") + '" title="Prev"><img src="data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCI+Cjx0aXRsZT48L3RpdGxlPgo8ZyBpZD0iaWNvbW9vbi1pZ25vcmUiPgo8L2c+CjxwYXRoIGZpbGw9IiM2NjYiIGQ9Ik02OTguMTEyIDEwMDIuMjk3YzUuNDkyIDYuMzUyIDEzLjU2MSAxMC4zNDggMjIuNTY0IDEwLjM0OHMxNy4wNzItMy45OTUgMjIuNTMyLTEwLjMxbDAuMDMyLTAuMDM4YzUuODAyLTYuNjY1IDkuMzM5LTE1LjQzNSA5LjMzOS0yNS4wMzFzLTMuNTM3LTE4LjM2Ni05LjM3OC0yNS4wNzdsMC4wMzkgMC4wNDYtMzk2Ljg0My00NDAuMjQ5IDM5Ni44NzEtNDQwLjE3OGM1LjgwMi02LjY2NSA5LjMzOS0xNS40MzUgOS4zMzktMjUuMDMxcy0zLjUzNy0xOC4zNjYtOS4zNzgtMjUuMDc3bDAuMDM5IDAuMDQ2Yy01LjQ5Mi02LjM1Mi0xMy41NjEtMTAuMzQ4LTIyLjU2NC0xMC4zNDhzLTE3LjA3MiAzLjk5NS0yMi41MzIgMTAuMzFsLTAuMDMyIDAuMDM4LTQyMC4xOTYgNDY1LjIyM2MtNS44MDIgNi42NjUtOS4zMzkgMTUuNDM1LTkuMzM5IDI1LjAzMXMzLjUzNyAxOC4zNjYgOS4zNzggMjUuMDc3bC0wLjAzOS0wLjA0NnoiPjwvcGF0aD4KPC9zdmc+Cg=="></button>' +
+                // navigationDiv.setAttribute("class", "common-navigation-control");
+                navigationDiv.innerHTML = '<div class="sketch-navigation-control"><button action="prev" class="prev-cls ' + (initialconfig.currentPage == 1 ? "disabled-cls" : "") + '" title="Prev"><img src="data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCI+Cjx0aXRsZT48L3RpdGxlPgo8ZyBpZD0iaWNvbW9vbi1pZ25vcmUiPgo8L2c+CjxwYXRoIGZpbGw9IiM2NjYiIGQ9Ik02OTguMTEyIDEwMDIuMjk3YzUuNDkyIDYuMzUyIDEzLjU2MSAxMC4zNDggMjIuNTY0IDEwLjM0OHMxNy4wNzItMy45OTUgMjIuNTMyLTEwLjMxbDAuMDMyLTAuMDM4YzUuODAyLTYuNjY1IDkuMzM5LTE1LjQzNSA5LjMzOS0yNS4wMzFzLTMuNTM3LTE4LjM2Ni05LjM3OC0yNS4wNzdsMC4wMzkgMC4wNDYtMzk2Ljg0My00NDAuMjQ5IDM5Ni44NzEtNDQwLjE3OGM1LjgwMi02LjY2NSA5LjMzOS0xNS40MzUgOS4zMzktMjUuMDMxcy0zLjUzNy0xOC4zNjYtOS4zNzgtMjUuMDc3bDAuMDM5IDAuMDQ2Yy01LjQ5Mi02LjM1Mi0xMy41NjEtMTAuMzQ4LTIyLjU2NC0xMC4zNDhzLTE3LjA3MiAzLjk5NS0yMi41MzIgMTAuMzFsLTAuMDMyIDAuMDM4LTQyMC4xOTYgNDY1LjIyM2MtNS44MDIgNi42NjUtOS4zMzkgMTUuNDM1LTkuMzM5IDI1LjAzMXMzLjUzNyAxOC4zNjYgOS4zNzggMjUuMDc3bC0wLjAzOS0wLjA0NnoiPjwvcGF0aD4KPC9zdmc+Cg=="></button></div>' +
                     '<div class="navigation-body-cls"><span class="current-page">' + initialconfig.currentPage + '</span> of <span class="total-count">' + initialconfig.totalCount + '</span></div>' +
-                    '<button action="next" class="next-cls ' + (initialconfig.currentPage == initialconfig.totalCount ? "disabled-cls" : "") + '" title="Next"><img src="data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCI+Cjx0aXRsZT48L3RpdGxlPgo8ZyBpZD0iaWNvbW9vbi1pZ25vcmUiPgo8L2c+CjxwYXRoIGZpbGw9IiM2NjYiIGQ9Ik0zMjMuMDg2IDEwMDIuMjk3Yy01LjQ5MiA2LjM1Mi0xMy41NjEgMTAuMzQ4LTIyLjU2NCAxMC4zNDhzLTE3LjA3Mi0zLjk5NS0yMi41MzItMTAuMzFsLTAuMDMyLTAuMDM4Yy01LjgwMi02LjY2NS05LjMzOS0xNS40MzUtOS4zMzktMjUuMDMxczMuNTM3LTE4LjM2NiA5LjM3OC0yNS4wNzdsLTAuMDM5IDAuMDQ2IDM5Ni44NDMtNDQwLjI0OS0zOTYuODcxLTQ0MC4xNzhjLTUuODAyLTYuNjY1LTkuMzM5LTE1LjQzNS05LjMzOS0yNS4wMzFzMy41MzctMTguMzY2IDkuMzc4LTI1LjA3N2wtMC4wMzkgMC4wNDZjNS40OTItNi4zNTIgMTMuNTYxLTEwLjM0OCAyMi41NjQtMTAuMzQ4czE3LjA3MiAzLjk5NSAyMi41MzIgMTAuMzFsMC4wMzIgMC4wMzggNDIwLjE5NiA0NjUuMjIzYzUuODAyIDYuNjY1IDkuMzM5IDE1LjQzNSA5LjMzOSAyNS4wMzFzLTMuNTM3IDE4LjM2Ni05LjM3OCAyNS4wNzdsMC4wMzktMC4wNDZ6Ij48L3BhdGg+Cjwvc3ZnPgo="></button>';
+                    '<div class="sketch-navigation-control right-navigation"><button action="next" class="next-cls ' + (initialconfig.currentPage == initialconfig.totalCount ? "disabled-cls" : "") + '" title="Next"><img src="data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMjQiIGhlaWdodD0iMTAyNCIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCI+Cjx0aXRsZT48L3RpdGxlPgo8ZyBpZD0iaWNvbW9vbi1pZ25vcmUiPgo8L2c+CjxwYXRoIGZpbGw9IiM2NjYiIGQ9Ik0zMjMuMDg2IDEwMDIuMjk3Yy01LjQ5MiA2LjM1Mi0xMy41NjEgMTAuMzQ4LTIyLjU2NCAxMC4zNDhzLTE3LjA3Mi0zLjk5NS0yMi41MzItMTAuMzFsLTAuMDMyLTAuMDM4Yy01LjgwMi02LjY2NS05LjMzOS0xNS40MzUtOS4zMzktMjUuMDMxczMuNTM3LTE4LjM2NiA5LjM3OC0yNS4wNzdsLTAuMDM5IDAuMDQ2IDM5Ni44NDMtNDQwLjI0OS0zOTYuODcxLTQ0MC4xNzhjLTUuODAyLTYuNjY1LTkuMzM5LTE1LjQzNS05LjMzOS0yNS4wMzFzMy41MzctMTguMzY2IDkuMzc4LTI1LjA3N2wtMC4wMzkgMC4wNDZjNS40OTItNi4zNTIgMTMuNTYxLTEwLjM0OCAyMi41NjQtMTAuMzQ4czE3LjA3MiAzLjk5NSAyMi41MzIgMTAuMzFsMC4wMzIgMC4wMzggNDIwLjE5NiA0NjUuMjIzYzUuODAyIDYuNjY1IDkuMzM5IDE1LjQzNSA5LjMzOSAyNS4wMzFzLTMuNTM3IDE4LjM2Ni05LjM3OCAyNS4wNzdsMC4wMzktMC4wNDZ6Ij48L3BhdGg+Cjwvc3ZnPgo="></button></div>';
                 document.getElementById(domElementId).appendChild(navigationDiv);
                 that.assignNavigationListeners(navigationDiv, initialconfig);
                 /* Navigation Control creation - End */
@@ -2969,6 +2970,7 @@ class IQSketchLiteManager {
         that.fabricCanvasInit();
     }
     assignNavigationListeners = function (navigationDiv, initialconfig) {
+        debugger;
         var me = this,
             buttons = navigationDiv.querySelectorAll('button'),
             pages = initialconfig.pages,
@@ -2996,7 +2998,8 @@ class IQSketchLiteManager {
         var me = this,
             initialconfig = this.getMainView().initialData,
             mainDiv = document.getElementById(me.domElementId),
-            navigationDiv = mainDiv.querySelector('div[class="common-navigation-control"]'),
+            // navigationDiv = mainDiv.querySelector('div[class="common-navigation-control"]'),
+            navigationDiv = mainDiv.querySelector('div[class="navigation-body-cls"]'),
             buttons = navigationDiv.querySelectorAll('button'),
             currentPageDiv = navigationDiv.querySelector('span[class="current-page"]');
         currentPageDiv.innerHTML = initialconfig.currentPage;

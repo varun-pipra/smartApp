@@ -1,5 +1,5 @@
 import {store} from 'app/store';
-import {setGridData, setLiveData} from './operations/gridSlice';
+import {setGridData, setLiveData, setScrollToNewRowId} from './operations/gridSlice';
 import {setSelectedRowData} from './operations/rightPanelSlice';
 
 export const budgetManagerMainGridRTListener = (path: any, event: any) => {
@@ -46,7 +46,15 @@ export const budgetManagerMainGridRTListener = (path: any, event: any) => {
 
 		console.log('liveData------------length', dataList.length);
 		store.dispatch(setGridData(dataList));
-		store.dispatch(setLiveData(diffObject));
+		if (gridData.length > 0 && update?.length > 0) {
+			//Calling live data only for update, as for add we are handling differently. 
+			//For remove not needed to do any action on remove.
+			store.dispatch(setLiveData(diffObject));
+		}
+		if (add?.length > 0) {
+			store.dispatch(setScrollToNewRowId(add?.[0]?.id));
+		}
+		
 	}
 };
 

@@ -182,7 +182,8 @@ export const VendorContractsGridData = {
     "bidPackage": {
       "id": "1cb9e30b-5f41-41cb-99b7-c9733a339e82",
       "name": "Test 4 Tue"
-    }
+    },
+    blockChainStatus: 'None'
   },
   {
     "rowId": 3,

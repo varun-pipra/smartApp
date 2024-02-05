@@ -24,7 +24,7 @@ import _ from "lodash";
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
 import { blockchainAction } from 'app/common/blockchain/BlockchainAPI';
-import { doBlockchainAction, moduleType, setShowBlockchainDialog } from 'app/common/blockchain/BlockchainSlice';
+import { doBlockchainAction, moduleType, setShowBlockchainDialog, blockchainStates } from 'app/common/blockchain/BlockchainSlice';
 
 const BidManagerToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -48,6 +48,9 @@ const BidManagerToolbar = (props: any) => {
 		title: '',
 		method: ''
 	});
+	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);
+	console.log("disableBlockchainActionButtons in tool", disableBlockchainActionButtons)
+		
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const groupOptions = [
@@ -295,7 +298,7 @@ const BidManagerToolbar = (props: any) => {
 					</IconButton>
 				</IQTooltip>
 
-				<Button variant="outlined" color={disablePostBid ? 'inherit' : 'success'} onClick={handlePostBid} startIcon={<Gavel />} disabled={disablePostBid}>
+				<Button variant="outlined" color={disablePostBid ? 'inherit' : 'success'} onClick={handlePostBid} startIcon={<Gavel />} disabled={disablePostBid || disableBlockchainActionButtons}>
 					Post Bid
 				</Button>
 			</>

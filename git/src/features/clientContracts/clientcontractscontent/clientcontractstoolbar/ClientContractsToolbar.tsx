@@ -42,7 +42,7 @@ import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/Report
 import {List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/material';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
-import {moduleType} from 'app/common/blockchain/BlockchainSlice';
+import {moduleType, blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 
 
@@ -66,6 +66,8 @@ const ClientContractsToolbar = (props: any) => {
 		{text: "Client Company", value: "client.name"},
 		{text: appInfo && isUserGCForCC(appInfo) ? "Status" : 'Response Status', value: "status"},
 	];
+
+	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);		
 
 	const filterOptions = [
 		{
@@ -143,9 +145,12 @@ const ClientContractsToolbar = (props: any) => {
 			else {
 				activateClientContract(appInfo, selectedRowIds[0], (response: any) => {
 					dispatch(getClientContractsList(appInfo));
-					dispatch(setToastMessage({displayToast: true, message: `The Selected Contract became Active Successfully.`}));
 					selectedRecord?.id == selectedRows[0]?.id && dispatch(setSelectedRecord(response));
 					setDisablePostContract(true);
+					if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
+						dispatch(setShowBlockchainDialog(true));
+					}
+					else dispatch(setToastMessage({displayToast: true, message: `The Selected Contract became Active Successfully.`}));
 				});
 			}
 			setAlert({show: false, type: '', message: ''});
@@ -249,7 +254,7 @@ const ClientContractsToolbar = (props: any) => {
 						<span className="common-icon-delete"></span>
 					</IconButton>
 				</IQTooltip>
-				{!isUserGC(appInfo) && <Button variant="outlined" color={disableSubmitContract ? 'inherit' : 'success'} onClick={() => {}} startIcon={<span className='common-icon-submitted-waiting-party' />} disabled={disableSubmitContract}>
+				{!isUserGC(appInfo) && <Button variant="outlined" color={disableSubmitContract ? 'inherit' : 'success'} onClick={() => {}} startIcon={<span className='common-icon-submitted-waiting-party' />} disabled={disableSubmitContract || disableBlockchainActionButtons}>
 					Submit Contract
 				</Button>}
 				{isUserGC(appInfo) &&
@@ -258,7 +263,7 @@ const ClientContractsToolbar = (props: any) => {
 						color={disablePostContract ? 'inherit' : 'success'}
 						onClick={() => handlePostContract()}
 						startIcon={<span className='common-icon-post-contract' />}
-						disabled={disablePostContract}>
+						disabled={disablePostContract || disableBlockchainActionButtons}>
 						Post Contract
 					</Button>
 				}

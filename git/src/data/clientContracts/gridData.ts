@@ -1818,6 +1818,7 @@ export const ClientGridData = {
 			"totalPaidToDate": null,
 			"includeEntireBudget": false,
 			"contingencyPercentage": 0,
+			"blockChainStatus": "AwaitingAuthentication",
 			"changeOrderAmount": 0.00,
 			"contingencyAmount": 0.00,
 			"downPaymentAmount": 0.00,

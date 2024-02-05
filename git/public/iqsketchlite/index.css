@@ -204,6 +204,30 @@
     cursor: pointer;
 }
 
+.sketch-navigation-control {
+    position: absolute;
+    top: 38%;
+    z-index: 999;
+}
+
+.sketch-navigation-control 
+    button 
+        img{
+            height: 12px;
+            width: 12px;
+            z-index: 999;
+            
+        }  
+.right-navigation{
+    right: 0;
+}
+
+.navigation-body-cls{
+    display: flex;
+    justify-content: center;
+}
+       
+
 .common-navigation-control .prev-cls,
 .common-navigation-control .next-cls {
     background-color: #fff;

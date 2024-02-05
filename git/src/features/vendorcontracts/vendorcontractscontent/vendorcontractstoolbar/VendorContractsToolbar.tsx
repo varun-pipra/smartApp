@@ -29,7 +29,7 @@ import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/Report
 import {List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/material';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
-import {moduleType} from 'app/common/blockchain/BlockchainSlice';
+import {moduleType, blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 
 const VendorContractsToolbar = (props: any) => {
@@ -54,6 +54,8 @@ const VendorContractsToolbar = (props: any) => {
 		{text: "Vendors", value: "vendor.name"},
 		{text: appInfo && isUserGC(appInfo) ? "Status" : 'Response Status', value: "status"},
 	];
+
+	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);	
 
 	const filterOptions = [
 		{
@@ -152,11 +154,14 @@ const VendorContractsToolbar = (props: any) => {
 				});
 			}
 			else {
-				activateContract(appInfo, selectedRecord?.id, (response: any) => {
+				activateContract(appInfo, selectedRows?.[0]?.id, (response: any) => {
 					dispatch(getVendorContractsList(appInfo));
 					selectedRecord?.id == selectedRows[0]?.id && dispatch(setSelectedRecord(response));
-					dispatch(setToastMessage({displayToast: true, message: `Posted Contract and Locked. Notified the response to the Vendor.`}));
 					setDisablePostContract(true);
+					if(blockchainEnabled && (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled) {
+						dispatch(setShowBlockchainDialog(true));
+					} 
+					else dispatch(setToastMessage({displayToast: true, message: `Posted Contract and Locked. Notified the response to the Vendor.`}));
 				});
 			}
 
@@ -293,7 +298,7 @@ const VendorContractsToolbar = (props: any) => {
 						color={disablePostContract ? 'inherit' : 'success'}
 						onClick={() => handlePostContract(false)}
 						startIcon={<span className='common-icon-post-contract' />}
-						disabled={disablePostContract}>
+						disabled={disablePostContract || disableBlockchainActionButtons}>
 						Post Contract
 					</Button>}
 				{/* <IQTooltip title='Post Contract' placement='bottom'>

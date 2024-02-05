@@ -391,7 +391,7 @@ const AddSpecificationsDialog = (props: any) => {
 					),
 				}}
 			>
-				<div className="spec-main-continer" style={{ height: "100%" }}>
+				<div className="spec-main-continer" style={{ height: 'calc(100% - 70px)' }} >
 					<div>
 						<div className="spec-search-box">
 							<div

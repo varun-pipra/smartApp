@@ -31,8 +31,8 @@ const SpecDocViewer = (props: any) => {
   const onSpecMaximize = ()=>{
     console.log('onSpecMaximize',sketchInstance);
     setTimeout(()=>{
-      sketchInstance.rerenderCanvas();
-    },2000)
+      sketchInstance.resizeCanvas();
+    },500)
   }
 
   return (

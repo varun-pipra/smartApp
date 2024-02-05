@@ -518,6 +518,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		})
 		return phaseColor
 	}
+	const getLocationNames = (locations:any) => {
+		let value = '';
+		locations?.forEach((obj:any, index:number) => {
+			value = `${value} ${obj?.name},`
+		})
+		return value?.slice(0, -1);
+	};
 
 	return (
 		<div className="budget-details-box">
@@ -1311,7 +1318,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 								// 	window.open(useHotLink(`client-contracts/home?id=${formData?.clientContract?.id}`), "_blank")
 								// }
 							>
-								{levelValue || "-"}
+								{formData?.locations?.length ? formData?.locations?.[0]?.levelName : "-"}
 							</span>
 							: <SmartDropDown
 								options={
@@ -1339,7 +1346,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				<span className="budget-info-tile">
 					<div className="budget-info-label">Default Location</div>
 					<div className="budget-info-data-box">
-						{isReadOnly ? location : <Location
+						{isReadOnly ? getLocationNames(formData?.locations) : <Location
 							fullWidth
 							hideLevel={true}
 							multiple={true}

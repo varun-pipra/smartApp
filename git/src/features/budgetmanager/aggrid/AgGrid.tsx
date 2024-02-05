@@ -106,6 +106,7 @@ const TableGrid = (props: TableGridProps) => {
 	const [isReadOnly, setIsReadOnly] = useState<Boolean>(false);
 
 	const selectedRecord = useAppSelector((state) => state.rightPanel.selectedRow);
+	const scrollToNewRowId = useAppSelector((state)=> state.gridData?.scrollToNewRowId);
 	const RemoveDuplicates = (array: any, key: any) => {
 		let unique: any = [];
 		array.map((x: any) => unique.filter((a: any) => a[key] === x[key]).length > 0 ? null : unique.push(x));
@@ -1390,6 +1391,9 @@ const customCellRendererClass = (params: any) => {
 	if (multiLevelList && multiLevelList.length > 0) {
 		multiLevelList.shift();
 	}
+	const renderedNodesData: any = params.api?.getRenderedNodes() || [];
+	let currentRec: any = renderedNodesData.find((rec: any)=> rec.data?.id === params.data?.id);
+	const isCostCodeInvalid:any = currentRec?.data ? currentRec?.data?.isCostCodeInvalid : params?.data?.isCostCodeInvalid;
 
 	const multilevelString = multiLevelList.length > 0 ? multiLevelList?.join(' - ') : '';
 	return <><div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', position: 'absolute', left: 0 }}>
@@ -1397,7 +1401,7 @@ const customCellRendererClass = (params: any) => {
 			{[generatePresenceToolIds(params?.data)].map((presenceTool: any) => presenceTool)}
 			<span>{renderPresence(params?.data?.id)}</span>
 		</div>
-		{params?.data?.isCostCodeInvalid ?
+		{isCostCodeInvalid ?
 			<IQTooltip
 				title={
 					<Stack direction='row' className='tooltipcontent'>
@@ -1776,6 +1780,7 @@ return (
 						groupDisplayType={'groupRows'}
 						groupSelectsChildren={true}
 						getReference={(value: any) => setGridRef(value)}
+						scrollToNewRowId={scrollToNewRowId}
 					></SUIGrid>
 				}
 			</div>

@@ -79,6 +79,7 @@ export interface TableGridProps extends AgGridReactProps {
 	isMainGrid?: boolean;
 	selectedRecord?: any;
 	activeTab?: any;
+	scrollToNewRowId?: any;
 }
 
 const SUIGrid = (props: TableGridProps) => {
@@ -88,7 +89,7 @@ const SUIGrid = (props: TableGridProps) => {
 		groupRowRendererParams, suppressContextMenu = false, onCellEditRequest, masterDetail = false, detailCellRendererParams = () => { }, onFirstDataRendered = () => { },
 		isRowSelectable = useMemo(() => { return () => { return true; }; }, []), isRowMaster = () => { return false; }, groupDefaultExpanded = -1, rowHeight = null,
 		groupSelectsChildren = true, cacheBlockSize, infiniteInitialRowCount, serverSideInitialRowCount = 50, serverSideInfiniteScroll = true, isServerSideGroupOpenByDefault = () => { }, serverSideStoreType = "partial",
-		tooltipShowDelay = 0, tooltipHideDelay, emptyMsg = "No items are available", suppressDragLeaveHidesColumns = false, gridRef, suppressMultiSort = true, openLID = false, isMainGrid = false, selectedRecord = {}, activeTab = null,
+		tooltipShowDelay = 0, tooltipHideDelay, emptyMsg = "No items are available", suppressDragLeaveHidesColumns = false, gridRef, suppressMultiSort = true, openLID = false, isMainGrid = false, selectedRecord = {}, activeTab = null, scrollToNewRowId = null,
 		...rest } = props;
 
 	const { gridData, selectedRows, originalGridApiData } = useAppSelector((state) => state.gridData);
@@ -686,6 +687,19 @@ const SUIGrid = (props: TableGridProps) => {
 			gridTooltipRef.current.style.display = display ? "block" : "none";
 		}
 	};
+
+	useEffect(()=> {
+		if (scrollToNewRowId) {
+			setTimeout(()=> {
+				const dataArr: any = tableRef.current?.api?.clientSideRowModel?.rowsToDisplay || [];
+				const rowNode: any = dataArr.find((rec: any)=> rec?.data?.id === scrollToNewRowId);
+				tableRef.current?.api?.ensureIndexVisible(rowNode?.rowIndex, 'bottom');
+				setTimeout(()=> {
+					tableRef.current?.api?.flashCells({rowNodes: [rowNode]})
+				}, 100)
+			}, 500)
+		}
+	}, [scrollToNewRowId])
 
 	return (
 		<div style={gridStyle} className='ag-theme-alpine sui-grid'>
