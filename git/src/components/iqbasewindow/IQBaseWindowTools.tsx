@@ -1,7 +1,7 @@
 import { memo, ReactNode } from 'react';
 import { IconButton } from '@mui/material';
 import { OpenInNew } from '@mui/icons-material';
-
+import { postMessage} from "app/utils";
 // Project files and internal support import
 import { IQBaseWindowToolsProp } from './IQBaseWindowTypes';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
@@ -20,9 +20,11 @@ interface SupportingProps extends IQBaseWindowToolsProp {
 
 export const WindowTools = ({ maximized, appType, appInfo, iFrameId, setOpen, setMaximized, onClose, customTools, isBrenaOpen = false, ...tools }: SupportingProps) => {
 	const handleOpenInNewTab = () => {
+		const body = { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType }
+		console.log('openinnewtab',body);
 		postMessage({
 			event: 'openinnewtab',
-			body: { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType }
+			body: body
 		});
 	};
 

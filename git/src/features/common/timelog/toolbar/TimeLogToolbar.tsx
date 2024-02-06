@@ -18,8 +18,18 @@ export const TLLeftButtons = memo(() => {
 
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
 	const [sendBackClick, setSendBackClick] = useState<boolean>(false);
+	const [acceptClick, setacceptClick] = useState<boolean>(false);
 	const { selectedChangeEvents, selectedChangeEventsCount } = useAppSelector((state) => state.changeEventRequest);
+	const [acceptBtn, setAcceptBtn] = useState<boolean>(false);
+	const [sendBackBtn, setsendBackBtn] = useState<boolean>(false);
 
+
+	const acceptModel = (e: any, type: any) => {
+		if (type == 'cancel' || type == 'close') { setacceptClick(false) }
+		else {
+			console.log('click')
+		}
+	}
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
 			<IconButton
@@ -46,15 +56,29 @@ export const TLLeftButtons = memo(() => {
 		</IQTooltip>
 		<IconButton className='divider-line-cls'>
 		</IconButton>
-		<Button className='tl-toolbar-btn' variant="outlined" startIcon={<span className='common-icon-accept'></span>} disabled={false}>
+		<Button className={`tl-toolbar-btn  ${!acceptBtn ? 'accept-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-accept'></span>} disabled={acceptBtn} onClick={() => { setacceptClick(true) }}>
 			Accept
 		</Button>
-		<Button className='tl-toolbar-btn' variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} disabled={false} onClick={() => { setSendBackClick(true) }}>
+		<Button className={`tl-toolbar-btn  ${!sendBackBtn ? 'sendBack-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} disabled={sendBackBtn} onClick={() => { setSendBackClick(true) }}>
 			Send Back
 		</Button>
 
 		{
 			sendBackClick && <SendBackModel data={[]} onClose={(value: any) => { setSendBackClick(value) }} onSubmit={(formData: any) => { console.log('') }} />
+		}
+		{
+			acceptClick &&
+			<SUIAlert
+				open={acceptClick}
+				DailogClose={true}
+				contentText={
+					<span>Are you sure you want to Accept the selected Time Entries?</span>
+				}
+
+				title={'Confirmation'}
+				onAction={(e: any, type: string) => acceptModel(e, type)}
+				showActions={true}
+			/>
 		}
 	</>;
 });

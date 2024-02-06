@@ -24,8 +24,8 @@ export const budgetManagerMainGridRTListener = (path: any, event: any) => {
 		if(gridData.length > 0 && update?.length > 0) {
 			const updateIdList = update.map((el: any) => el.id);
 			const {selectedRow} = rootState?.rightPanel;
-			let filteredArray: any = [...gridData];
-			filteredArray.forEach((item: any) => {
+			//let dataList: any = [...gridData];
+			dataList.forEach((item: any) => {
 				if(updateIdList.indexOf(item.id) !== -1) {
 					diffObject[item.id] = objDiff(item, update.find((el: any) => el.id === item.id));
 					item = {...update};

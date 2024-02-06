@@ -42,7 +42,7 @@ import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/Report
 import {List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/material';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
-import {moduleType, blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
+import {moduleType, blockchainStates, setShowBlockchainDialog, doBlockchainAction} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 
 
@@ -67,7 +67,8 @@ const ClientContractsToolbar = (props: any) => {
 		{text: appInfo && isUserGCForCC(appInfo) ? "Status" : 'Response Status', value: "status"},
 	];
 
-	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);		
+	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);	
+	console.log("IsBlockChainEnabled", blockchainEnabled, (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled)		
 
 	const filterOptions = [
 		{
@@ -190,7 +191,8 @@ const ClientContractsToolbar = (props: any) => {
 	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setToggleChecked(event.target.checked);
 		const typeValue: number = moduleType['ClientContracts'];
-		blockchainAction(event.target.checked, typeValue);
+		// blockchainAction(event.target.checked, typeValue);
+		dispatch(doBlockchainAction({ enable: event.target.checked, typeString: 'ClientContracts' }));
 	};
 	const PrintOnclick = (event: any) => {
 		postMessage({

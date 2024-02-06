@@ -12,7 +12,7 @@ import {List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/mater
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
 import {getServer, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/appInfoSlice';
-import {moduleType} from 'app/common/blockchain/BlockchainSlice';
+import {doBlockchainAction, moduleType} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 
 
@@ -39,7 +39,8 @@ const VendorPayAppToolbarRightButtons = () => {
 	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setToggleChecked(event.target.checked);
 		const typeValue: number = moduleType['VendorPayApplication'];
-		blockchainAction(event.target.checked, typeValue);
+		// blockchainAction(event.target.checked, typeValue);
+		dispatch(doBlockchainAction({ enable: event.target.checked, typeString: 'VendorPayApplication' }));				
 	};
 
 	return <>

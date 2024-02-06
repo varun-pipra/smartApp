@@ -5,8 +5,9 @@
         position: relative;
         height: 100%;
         .common-zoom-control {
-            top: 58% !important;
-            left: 88% !important;
+            // top: 58% !important;
+            // left: 88% !important;
+            position: fixed;
         }
         .common-navigation-control {
             left: 45% !important;

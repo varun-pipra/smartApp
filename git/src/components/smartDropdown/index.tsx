@@ -245,7 +245,9 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 		if (handleListOpen) {
 			handleListOpen(true);
 		}
-
+		if(searchValue !== "") {
+			handleSearchClear();
+		};
 		setTimeout(() => {
 			const dPopover: any = document.querySelector('#menu-.MuiModal-root .MuiPaper-root');
 			const width = `${element.offsetWidth + element.offsetLeft}px`;
@@ -683,10 +685,11 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 	};
 	React.useEffect(() => {
 		if (!open) return;
-		handleClose();
 		if (searchValue !== "") {
 			setSearchValue("");
-		}
+			handleSearchClear();
+		};
+		handleClose();
 	}, [dynamicClose]);
 
 	const CustomTooltip = (props: any) => {

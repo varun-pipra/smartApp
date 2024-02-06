@@ -1,8 +1,8 @@
 import React from 'react';
-import {ChangeEvent, memo, useMemo, useState, useEffect} from "react";
+import { ChangeEvent, memo, useMemo, useState, useEffect } from "react";
 import "./AddTimeLogForm.scss";
-import {getServer} from "app/common/appInfoSlice";
-import {useAppDispatch, useAppSelector} from "app/hooks";
+import { getServer } from "app/common/appInfoSlice";
+import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQButton from "components/iqbutton/IQButton";
 import SmartDropDown from "components/smartDropdown";
 import _ from "lodash";
@@ -17,7 +17,7 @@ import InputIcon from "react-multi-date-picker/components/input_icon";
 import TimeLogPicker from "sui-components/TimeLogPicker/TimeLogPicker";
 import convertDateToDisplayFormat from "utilities/commonFunctions";
 import WorkerDailog from "./workerDailog/WorkerDailog";
-import {makeStyles, createStyles} from "@mui/styles";
+import { makeStyles, createStyles } from "@mui/styles";
 interface TimeLogFormProps {
 	resource?: string;
 	date?: any;
@@ -67,13 +67,13 @@ const AddTimeLogForm = (props: any) => {
 	}, []);
 
 	const fundingSourceOptions = [
-		{id: 1, label: "Change Order", value: "ChangeOrder"},
-		{id: 2, label: "Contingency", value: "Contingency"},
-		{id: 3, label: "General Contractor", value: "GeneralContractor"},
+		{ id: 1, label: "Change Order", value: "ChangeOrder" },
+		{ id: 2, label: "Contingency", value: "Contingency" },
+		{ id: 3, label: "General Contractor", value: "GeneralContractor" },
 	];
 	const resource = [
-		{id: 1, label: "Me", value: "Me"},
-		{id: 1, label: "Work Team", value: "workteam"},
+		{ id: 1, label: "Me", value: "Me" },
+		{ id: 1, label: "Work Team", value: "workteam" },
 	];
 	const [timelog, setTimeLog] = useState<TimeLogFormProps>(defaultValues);
 	const [isBudgetDisabled, setBudgetDisabled] = useState<boolean>(true);
@@ -86,11 +86,10 @@ const AddTimeLogForm = (props: any) => {
 	const [openWorkerDialog, setOpenWorkerDialog] = useState(false);
 	const appInfo = useAppSelector(getServer);
 	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(AddLinksData);
-	const {appsList} = useAppSelector(state => state.sbsManager);
+	const { appsList } = useAppSelector(state => state.sbsManager);
 	const [selectedSmartItem, setSelectedSmartItem] = React.useState("");
-	useEffect(() => {
-		//
-	}, [appInfo]);
+	const [selectedWorkers , setSelectedWorkers] = React.useState<Boolean>(false);
+
 	useEffect(() => {
 		const addLinksOptionsCopy = [...addLinksOptions];
 		let newSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "New Smart Item");
@@ -128,7 +127,7 @@ const AddTimeLogForm = (props: any) => {
 		console.log("event", event);
 		console.log("name", name);
 		setTimeLog((currentState) => {
-			const newState = {...currentState, ...{[name]: event}};
+			const newState = { ...currentState, ...{ [name]: event } };
 			console.log("newState", newState);
 			checkFormValidity(newState);
 			return newState;
@@ -174,7 +173,7 @@ const AddTimeLogForm = (props: any) => {
 						<InputLabel
 							required
 							className="inputlabel"
-							sx={{"& .MuiFormLabel-asterisk": {color: "red"}}}
+							sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}
 						>
 							Resource
 						</InputLabel>
@@ -206,7 +205,7 @@ const AddTimeLogForm = (props: any) => {
 						<InputLabel
 							required
 							className="inputlabel"
-							sx={{"& .MuiFormLabel-asterisk": {color: "red"}}}
+							sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}
 						>
 							Date
 						</InputLabel>
@@ -225,44 +224,29 @@ const AddTimeLogForm = (props: any) => {
 						/>
 					</div>
 					<div className="time-field">
-						<InputLabel
-							required
-							className="inputlabel"
-							sx={{"& .MuiFormLabel-asterisk": {color: "red"}}}
-						>
-							Time
-						</InputLabel>
-						<TimeLogPicker
-							name="time"
-							onDurationChange={(value: any) =>
-								handleFieldChange(value, "duration")
-							}
-						></TimeLogPicker>
+						<InputLabel required className="inputlabel" sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}>{!selectedWorkers ? 'Time' : 'Workers'}</InputLabel>
+						{!selectedWorkers ? 
+							<TimeLogPicker
+								name="time"
+								onDurationChange={(value: any) =>
+									handleFieldChange(value, "duration")
+								}
+							></TimeLogPicker>
+							: 
+							<TextField
+								InputProps={{
+									startAdornment: <span className="common-icon-Team-Members resourcedropdown"></span>,
+								}}
+								name="name"
+								variant="standard"
+								//   value={}
+								onClick={(e: any) => setOpenWorkerDialog(true)}
+								placeholder='Select'
+							/>
+						}
 					</div>
-					{/* <div className="resource-field worker-field">
-            <InputLabel
-              required
-              className="inputlabel"
-              sx={{
-                "& .MuiFormLabel-asterisk": {
-                  color: "red",
-                },
-              }}
-            >
-              Workers
-            </InputLabel>
-            <TextField
-              InputProps={{
-                startAdornment: <span className="common-icon-name"></span>,
-              }}
-              name="name"
-              variant="standard"
-            //   value={}
-              onClick={(e: any) => setOpenWorkerDialog(true)}
-            />
-          </div> */}
 					<div className="duration-field">
-						<InputLabel className="inputlabel">Duration</InputLabel>
+						<InputLabel className="inputlabel">{!selectedWorkers ? 'Duration' : 'Total Hours'}</InputLabel>
 						<span className="common-icon-monthly"></span> {timelog.duration}
 					</div>
 					<div className="smart-item-field">
@@ -286,7 +270,7 @@ const AddTimeLogForm = (props: any) => {
 					</div>
 					<IQButton
 						color="orange"
-						sx={{height: "2.5em"}}
+						sx={{ height: "2.5em", width: "fit-content" }}
 						disabled={isAddDisabled}
 						onClick={handleAdd}
 					>
@@ -325,7 +309,7 @@ const DescriptionField = memo((props: TextFieldProps) => {
 					<InputAdornment position="start">
 						<div
 							className="common-icon-adminNote"
-							style={{fontSize: "1.25rem"}}
+							style={{ fontSize: "1.25rem" }}
 						></div>
 					</InputAdornment>
 				),
@@ -333,7 +317,7 @@ const DescriptionField = memo((props: TextFieldProps) => {
 					<InputAdornment position="end">
 						<div
 							className="common-icon-Edit"
-							style={{fontSize: "1.25rem"}}
+							style={{ fontSize: "1.25rem" }}
 						></div>
 					</InputAdornment>
 				),

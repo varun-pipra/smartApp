@@ -23,15 +23,28 @@
     .tl-toolbar-btn {
         margin-left: 20px !important;
         padding: 0px 8px !important;
-        border-color: #999 !important;
-        background-color: transparent !important;
-        color: #999 !important;
         border-radius: 3px;
         height: 28px;
         span:before {
             font-size: 24px;
         }
-    }
+	}
+	.accept-btn{
+ 		
+		border-color: #74e07d !important;
+        background-color: #74e07d !important;
+        color: white !important;
+	}
+	.btn-disable{
+ 		border-color: #999 !important;
+        background-color: transparent !important;
+        color: #999 !important;
+	}
+	.sendBack-btn{
+ 		border-color: #b4391c !important;
+		background-color: #b4391c !important;
+        color: white !important;
+	}
     .pdf-toolbar-btn {
         border-left: 1px solid #ccc !important;
         border-right: 1px solid #ccc !important;

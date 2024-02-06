@@ -13,9 +13,9 @@
     }
     .field-section {
         display: grid;
-        grid-gap: 3em;
+        grid-gap: 2.8em;
         grid-template-columns: minmax(200px, 3fr) minmax(200px, 1fr) 2fr 1.9fr 3.5fr minmax(75px, auto);
-        grid-template-columns: minmax(160px, 2fr) minmax(130px, 1fr) minmax(140px, 1fr) minmax(160px, 2fr) 1fr minmax(250px, 2fr) minmax(75px, auto);
+        // grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) minmax(140px, 1fr) minmax(160px, 2fr) 1fr minmax(250px, 2fr) minmax(75px, auto);
         .resource-field {
             .resourcedropdown {
                 color: #ed7532 !important;

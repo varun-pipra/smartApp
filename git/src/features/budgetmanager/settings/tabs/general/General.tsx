@@ -104,7 +104,9 @@ const GeneralSettings = (props: any) => {
 		if (openAlert === false) {
 			if (divisionOrCostTypeChanged) {
 				updateSettings(formData)
-				dispatch(fetchGridData(appInfo))
+				setTimeout(() => {
+					dispatch(fetchGridData(appInfo))
+				},5000)
 			}
 			else { setFormData({ ...formData, divisionCostCodeId: settingsData.divisionCostCodeId, costTypeId: settingsData.costTypeId }) }
 		}

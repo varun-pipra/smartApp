@@ -238,6 +238,7 @@ const SBSManagerWindow = (props: any) => {
 			);
 		}
 	}, [sbsGridData]);
+
 	useEffect(() => {
 		if (localhost) {
 			dispatch(setServer(_.omit(appData, ["DivisionCost"])));
@@ -311,6 +312,7 @@ const SBSManagerWindow = (props: any) => {
 			}
 		}
 	}, [localhost, appData]);
+
 	const saveFilesFromDrive = (appInfo: any, fileList: Array<any>) => {
 		const structuredFiles = fileList.map((file: any) => {
 			return {
@@ -513,6 +515,7 @@ const SBSManagerWindow = (props: any) => {
 			suppressGroupRowsSticky: true,
 		};
 	}, []);
+
 	const handleSelectedCategory = (type: string) => {
 		console.log("managerr", type)
 		switch (type) {
@@ -559,6 +562,7 @@ const SBSManagerWindow = (props: any) => {
 		const SelectionService = e.api.getSelectedRows();
 		dispatch(setSelectedNodes(SelectionService));
 	};
+
 	const searchAndFilter = (list: any) => {
 		return list.filter((item: any) => {
 			const tradeNames = item.trades?.map((x: any) => x?.name?.toString());
@@ -594,6 +598,7 @@ const SBSManagerWindow = (props: any) => {
 			return searchVal && filterVal;
 		});
 	};
+
 	useEffect(() => {
 		if (gridSearchText || selectedFilters) {
 			const data = searchAndFilter([...modifiedList]);
@@ -628,6 +633,12 @@ const SBSManagerWindow = (props: any) => {
 			}
 		}
 	};
+	const onClickRefresh = () => {
+		const node = gridApi?.current?.api;
+		node.forEachNode((node:any) => {if (node.rowIndex) {node.setSelected(false);}});
+		dispatch(getSBSGridList());
+	}
+
 	return (
 		<div className="sbs-manager-cls">
 			<GridWindow
@@ -662,7 +673,7 @@ const SBSManagerWindow = (props: any) => {
 					presenceId: "sbs-manager-presence",
 					showLiveSupport: true,
 					showStreams: false,
-					showPrint:true,
+					showPrint: true,
 				}}
 				tools={{
 					closable: true,
@@ -684,7 +695,7 @@ const SBSManagerWindow = (props: any) => {
 					gridContainer: {
 						toolbar: {
 							leftItems: (
-								<SBSToolbarLeftButtons clickHandler={leftToolBarHandler} />
+								<SBSToolbarLeftButtons clickHandler={leftToolBarHandler} refreshHandler={onClickRefresh} />
 							),
 							rightItems: <SBSToolbarRightButtons />,
 							searchComponent: {

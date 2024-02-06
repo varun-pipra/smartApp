@@ -941,6 +941,7 @@ const TimeLogWindow = (props: any) => {
 						getRowId: (params: any) => params.data?.id,
 						rowSelected: (e: any) => rowSelected(e),
 						groupDisplayType: 'groupRows',
+						emptyMsg:'No items available yet',
 						nowRowsMsg: '<div>create new time log entries from above</div>',
 						groupRowRendererParams: groupRowRendererParams,
 						onFirstDataRendered: onFirstDataRendered,

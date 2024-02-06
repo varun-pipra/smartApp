@@ -15,7 +15,7 @@ import { deleteSBSGridRecs } from "../../operations/sbsManagerAPI";
 
 // Component definition
 export const SBSToolbarLeftButtons = memo((props:any) => {
-  const { clickHandler } = props;
+  const { clickHandler,refreshHandler } = props;
   const dispatch = useAppDispatch();
   const appInfo = useAppSelector(getServer);
 
@@ -46,9 +46,7 @@ export const SBSToolbarLeftButtons = memo((props:any) => {
       <IQTooltip title="Refresh" placement="bottom">
         <IconButton
           aria-label="Refresh"
-          onClick={() => {
-            dispatch(getSBSGridList());
-          }}
+          onClick={() => { refreshHandler() }}
         >
           <span className="common-icon-refresh"></span>
         </IconButton>

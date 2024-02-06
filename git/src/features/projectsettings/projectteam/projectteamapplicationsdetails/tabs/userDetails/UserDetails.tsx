@@ -441,7 +441,7 @@ const UserDetails = (props: any) => {
 		} else if(name === 'workCategory') {
 			updateddata = { ...user, [name]: value };
 			let GetRatePerHour = (CategoriesData || [])?.find((x:any) => x.id === value)?.trades?.filter((item:any) => item.name === user?.trade?.displayField);
-			updateddata = { ...updateddata, ['hourlyRate']: GetRatePerHour?.[0]?.defaultHourlyRate };
+			updateddata = { ...updateddata, ['hourlyRate']: (GetRatePerHour?.[0]?.defaultHourlyRate)? GetRatePerHour?.[0]?.defaultHourlyRate: 0 };
 		} else {
 			updateddata = { ...user, [name]: value }
 		};

@@ -27,13 +27,13 @@ const details = (props: any) => {
 		sbs: '',
 		phase: 'Pre Construction',
 		locationtype: '',
-		defaultlocation: ''
 	});
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
 	var tinycolor = require('tinycolor2');
 	const [timeaddedoptions, setTimeAddedOptions] = useState([]);
 	const [sbsoptions, setSbsOptions] = useState([]);
 	const [locations, setLocations] = useState<any>([]);
+	const [defaultlocation, setdefaultlocation] = useState<any>([]);
 
 	useEffect(() => {
 		console.log('selectedTimeLogDetails', selectedTimeLogDetails)
@@ -48,6 +48,23 @@ const details = (props: any) => {
 		}
 		setDetails({ ...details, ...data })
 	}, [selectedTimeLogDetails])
+
+	const handleFieldChange = (value: any, name: any) => {
+		console.log('value', value);
+		console.log('name', name);
+		const data = { ...details, [name]: value };
+		console.log('data', data)
+		setDetails(data)
+	}
+
+	const handleLocationChange = (newValues: any) => {
+		console.log(newValues);
+		const locations: any = [];
+		newValues?.map((obj: any) => {
+			!locations?.map((a: any) => a?.id)?.includes(obj?.id) && locations.push(obj);
+		});
+		setdefaultlocation(locations);
+	};
 
 	return (
 		<div className='timelog-details'>
@@ -113,8 +130,8 @@ const details = (props: any) => {
 									/>
 								}
 								defaultValue={details?.startdate ? convertDateToDisplayFormat(details?.startdate) : ''}
-								//onChange={(val: any) => handleFieldChange(val, 'startdate')}
-								disabled={true}
+								onChange={(val: any) => handleFieldChange(val, 'startdate')}
+								disabled={false}
 							/>
 						</div>
 					</span>
@@ -131,8 +148,8 @@ const details = (props: any) => {
 									/>
 								}
 								defaultValue={details?.enddate ? convertDateToDisplayFormat(details?.enddate) : ''}
-								//onChange={(val: any) => handleFieldChange(val, 'startdate')}
-								disabled={true}
+								onChange={(val: any) => handleFieldChange(val, 'enddate')}
+								disabled={false}
 							/>
 						</div>
 					</span>
@@ -166,8 +183,8 @@ const details = (props: any) => {
 							<DescriptionField
 								name='description'
 								className='description-field'
-								value={details?.description}
-							//onChange={handleFieldChange}
+								//value={details?.description}
+								onChange={(e: any) => { handleFieldChange(e.target.value, 'description') }}
 							/>
 						</div>
 					</span>
@@ -186,7 +203,7 @@ const details = (props: any) => {
 								Placeholder={'Select'}
 								selectedValue={details?.timeadded}
 								isMultiple={false}
-							//handleChange={(value: any) => handleFieldChange(value, 'resource')}
+								handleChange={(value: any) => handleFieldChange(value, 'timeadded')}
 							/>
 						</div>
 					</span>
@@ -229,7 +246,7 @@ const details = (props: any) => {
 								Placeholder={'Select'}
 								selectedValue={details?.sbs}
 								isMultiple={false}
-							//handleChange={(value: any) => handleFieldChange(value, 'resource')}
+								handleChange={(value: any) => handleFieldChange(value, 'sbs')}
 							/>
 						</div>
 					</span>
@@ -250,7 +267,7 @@ const details = (props: any) => {
 								name='name'
 								variant="standard"
 								value={details?.phase}
-							//onChange={(e: any) => handleOnChange('name', e.target?.value)}
+								onChange={(e: any) => handleFieldChange(e.target?.value, 'phase')}
 							//onBlur={(e: any) => handleOnBlur('name')}
 							/>
 						</div>
@@ -278,26 +295,22 @@ const details = (props: any) => {
 								outSideOfGrid={false}
 								selectedValue={details?.locationtype}
 								sx={{ fontSize: "18px" }}
-								handleChange={(value: string | undefined | string[]) => {
-
-								}}
+								handleChange={(value: string | undefined | string[]) => { handleFieldChange(value, 'locationtype') }}
 							/>
 						</div>
 					</span>
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>Default Location</div>
 						<div className='timelog-info-data-box'>
-							{/* <Location
+							<Location
 								fullWidth
 								hideLevel={true}
 								multiple={true}
 								options={locations}
-								value={details?.defaultlocation}
-								onChange={(e, newValue) => {
-									//handleLocationChange(newValue);
-								}}
+								value={defaultlocation}
+								onChange={(e, newValue) => { handleLocationChange(newValue) }}
 								getOptionLabel={(option: any) => option?.text || ""}
-							/> */}
+							/>
 						</div>
 					</span>
 				</div>
@@ -307,6 +320,7 @@ const details = (props: any) => {
 	)
 }
 export default details;
+
 const DescriptionField = memo((props: TextFieldProps) => {
 	return <TextField
 		fullWidth

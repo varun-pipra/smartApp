@@ -53,6 +53,8 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 
 	const lidProps = {
 		title: <TitleUpdate />,
+		showSubTitle: true,
+		subtitle: <SubTitleContent />,
 		defaultTabId: 'details',
 		tabPadValue: 10,
 		headContent: {
@@ -71,6 +73,9 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 				</IQButton>
 				<IQButton className='save-buttons' disabled={false} onClick={() => { console.log('SAVE') }}>
 					SAVE
+				</IQButton>
+				<IQButton className='resubmit-buttons' disabled={false} onClick={() => { console.log('Resubmit') }}>
+					Resubmit
 				</IQButton>
 			</>,
 			leftNode: <>
@@ -162,4 +167,32 @@ const Title = memo(() => {
 		</div>
 	)
 })
+
+const SubTitleContent = (props: any) => {
+
+	return (
+		<div style={{
+			display: 'flex',
+			gap: '6px',
+			alignItems: 'center',
+			background: '#fdf5ca',
+			padding: '8px 10px',
+			borderRadius: '6px',
+			marginTop: '6px',
+			width: 'fit-content',
+			border: '2px solid #fae57a'
+		}}>
+			<span className='common-icon-exclamation'
+				style={{ color: 'red', fontSize: "30px", marginTop: "-1px", }}
+			/>
+			<div style={{
+				fontSize: '14px',
+				fontFamily: "Roboto-Regular",
+				color: 'black',
+				fontWeight: 500
+			}}>
+				{'The Time was not entered anywhere within the Job Location'}</div>
+		</div>
+	)
+};
 export default TimeLogLID;

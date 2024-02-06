@@ -1,5 +1,5 @@
-import {memo} from 'react';
-import {Routes, Route} from 'react-router-dom';
+import { memo } from 'react';
+import { Routes, Route } from 'react-router-dom';
 
 // import DialogExample from 'examples/Dialog/Dialog';
 // import GridExample from 'examples/Grid/GridExample';
@@ -136,6 +136,7 @@ const AppRoutes = () => {
 				</Route>
 				<Route path='sbsManager' element={<SBSManagerWindow />} >
 					<Route path='fullView' element={<SBSManagerWindow />} />
+					<Route path='home' element={<SBSManagerWindow fullScreen={true} />} />
 				</Route>
 			</Route>
 			<Route path='common'>
