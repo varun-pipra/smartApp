@@ -1,6 +1,30 @@
 .ss-right-panel {
     height: 100%;
     display: flex;
+    .iq-brena-doc-viewer:focus-visible {
+        outline: none !important;
+    }
+        .navigation-body-cls{
+            left: 68% !important;
+        }
+      .iq-brena-doc-viewer {
+        // position: relative;
+        height: 80% !important;
+        .canvas-wrapper-cls {
+            border: none;
+        }
+        .common-zoom-control {
+            top: 80% !important;
+            left: 85% !important;
+        }
+        .common-navigation-control {
+            top: 50% !important;
+        }
+        .canvas-wrapper-cls {
+            height: 100%;
+            border-top: 0px;
+        }
+    }
     .ss-doc-cont {
         height: 100%; // width:60%;
     }
