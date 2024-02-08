@@ -22,13 +22,11 @@ import { Avatar, Button } from '@mui/material';
 import { findAndUpdateFiltersData } from 'features/safety/sbsmanager/utils';
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import { getAppsList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
-import { setSelectedTimeLog } from './stores/TimeLogSlice';
+import { getAppsList, getSBSGridList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
+import { setSelectedTimeLog,setToast } from './stores/TimeLogSlice';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
-
-let defaultTimeLogStatusFilter: any = [];
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -40,6 +38,7 @@ const TimeLogWindow = (props: any) => {
 
 	const location = useLocation();
 	const { server } = useAppSelector((state) => state.appInfo);
+	const{toast} = useAppSelector((state)=>state.timeLogRequest);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
@@ -61,10 +60,9 @@ const TimeLogWindow = (props: any) => {
 		endDate : '',
 	});
 	const selectedFiltersRef = useRef<any>({});
-	if (statusFilter) defaultTimeLogStatusFilter = filters.status;
 
 	const groupOptions = [{
-		text: 'Users', value: 'users'
+		text: 'Users', value: 'entryFor'
 	}, {
 		text: 'Work Team', value: 'workTeam'
 	}, {
@@ -86,13 +84,6 @@ const TimeLogWindow = (props: any) => {
 	}, {
 		text: 'Location', value: 'location'
 	}];
-
-	// const tabEnum: any = {
-	// 	details: 'change-Event-Details',
-	// 	lineItems: 'budget-line-items',
-	// 	referencefiles: 'reference-files',
-	// 	links: 'links'
-	// };
 
 	const queryParams: any = new URLSearchParams(location.search);
 
@@ -116,13 +107,13 @@ const TimeLogWindow = (props: any) => {
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	setToastMessage(toast);
-	// 	setTimeout(() => {
-	// 		setToastMessage('');
-	// 		dispatch(setToast(''));
-	// 	}, 3000);
-	// }, [toast]);
+	useEffect(() => {
+		setToastMessage(toast);
+		setTimeout(() => {
+			setToastMessage('');
+			dispatch(setToast(''));
+		}, 3000);
+	}, [toast]);
 
 	/**
 	 * All initial APIs will be called here
@@ -131,11 +122,16 @@ const TimeLogWindow = (props: any) => {
 	 */
 	useEffect(() => {
 		if (server) {
-			// dispatch(getChangeEventList());
 			dispatch(getAppsList());
+			
 		}
 	}, [server]);
 
+	React.useEffect(() => {
+		dispatch(getSBSGridList());
+		return () => { };
+	}, []);
+	
 	useEffect(() => {
 		if (localhost) {
 			dispatch(setServer(_.omit(appData, ['DivisionCost'])));
@@ -253,6 +249,26 @@ const TimeLogWindow = (props: any) => {
 			endDate : '',
 		};
 	};
+	const updateCustomHeaderParams = useCallback((data: any) => {
+    	const newDefs: any = gridRef?.current?.api?.getColumnDefs()?.map((def: any) => {
+			if (def?.field === "status") {
+				return {
+					...def,
+					headerComponentParams: {
+					columnName: "Status",
+					options: timelogStatusMap,
+					defaultFilters: data,
+					onSort: handleStatusColumnSort,
+					onOpen: () => setStatusFilter(false),
+					onClose: () => setStatusFilter(true),
+					onFilter: handleStatusFilter,
+					},
+				};
+			}
+        	return def;
+      });
+    	gridRef?.current?.api?.setColumnDefs(newDefs);
+ 	}, []);
 	const onFilterChange = (filterValues: any, type?: string) => {
 		if (Object.keys(filterValues).length !== 0) {
 			let filterObj = filterValues;
@@ -269,17 +285,26 @@ const TimeLogWindow = (props: any) => {
 			});
 			if (!_.isEqual(selectedFilters, filterObj) && Object.keys(filterObj).length > 0) {
 				setSelectedFilters(filterObj);
+				if(filterObj?.hasOwnProperty('status')) {
+					updateCustomHeaderParams(filterObj.status);
+				};
 			} else {
 				if (!_.isEqual(selectedFilters, filterObj)
 					&& Object.keys(filterValues).length === 0) {
 						setSelectedFilters(filterObj);
 						defaultDateRangeState();
+						if(selectedFilters?.hasOwnProperty('status') && !filterObj?.hasOwnProperty('status')) {
+							updateCustomHeaderParams([]);		
+						};
 				};
 			}
 		} else {
 			 if (Object.keys(filterValues).length === 0) {
 				setSelectedFilters(filterValues);
 				defaultDateRangeState();
+				if(selectedFilters?.hasOwnProperty('status') && !filterValues?.hasOwnProperty('status')) {
+					updateCustomHeaderParams([]);		
+				};
 			};
 		};
 	};
@@ -319,6 +344,7 @@ const TimeLogWindow = (props: any) => {
 				&& (_.isEmpty(filterValues?.createdBy) || filterValues?.createdBy?.length === 0 || filterValues?.createdBy?.indexOf(item.createdBy?.name) > -1)
 				&& (_.isEmpty(filterValues?.location) || filterValues?.location?.length === 0 || filterValues?.location?.indexOf(item?.location)) > -1)
 				&& (_.isEmpty(filterValues?.sbs) || filterValues?.sbs?.length === 0 || filterValues?.sbs?.indexOf(item.sbs) > -1)
+				&& (_.isEmpty(filterValues?.entryFor) || filterValues?.entryFor?.length === 0 || filterValues?.entryFor?.indexOf(item.entryFor) > -1)
 				&& (_.isEmpty(filterValues?.source) || filterValues?.source?.length === 0 || filterValues?.source?.indexOf(item?.source) > -1)
 				&& (_.isEmpty(filterValues?.workTeam) || filterValues?.workTeam?.length === 0 || filterValues?.workTeam?.indexOf(item?.workTeam) > -1)
 				&& (_.isEmpty(filterValues?.status) || filterValues?.status?.length === 0 || filterValues?.status?.indexOf(item.status) > -1)
@@ -369,54 +395,15 @@ const TimeLogWindow = (props: any) => {
 		dispatch(setCustomDatesRange(datesRef.current));
 	};
 	const onDataChange = (fieldName: string, time: any, rowIndex?: any) => {
-		// let updatedEntries;
-		// updatedEntries[rowIndex][fieldName] = time;
-		// if (fieldName === "startTime" || fieldName === "endTime") {
-		//   if (
-		// 	updatedEntries[rowIndex].startTime &&
-		// 	updatedEntries[rowIndex].endTime
-		//   ) {
-		// 	const startDateTime: any = addTimeToDate(
-		// 	  dateStr,
-		// 	  updatedEntries[rowIndex].startTime
-		// 	);
-		// 	const endDateTime: any = addTimeToDate(
-		// 	  dateStr,
-		// 	  updatedEntries[rowIndex].endTime
-		// 	);
-		// 	const durationInSeconds =
-		// 	  (new Date(endDateTime).getTime() -
-		// 		new Date(startDateTime).getTime()) /
-		// 	  1000;
-		// 	  if (durationInSeconds > 0) {
-		// 		updatedEntries[rowIndex].duration = durationInSeconds;
-		// 	  } else {
-		// 		updatedEntries[rowIndex].duration = 0;
-		// 		if (fieldName === 'startTime') {
-		// 		  updatedEntries[rowIndex].endTime = '';
-		// 		} else {
-		// 		  updatedEntries[rowIndex].startTime = '';
-		// 		}
-		// 	  }
-			
-		//   }
-		// }
-	  };
-	  const convertTimetoDate = (date: any) => {
-		if (date === "") return null;
-		// let b: any = date ? dayjs(`1/1/1 ${date}`).format("HH:mm:00") : null; //checking AM or PM
-		// let a: any = dayjs(new Date()).set('hour', (b?.split(":")?.[0])).set('minute', (b?.split(":")?.[1]?.split(" ")?.[0]));
-		let b: any = date ? moment.utc(date).format("HH:mm:A") : null; //checking AM or PM
-		let a: any = moment.utc(new Date()).set('hour', (b?.split(":")?.[0])).set('minute', (b?.split(":")?.[1]?.split(" ")?.[0]));
-		return a._d;
-	};
-	  const getPickerDefaultTime = (time: any, incrementDecrement: any) => {
 		
-		let currentTime: any = convertTimetoDate(time);
-		if (isNaN(currentTime)) {
+	  };
+	  const getPickerDefaultTime = (time: any, incrementDecrement: any) => {
+		const ConvertDate:any = new Date(time);
+		if (isNaN(ConvertDate)) {
 		  return '';
-		}
-		let [hours, minutes, ampm] = time.split(/:|\s/);
+		};
+		const ConvertTime :any= moment(time).format('hh:mm A');
+		let [hours, minutes, ampm] = ConvertTime?.split(/:|\s/);
 		hours = parseInt(hours, 10);
 			minutes = parseInt(minutes, 10);
 		if (isNaN(hours) && isNaN(minutes)) {
@@ -449,9 +436,11 @@ const TimeLogWindow = (props: any) => {
 	 * Search, Filters are applied to the source data and the result
 	 * is set to the local state
 	 */
-	const headers: any = useMemo(() => [{
+	const headers: any = useMemo(() => [
+	{
 		headerName: 'Time Segment ID',
 		field: 'timeSegmentId',
+		width: 220,
 		pinned: 'left',
 		suppressMenu: true,
 		checkboxSelection: (params: any) => {
@@ -467,6 +456,7 @@ const TimeLogWindow = (props: any) => {
 	}, {
 		headerName: 'Status',
 		field: 'status',
+		width: 160,
 		pinned: 'left',
 		cellClass: 'status-column',
 		headerClass: 'custom-filter-header',
@@ -474,7 +464,6 @@ const TimeLogWindow = (props: any) => {
 		headerComponentParams: {
 			columnName: 'Status',
 			options: timelogStatusMap,
-			defaultFilters: defaultTimeLogStatusFilter,
 			onSort: handleStatusColumnSort,
 			onOpen: () => setStatusFilter(false),
 			onClose: () => setStatusFilter(true),
@@ -495,7 +484,9 @@ const TimeLogWindow = (props: any) => {
 		}
 	}, {
 		headerName: 'Time Entry For',
+		className: 'time-entrycol-cls',
 		field: 'entryFor',
+		width: 280,
 		pinned: 'left',
 		aggFunc: (params: any) => {
 			if (!params.rowNode?.key) {
@@ -503,12 +494,6 @@ const TimeLogWindow = (props: any) => {
 			} return `Sub Total - ${params.rowNode?.key}`;
 		}
 	},
-	// {
-	// 	headerName: 'Date Range',
-	// 	field: 'dateRange',
-	// 	pinned: 'left',
-	// 	valueGetter: (params: any) => params?.data?.dateRange,
-	// },
 	 {
 		headerName: 'Company',
 		field: 'company'
@@ -532,7 +517,7 @@ const TimeLogWindow = (props: any) => {
 				}}
 				disabled={false}
 				defaultTime={moment.utc(params?.data?.startTime).format('h:mm A') || ""}
-				pickerDefaultTime={getPickerDefaultTime(params?.data?.startTime, false)}
+				pickerDefaultTime={getPickerDefaultTime(params?.data?.startTime, true)}
 				placeholder={"HH:MM"}
 				// actions={[]}
 				ampmInClock={true}
@@ -557,7 +542,6 @@ const TimeLogWindow = (props: any) => {
 			></SUIClock>
 			) : null
 		},
-	}, {
 	}, {
 		headerName: 'Duration',
 		field: 'duration',
@@ -632,7 +616,7 @@ const TimeLogWindow = (props: any) => {
 		headerName: 'Time Log ID',
 		field: 'timeLogId',
 		keyCreator: (params: any) => params?.data?.timeLogId || "None"
-	}], [defaultTimeLogStatusFilter, server, selectedFilters]);
+	}], [server, selectedFilters]);
 
 	(headers || [])?.forEach((item: any) => {
 		if (dateTimeFields?.includes(item?.field)) {
@@ -648,133 +632,133 @@ const TimeLogWindow = (props: any) => {
 	let filterOptions = useMemo(() => {
 	var filterMenu = [{
 		text: 'Users',
-		value: 'users',
-		key: 'users',
-		keyValue: 'users',
+		value: 'entryFor',
+		key: 'entryFor',
+		keyValue: 'entryFor',
 		children: { type: "checkbox", items: [] }
-	}, {
-		text: 'Work Team',
-		value: 'workTeam',
-		key: 'workTeam',
-		keyValue: 'workTeam',
-		children: { type: "checkbox", items: [] }
-	}, {
-		text: 'Companies',
-		value: 'companies',
-		key: 'companies',
-		keyValue: 'company',
-		children: { type: "checkbox", items: [] }
-	}, {
-		text: 'Apps',
-		value: 'apps',
-		key: 'apps',
-		keyValue: 'smartItem',
-		children: { type: "checkbox", items: [] }
-	}, {
-		text: 'Status',
-		value: 'status',
-		key: 'status',
-		keyValue: 'status',
-		children: {
-			type: 'checkbox',
-			items: timelogStatusMap
-		}
-	}, {
-		text: 'Source',
-		value: 'source',
-		key: 'source',
-		keyValue: 'source',
-		children: { type: "checkbox", items: [] }
-	}, {
-		text: 'Created By',
-		value: 'createdBy',
-		key: 'createdBy',
-		keyValue: 'createdBy',
-		children: { type: "checkbox", items: [] }
-	}, {
-		text: 'Conflicting Time Entries',
-		value: 'conflicting',
-		key: 'conflicting',
-		keyValue :'conflicting',
-		children: {
-			type: 'checkbox',
-			items: [{
-				text: 'Conflicting Time',
-				key: 'conflictingTime',
-				value: 'conflictingTime'
-			}, {
-				text: 'Conflicting Location',
-				key: 'conflictingLocation',
-				value: 'conflictingLocation'
-			}]
-		}
-	}, {
-		text: 'Date Range',
-		value: 'dateRange',
-		key: 'dateRange',
-		keyValue :'dateRange',
-		children: {
-			type: 'checkbox',
-			items: [{
-				text: 'Today',
-				key: 'today',
-				value: 'today'
-			}, {
-				text: 'Yesterday',
-				key: 'yesterday',
-				value: 'yesterday'
-			}, {
-				text: 'This Week',
-				key: 'thisWeek',
-				value: 'thisWeek'
-			}, {
-				text: 'Last Week',
-				key: 'lastWeek',
-				value: 'lastWeek'
-			}, {
-				text: 'This Month',
-				key: 'thisMonth',
-				value: 'thisMonth'
-			}, {
-				text: 'Last Month',
-				key: 'lastMonth',
-				value: 'lastMonth'
-			}, {
-				text: 'Future',
-				key: 'future',
-				value: 'future'
-			},{
-				text: "Custom",
-				value: "custom",
-				key: "custom",
-				keyValue: "custom",
-				children: {
-				type: "custom",
-				component: <CustomDateRangeFilterComp 
-					dates={{
-						startDate : datesRef?.current?.startDate ?? selectedFilters?.dateRange?.startDate,
-						endDate : datesRef?.current?.endDate ?? selectedFilters?.dateRange?.endDate,
-					}} 
-					handleApplyDatesFilter={handleApplyDatesFilter}
-					handleClearDatesFilter= {handleClearDatesFilter}
-					/>,
-				items: [{}],
-			 }
-			}]
-		}
-	}, {
-		text: 'System Breakdown Structure',
-		value: 'sbs',
-		key: 'sbs',
-		keyValue: 'sbs',
-		children: { type: "checkbox", items: [] }
-	}, {
-		text: 'Location',
-		value: 'location',
-		key: 'location',
-		keyValue: 'location',
-		children: { type: "checkbox", items: [] }
-	}];
+		}, {
+			text: 'Work Team',
+			value: 'workTeam',
+			key: 'workTeam',
+			keyValue: 'workTeam',
+			children: { type: "checkbox", items: [] }
+		}, {
+			text: 'Companies',
+			value: 'companies',
+			key: 'companies',
+			keyValue: 'company',
+			children: { type: "checkbox", items: [] }
+		}, {
+			text: 'Apps',
+			value: 'apps',
+			key: 'apps',
+			keyValue: 'smartItem',
+			children: { type: "checkbox", items: [] }
+		}, {
+			text: 'Status',
+			value: 'status',
+			key: 'status',
+			keyValue: 'status',
+			children: {
+				type: 'checkbox',
+				items: timelogStatusMap
+			}
+		}, {
+			text: 'Source',
+			value: 'source',
+			key: 'source',
+			keyValue: 'source',
+			children: { type: "checkbox", items: [] }
+		}, {
+			text: 'Created By',
+			value: 'createdBy',
+			key: 'createdBy',
+			keyValue: 'createdBy',
+			children: { type: "checkbox", items: [] }
+		}, {
+			text: 'Conflicting Time Entries',
+			value: 'conflicting',
+			key: 'conflicting',
+			keyValue :'conflicting',
+			children: {
+				type: 'checkbox',
+				items: [{
+					text: 'Conflicting Time',
+					key: 'conflictingTime',
+					value: 'conflictingTime'
+				}, {
+					text: 'Conflicting Location',
+					key: 'conflictingLocation',
+					value: 'conflictingLocation'
+				}]
+			}
+		}, {
+			text: 'Date Range',
+			value: 'dateRange',
+			key: 'dateRange',
+			keyValue :'dateRange',
+			children: {
+				type: 'checkbox',
+				items: [{
+					text: 'Today',
+					key: 'today',
+					value: 'today'
+				}, {
+					text: 'Yesterday',
+					key: 'yesterday',
+					value: 'yesterday'
+				}, {
+					text: 'This Week',
+					key: 'thisWeek',
+					value: 'thisWeek'
+				}, {
+					text: 'Last Week',
+					key: 'lastWeek',
+					value: 'lastWeek'
+				}, {
+					text: 'This Month',
+					key: 'thisMonth',
+					value: 'thisMonth'
+				}, {
+					text: 'Last Month',
+					key: 'lastMonth',
+					value: 'lastMonth'
+				}, {
+					text: 'Future',
+					key: 'future',
+					value: 'future'
+				},{
+					text: "Custom",
+					value: "custom",
+					key: "custom",
+					keyValue: "custom",
+					children: {
+					type: "custom",
+					component: <CustomDateRangeFilterComp 
+						dates={{
+							startDate : datesRef?.current?.startDate ?? selectedFilters?.dateRange?.startDate,
+							endDate : datesRef?.current?.endDate ?? selectedFilters?.dateRange?.endDate,
+						}} 
+						handleApplyDatesFilter={handleApplyDatesFilter}
+						handleClearDatesFilter= {handleClearDatesFilter}
+						/>,
+					items: [{}],
+				}
+				}]
+			}
+		}, {
+			text: 'System Breakdown Structure',
+			value: 'sbs',
+			key: 'sbs',
+			keyValue: 'sbs',
+			children: { type: "checkbox", items: [] }
+		}, {
+			text: 'Location',
+			value: 'location',
+			key: 'location',
+			keyValue: 'location',
+			children: { type: "checkbox", items: [] }
+		}];
     return filterMenu;
   }, []);
 
@@ -785,8 +769,8 @@ const TimeLogWindow = (props: any) => {
 		});
 	};
 
-	const rowSelected = (sltdRows: any) => {
-		//dispatch(setSelectedTimeLog(sltdRows));
+	const rowSelected = (rowNodes: any) => {
+		dispatch(setSelectedTimeLog(rowNodes));
 	};
 
 	const handleIconClick = () => {
@@ -810,6 +794,7 @@ const TimeLogWindow = (props: any) => {
 		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "company"));
 		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "source"));
 		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "sbs"));
+		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "entryFor"));
 		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "location"));
 		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "createdBy", true, "name"));
 		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "smartItem", true, "name"));
@@ -862,6 +847,7 @@ const TimeLogWindow = (props: any) => {
 			GenerateFilters();
 		}
 	}, [timelogList]);
+
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
 	return (

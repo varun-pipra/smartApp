@@ -174,3 +174,24 @@
 .required_color {
     color: red;
 }
+.budget-importer {
+    font-size: 16px;
+    border-radius: 1px solid lightgray;
+    &_progress {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        background: #fff;
+        padding: 10px;
+        line-height: 32px;
+    }
+    &_template {
+        display: flex;
+        justify-content: space-around;
+        padding: 4px;
+        align-items: center;
+        background: lightgray;
+        line-height: 32px;
+    }
+}

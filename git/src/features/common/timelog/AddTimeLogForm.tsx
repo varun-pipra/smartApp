@@ -6,18 +6,15 @@ import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQButton from "components/iqbutton/IQButton";
 import SmartDropDown from "components/smartDropdown";
 import _ from "lodash";
-import {
-	InputAdornment,
-	InputLabel,
-	TextField,
-	TextFieldProps,
-} from "@mui/material";
+import {InputAdornment,InputLabel,TextField,TextFieldProps,} from "@mui/material";
 import DatePickerComponent from "components/datepicker/DatePicker";
 import InputIcon from "react-multi-date-picker/components/input_icon";
 import TimeLogPicker from "sui-components/TimeLogPicker/TimeLogPicker";
 import convertDateToDisplayFormat from "utilities/commonFunctions";
 import WorkerDailog from "./workerDailog/WorkerDailog";
 import { makeStyles, createStyles } from "@mui/styles";
+import{setToast}from './stores/TimeLogSlice';
+
 interface TimeLogFormProps {
 	resource?: string;
 	date?: any;
@@ -73,7 +70,9 @@ const AddTimeLogForm = (props: any) => {
 	];
 	const resource = [
 		{ id: 1, label: "Me", value: "Me" },
-		{ id: 1, label: "Work Team", value: "workteam" },
+		{ id: 2, label: "Work Team", value: "workteam" },
+		{ id: 3, label: "My Company", value: "mycompany" },
+		{ id: 4, label: "Ad-hoc Users", value: "Ad-hoc-users" },
 	];
 	const [timelog, setTimeLog] = useState<TimeLogFormProps>(defaultValues);
 	const [isBudgetDisabled, setBudgetDisabled] = useState<boolean>(true);
@@ -88,7 +87,7 @@ const AddTimeLogForm = (props: any) => {
 	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(AddLinksData);
 	const { appsList } = useAppSelector(state => state.sbsManager);
 	const [selectedSmartItem, setSelectedSmartItem] = React.useState("");
-	const [selectedWorkers , setSelectedWorkers] = React.useState<Boolean>(false);
+	const [selectedWorkers, setSelectedWorkers] = React.useState<Boolean>(false);
 
 	useEffect(() => {
 		const addLinksOptionsCopy = [...addLinksOptions];
@@ -123,10 +122,9 @@ const AddTimeLogForm = (props: any) => {
 		existingSmartItem.children = appsForExisting;
 		setAddLinksOptions(addLinksOptionsCopy);
 	}, [appsList]);
+
 	const handleFieldChange = (event: any, name: any) => {
-		if(name === 'resource') setSelectedWorkers(event === "workteam" ? true : false)
-		console.log("event", event);
-		console.log("name", name);
+		setSelectedWorkers(event === "workteam" ? true : false)
 		setTimeLog((currentState) => {
 			const newState = { ...currentState, ...{ [name]: event } };
 			console.log("newState", newState);
@@ -144,8 +142,9 @@ const AddTimeLogForm = (props: any) => {
 	};
 
 	const handleAdd = () => {
-		//
+		dispatch(setToast('Time Logged Sucessfully.'));
 	};
+	
 	const handleMenu = (e: any, value: any) => {
 		// let sendMsg = {
 		// 	event: "common",
@@ -171,18 +170,14 @@ const AddTimeLogForm = (props: any) => {
 				<div className="spacer"></div>
 				<div className="field-section ">
 					<div className="resource-field">
-						<InputLabel
-							required
-							className="inputlabel"
-							sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}
-						>
+						<InputLabel required className="inputlabel" sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}>
 							Resource
 						</InputLabel>
 						{/* <TextField
-					InputProps={{ startAdornment: (<span className='common-icon-title'></span>) }}
-					name='resource' variant='standard' value={timelog.resource}
-					onChange={(value:any)=>handleFieldChange(value, "resource")}
-				/> */}
+							InputProps={{ startAdornment: (<span className='common-icon-title'></span>) }}
+							name='resource' variant='standard' value={timelog.resource}
+							onChange={handleFieldChange}
+						/> */}
 						<SmartDropDown
 							name="resource"
 							LeftIcon={
@@ -226,17 +221,17 @@ const AddTimeLogForm = (props: any) => {
 					</div>
 					<div className="time-field">
 						<InputLabel required className="inputlabel" sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}>{!selectedWorkers ? 'Time' : 'Workers'}</InputLabel>
-						{!selectedWorkers ? 
+						{!selectedWorkers ?
 							<TimeLogPicker
 								name="time"
 								onDurationChange={(value: any) =>
 									handleFieldChange(value, "duration")
 								}
 							></TimeLogPicker>
-							: 
+							:
 							<TextField
 								InputProps={{
-									startAdornment: <span className="common-icon-Team-Members workers-team-icon"></span>,
+									startAdornment: <span className="common-icon-Team-Members resourcedropdown"></span>,
 								}}
 								name="name"
 								variant="standard"

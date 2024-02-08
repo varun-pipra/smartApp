@@ -693,7 +693,10 @@ const SUIGrid = (props: TableGridProps) => {
 			setTimeout(()=> {
 				const dataArr: any = tableRef.current?.api?.clientSideRowModel?.rowsToDisplay || [];
 				const rowNode: any = dataArr.find((rec: any)=> rec?.data?.id === scrollToNewRowId);
-				tableRef.current?.api?.ensureIndexVisible(rowNode?.rowIndex, 'bottom');
+				if ((window?.parent as any)?.GBL?.config?.currentUserID === rowNode?.data?.createdBy?.uniqueId) {
+					//Scroll to the record only when it's a same user.
+					tableRef.current?.api?.ensureIndexVisible(rowNode?.rowIndex, 'bottom');
+				};
 				setTimeout(()=> {
 					tableRef.current?.api?.flashCells({rowNodes: [rowNode]})
 				}, 100)

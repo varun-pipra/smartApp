@@ -12,6 +12,8 @@ import Details from './tabs/details/Details';
 import { ContractorResponse } from 'features/vendorcontracts/vendorcontractsdetails/ContractorResponse/ContractorResponse';
 import { setSelectedTimeLog } from '../stores/TimeLogSlice';
 import { stringToUSDateTime2 } from 'utilities/commonFunctions';
+import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
+import { timelogStatusMap } from '../TimeLogConstants';
 
 const TimeLogLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
@@ -119,8 +121,8 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 const HeaderContent = memo((props: any) => {
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
-	const [stateObject, setStateObject] = useState<any>({});
-	console.log('selectedTimeLogDetails', selectedTimeLogDetails)
+
+	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status);
 
 	return <div className='kpi-section'>
 		<div className='kpi-vertical-container'>
@@ -132,21 +134,35 @@ const HeaderContent = memo((props: any) => {
 				<span className='last-modified-label grey-font'>Date Created:</span>
 				<span className='grey-fontt'>{selectedTimeLogDetails?.startDate && stringToUSDateTime2(selectedTimeLogDetails?.startDate)} by {selectedTimeLogDetails?.createdBy?.name}</span>
 			</div>
+			<span className='kpi-right-container'>
+				<span className='kpi-name'>
+					<span>Status :</span>
+					<span
+						className='status'
+						style={{
+							color: stateObject?.color,
+							backgroundColor: stateObject?.bgColor
+						}}
+					>
+						<span className={`status-icon ${stateObject?.icon}`}></span> {stateObject?.text}{' '}
+					</span>
+				</span>
+			</span>
 		</div>
 	</div>;
 });
 
 const CollapseContent = memo((props: any) => {
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
-	const [stateObject, setStateObject] = useState<any>({});
+	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
 
-
+	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status);
 	return <div className='kpi-section'>
 		<div className='kpi-vertical-container'>
 			<div className='lid-details-container'>
-				<span className='budgetid-label grey-font'>Status:</span>
-				<span className='status-pill' style={{ backgroundColor: stateObject?.lightColor, color: stateObject?.bgColor }}>
-					<span className={`status ${stateObject?.icon}`}></span>{stateObject?.text}
+				<span className='status grey-font'>Status:</span>
+				<span className='status' style={{ backgroundColor: stateObject?.bgColor, color: stateObject?.color, width: 'fit-content' }}>
+					<span className={`status-icon ${stateObject?.icon}`}></span>{stateObject?.text}
 				</span>
 			</div>
 		</div>

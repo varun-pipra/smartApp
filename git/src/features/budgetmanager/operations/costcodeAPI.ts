@@ -38,25 +38,18 @@ export const fetchCostCodeDivision = async () => {
 }
 
 export const fetchDivisionCostCodeFilterData = async (appInfo: any, costCodeName: string) => {
-	// This is the ,mock api which contains same data of original api. 
-	// Once if we can read the project id and session token you can replace this with original api
 	let response;
-	if (!isLocalhost && costCodeName) response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetListTreeByNameforBudget?name=${costCodeName}&sessionId=${appInfo?.sessionId}`);
-	else {
-		response = await fetch('https://6359ffe738725a1746bb7f4c.mockapi.io/budget/api/lineitems', {
-			headers: {
-				"x-api-key": "PMAK-62cdcdcdc696447f8ebe5958-4e1696b00ae09e46fde6936f46ab906da6"
-			},
+	if (!isLocalhost) { 
+		console.log("costCodeName", costCodeName)
+		if(costCodeName) response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/ListManager/List.iapi/GetListTreeByNameforBudget?name=${costCodeName}&sessionId=${appInfo?.sessionId}`);
+		if (!response?.ok) {
+			const message = `API Request Error (${moduleName}): ${response?.status}`;
+			throw new Error(message);
 		}
-		);
+		const data = await response?.json();
+		return data ? data : []
 	}
-	if (!response.ok) {
-		const message = `API Request Error (${moduleName}): ${response.status}`;
-		throw new Error(message);
-	}
-	const responseData = await response.json();
-
-	return isLocalhost ? CostCodeFilterData : responseData;
+	else return CostCodeFilterData;
 };
 export const fetchCostCodeAndTypeDropdownData = async (appInfo: any, name: string) => {
 	// This is the ,mock api which contains same data of original api. 

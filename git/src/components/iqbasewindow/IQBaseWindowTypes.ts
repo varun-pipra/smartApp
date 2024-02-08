@@ -50,4 +50,5 @@ export type IQBaseWindowProps = DialogProps & {
 	centerPiece?: ReactNode;
 	titleInfo?: Nullable<{ imgSrc: string, text: string; }>;
 	isBrenaOpen?: boolean;
+	withInModule?:boolean;	
 };

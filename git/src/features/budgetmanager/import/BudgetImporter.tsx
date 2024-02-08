@@ -31,6 +31,7 @@ const BudgetImporter = (props: any) => {
 				START IMPORT
 			</IQButton>
 		}
+		withInModule={true}
 		{...props}
 	>
 		<Stack className="bm-type">

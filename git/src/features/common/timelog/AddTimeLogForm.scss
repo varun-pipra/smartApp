@@ -13,9 +13,8 @@
     }
     .field-section {
         display: grid;
-        grid-gap: 2.8em;
-        grid-template-columns: minmax(200px, 3fr) minmax(200px, 1fr) 2fr 1.9fr 3.5fr minmax(75px, auto);
-        // grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) minmax(140px, 1fr) minmax(160px, 2fr) 1fr minmax(250px, 2fr) minmax(75px, auto);
+        grid-gap: 2.4em;
+        grid-template-columns: minmax(200px, 3fr) minmax(200px, 1fr) 2fr 1.9fr 3.5fr minmax(75px, auto); // grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) minmax(140px, 1fr) minmax(160px, 2fr) 1fr minmax(250px, 2fr) minmax(75px, auto);
         .resource-field {
             .resourcedropdown {
                 color: #ed7532 !important;
@@ -35,16 +34,15 @@
             }
         }
         .time-field {
+            min-width: 170px;
             .common-icon-CurrentTime {
                 color: #ed7431;
                 font-size: 23px;
                 margin-right: 6px;
             }
-            .workers-team-icon{
-                font-size: 26px;
-            }
         }
         .duration-field {
+            min-width: 135px;
             .common-icon-monthly {
                 color: #ed7431;
                 font-size: 26px;
@@ -58,6 +56,22 @@
                 font-size: 20px;
                 margin-right: 0px;
                 vertical-align: sub;
+            }
+        }
+    }
+}
+
+#menu-smartItems {
+    .MuiPaper-root {
+        min-width: 260px !important;
+    }
+    .user-menu-items .MuiListItem-root {
+        .MuiListItemIcon-root {
+            min-width: 30px;
+            .common-icon-new-smart-item:before,
+            .common-icon-existing-smart-items:before {
+                font-size: 22px;
+                color: #666;
             }
         }
     }

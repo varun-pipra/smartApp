@@ -28,23 +28,22 @@
         span:before {
             font-size: 24px;
         }
-	}
-	.accept-btn{
- 		
-		border-color: #74e07d !important;
+    }
+    .accept-btn {
+        border-color: #74e07d !important;
         background-color: #74e07d !important;
         color: white !important;
-	}
-	.btn-disable{
- 		border-color: #999 !important;
+    }
+    .btn-disable {
+        border-color: #999 !important;
         background-color: transparent !important;
         color: #999 !important;
-	}
-	.sendBack-btn{
- 		border-color: #b4391c !important;
-		background-color: #b4391c !important;
+    }
+    .sendBack-btn {
+        border-color: #b4391c !important;
+        background-color: #b4391c !important;
         color: white !important;
-	}
+    }
     .pdf-toolbar-btn {
         border-left: 1px solid #ccc !important;
         border-right: 1px solid #ccc !important;
@@ -82,6 +81,19 @@
         .common-icon-c-mark:before {
             color: #26d8b1;
             font-size: 24px;
+        }
+    }
+    .ag-row-footer {
+        .ag-cell-last-left-pinned {
+            font-weight: bold;
+        }
+    }
+    .ag-full-width-container .ag-row-group-expanded .ag-cell-wrapper.ag-row-group {
+        background: #fff !important;
+        padding-left: 8px;
+        font-weight: bold;
+        .custom-group-header-label-cls {
+            font-size: 14px;
         }
     }
 }

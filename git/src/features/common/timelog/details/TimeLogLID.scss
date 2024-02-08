@@ -1,31 +1,31 @@
 .timeLog-lineitem-detail {
     .title-bar {
-		.title{
-			.title-section {
-				width: 100%;
-				display: flex;
-				align-items: center;
-				gap:10px;
-				padding-top: 6px;
-				.image-section{
-					.image{
-						border-radius: 50%;
-						width:65px;
-						height:65px;
-					}
-				}
-				.name-section{
-					.name{
-						font-weight: bold;
-					}
-					.companyName{
-						font-weight: normal;
-						color:#d1cccc;
-						padding-top: 6px;
-					}
-				}
-			}
-		}
+        .title {
+            .title-section {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding-top: 6px;
+                .image-section {
+                    .image {
+                        border-radius: 50%;
+                        width: 65px;
+                        height: 65px;
+                    }
+                }
+                .name-section {
+                    .name {
+                        font-weight: bold;
+                    }
+                    .companyName {
+                        font-weight: normal;
+                        color: #d1cccc;
+                        padding-top: 6px;
+                    }
+                }
+            }
+        }
         .close-btn {
             margin-top: -6px;
         }
@@ -87,41 +87,59 @@
                 .last-modified-label {
                     height: 100%;
                     font-family: Roboto-Regular !important;
-				}
-				.bold{
-					font-weight: bold;
-				}
+                }
+                .bold {
+                    font-weight: bold;
+                }
             }
             .kpi-right-container {
-                display: grid;
                 gap: 0.5em;
                 grid-template-columns: 17em minmax(4em, auto);
                 .kpi-name {
                     padding: 0.25em 0.5em;
-                    text-align: right;
+					display: flex;
+					align-items: center;
+					gap:6px;
                 }
-                .amount {
-                    text-align: center;
-                    font-weight: bold;
-                    border-radius: 2px;
-                }
-            }
+				
+			}
+			.status {
+					width: fit-content;
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					border-radius: 0.25em;
+					padding: 0.5em 0.75em 0.5em 0.5em !important;
+					display: inline-flex;
+					align-items: center;
+					.status-icon {
+						font-size: 1.5em;
+						padding-right: 0.2em;
+					}
+				}
         }
-       
     }
     .dynamic-page-body {
         #details {
             height: fit-content !important;
-		}
-		#links{
-			height: 100% !important;
-		}
-	}
-   
+        }
+        #links {
+            height: 100% !important;
+        }
+    }
     .footer {
         .footer-right {
-            .sendback-buttons{
+            .MuiButtonBase-root {
+                background-color: #059cdf;
+                text-transform: uppercase !important;
+            }
+            .sendback-buttons {
                 background-color: #666;
+            }
+            .accept-buttons {
+                background-color: transparent;
+                border: 1px solid #059cdf;
+                color: #059cdf;
             }
         }
     }

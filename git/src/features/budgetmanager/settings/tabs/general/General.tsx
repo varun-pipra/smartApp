@@ -210,6 +210,19 @@ const GeneralSettings = (props: any) => {
 					<FormControlLabel value="trade" control={<Radio />} label="Trade Partner" />
 				</RadioGroup>
 			</Stack>
+			<Stack className='generalSettings-Sections'>
+				<Typography variant="h6" component="h6" className='budgetSetting-heading'>Billable in Client Contract</Typography>
+				<RadioGroup
+					row
+					aria-labelledby="demo-row-radio-buttons-group-label"
+					name="row-radio-buttons-group"
+					value={formData?.billableInCC == 0 ? 'nonBillable' : 'billable'}
+        			onChange={(e) => { handleInputChange(e.target.value == 'billable' ? 1 : 0, 'billableInCC') }}
+				>
+					<FormControlLabel value="billable" control={<Radio />} label="Billable" />
+					<FormControlLabel value="nonBillable" control={<Radio />} label="Non-Billable" />
+				</RadioGroup>
+			</Stack>
 			<Divider />
 			<Stack className='BudgetSettings-Sections'>
 				<Typography variant="h6" component="h6" className='budgetSetting-heading '>Budget List Value Settings</Typography><br />

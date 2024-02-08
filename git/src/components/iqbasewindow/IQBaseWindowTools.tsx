@@ -16,9 +16,10 @@ interface SupportingProps extends IQBaseWindowToolsProp {
 	setOpen: any;
 	customTools?: ReactNode;
 	isBrenaOpen?:boolean;
+	isWithInModule?:boolean;
 };
 
-export const WindowTools = ({ maximized, appType, appInfo, iFrameId, setOpen, setMaximized, onClose, customTools, isBrenaOpen = false, ...tools }: SupportingProps) => {
+export const WindowTools = ({ maximized, appType, appInfo, iFrameId, setOpen, setMaximized, onClose, customTools, isBrenaOpen = false, isWithInModule=false, ...tools }: SupportingProps) => {
 	const handleOpenInNewTab = () => {
 		const body = { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType }
 		console.log('openinnewtab',body);
@@ -31,13 +32,14 @@ export const WindowTools = ({ maximized, appType, appInfo, iFrameId, setOpen, se
 	const handleClose = (event: any, reason: any) => {
 		isBrenaOpen ? null : setOpen(false);
 		onClose && onClose(event, 'closeButtonClick');
-		if (reason && reason === 'closeButtonClick') {
+		if (reason && reason === 'closeButtonClick' && !isWithInModule) {
 			postMessage({
 				event: 'closeiframe',
 				body: { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType }
 			});
 		}
 	};
+	console.log("withInModule", tools)
 
 	return <>
 		{customTools || null}

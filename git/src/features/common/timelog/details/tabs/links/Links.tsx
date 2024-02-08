@@ -55,6 +55,7 @@ const AddLinksData = [
 		iconCls: "common-icon-add-external-url",
 	},
 ];
+
 const linksData = [
 	{
 		id: 1,
@@ -87,8 +88,20 @@ const linksData = [
 	}
 ]
 
+const filterOptions = [
+	{
+		text: "Smart Item",value: "Smart Item",key: "Smart Item",
+		children: {type: "checkbox",items: [],},
+	},
+	{
+		text: "File Type",value: "File Type",key: "File Type",
+		children: {type: "checkbox",items: [],},
+	},
+]
 
 const Links = () => {
+	const dispatch = useAppDispatch();
+	var tinycolor = require('tinycolor2');
 	const appInfo = useAppSelector(getServer);
 	const { appsList, detailsData } = useAppSelector(state => state.sbsManager)
 	const [disableDeleteBtn, setDisableDeleteBtn] = useState<boolean>(true);
@@ -96,14 +109,17 @@ const Links = () => {
 
 	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(AddLinksData)
 	const [linksData, setLinksData] = useState<any>([])
-	var tinycolor = require('tinycolor2');
+
 	const [gridData, setGridData] = useState<any>([]);
-	const dispatch = useAppDispatch();
+	const [filters, setFilters] = React.useState<any>(filterOptions);
+	const [searchText, setSearchText] = useState<any>();
+	const [filterKeyValue, setFilterKeyValue] = useState<any>([]);
 
 	useEffect(() => {
 		setLinksData(detailsData?.links?.length ? detailsData?.links : [])
 		setGridData(detailsData?.links?.length ? detailsData?.links : [])
 	}, [detailsData])
+
 	useEffect(() => {
 		const addLinksOptionsCopy = [...addLinksOptions];
 		let newSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "New Smart Item");
@@ -136,7 +152,46 @@ const Links = () => {
 		setAddLinksOptions(addLinksOptionsCopy);
 	}, [appsList]);
 
+	useEffect(() => {
+		const gridDataCopy = [...linksData];
+		let value: any;
+		if (filterKeyValue && Object.keys(filterKeyValue)?.length > 0) {
+			value = FilterBy(gridDataCopy, filterKeyValue);
+			if (searchText !== "") {
+				let SearchGridData = SearchBy(value);
+				setGridData([...SearchGridData]);
+			} else {
+				setGridData(value);
+			};
+		} else if (searchText !== "") {
+			let SearchGridData = SearchBy(gridDataCopy);
+			setGridData([...SearchGridData]);
+		} else {
+			setGridData([...gridDataCopy]);
+		};
+	}, [filterKeyValue, searchText, linksData]);
 
+	const FilterBy = (gridData: any, filterValue: any) => {
+		let filteredData: any = [...gridData];
+		const keys = Object.keys(filterValue);
+		const lastvalue = keys.slice(-1).pop();
+
+		if (lastvalue == 'all') {
+			filteredData = linksData
+		}
+		if (filterValue?.apps?.length > 0) {
+			const linkTypearray = filteredData?.filter((obj: any) => filterValue?.apps?.includes(obj.linkType));
+			filteredData = linkTypearray;
+		}
+		return filteredData;
+	};
+	const SearchBy = (gridData: any) => {
+		const filteredIds = gridData?.map((obj: any) => obj?.id);
+		const firstResult = gridData.filter((obj: any) => {
+			return filteredIds?.includes(obj?.id) && JSON.stringify(obj)?.toLowerCase()?.includes(searchText?.toLowerCase());
+		});
+		return firstResult || [];
+	};
 
 	const headers = useMemo(() => [
 		{
@@ -247,6 +302,7 @@ const Links = () => {
 		}
 		postMessage(sendMsg);
 	};
+
 	return (
 		<div className='timelog-Links'>
 			<div className='timelog-details-header'>
@@ -276,7 +332,7 @@ const Links = () => {
 						</IQTooltip>
 					</div>
 				</div>
-				{/* <div className='right-section'>
+				<div className='right-section'>
 					<IQSearch
 						placeholder={'Search'}
 						filters={filters}
@@ -287,7 +343,7 @@ const Links = () => {
 						onFilterChange={(filters: any) => { setFilterKeyValue(filters) }}
 						showSearchField={true}
 					/>
-				</div> */}
+				</div>
 			</div>
 			<div className='grid'>
 				<SUIGrid

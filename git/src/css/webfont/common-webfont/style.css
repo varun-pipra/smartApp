@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?vkkci7');
-  src:  url('fonts/common-webfont.eot?vkkci7#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?vkkci7') format('truetype'),
-    url('fonts/common-webfont.woff?vkkci7') format('woff'),
-    url('fonts/common-webfont.svg?vkkci7#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?j8egnu');
+  src:  url('fonts/common-webfont.eot?j8egnu#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?j8egnu') format('truetype'),
+    url('fonts/common-webfont.woff?j8egnu') format('woff'),
+    url('fonts/common-webfont.svg?j8egnu#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-details:before {
+  content: "\ec80";
+}
+.common-icon-planned:before {
+  content: "\ea3f";
+}
+.common-icon-unavailable:before {
+  content: "\ec7f";
+}
 .common-icon-share-new:before {
   content: "\ec7e";
 }

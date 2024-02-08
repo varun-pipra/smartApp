@@ -1,6 +1,6 @@
 import { getServerInfo } from 'app/hooks';
 import { isLocalhost } from 'app/utils';
-import { timelogList } from 'data/timelog/TimeLogData';
+import { timelogList , workTeamData , workTeamGridData} from 'data/timelog/TimeLogData';
 
 const moduleName = "Time Log Requests:";
 
@@ -13,4 +13,25 @@ export const fetchTimeLog = async () => {
 
 	}
 	else{ return timelogList }
+};
+
+export const fetchWorkTeamData = async () => {
+	const server: any = getServerInfo();
+	if (!isLocalhost) {
+
+
+	}
+	else{ return workTeamData }
+};
+
+export const fetchWorkTeamGridData = async () => {
+	const server: any = getServerInfo();
+	if (!isLocalhost) {
+
+
+	}
+	else{ 
+		console.log(workTeamGridData , 'workTeamGridData')
+		return workTeamGridData 
+	}
 };

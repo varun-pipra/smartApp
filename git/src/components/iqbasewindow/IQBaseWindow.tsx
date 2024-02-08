@@ -18,7 +18,7 @@ import { setIsAppMaximized } from "app/common/appInfoSlice";
 // Component definition
 const IQBaseWindow = ({ open, appType, appInfo, actions, className, maxByDefault, moduleColor, onIconClick,
 	inlineModule, isFullView, iconCls, title, tools, presenceProps, children, zIndex, centerPiece, titleInfo,
-	onMaximize, onClose, iFrameId, isFromHelpIcon, tabName, toast, toastTimeout, PaperProps, showBrena = false, isBrenaOpen = false, ...dialogProps }: IQBaseWindowProps) => {
+	onMaximize, onClose, iFrameId, isFromHelpIcon, tabName, toast, toastTimeout, PaperProps, showBrena = false, isBrenaOpen = false, withInModule=false, ...dialogProps }: IQBaseWindowProps) => {
 	// State declaration
 	const [isOpen, setOpen] = useState(open);
 	const [showToast, setShowToast] = useState(false);
@@ -106,6 +106,7 @@ const IQBaseWindow = ({ open, appType, appInfo, actions, className, maxByDefault
 					setMaximized={setMaximized}
 					onClose={onClose}
 					isBrenaOpen={isBrenaOpen}
+					isWithInModule={withInModule}
 				/> : (presenceProps?.presenceId && <div id={presenceProps.presenceId} className={`presence-box${isFullView ? ' full-view' : ''}`}></div>)}
 			</div>
 			<div className='titlebar-inner-items title-info'>

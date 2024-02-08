@@ -92,6 +92,11 @@ export const ViewBuilderData: any = [
 						hide: false,
 						field: "balanceForecast",
 					},
+					{
+						headerName: "Source Type",
+						hide: false,
+						field: "sourceType",
+					},
 				],
 			},
 			{

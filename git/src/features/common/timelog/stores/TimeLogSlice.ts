@@ -1,6 +1,6 @@
 import { RootState } from 'app/store';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-// import { fetchTimeLog } from './TimeLogApi';
+import { fetchWorkTeamData , fetchWorkTeamGridData} from './TimeLogAPI';
 import { errorMsg } from 'utilities/commonutills';
 
 export interface TimeLogRequestState {
@@ -9,6 +9,8 @@ export interface TimeLogRequestState {
 	selectedTimeLogDetails?: any;
 	timeLogDetails?: any;
 	toast: string;
+	workTeamData:any;
+	workTeamGridData:any;
 };
 const initialState: TimeLogRequestState = {
 	loading: false,
@@ -16,7 +18,27 @@ const initialState: TimeLogRequestState = {
 	sourceList: [],
 	selectedTimeLogDetails: [],
 	timeLogDetails: null,
+	workTeamData:[],
+	workTeamGridData:[]
 }
+
+export const getWorkTeamData = createAsyncThunk<any>(
+	"getWorkTeamData",
+	async (appId: any) => {
+	  const response = await fetchWorkTeamData();
+	  return response;
+	}
+  );
+
+  export const getWorkTeamGridData = createAsyncThunk<any>(
+	"getWorkTeamGridData",
+	async () => {
+		console.log('response')
+	  const response = await fetchWorkTeamGridData();
+	  console.log(response,'response')
+	  return response;
+	}
+  );
 
 // export const getTimeLogList = createAsyncThunk<any>('TimeLogList',
 // 	async () => {
@@ -29,6 +51,9 @@ export const timeLogRequest = createSlice({
 	name: 'timeLogRequest',
 	initialState,
 	reducers: {
+		setToast: (state, action: PayloadAction<any>) => {
+			state.toast = action.payload;
+		},
 		setSourceList: (state, action: PayloadAction<any>) => {
 			state.sourceList = action.payload;
 		},
@@ -37,18 +62,28 @@ export const timeLogRequest = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
-		// builder.addCase(getTimeLogList.pending, (state) => {
-		// 	state.loading = true;
-		// }).addCase(getTimeLogList.fulfilled, (state, action) => {
-		// 	state.loading = false;
-		// 	state.sourceList = action.payload;
-		// }).addCase(getTimeLogList.rejected, (state) => {
-		// 	state.toast = errorMsg;
-		// 	state.loading = false;
-		// })
+		builder
+		.addCase(getWorkTeamData.pending, (state) => {
+			state.loading = true;
+		}).addCase(getWorkTeamData.fulfilled, (state, action) => {
+			state.loading = false;
+			state.workTeamData = action.payload;
+		}).addCase(getWorkTeamData.rejected, (state) => {
+			state.toast = errorMsg;
+			state.loading = false;
+		})
+		.addCase(getWorkTeamGridData.pending, (state) => {
+			state.loading = true;
+		}).addCase(getWorkTeamGridData.fulfilled, (state, action) => {
+			state.loading = false;
+			state.workTeamGridData = action.payload;
+		}).addCase(getWorkTeamGridData.rejected, (state) => {
+			state.toast = errorMsg;
+			state.loading = false;
+		})
 	}
 })
 
 
-export const { setSelectedTimeLog } = timeLogRequest.actions;
+export const { setSelectedTimeLog, setToast } = timeLogRequest.actions;
 export default timeLogRequest.reducer;

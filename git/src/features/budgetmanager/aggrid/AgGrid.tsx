@@ -624,6 +624,7 @@ const TableGrid = (props: TableGridProps) => {
 			hide: false,
 			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],
 		},
+		{ headerName: 'Billable in Client Contract', field: 'billableInCC', hide: false, suppressMenu: true },		
 		{
 			headerName: 'Work Break Down Structure (WBS)',
 			field: 'rollupTaskIds',
@@ -1201,6 +1202,7 @@ const TableGrid = (props: TableGridProps) => {
 		},
 		{ headerName: 'Manufacturer', field: 'equipmentManufacturer', hide: false, suppressMenu: true },
 		{ headerName: 'Model Number', field: 'equipmentModel', hide: false, suppressMenu: true },
+		{ headerName: 'Source Type', field: 'sourceType', hide: false, suppressMenu: true },		
 	];
 
 	const [columnDefs, setColumnDefs] = useState<any>(columns);

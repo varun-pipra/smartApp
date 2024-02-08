@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { GridView } from "@mui/icons-material";
 import { InputLabel } from "@mui/material";
@@ -77,6 +77,9 @@ const HeaderPage = (props: HeaderPageProps) => {
 	const appInfo = useAppSelector(getServer);
 	const [localhost] = React.useState(isLocalhost);
 	const [defaultFilters, setDefaultFilters] = React.useState<any>([])
+	const [originalBudgetCatalogReadOnly, setOriginalBudgetCatalogReadOnly] = React.useState<any>({unitofMeasure: false,quantity: false,cost: false});
+	const [originalBudgetCatalogData, setOriginalBudgetCatalogData] = React.useState<any>({unitOfMeasure: '',quantity: '',cost: ''});
+	console.log("divisionCostCodeFilterData", divisionCostCodeFilterData)
 
 	React.useEffect(() => {
 		let costTypeTimeList: any = [];
@@ -172,7 +175,57 @@ const HeaderPage = (props: HeaderPageProps) => {
 		});
 		dispatch(setLineItemDescription(''));
 	};
-
+	const handleCatalogSubmit = () => {
+		if (isLocalhost) {
+			let catalogData = {
+				unitOfMeasure: 'lf',
+				quantity: 10,
+				cost: 50
+			};
+			setOriginalBudgetCatalogData(catalogData);
+			setOriginalBudgetCatalogReadOnly({
+				unitofMeasure: true,
+				quantity: false,
+				cost: true
+			});
+		} else {
+			postMessage({
+				event: 'opencatalog',
+				body: {
+					data: {
+						skuType: "SingleCatalog",
+						singleQuantity: true
+					}
+				}
+			});
+		}
+	};
+	useEffect(() => {
+    	window.addEventListener("message",(event: any) => {
+			let data = event.data;
+			data = typeof data == "string" ? JSON.parse(data) : data;
+			data = data.hasOwnProperty("args") && data.args[0] ? data.args[0] : data;
+			if (data) {
+			switch (data.event || data.evt) {
+				case "save-catalog":
+				if (data.data) {
+					let catObj = JSON.parse(data.data)?.[0] || {};
+					let catalogData = {
+						unitOfMeasure: '',
+						quantity: catObj.quantity,
+						cost: catObj.price
+					};
+					setOriginalBudgetCatalogData(catalogData);
+					setOriginalBudgetCatalogReadOnly({
+						unitofMeasure: true,
+						quantity: true,
+						cost: true
+					})
+				}
+				break;
+			}}
+		},false);
+  	}, []);
 	return (
 		<MuiGrid container spacing={2} className="headerContent" >
 			<MuiGrid item xl={3} lg={3} md={3} sm={6} xs={6}>
@@ -301,6 +354,10 @@ const HeaderPage = (props: HeaderPageProps) => {
 					onBlur={(value) => handleOnChange(value, 'originalBudgetAmount')}
 					readOnly={false}
 					disabled={isBudgetLocked}
+					showCatalogBtn={headerPageData?.costType === 'E - Equipment'}
+					handleCatalogSubmit={() => handleCatalogSubmit()}
+					data={originalBudgetCatalogData}
+					textFieldReadonly={originalBudgetCatalogReadOnly}
 				/>
 
 			</MuiGrid>

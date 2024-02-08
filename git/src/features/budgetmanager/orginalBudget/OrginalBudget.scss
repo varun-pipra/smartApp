@@ -17,6 +17,7 @@
 .activity-content {
     padding: 10px 10px 0px 20px;
     margin-bottom: 15px;
+    flex-wrap: nowrap !important;
     .MuiInputBase-root {
         .MuiInputBase-input {
             font-size: 15px !important;
@@ -37,7 +38,7 @@
 
 .popper-button-container {
     margin-top: 15px;
-    margin-left: 35px;
+    margin-left: 25px;
 }
 
 .heading {
@@ -46,10 +47,19 @@
 }
 
 .custome-button {
-    height: 37px !important;
+    height: 36px !important;
     border-color: #ff0000a1 !important;
     color: #ff0000a1 !important;
     font-weight: 600;
+}
+
+.custom-catalog-button {
+    height: 36px !important;
+    border-color: #0590cd !important;
+    color: #0590cd !important;
+    font-weight: 600;
+    min-width: 164px !important;
+    background-color: transparent !important;
 }
 
 .grid-content-margin {

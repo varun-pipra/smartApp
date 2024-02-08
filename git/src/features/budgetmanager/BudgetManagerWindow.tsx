@@ -1,7 +1,7 @@
 import {Fragment, useEffect, useRef, useState} from "react";
 import _ from 'lodash';
 import './BudgetManagerWindow.scss';
-import {IconButton} from "@mui/material";
+import {IconButton, Paper, Snackbar} from "@mui/material";
 
 import {postMessage, isLocalhost, currency, currencyCode} from "app/utils";
 import SmartDialog from "components/smartdialog/SmartDialog";
@@ -26,6 +26,7 @@ import SUIAlert from "sui-components/Alert/Alert";
 import {isBudgetManager} from "app/common/userLoginUtils";
 import {initRTDocument} from 'utilities/realtime/Realtime';
 import {budgetManagerMainGridRTListener} from './BudgetManagerRT';
+import React from "react";
 
 const BudgetManagerWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -41,7 +42,7 @@ const BudgetManagerWindow = (props: any) => {
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
 	const [toastMessage, setToastMessage] = useState<any>({displayToast: false, message: ''});
 	const gridRT = useRef<boolean>(false);
-
+	const [open, setOpen] = React.useState(false);
 	useEffect(() => {
 		const loader = document.getElementById('smartapp-react-loader');
 		if(loader) {
@@ -312,9 +313,17 @@ const BudgetManagerWindow = (props: any) => {
 	</>;
 
 	const maxSize = isMaximize !== false && queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
-
+	
+	const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+	  if (reason === 'clickaway') {
+		return;
+	  }
+  
+	  setOpen(false);
+	};
 	return (
 		appInfo && (isBudgetManager() ?
+			<>
 			<SmartDialog
 				open={true}
 				className="budget-manager-window custom-style"
@@ -354,6 +363,23 @@ const BudgetManagerWindow = (props: any) => {
 				{toastMessage.displayToast ? <Toast message={toastMessage.message} interval={3000} /> : null}
 				{showTableColumnsPopup && <ManageTableColumns />}
 			</SmartDialog >
+			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+				<Paper sx={{ width: 320, maxWidth: '100%' }}>
+						<div className="budget-importer">
+							<div className="budget-importer_progress">
+								<div>Budget Import in progress</div>
+								<span className="common-icon-close" style={{cursor:'pointer'}} onClick={handleClose}/>
+							</div>
+						
+							<div className="budget-importer_template">
+								<div className="common-icon-from-catalog"></div>
+								<div>Budget Importer Template</div>
+								<img className="image MuiBox-root css-1p3fm1q" alt="Export" src="https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2308/mka35l3k/check.png" style={{borderRadius: "50%", width : '10px', height : '10px'}} />
+							</div>
+						</div>
+				</Paper>
+      		</Snackbar>
+			</>
 			:
 			<SUIAlert
 				open={true}

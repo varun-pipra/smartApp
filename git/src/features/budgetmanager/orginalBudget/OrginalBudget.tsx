@@ -44,6 +44,8 @@ interface BasicPopoverProps {
 	hideCalculateButton?: boolean;
 	cleartheValue?: boolean;
 	placeholder?: string;
+	showCatalogBtn?:boolean;
+	handleCatalogSubmit?:any;
 }
 const readonlydata = {
 	unitofMeasure: false,
@@ -51,7 +53,7 @@ const readonlydata = {
 	cost: false
 }
 export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
-	iconColor, onSubmit, defaultValue, unitList, sx, clearBudgetFields,
+	iconColor, onSubmit, defaultValue, unitList, sx, clearBudgetFields, showCatalogBtn = false, handleCatalogSubmit = () => { },
 	label = "Original Budget", isRequired = true, isIcon = true, disabled = false, readOnly = false, cleartheValue = true,
 	data, onBlur, hideCalculateButton = false, disableUnderline = false, textFieldReadonly = { ...readonlydata }, placeholder = '', ...rest }) => {
 	// console.log("defaultValuedefaultValue", defaultValue)
@@ -199,7 +201,9 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 			return formattedNumber
 		}
 	}
-
+	const handlePickFromCatalog = () => {
+		handleCatalogSubmit();
+	};
 	return (
 		<div className='originalbudget'>
 			{label != '' ? <InputLabel className="inputlabel">{label}<span className={isRequired ? 'required_color' : ''}>*</span></InputLabel> : ''}
@@ -255,7 +259,7 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 					style: {
 						backgroundColor: "white",
 						borderRadius: 5,
-						width: "609px",
+						width: !showCatalogBtn ? "609px" : "750px",
 						zIndex: "108px",
 						marginTop: "10px",
 					},
@@ -366,6 +370,20 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 							/>
 						</div>
 					</MUIGrid>
+					{showCatalogBtn  && (
+						<MUIGrid item sm={3}>
+						<div className="popper-button-container">
+							<MUIButton
+								onClick={handlePickFromCatalog}
+								variant="outlined"
+								className="custom-catalog-button"
+								startIcon={<span className="common-icon-from-catalog" />}
+							>
+								Pick from Catalog
+							</MUIButton>
+						</div>
+						</MUIGrid>
+					)}
 					{!hideCalculateButton &&
 						<MUIGrid item sm={3}>
 							<div className="popper-button-container">

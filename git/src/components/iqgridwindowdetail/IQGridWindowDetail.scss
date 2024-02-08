@@ -21,16 +21,15 @@
                 }
             }
         }
-		.bubble-box {
-			grid-column: 2;
-    		align-self: center;
-			width: max-content;
-		}
+        .bubble-box {
+            grid-column: 2;
+            align-self: center;
+            width: max-content;
+        }
         .presence-box {
             align-items: flex-end;
-    		justify-content: center;
-			grid-column: 4;
-
+            justify-content: center;
+            grid-column: 4;
             .common-participant-control {
                 display: flex;
                 padding: 0px 0px 0px 10px;
@@ -109,6 +108,7 @@
                     color: #fff;
                     height: 2.5em;
                 }
+                
             }
             .footer-left {
                 .footer-icons {

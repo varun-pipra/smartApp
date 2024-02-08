@@ -15,8 +15,8 @@
                     font-weight: bold;
                 }
             }
-		}
-		.timelog-details-subheader {
+        }
+        .timelog-details-subheader {
             min-height: 3em;
             display: flex;
             align-items: end;
@@ -34,75 +34,78 @@
         .timelog-details-content-col3 {
             display: grid;
             grid-gap: 1em 2em;
-			grid-template-columns: repeat(3, 30%);
-				
-		}
-		.timelog-details-content-col2 {
+            grid-template-columns: repeat(3, 30%);
+        }
+        .timelog-details-content-col2 {
             display: grid;
             grid-gap: 1em 2em;
-			grid-template-columns: repeat(2, 48%);		
-		}
-		.timelog-details-content-col1 {
+            grid-template-columns: repeat(2, 48%);
+        }
+        .timelog-details-content-col1 {
             display: grid;
             grid-gap: 1em 2em;
-			grid-template-columns: repeat(1, 98.5%);		
-		}
-		.timelog-info-tile {
-			display: flex;
-			flex-direction: column;
-			&.span-2 {
-				grid-column: span 2;
-			}
-			&.span-3 {
-				grid-column: span 3;
-			}
-			.timelog-info-label {
-				display: flex;
-				align-items: center;
-				padding: 1em 0 0.4em 0;
-				color: #808080;
-				font-family: 'Roboto-Regular' !important;
-				>svg {
-					margin-left: 0.5em;
-				}
-				.sublabel{
-					color:#80808082;
-					font-style: italic;
-					padding-left: 2px;
-				}
-			}
-			.timelog-info-data-box {
-				display: flex;
-				align-items: center;
-				min-height: 35px;
-				.client-contract-info-data {
-					padding-left: 6px;
-				}
-				.contract-info-data {
-					color: #333333;
-					padding-left: 0.5em;
-				}
-				.timelog-info-data {
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					line-height: 1.2;
-					font-family: 'Roboto-Regular' !important;
-					color: #333333;
-					padding-left: .5em;
-				}
-				.common-icon-Budgetcalculator {
-					font-size: 1.3rem;
-				}
-			}
-		}
-
-		.timelog-icon {
-			border-radius: 50%;
-			width: 25px;
-			height: 25px;
-			margin: 0px 10px;
-		}
+            grid-template-columns: repeat(1, 98.5%);
+        }
+        .timelog-info-tile {
+            display: flex;
+            flex-direction: column;
+            &.span-2 {
+                grid-column: span 2;
+            }
+            &.span-3 {
+                grid-column: span 3;
+            }
+            .timelog-info-label {
+                display: flex;
+                align-items: center;
+                padding: 1em 0 0.4em 0;
+                color: #808080;
+                font-family: 'Roboto-Regular' !important;
+                >svg {
+                    margin-left: 0.5em;
+                }
+                .sublabel {
+                    color: #80808082;
+                    font-style: italic;
+                    padding-left: 2px;
+                }
+            }
+            .timelog-info-data-box {
+                display: flex;
+                align-items: center;
+                min-height: 35px;
+                .client-contract-info-data {
+                    padding-left: 6px;
+                    .phaseButton {
+                        cursor: text;
+                        box-shadow: none;
+                        border-radius: 2px;
+                    }
+                }
+                .contract-info-data {
+                    color: #333333;
+                    padding-left: 0.5em;
+                }
+                .timelog-info-data {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    line-height: 1.2;
+                    font-family: 'Roboto-Regular' !important;
+                    color: #333333;
+                    padding-left: .5em;
+                }
+                .common-icon-Budgetcalculator {
+                    font-size: 1.3rem;
+                }
+            }
+        }
+        .timelog-icon {
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            margin: 0px 10px;
+        }
     }
     .description {
         margin-top: 16px;
@@ -132,11 +135,17 @@
     .iconmodify {
         color: #ed7431 !important;
         font-size: 20px !important;
-	}
-	.common-icon-Workactivity:before{
-		color: #ed7431 !important;
+    }
+    .common-icon-Location-filled:before {
+        font-size: 18px !important;
+    }
+    .common-icon-monthly:before {
+        font-size: 26px;
+    }
+    .common-icon-Workactivity:before {
+        color: #ed7431 !important;
         font-size: 24px !important;
-	}
+    }
     .ec-floating-toast-cls {
         background-color: #3aca9b !important;
         border: 1px solid #3aca9b !important;

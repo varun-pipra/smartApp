@@ -241,7 +241,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 			setFormData({ ...formData, 'division': costCodeTuple[0], 'costCode': costCodeTuple[1] });
 		}
 		else if (name === 'providerSource') {
-			setAlert({ show: true, type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}` });
+			setAlert({ show: true, key: 'providerSource', type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}` });
+
+		} else if (name === 'billableInCC') {
+			setAlert({ show: true, key: 'billableInCC', type: 'Confirmation', msg: `Are you sure you want to update the Billable in Client Contract from ${formData?.providerSource == 1 ? 'Billable' : 'Non-Billable'} to ${value == 1 ? 'Billable' : 'Non-Billable?'}` });
 
 		} else if (name === 'sbsPhaseId') {
 			setFormData({ ...formData, [name]: value?.id, sbsPhaseName: value?.name });
@@ -482,10 +485,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		return inlineFilter;
 	};
 
-	const handleProviderSourceChange = (type: string) => {
+	const handleProviderSourceChange = (type: string, key:string) => {
 		if (type == 'yes') {
 			console.log("yeeeee", formData)
-			setFormData({ ...formData, providerSource: formData?.providerSource == 0 ? 1 : 0 })
+			setFormData({ ...formData, [key]: formData?.providerSource == 0 ? 1 : 0 })
 			setAlert({ show: false, type: '', msg: '' })
 		}
 		else setAlert({ show: false, type: '', msg: '' })
@@ -727,6 +730,26 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</span>
 					</>
 				)}
+				{formData?.costType == 'E - Equipment' && <div>
+					<div className="budget-info-subheader">Source Type</div>
+					<span>
+						<RadioGroup
+							row
+							aria-labelledby="demo-row-radio-buttons-group-label"
+							name="row-radio-buttons-group"
+							value={formData?.sourceType == 1 ? 'purchase' : 'rent'}
+							onChange={(e) => { handleDropdownChange(e.target.value == 'purchase' ? 1 : 0, "sourceType") }}
+						>
+							<FormControlLabel value="purchase" control={<Radio />} label="Purchase"
+								disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+							/>
+							<FormControlLabel value="rent" control={<Radio />} label="Rent"
+								disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+							/>
+						</RadioGroup>
+					</span>
+				</div>}
+
 				{formData?.allowMarkupFee && (
 					<span className="budget-info-tile span-3 mark-up-fee">
 						<div className="budget-info-data-box">
@@ -1081,6 +1104,39 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
 						/>
 						<FormControlLabel value="trade" control={<Radio />} label="Trade Partner"
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+						/>
+					</RadioGroup>
+				</span>
+				<div className="budget-info-subheader">
+					<span>Billable in Client Contract</span>
+					<IQTooltip
+								title={
+								<div>
+									<h6>Billable</h6>
+									<span>Budget Item type of Billable will be available for the selection in the Client Contract.</span>
+									<h6>Non-Billable</h6>
+									<span>Budget Item type of Non-Billable will not be available for the selection in the Client Contract.</span>										
+								</div>}
+								placement="bottom"
+								arrow={true}
+							>
+							<span className='common-icon-infoicon'></span>
+					</IQTooltip>
+
+				</div>
+				<span>
+					<RadioGroup
+						row
+						aria-labelledby="demo-row-radio-buttons-group-label"
+						name="row-radio-buttons-group"
+						value={formData?.billableInCC == 0 ? 'nonBillable' : 'billable'}
+						onChange={(e) => { handleDropdownChange(e.target.value == 'billable' ? 1 : 0, "billableInCC") }}
+					>
+						<FormControlLabel value="billable" control={<Radio />} label="Billable"
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+						/>
+						<FormControlLabel value="nonBillable" control={<Radio />} label="Non-Billable"
 							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
 						/>
 					</RadioGroup>
@@ -1539,7 +1595,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				<SUIAlert
 					open={alert?.show}
 					onClose={() => {
-						setAlert({ ...alert, show: false, type: '' });
+						setAlert({ ...alert, show: false, type: '', key: '' });
 					}}
 					contentText={
 						<div>
@@ -1559,7 +1615,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 											"0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)",
 										display: "initial",
 									}}
-									onClick={(e: any) => setAlert({ ...alert, show: false, type: '' })}
+									onClick={(e: any) => setAlert({ ...alert, show: false, type: '', key: '' })}
 								>
 									OK
 								</Button>
@@ -1568,7 +1624,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					}
 					DailogClose={true}
 					title={alert?.type}
-					onAction={(e: any, type: string) => handleProviderSourceChange(type)}
+					onAction={(e: any, type: string) => handleProviderSourceChange(type, alert?.key)}
 					showActions={alert?.type == 'Warning' ? false : true}
 				/>
 			)}

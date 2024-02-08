@@ -260,6 +260,30 @@ const BudgetManagerToolbar = (props: any) => {
 					{ text: "Trade Partner", id: '2', value: '0', key: '0' },
 				]
 			},
+		},
+		{
+			text: "Source Type",
+			value: 'sourceType',
+			key: 'sourceType',
+			children: {
+				type: "checkbox",
+				items: [
+					{ text: "Purchase", id: '1', value: '1', key: '1' },
+					{ text: "Rent", id: '2', value: '0', key: '0' },
+				]
+			},
+		},
+		{
+			text: "Billable In Client Contract",
+			value: 'billableInCC',
+			key: 'billableInCC',
+			children: {
+				type: "checkbox",
+				items: [
+					{ text: "Billable", id: '1', value: '1', key: '1' },
+					{ text: "NonBillable", id: '2', value: '0', key: '0' },
+				]
+			},
 		}
 	];
 
@@ -657,6 +681,11 @@ const getGroupMenuOptions = () => {
 	{
 		text: 'Provider Source',
 		value: 'providerSource',
+		iconCls: ''
+	},
+	{
+		text: 'Billable In Client Contract',
+		value: 'billableInCC',
 		iconCls: ''
 	}
 	];
