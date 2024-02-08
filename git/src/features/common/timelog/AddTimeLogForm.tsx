@@ -124,6 +124,7 @@ const AddTimeLogForm = (props: any) => {
 		setAddLinksOptions(addLinksOptionsCopy);
 	}, [appsList]);
 	const handleFieldChange = (event: any, name: any) => {
+		if(name === 'resource') setSelectedWorkers(event === "workteam" ? true : false)
 		console.log("event", event);
 		console.log("name", name);
 		setTimeLog((currentState) => {
@@ -180,7 +181,7 @@ const AddTimeLogForm = (props: any) => {
 						{/* <TextField
 					InputProps={{ startAdornment: (<span className='common-icon-title'></span>) }}
 					name='resource' variant='standard' value={timelog.resource}
-					onChange={handleFieldChange}
+					onChange={(value:any)=>handleFieldChange(value, "resource")}
 				/> */}
 						<SmartDropDown
 							name="resource"
@@ -197,7 +198,7 @@ const AddTimeLogForm = (props: any) => {
 							selectedValue={timelog?.resource}
 							isMultiple={false}
 							handleChange={(value: any) =>
-								handleFieldChange(value, "resource")
+								handleFieldChange(value[0], "resource")
 							}
 						/>
 					</div>
@@ -235,7 +236,7 @@ const AddTimeLogForm = (props: any) => {
 							: 
 							<TextField
 								InputProps={{
-									startAdornment: <span className="common-icon-Team-Members resourcedropdown"></span>,
+									startAdornment: <span className="common-icon-Team-Members workers-team-icon"></span>,
 								}}
 								name="name"
 								variant="standard"

@@ -3006,10 +3006,8 @@ class IQSketchLiteManager {
         pervsButton[0].setAttribute('class', 'prev-cls');
         nextButton[0].setAttribute('class', 'next-cls');
         if (initialconfig.currentPage == 1) {
-            console.log(pervsButton , 'ddjbdhb')
             pervsButton[0].setAttribute('class', 'prev-cls disabled-cls');
         } else if (initialconfig.currentPage == initialconfig.totalCount) {
-            console.log(nextButton , 'ddjbdhb')
             nextButton[0].setAttribute('class', 'next-cls disabled-cls');
         }
     }

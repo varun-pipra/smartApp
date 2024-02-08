@@ -19,7 +19,7 @@
         .resource-field {
             .resourcedropdown {
                 color: #ed7532 !important;
-                font-size: 24px;
+                font-size: 26px !important;
             }
             &.worker-field {
                 .MuiFormControl-root {
@@ -39,6 +39,9 @@
                 color: #ed7431;
                 font-size: 23px;
                 margin-right: 6px;
+            }
+            .workers-team-icon{
+                font-size: 26px;
             }
         }
         .duration-field {

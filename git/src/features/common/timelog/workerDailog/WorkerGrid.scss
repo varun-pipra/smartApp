@@ -29,10 +29,16 @@
 }
 
 .workers-main-container{
-    .footer{
+    .footer
+    {
         // display: flex;
         bottom: 20px;
         position: absolute;
         right: 15px;
+        .add-selected-worker-btn{
+            border-radius: 500px;
+        }
     }
+
+
 }
