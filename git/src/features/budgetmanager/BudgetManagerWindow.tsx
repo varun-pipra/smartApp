@@ -11,7 +11,7 @@ import ManageTableColumns from "./managetablecolumns/ManageTableColumns";
 import {useAppSelector, useAppDispatch, useHomeNavigation} from "app/hooks";
 import {useLocation} from 'react-router-dom';
 import {appInfoData} from 'data/appInfo';
-import {getToastMessage} from './operations/tableColumnsSlice';
+import {getToastMessage, setImportBudgetsStatus, setOpenNotification} from './operations/tableColumnsSlice';
 import {setPresenceData} from './operations/gridSlice';
 import {
 	getServer, setServer, setCostCodeList, setFullView,
@@ -30,7 +30,7 @@ import React from "react";
 
 const BudgetManagerWindow = (props: any) => {
 	const dispatch = useAppDispatch();
-	const {showTableColumnsPopup} = useAppSelector((state: any) => state.tableColumns);
+	const {showTableColumnsPopup, openNotification, importStatus} = useAppSelector((state: any) => state.tableColumns);
 	const showToastMessage = useAppSelector(getToastMessage);
 	const [isFullView, setIsFullView] = useState(false);
 	const [localhost] = useState(isLocalhost);
@@ -56,6 +56,10 @@ const BudgetManagerWindow = (props: any) => {
 		}, 3000);
 		setToastMessage({...showToastMessage});
 	}, [showToastMessage]);
+	useEffect(() => {setOpen(openNotification)}, [openNotification])
+	useEffect(() => {if(importStatus == 1) { setOpen(false); dispatch(setImportBudgetsStatus(null))}  }, [importStatus])
+	
+
 
 	const presenceRef = useRef(false);
 	const presenceId = 'budgetmanager-presence';
@@ -320,6 +324,7 @@ const BudgetManagerWindow = (props: any) => {
 	  }
   
 	  setOpen(false);
+	  dispatch(setOpenNotification(false))
 	};
 	return (
 		appInfo && (isBudgetManager() ?
@@ -364,17 +369,17 @@ const BudgetManagerWindow = (props: any) => {
 				{showTableColumnsPopup && <ManageTableColumns />}
 			</SmartDialog >
 			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-				<Paper sx={{ width: 320, maxWidth: '100%' }}>
-						<div className="budget-importer">
-							<div className="budget-importer_progress">
+				<Paper sx={{ width: 300, maxWidth: '100%' }}>
+						<div className="bd-importer">
+							<div className="bd-importer_progress">
 								<div>Budget Import in progress</div>
 								<span className="common-icon-close" style={{cursor:'pointer'}} onClick={handleClose}/>
 							</div>
 						
-							<div className="budget-importer_template">
-								<div className="common-icon-from-catalog"></div>
-								<div>Budget Importer Template</div>
-								<img className="image MuiBox-root css-1p3fm1q" alt="Export" src="https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2308/mka35l3k/check.png" style={{borderRadius: "50%", width : '10px', height : '10px'}} />
+							<div className="bd-importer_template">
+								<div className="common-icon-excel"></div>
+								<div className="template-text-cls">Budget Importer Template</div>
+								<div className="common-icon-Progress-Tick"></div>
 							</div>
 						</div>
 				</Paper>

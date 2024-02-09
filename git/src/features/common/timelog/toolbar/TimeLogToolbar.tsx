@@ -16,10 +16,9 @@ export const TLLeftButtons = memo(() => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 
-	const [disableDelete, setDisableDelete] = useState<boolean>(true);
 	const [sendBackClick, setSendBackClick] = useState<boolean>(false);
 	const [acceptClick, setacceptClick] = useState<boolean>(false);
-	const { selectedChangeEvents, selectedChangeEventsCount } = useAppSelector((state) => state.changeEventRequest);
+	const { selectedRowData } = useAppSelector(state => state.timeLogRequest);
 	const [acceptBtn, setAcceptBtn] = useState<boolean>(false);
 	const [sendBackBtn, setsendBackBtn] = useState<boolean>(false);
 
@@ -30,27 +29,24 @@ export const TLLeftButtons = memo(() => {
 			console.log('click')
 		}
 	}
+	useEffect(()=>{
+		console.log('selectedRowData', selectedRowData)	
+	}, [selectedRowData]);
+
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
-			<IconButton
-				aria-label='Refresh Time Log List'
-			>
+			<IconButton aria-label='Refresh Time Log List'>
 				<span className='common-icon-refresh'></span>
 			</IconButton>
 		</IQTooltip>
 		<IQTooltip title='Delete' placement='bottom'>
-			<IconButton aria-label='Delete Time Log Item'
-				disabled={false}
-			>
+			<IconButton aria-label='Delete Time Log Item' disabled={selectedRowData.length > 0 ? false : true}>
 				<span className='common-icon-delete'></span>
 			</IconButton>
 		</IQTooltip>
-		<IconButton className='divider-line-cls'>
-		</IconButton>
+		<IconButton className='divider-line-cls'></IconButton>
 		<IQTooltip title='Generate PDF' placement='bottom'>
-			<IconButton className='pdf-toolbar-btn1' aria-label='Generate PDF Time Log List'
-			// disabled={selectedCount === 0}
-			>
+			<IconButton className='pdf-toolbar-btn1' aria-label='Generate PDF Time Log List' disabled={selectedRowData.length > 0 ? false : true}>
 				<span className='common-icon-pdf'></span>
 			</IconButton>
 		</IQTooltip>

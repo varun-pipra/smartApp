@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?j8egnu');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?j8egnu#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?j8egnu') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?j8egnu') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?j8egnu##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?mosuph');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?mosuph#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?mosuph') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?mosuph') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?mosuph##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -27,4790 +27,4795 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-excel {
+  &:before {
+    content: $common-icon-excel; 
+  }
+}
 .common-icon-details {
   &:before {
-    content: unquote("\"#{ $common-icon-details }\""); 
+    content: $common-icon-details; 
   }
 }
 .common-icon-planned {
   &:before {
-    content: unquote("\"#{ $common-icon-planned }\""); 
+    content: $common-icon-planned; 
   }
 }
 .common-icon-unavailable {
   &:before {
-    content: unquote("\"#{ $common-icon-unavailable }\""); 
+    content: $common-icon-unavailable; 
   }
 }
 .common-icon-share-new {
   &:before {
-    content: unquote("\"#{ $common-icon-share-new }\""); 
+    content: $common-icon-share-new; 
   }
 }
 .common-icon-supplemental-info {
   &:before {
-    content: unquote("\"#{ $common-icon-supplemental-info }\""); 
+    content: $common-icon-supplemental-info; 
   }
 }
 .common-icon-lock {
   &:before {
-    content: unquote("\"#{ $common-icon-lock }\""); 
+    content: $common-icon-lock; 
   }
 }
 .common-icon-unlock {
   &:before {
-    content: unquote("\"#{ $common-icon-unlock }\""); 
+    content: $common-icon-unlock; 
   }
 }
 .common-icon-D-models {
   &:before {
-    content: unquote("\"#{ $common-icon-D-models }\""); 
+    content: $common-icon-D-models; 
   }
 }
 .common-icon-schedule-new {
   &:before {
-    content: unquote("\"#{ $common-icon-schedule-new }\""); 
+    content: $common-icon-schedule-new; 
   }
 }
 .common-icon-photo-new {
   &:before {
-    content: unquote("\"#{ $common-icon-photo-new }\""); 
+    content: $common-icon-photo-new; 
   }
 }
 .common-icon-site-reconstruction {
   &:before {
-    content: unquote("\"#{ $common-icon-site-reconstruction }\""); 
+    content: $common-icon-site-reconstruction; 
   }
 }
 .common-icon-bim-new {
   &:before {
-    content: unquote("\"#{ $common-icon-bim-new }\""); 
+    content: $common-icon-bim-new; 
   }
 }
 .common-icon-quality {
   &:before {
-    content: unquote("\"#{ $common-icon-quality }\""); 
+    content: $common-icon-quality; 
   }
 }
 .common-icon-drive {
   &:before {
-    content: unquote("\"#{ $common-icon-drive }\""); 
+    content: $common-icon-drive; 
   }
 }
 .common-icon-Block-chain {
   &:before {
-    content: unquote("\"#{ $common-icon-Block-chain }\""); 
+    content: $common-icon-Block-chain; 
   }
 }
 .common-icon-chart {
   &:before {
-    content: unquote("\"#{ $common-icon-chart }\""); 
+    content: $common-icon-chart; 
   }
 }
 .common-icon-doc {
   &:before {
-    content: unquote("\"#{ $common-icon-doc }\""); 
+    content: $common-icon-doc; 
   }
 }
 .common-icon-sap-logo {
   &:before {
-    content: unquote("\"#{ $common-icon-sap-logo }\""); 
+    content: $common-icon-sap-logo; 
   }
 }
 .common-icon-redo {
   &:before {
-    content: unquote("\"#{ $common-icon-redo }\""); 
+    content: $common-icon-redo; 
   }
 }
 .common-icon-budget-import {
   &:before {
-    content: unquote("\"#{ $common-icon-budget-import }\""); 
+    content: $common-icon-budget-import; 
   }
 }
 .common-icon-hourly-rate {
   &:before {
-    content: unquote("\"#{ $common-icon-hourly-rate }\""); 
+    content: $common-icon-hourly-rate; 
   }
 }
 .common-icon-accept {
   &:before {
-    content: unquote("\"#{ $common-icon-accept }\""); 
+    content: $common-icon-accept; 
   }
 }
 .common-icon-duration1 {
   &:before {
-    content: unquote("\"#{ $common-icon-duration1 }\""); 
+    content: $common-icon-duration1; 
   }
 }
 .common-icon-reported {
   &:before {
-    content: unquote("\"#{ $common-icon-reported }\""); 
+    content: $common-icon-reported; 
   }
 }
 .common-icon-send-back1 {
   &:before {
-    content: unquote("\"#{ $common-icon-send-back1 }\""); 
+    content: $common-icon-send-back1; 
   }
 }
 .common-icon-add-external-url {
   &:before {
-    content: unquote("\"#{ $common-icon-add-external-url }\""); 
+    content: $common-icon-add-external-url; 
   }
 }
 .common-icon-existing-smart-items {
   &:before {
-    content: unquote("\"#{ $common-icon-existing-smart-items }\""); 
+    content: $common-icon-existing-smart-items; 
   }
 }
 .common-icon-new-smart-item {
   &:before {
-    content: unquote("\"#{ $common-icon-new-smart-item }\""); 
+    content: $common-icon-new-smart-item; 
   }
 }
 .common-icon-rule-based-linking {
   &:before {
-    content: unquote("\"#{ $common-icon-rule-based-linking }\""); 
+    content: $common-icon-rule-based-linking; 
   }
 }
 .common-icon-forward1 {
   &:before {
-    content: unquote("\"#{ $common-icon-forward1 }\""); 
+    content: $common-icon-forward1; 
   }
 }
 .common-icon-SBS {
   &:before {
-    content: unquote("\"#{ $common-icon-SBS }\""); 
+    content: $common-icon-SBS; 
   }
 }
 .common-icon-manage-sbs-phase {
   &:before {
-    content: unquote("\"#{ $common-icon-manage-sbs-phase }\""); 
+    content: $common-icon-manage-sbs-phase; 
   }
 }
 .common-icon-sbs-name {
   &:before {
-    content: unquote("\"#{ $common-icon-sbs-name }\""); 
+    content: $common-icon-sbs-name; 
   }
 }
 .common-icon-dynamic-dates {
   &:before {
-    content: unquote("\"#{ $common-icon-dynamic-dates }\""); 
+    content: $common-icon-dynamic-dates; 
   }
 }
 .common-icon-Submittal-Summary {
   &:before {
-    content: unquote("\"#{ $common-icon-Submittal-Summary }\""); 
+    content: $common-icon-Submittal-Summary; 
   }
 }
 .common-icon-sku {
   &:before {
-    content: unquote("\"#{ $common-icon-sku }\""); 
+    content: $common-icon-sku; 
   }
 }
 .common-icon-ref-id {
   &:before {
-    content: unquote("\"#{ $common-icon-ref-id }\""); 
+    content: $common-icon-ref-id; 
   }
 }
 .common-icon-price {
   &:before {
-    content: unquote("\"#{ $common-icon-price }\""); 
+    content: $common-icon-price; 
   }
 }
 .common-icon-from-catalog {
   &:before {
-    content: unquote("\"#{ $common-icon-from-catalog }\""); 
+    content: $common-icon-from-catalog; 
   }
 }
 .common-icon-extraction-area {
   &:before {
-    content: unquote("\"#{ $common-icon-extraction-area }\""); 
+    content: $common-icon-extraction-area; 
   }
 }
 .common-icon-submit-brena .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-submit-brena-path1 }\"");  
+    content: $common-icon-submit-brena-path1;  
     color: rgb(153, 153, 153);
   }
 }
 .common-icon-submit-brena .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-submit-brena-path2 }\"");  
+    content: $common-icon-submit-brena-path2;  
     margin-left: -1em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-submit-brena .path3 {
   &:before {
-    content: unquote("\"#{ $common-icon-submit-brena-path3 }\"");  
+    content: $common-icon-submit-brena-path3;  
     margin-left: -1em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-submit-check {
   &:before {
-    content: unquote("\"#{ $common-icon-submit-check }\""); 
+    content: $common-icon-submit-check; 
   }
 }
 .common-icon-report-bid-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-report-bid-manager }\""); 
+    content: $common-icon-report-bid-manager; 
   }
 }
 .common-icon-manage-pay-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-manage-pay-icon }\""); 
+    content: $common-icon-manage-pay-icon; 
   }
 }
 .common-icon-bid-package {
   &:before {
-    content: unquote("\"#{ $common-icon-bid-package }\""); 
+    content: $common-icon-bid-package; 
   }
 }
 .common-icon-division {
   &:before {
-    content: unquote("\"#{ $common-icon-division }\""); 
+    content: $common-icon-division; 
   }
 }
 .common-icon-Group {
   &:before {
-    content: unquote("\"#{ $common-icon-Group }\""); 
+    content: $common-icon-Group; 
   }
 }
 .common-icon-pages {
   &:before {
-    content: unquote("\"#{ $common-icon-pages }\""); 
+    content: $common-icon-pages; 
   }
 }
 .common-icon-phase {
   &:before {
-    content: unquote("\"#{ $common-icon-phase }\""); 
+    content: $common-icon-phase; 
   }
 }
 .common-icon-spec-number {
   &:before {
-    content: unquote("\"#{ $common-icon-spec-number }\""); 
+    content: $common-icon-spec-number; 
   }
 }
 .common-icon-spec-section {
   &:before {
-    content: unquote("\"#{ $common-icon-spec-section }\""); 
+    content: $common-icon-spec-section; 
   }
 }
 .common-icon-system-breakdown {
   &:before {
-    content: unquote("\"#{ $common-icon-system-breakdown }\""); 
+    content: $common-icon-system-breakdown; 
   }
 }
 .common-icon-safety .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-safety-path1 }\"");  
+    content: $common-icon-safety-path1;  
     color: rgb(242, 187, 19);
   }
 }
 .common-icon-safety .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-safety-path2 }\"");  
+    content: $common-icon-safety-path2;  
     margin-left: -1em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-planner .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-planner-path1 }\"");  
+    content: $common-icon-planner-path1;  
     color: rgb(49, 152, 242);
   }
 }
 .common-icon-planner .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-planner-path2 }\"");  
+    content: $common-icon-planner-path2;  
     margin-left: -1em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-finance .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-finance-path1 }\"");  
+    content: $common-icon-finance-path1;  
     color: rgb(0, 229, 176);
   }
 }
 .common-icon-finance .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-finance-path2 }\"");  
+    content: $common-icon-finance-path2;  
     margin-left: -1em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-field .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-field-path1 }\"");  
+    content: $common-icon-field-path1;  
     color: rgb(55, 144, 0);
   }
 }
 .common-icon-field .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-field-path2 }\"");  
+    content: $common-icon-field-path2;  
     margin-left: -1em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-feather-edit {
   &:before {
-    content: unquote("\"#{ $common-icon-feather-edit }\""); 
+    content: $common-icon-feather-edit; 
   }
 }
 .common-icon-upload-up-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-upload-up-arrow }\""); 
+    content: $common-icon-upload-up-arrow; 
   }
 }
 .common-icon-package {
   &:before {
-    content: unquote("\"#{ $common-icon-package }\""); 
+    content: $common-icon-package; 
   }
 }
 .common-icon-specbook {
   &:before {
-    content: unquote("\"#{ $common-icon-specbook }\""); 
+    content: $common-icon-specbook; 
   }
 }
 .common-icon-brena {
   &:before {
-    content: unquote("\"#{ $common-icon-brena }\""); 
+    content: $common-icon-brena; 
   }
 }
 .common-icon-smart-submittals {
   &:before {
-    content: unquote("\"#{ $common-icon-smart-submittals }\""); 
+    content: $common-icon-smart-submittals; 
   }
 }
 .common-icon-spec-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-spec-manager }\""); 
+    content: $common-icon-spec-manager; 
   }
 }
 .common-icon-quote-received {
   &:before {
-    content: unquote("\"#{ $common-icon-quote-received }\""); 
+    content: $common-icon-quote-received; 
   }
 }
 .common-icon-quote-sent {
   &:before {
-    content: unquote("\"#{ $common-icon-quote-sent }\""); 
+    content: $common-icon-quote-sent; 
   }
 }
 .common-icon-c-mark {
   &:before {
-    content: unquote("\"#{ $common-icon-c-mark }\""); 
+    content: $common-icon-c-mark; 
   }
 }
 .common-icon-authorized {
   &:before {
-    content: unquote("\"#{ $common-icon-authorized }\""); 
+    content: $common-icon-authorized; 
   }
 }
 .common-icon-change-event-details {
   &:before {
-    content: unquote("\"#{ $common-icon-change-event-details }\""); 
+    content: $common-icon-change-event-details; 
   }
 }
 .common-icon-funding-source {
   &:before {
-    content: unquote("\"#{ $common-icon-funding-source }\""); 
+    content: $common-icon-funding-source; 
   }
 }
 .common-icon-standard-contract {
   &:before {
-    content: unquote("\"#{ $common-icon-standard-contract }\""); 
+    content: $common-icon-standard-contract; 
   }
 }
 .common-icon-bank-transfer {
   &:before {
-    content: unquote("\"#{ $common-icon-bank-transfer }\""); 
+    content: $common-icon-bank-transfer; 
   }
 }
 .common-icon-browse-locally {
   &:before {
-    content: unquote("\"#{ $common-icon-browse-locally }\""); 
+    content: $common-icon-browse-locally; 
   }
 }
 .common-icon-revise-resubmit1 {
   &:before {
-    content: unquote("\"#{ $common-icon-revise-resubmit1 }\""); 
+    content: $common-icon-revise-resubmit1; 
   }
 }
 .common-icon-payment-sent {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-sent }\""); 
+    content: $common-icon-payment-sent; 
   }
 }
 .common-icon-payment-received {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-received }\""); 
+    content: $common-icon-payment-received; 
   }
 }
 .common-icon-payment-authorized1 {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-authorized1 }\""); 
+    content: $common-icon-payment-authorized1; 
   }
 }
 .common-icon-auto-generated {
   &:before {
-    content: unquote("\"#{ $common-icon-auto-generated }\""); 
+    content: $common-icon-auto-generated; 
   }
 }
 .common-icon-certs-exclamation {
   &:before {
-    content: unquote("\"#{ $common-icon-certs-exclamation }\""); 
+    content: $common-icon-certs-exclamation; 
   }
 }
 .common-icon-allow-back-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-allow-back-icon }\""); 
+    content: $common-icon-allow-back-icon; 
   }
 }
 .common-icon-expunge {
   &:before {
-    content: unquote("\"#{ $common-icon-expunge }\""); 
+    content: $common-icon-expunge; 
   }
 }
 .common-icon-warning-medal {
   &:before {
-    content: unquote("\"#{ $common-icon-warning-medal }\""); 
+    content: $common-icon-warning-medal; 
   }
 }
 .common-icon-safety-violation {
   &:before {
-    content: unquote("\"#{ $common-icon-safety-violation }\""); 
+    content: $common-icon-safety-violation; 
   }
 }
 .common-icon-exclamation {
   &:before {
-    content: unquote("\"#{ $common-icon-exclamation }\""); 
+    content: $common-icon-exclamation; 
   }
 }
 .common-icon-Print1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Print1 }\""); 
+    content: $common-icon-Print1; 
   }
 }
 .common-icon-work-team {
   &:before {
-    content: unquote("\"#{ $common-icon-work-team }\""); 
+    content: $common-icon-work-team; 
   }
 }
 .common-icon-name-id {
   &:before {
-    content: unquote("\"#{ $common-icon-name-id }\""); 
+    content: $common-icon-name-id; 
   }
 }
 .common-icon-worker-attestment {
   &:before {
-    content: unquote("\"#{ $common-icon-worker-attestment }\""); 
+    content: $common-icon-worker-attestment; 
   }
 }
 .common-icon-reinvite {
   &:before {
-    content: unquote("\"#{ $common-icon-reinvite }\""); 
+    content: $common-icon-reinvite; 
   }
 }
 .common-icon-pick-company-org {
   &:before {
-    content: unquote("\"#{ $common-icon-pick-company-org }\""); 
+    content: $common-icon-pick-company-org; 
   }
 }
 .common-icon-resubmitted {
   &:before {
-    content: unquote("\"#{ $common-icon-resubmitted }\""); 
+    content: $common-icon-resubmitted; 
   }
 }
 .common-icon-reviewed-decline {
   &:before {
-    content: unquote("\"#{ $common-icon-reviewed-decline }\""); 
+    content: $common-icon-reviewed-decline; 
   }
 }
 .common-icon-active-timer {
   &:before {
-    content: unquote("\"#{ $common-icon-active-timer }\""); 
+    content: $common-icon-active-timer; 
   }
 }
 .common-icon-compliance-Status {
   &:before {
-    content: unquote("\"#{ $common-icon-compliance-Status }\""); 
+    content: $common-icon-compliance-Status; 
   }
 }
 .common-icon-diverse-supplier {
   &:before {
-    content: unquote("\"#{ $common-icon-diverse-supplier }\""); 
+    content: $common-icon-diverse-supplier; 
   }
 }
 .common-icon-scheduled {
   &:before {
-    content: unquote("\"#{ $common-icon-scheduled }\""); 
+    content: $common-icon-scheduled; 
   }
 }
 .common-icon-lien-waiver {
   &:before {
-    content: unquote("\"#{ $common-icon-lien-waiver }\""); 
+    content: $common-icon-lien-waiver; 
   }
 }
 .common-icon-eraser {
   &:before {
-    content: unquote("\"#{ $common-icon-eraser }\""); 
+    content: $common-icon-eraser; 
   }
 }
 .common-icon-signature {
   &:before {
-    content: unquote("\"#{ $common-icon-signature }\""); 
+    content: $common-icon-signature; 
   }
 }
 .common-icon-billing-schedule {
   &:before {
-    content: unquote("\"#{ $common-icon-billing-schedule }\""); 
+    content: $common-icon-billing-schedule; 
   }
 }
 .common-icon-revise-resubmit {
   &:before {
-    content: unquote("\"#{ $common-icon-revise-resubmit }\""); 
+    content: $common-icon-revise-resubmit; 
   }
 }
 .common-icon-submitted-waiting-party {
   &:before {
-    content: unquote("\"#{ $common-icon-submitted-waiting-party }\""); 
+    content: $common-icon-submitted-waiting-party; 
   }
 }
 .common-icon-payment-authorized {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-authorized }\"");     
+    content: $common-icon-payment-authorized;     
     color: #fff;
   }
 }
 .common-icon-no-funds {
   &:before {
-    content: unquote("\"#{ $common-icon-no-funds }\""); 
+    content: $common-icon-no-funds; 
   }
 }
 .common-icon-pay-application {
   &:before {
-    content: unquote("\"#{ $common-icon-pay-application }\""); 
+    content: $common-icon-pay-application; 
   }
 }
 .common-icon-vendor-pay-applications {
   &:before {
-    content: unquote("\"#{ $common-icon-vendor-pay-applications }\""); 
+    content: $common-icon-vendor-pay-applications; 
   }
 }
 .common-icon-contracts {
   &:before {
-    content: unquote("\"#{ $common-icon-contracts }\""); 
+    content: $common-icon-contracts; 
   }
 }
 .common-icon-vendor-contracts {
   &:before {
-    content: unquote("\"#{ $common-icon-vendor-contracts }\""); 
+    content: $common-icon-vendor-contracts; 
   }
 }
 .common-icon-bid-response {
   &:before {
-    content: unquote("\"#{ $common-icon-bid-response }\""); 
+    content: $common-icon-bid-response; 
   }
 }
 .common-icon-bid-lookup {
   &:before {
-    content: unquote("\"#{ $common-icon-bid-lookup }\""); 
+    content: $common-icon-bid-lookup; 
   }
 }
 .common-icon-change-events {
   &:before {
-    content: unquote("\"#{ $common-icon-change-events }\""); 
+    content: $common-icon-change-events; 
   }
 }
 .common-icon-contract-amount {
   &:before {
-    content: unquote("\"#{ $common-icon-contract-amount }\""); 
+    content: $common-icon-contract-amount; 
   }
 }
 .common-icon-contract-details {
   &:before {
-    content: unquote("\"#{ $common-icon-contract-details }\""); 
+    content: $common-icon-contract-details; 
   }
 }
 .common-icon-contract-files {
   &:before {
-    content: unquote("\"#{ $common-icon-contract-files }\""); 
+    content: $common-icon-contract-files; 
   }
 }
 .common-icon-deaft {
   &:before {
-    content: unquote("\"#{ $common-icon-deaft }\""); 
+    content: $common-icon-deaft; 
   }
 }
 .common-icon-delete {
   &:before {
-    content: unquote("\"#{ $common-icon-delete }\""); 
+    content: $common-icon-delete; 
   }
 }
 .common-icon-forecast {
   &:before {
-    content: unquote("\"#{ $common-icon-forecast }\""); 
+    content: $common-icon-forecast; 
   }
 }
 .common-icon-grid {
   &:before {
-    content: unquote("\"#{ $common-icon-grid }\""); 
+    content: $common-icon-grid; 
   }
 }
 .common-icon-payment-ledger {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-ledger }\""); 
+    content: $common-icon-payment-ledger; 
   }
 }
 .common-icon-post-contract {
   &:before {
-    content: unquote("\"#{ $common-icon-post-contract }\""); 
+    content: $common-icon-post-contract; 
   }
 }
 .common-icon-print {
   &:before {
-    content: unquote("\"#{ $common-icon-print }\""); 
+    content: $common-icon-print; 
   }
 }
 .common-icon-refresh {
   &:before {
-    content: unquote("\"#{ $common-icon-refresh }\""); 
+    content: $common-icon-refresh; 
   }
 }
 .common-icon-schedule-values {
   &:before {
-    content: unquote("\"#{ $common-icon-schedule-values }\""); 
+    content: $common-icon-schedule-values; 
   }
 }
 .common-icon-title {
   &:before {
-    content: unquote("\"#{ $common-icon-title }\""); 
+    content: $common-icon-title; 
   }
 }
 .common-icon-transactions {
   &:before {
-    content: unquote("\"#{ $common-icon-transactions }\""); 
+    content: $common-icon-transactions; 
   }
 }
 .common-icon-upload {
   &:before {
-    content: unquote("\"#{ $common-icon-upload }\""); 
+    content: $common-icon-upload; 
   }
 }
 .common-icon-view {
   &:before {
-    content: unquote("\"#{ $common-icon-view }\""); 
+    content: $common-icon-view; 
   }
 }
 .common-icon-loading {
   &:before {
-    content: unquote("\"#{ $common-icon-loading }\""); 
+    content: $common-icon-loading; 
   }
 }
 .common-icon-scope {
   &:before {
-    content: unquote("\"#{ $common-icon-scope }\""); 
+    content: $common-icon-scope; 
   }
 }
 .common-icon-Shifts {
   &:before {
-    content: unquote("\"#{ $common-icon-Shifts }\""); 
+    content: $common-icon-Shifts; 
   }
 }
 .common-icon-telephone-gray {
   &:before {
-    content: unquote("\"#{ $common-icon-telephone-gray }\""); 
+    content: $common-icon-telephone-gray; 
   }
 }
 .common-icon-upload-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-upload-icon }\""); 
+    content: $common-icon-upload-icon; 
   }
 }
 .common-icon-building-gray {
   &:before {
-    content: unquote("\"#{ $common-icon-building-gray }\""); 
+    content: $common-icon-building-gray; 
   }
 }
 .common-icon-calendar-31 {
   &:before {
-    content: unquote("\"#{ $common-icon-calendar-31 }\""); 
+    content: $common-icon-calendar-31; 
   }
 }
 .common-icon-briefcaseclockoutline {
   &:before {
-    content: unquote("\"#{ $common-icon-briefcaseclockoutline }\""); 
+    content: $common-icon-briefcaseclockoutline; 
   }
 }
 .common-icon-Calculator {
   &:before {
-    content: unquote("\"#{ $common-icon-Calculator }\""); 
+    content: $common-icon-Calculator; 
   }
 }
 .common-icon-DownArrow {
   &:before {
-    content: unquote("\"#{ $common-icon-DownArrow }\""); 
+    content: $common-icon-DownArrow; 
   }
 }
 .common-icon-Export {
   &:before {
-    content: unquote("\"#{ $common-icon-Export }\""); 
+    content: $common-icon-Export; 
   }
 }
 .common-icon-Eye {
   &:before {
-    content: unquote("\"#{ $common-icon-Eye }\""); 
+    content: $common-icon-Eye; 
   }
 }
 .common-icon-FilterIcon {
   &:before {
-    content: unquote("\"#{ $common-icon-FilterIcon }\""); 
+    content: $common-icon-FilterIcon; 
   }
 }
 .common-icon-GroupIcon {
   &:before {
-    content: unquote("\"#{ $common-icon-GroupIcon }\"");     
+    content: $common-icon-GroupIcon;     
     color: #666;
   }
 }
 .common-icon-infoicon {
   &:before {
-    content: unquote("\"#{ $common-icon-infoicon }\"");     
+    content: $common-icon-infoicon;     
     color: #666;
   }
 }
 .common-icon-Newgridview {
   &:before {
-    content: unquote("\"#{ $common-icon-Newgridview }\"");     
+    content: $common-icon-Newgridview;     
     color: #666;
   }
 }
 .common-icon-noitemsavailable {
   &:before {
-    content: unquote("\"#{ $common-icon-noitemsavailable }\""); 
+    content: $common-icon-noitemsavailable; 
   }
 }
 .common-icon-Pinned {
   &:before {
-    content: unquote("\"#{ $common-icon-Pinned }\""); 
+    content: $common-icon-Pinned; 
   }
 }
 .common-icon-ReportsAnalytics {
   &:before {
-    content: unquote("\"#{ $common-icon-ReportsAnalytics }\""); 
+    content: $common-icon-ReportsAnalytics; 
   }
 }
 .common-icon-Save {
   &:before {
-    content: unquote("\"#{ $common-icon-Save }\""); 
+    content: $common-icon-Save; 
   }
 }
 .common-icon-Saveas {
   &:before {
-    content: unquote("\"#{ $common-icon-Saveas }\""); 
+    content: $common-icon-Saveas; 
   }
 }
 .common-icon-SaveButtonWhite {
   &:before {
-    content: unquote("\"#{ $common-icon-SaveButtonWhite }\""); 
+    content: $common-icon-SaveButtonWhite; 
   }
 }
 .common-icon-Streams {
   &:before {
-    content: unquote("\"#{ $common-icon-Streams }\""); 
+    content: $common-icon-Streams; 
   }
 }
 .common-icon-UnPinned {
   &:before {
-    content: unquote("\"#{ $common-icon-UnPinned }\""); 
+    content: $common-icon-UnPinned; 
   }
 }
 .common-icon-UpArrow {
   &:before {
-    content: unquote("\"#{ $common-icon-UpArrow }\""); 
+    content: $common-icon-UpArrow; 
   }
 }
 .common-icon-BalanceModification {
   &:before {
-    content: unquote("\"#{ $common-icon-BalanceModification }\""); 
+    content: $common-icon-BalanceModification; 
   }
 }
 .common-icon-BudgetDetails {
   &:before {
-    content: unquote("\"#{ $common-icon-BudgetDetails }\""); 
+    content: $common-icon-BudgetDetails; 
   }
 }
 .common-icon-BudgetDetailsOrange .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-BudgetDetailsOrange-path1 }\"");  
+    content: $common-icon-BudgetDetailsOrange-path1;  
     color: rgb(237, 117, 50);
   }
 }
 .common-icon-BudgetDetailsOrange .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-BudgetDetailsOrange-path2 }\"");  
+    content: $common-icon-BudgetDetailsOrange-path2;  
     margin-left: -1em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-BudgetModification {
   &:before {
-    content: unquote("\"#{ $common-icon-BudgetModification }\""); 
+    content: $common-icon-BudgetModification; 
   }
 }
 .common-icon-Contracts {
   &:before {
-    content: unquote("\"#{ $common-icon-Contracts }\""); 
+    content: $common-icon-Contracts; 
   }
 }
 .common-icon-DirectCost {
   &:before {
-    content: unquote("\"#{ $common-icon-DirectCost }\""); 
+    content: $common-icon-DirectCost; 
   }
 }
 .common-icon-Dispatch {
   &:before {
-    content: unquote("\"#{ $common-icon-Dispatch }\""); 
+    content: $common-icon-Dispatch; 
   }
 }
 .common-icon-ForecastNew {
   &:before {
-    content: unquote("\"#{ $common-icon-ForecastNew }\""); 
+    content: $common-icon-ForecastNew; 
   }
 }
 .common-icon-Group1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Group1 }\""); 
+    content: $common-icon-Group1; 
   }
 }
 .common-icon-Payments {
   &:before {
-    content: unquote("\"#{ $common-icon-Payments }\""); 
+    content: $common-icon-Payments; 
   }
 }
 .common-icon-PlannerTag {
   &:before {
-    content: unquote("\"#{ $common-icon-PlannerTag }\""); 
+    content: $common-icon-PlannerTag; 
   }
 }
 .common-icon-ReportsAnalyticsNew {
   &:before {
-    content: unquote("\"#{ $common-icon-ReportsAnalyticsNew }\""); 
+    content: $common-icon-ReportsAnalyticsNew; 
   }
 }
 .common-icon-TransactionsNew {
   &:before {
-    content: unquote("\"#{ $common-icon-TransactionsNew }\""); 
+    content: $common-icon-TransactionsNew; 
   }
 }
 .common-icon-TransferIn {
   &:before {
-    content: unquote("\"#{ $common-icon-TransferIn }\""); 
+    content: $common-icon-TransferIn; 
   }
 }
 .common-icon-TransferOut {
   &:before {
-    content: unquote("\"#{ $common-icon-TransferOut }\""); 
+    content: $common-icon-TransferOut; 
   }
 }
 .common-icon-Active {
   &:before {
-    content: unquote("\"#{ $common-icon-Active }\""); 
+    content: $common-icon-Active; 
   }
 }
 .common-icon-Add {
   &:before {
-    content: unquote("\"#{ $common-icon-Add }\""); 
+    content: $common-icon-Add; 
   }
 }
 .common-icon-AwardBackGround {
   &:before {
-    content: unquote("\"#{ $common-icon-AwardBackGround }\""); 
+    content: $common-icon-AwardBackGround; 
   }
 }
 .common-icon-awarded-gray {
   &:before {
-    content: unquote("\"#{ $common-icon-awarded-gray }\""); 
+    content: $common-icon-awarded-gray; 
   }
 }
 .common-icon-Backward {
   &:before {
-    content: unquote("\"#{ $common-icon-Backward }\""); 
+    content: $common-icon-Backward; 
   }
 }
 .common-icon-biddersgray {
   &:before {
-    content: unquote("\"#{ $common-icon-biddersgray }\""); 
+    content: $common-icon-biddersgray; 
   }
 }
 .common-icon-Biddetailsgray {
   &:before {
-    content: unquote("\"#{ $common-icon-Biddetailsgray }\""); 
+    content: $common-icon-Biddetailsgray; 
   }
 }
 .common-icon-BiddingCCEmails {
   &:before {
-    content: unquote("\"#{ $common-icon-BiddingCCEmails }\""); 
+    content: $common-icon-BiddingCCEmails; 
   }
 }
 .common-icon-BidManager {
   &:before {
-    content: unquote("\"#{ $common-icon-BidManager }\""); 
+    content: $common-icon-BidManager; 
   }
 }
 .common-icon-BidPackageName {
   &:before {
-    content: unquote("\"#{ $common-icon-BidPackageName }\""); 
+    content: $common-icon-BidPackageName; 
   }
 }
 .common-icon-BidQueries {
   &:before {
-    content: unquote("\"#{ $common-icon-BidQueries }\""); 
+    content: $common-icon-BidQueries; 
   }
 }
 .common-icon-Block {
   &:before {
-    content: unquote("\"#{ $common-icon-Block }\""); 
+    content: $common-icon-Block; 
   }
 }
 .common-icon-BRDraft {
   &:before {
-    content: unquote("\"#{ $common-icon-BRDraft }\""); 
+    content: $common-icon-BRDraft; 
   }
 }
 .common-icon-Cancel {
   &:before {
-    content: unquote("\"#{ $common-icon-Cancel }\""); 
+    content: $common-icon-Cancel; 
   }
 }
 .common-icon-Cancelled {
   &:before {
-    content: unquote("\"#{ $common-icon-Cancelled }\""); 
+    content: $common-icon-Cancelled; 
   }
 }
 .common-icon-Closed {
   &:before {
-    content: unquote("\"#{ $common-icon-Closed }\""); 
+    content: $common-icon-Closed; 
   }
 }
 .common-icon-CSV {
   &:before {
-    content: unquote("\"#{ $common-icon-CSV }\""); 
+    content: $common-icon-CSV; 
   }
 }
 .common-icon-DateCalendar {
   &:before {
-    content: unquote("\"#{ $common-icon-DateCalendar }\""); 
+    content: $common-icon-DateCalendar; 
   }
 }
 .common-icon-Declined {
   &:before {
-    content: unquote("\"#{ $common-icon-Declined }\""); 
+    content: $common-icon-Declined; 
   }
 }
 .common-icon-Delete {
   &:before {
-    content: unquote("\"#{ $common-icon-Delete }\""); 
+    content: $common-icon-Delete; 
   }
 }
 .common-icon-Description {
   &:before {
-    content: unquote("\"#{ $common-icon-Description }\"");     
+    content: $common-icon-Description;     
     color: #ec711c;
   }
 }
 .common-icon-Draft {
   &:before {
-    content: unquote("\"#{ $common-icon-Draft }\""); 
+    content: $common-icon-Draft; 
   }
 }
 .common-icon-Expired {
   &:before {
-    content: unquote("\"#{ $common-icon-Expired }\""); 
+    content: $common-icon-Expired; 
   }
 }
 .common-icon-File {
   &:before {
-    content: unquote("\"#{ $common-icon-File }\""); 
+    content: $common-icon-File; 
   }
 }
 .common-icon-forward {
   &:before {
-    content: unquote("\"#{ $common-icon-forward }\""); 
+    content: $common-icon-forward; 
   }
 }
 .common-icon-Lock {
   &:before {
-    content: unquote("\"#{ $common-icon-Lock }\""); 
+    content: $common-icon-Lock; 
   }
 }
 .common-icon-NotResponded {
   &:before {
-    content: unquote("\"#{ $common-icon-NotResponded }\""); 
+    content: $common-icon-NotResponded; 
   }
 }
 .common-icon-Pause {
   &:before {
-    content: unquote("\"#{ $common-icon-Pause }\""); 
+    content: $common-icon-Pause; 
   }
 }
 .common-icon-Pausestatus {
   &:before {
-    content: unquote("\"#{ $common-icon-Pausestatus }\""); 
+    content: $common-icon-Pausestatus; 
   }
 }
 .common-icon-ReadyToPost {
   &:before {
-    content: unquote("\"#{ $common-icon-ReadyToPost }\""); 
+    content: $common-icon-ReadyToPost; 
   }
 }
 .common-icon-ReadyToSubmit {
   &:before {
-    content: unquote("\"#{ $common-icon-ReadyToSubmit }\""); 
+    content: $common-icon-ReadyToSubmit; 
   }
 }
 .common-icon-referance {
   &:before {
-    content: unquote("\"#{ $common-icon-referance }\""); 
+    content: $common-icon-referance; 
   }
 }
 .common-icon-Scheduled {
   &:before {
-    content: unquote("\"#{ $common-icon-Scheduled }\""); 
+    content: $common-icon-Scheduled; 
   }
 }
 .common-icon-StatusIconGray {
   &:before {
-    content: unquote("\"#{ $common-icon-StatusIconGray }\""); 
+    content: $common-icon-StatusIconGray; 
   }
 }
 .common-icon-SubmittedBy {
   &:before {
-    content: unquote("\"#{ $common-icon-SubmittedBy }\""); 
+    content: $common-icon-SubmittedBy; 
   }
 }
 .common-icon-SubmittedOn {
   &:before {
-    content: unquote("\"#{ $common-icon-SubmittedOn }\""); 
+    content: $common-icon-SubmittedOn; 
   }
 }
 .common-icon-AwardBid {
   &:before {
-    content: unquote("\"#{ $common-icon-AwardBid }\""); 
+    content: $common-icon-AwardBid; 
   }
 }
 .common-icon-tickmark {
   &:before {
-    content: unquote("\"#{ $common-icon-tickmark }\""); 
+    content: $common-icon-tickmark; 
   }
 }
 .common-icon-BiddingInstructions {
   &:before {
-    content: unquote("\"#{ $common-icon-BiddingInstructions }\"");     
+    content: $common-icon-BiddingInstructions;     
     color: #ec711c;
   }
 }
 .common-icon-not-submitted {
   &:before {
-    content: unquote("\"#{ $common-icon-not-submitted }\""); 
+    content: $common-icon-not-submitted; 
   }
 }
 .common-icon-bid-pending-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-bid-pending-icon }\""); 
+    content: $common-icon-bid-pending-icon; 
   }
 }
 .common-icon-Bidders {
   &:before {
-    content: unquote("\"#{ $common-icon-Bidders }\"");     
+    content: $common-icon-Bidders;     
     color: #ec711c;
   }
 }
 .common-icon-Curve {
   &:before {
-    content: unquote("\"#{ $common-icon-Curve }\"");     
+    content: $common-icon-Curve;     
     color: #ed7532;
   }
 }
 .common-icon-GantterbudgetOverdue {
   &:before {
-    content: unquote("\"#{ $common-icon-GantterbudgetOverdue }\"");     
+    content: $common-icon-GantterbudgetOverdue;     
     color: #ffce02;
   }
 }
 .common-icon-GeneratePullPlan {
   &:before {
-    content: unquote("\"#{ $common-icon-GeneratePullPlan }\""); 
+    content: $common-icon-GeneratePullPlan; 
   }
 }
 .common-icon-Budgetcalculator {
   &:before {
-    content: unquote("\"#{ $common-icon-Budgetcalculator }\"");     
+    content: $common-icon-Budgetcalculator;     
     color: #ec711c;
   }
 }
 .common-icon-Filter {
   &:before {
-    content: unquote("\"#{ $common-icon-Filter }\""); 
+    content: $common-icon-Filter; 
   }
 }
 .common-icon-Cost {
   &:before {
-    content: unquote("\"#{ $common-icon-Cost }\"");     
+    content: $common-icon-Cost;     
     color: #707070;
   }
 }
 .common-icon-singale-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-singale-arrow }\"");     
+    content: $common-icon-singale-arrow;     
     color: #666;
   }
 }
 .common-icon-email1 {
   &:before {
-    content: unquote("\"#{ $common-icon-email1 }\"");     
+    content: $common-icon-email1;     
     color: #767676;
   }
 }
 .common-icon-login {
   &:before {
-    content: unquote("\"#{ $common-icon-login }\"");     
+    content: $common-icon-login;     
     color: #767676;
   }
 }
 .common-icon-SMS {
   &:before {
-    content: unquote("\"#{ $common-icon-SMS }\""); 
+    content: $common-icon-SMS; 
   }
 }
 .common-icon-time-sheet {
   &:before {
-    content: unquote("\"#{ $common-icon-time-sheet }\""); 
+    content: $common-icon-time-sheet; 
   }
 }
 .common-icon-bid-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-bid-manager }\""); 
+    content: $common-icon-bid-manager; 
   }
 }
 .common-icon-catalog-builder {
   &:before {
-    content: unquote("\"#{ $common-icon-catalog-builder }\""); 
+    content: $common-icon-catalog-builder; 
   }
 }
 .common-icon-budget-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-budget-manager }\""); 
+    content: $common-icon-budget-manager; 
   }
 }
 .common-icon-workspace {
   &:before {
-    content: unquote("\"#{ $common-icon-workspace }\""); 
+    content: $common-icon-workspace; 
   }
 }
 .common-icon-sap-setting {
   &:before {
-    content: unquote("\"#{ $common-icon-sap-setting }\""); 
+    content: $common-icon-sap-setting; 
   }
 }
 .common-icon-un-view {
   &:before {
-    content: unquote("\"#{ $common-icon-un-view }\""); 
+    content: $common-icon-un-view; 
   }
 }
 .common-icon-chain-tag {
   &:before {
-    content: unquote("\"#{ $common-icon-chain-tag }\"");     
+    content: $common-icon-chain-tag;     
     color: #666;
   }
 }
 .common-icon-chain-copy-tag {
   &:before {
-    content: unquote("\"#{ $common-icon-chain-copy-tag }\"");     
+    content: $common-icon-chain-copy-tag;     
     color: #666;
   }
 }
 .common-icon-chain-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-chain-manager }\""); 
+    content: $common-icon-chain-manager; 
   }
 }
 .common-icon-bim-object-browser {
   &:before {
-    content: unquote("\"#{ $common-icon-bim-object-browser }\""); 
+    content: $common-icon-bim-object-browser; 
   }
 }
 .common-icon-analytics {
   &:before {
-    content: unquote("\"#{ $common-icon-analytics }\""); 
+    content: $common-icon-analytics; 
   }
 }
 .common-icon-right-double-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-right-double-arrow }\"");     
+    content: $common-icon-right-double-arrow;     
     color: #666;
   }
 }
 .common-icon-copy {
   &:before {
-    content: unquote("\"#{ $common-icon-copy }\"");     
+    content: $common-icon-copy;     
     color: #666;
   }
 }
 .common-icon-folder {
   &:before {
-    content: unquote("\"#{ $common-icon-folder }\"");     
+    content: $common-icon-folder;     
     color: #ee7532;
   }
 }
 .common-icon-map {
   &:before {
-    content: unquote("\"#{ $common-icon-map }\""); 
+    content: $common-icon-map; 
   }
 }
 .common-icon-sos-question-label {
   &:before {
-    content: unquote("\"#{ $common-icon-sos-question-label }\""); 
+    content: $common-icon-sos-question-label; 
   }
 }
 .common-icon-procor-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-procor-icon }\""); 
+    content: $common-icon-procor-icon; 
   }
 }
 .common-icon-livenote-std {
   &:before {
-    content: unquote("\"#{ $common-icon-livenote-std }\"");     
+    content: $common-icon-livenote-std;     
     color: #767676;
   }
 }
 .common-icon-drive-security {
   &:before {
-    content: unquote("\"#{ $common-icon-drive-security }\""); 
+    content: $common-icon-drive-security; 
   }
 }
 .common-icon-live-note {
   &:before {
-    content: unquote("\"#{ $common-icon-live-note }\"");     
+    content: $common-icon-live-note;     
     color: #178a35;
   }
 }
 .common-icon-SOS-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-SOS-icon }\""); 
+    content: $common-icon-SOS-icon; 
   }
 }
 .common-icon-theme-settings {
   &:before {
-    content: unquote("\"#{ $common-icon-theme-settings }\"");     
+    content: $common-icon-theme-settings;     
     color: #5b5b5b;
   }
 }
 .common-icon-materials {
   &:before {
-    content: unquote("\"#{ $common-icon-materials }\"");     
+    content: $common-icon-materials;     
     color: #666;
   }
 }
 .common-icon-tools-equipments {
   &:before {
-    content: unquote("\"#{ $common-icon-tools-equipments }\"");     
+    content: $common-icon-tools-equipments;     
     color: #666;
   }
 }
 .common-icon-smartgate-settings {
   &:before {
-    content: unquote("\"#{ $common-icon-smartgate-settings }\""); 
+    content: $common-icon-smartgate-settings; 
   }
 }
 .common-icon-team-member {
   &:before {
-    content: unquote("\"#{ $common-icon-team-member }\""); 
+    content: $common-icon-team-member; 
   }
 }
 .common-icon-division-lookup-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-division-lookup-icon }\"");     
+    content: $common-icon-division-lookup-icon;     
     color: #059cdf;
   }
 }
 .common-icon-wms {
   &:before {
-    content: unquote("\"#{ $common-icon-wms }\""); 
+    content: $common-icon-wms; 
   }
 }
 .common-icon-safety-digest-notification {
   &:before {
-    content: unquote("\"#{ $common-icon-safety-digest-notification }\"");     
+    content: $common-icon-safety-digest-notification;     
     color: #8d8d8d;
   }
 }
 .common-icon-SDN--1 {
   &:before {
-    content: unquote("\"#{ $common-icon-SDN--1 }\"");     
+    content: $common-icon-SDN--1;     
     color: #8d8d8d;
   }
 }
 .common-icon-task1 {
   &:before {
-    content: unquote("\"#{ $common-icon-task1 }\"");     
+    content: $common-icon-task1;     
     color: #8d8d8d;
   }
 }
 .common-icon-worker-report {
   &:before {
-    content: unquote("\"#{ $common-icon-worker-report }\"");     
+    content: $common-icon-worker-report;     
     color: #666;
   }
 }
 .common-icon-worker-application {
   &:before {
-    content: unquote("\"#{ $common-icon-worker-application }\""); 
+    content: $common-icon-worker-application; 
   }
 }
 .common-icon-ascending {
   &:before {
-    content: unquote("\"#{ $common-icon-ascending }\"");     
+    content: $common-icon-ascending;     
     color: #666;
   }
 }
 .common-icon-descending {
   &:before {
-    content: unquote("\"#{ $common-icon-descending }\"");     
+    content: $common-icon-descending;     
     color: #666;
   }
 }
 .common-icon-work-assigned {
   &:before {
-    content: unquote("\"#{ $common-icon-work-assigned }\"");     
+    content: $common-icon-work-assigned;     
     color: #666;
   }
 }
 .common-icon-permits1 {
   &:before {
-    content: unquote("\"#{ $common-icon-permits1 }\"");     
+    content: $common-icon-permits1;     
     color: #666;
   }
 }
 .common-icon-inspections {
   &:before {
-    content: unquote("\"#{ $common-icon-inspections }\"");     
+    content: $common-icon-inspections;     
     color: #666;
   }
 }
 .common-icon-daily-reports {
   &:before {
-    content: unquote("\"#{ $common-icon-daily-reports }\"");     
+    content: $common-icon-daily-reports;     
     color: #666;
   }
 }
 .common-icon-add-time {
   &:before {
-    content: unquote("\"#{ $common-icon-add-time }\"");     
+    content: $common-icon-add-time;     
     color: #8d8d8d;
   }
 }
 .common-icon-coming-soon {
   &:before {
-    content: unquote("\"#{ $common-icon-coming-soon }\"");     
+    content: $common-icon-coming-soon;     
     color: #f7bd21;
   }
 }
 .common-icon-None {
   &:before {
-    content: unquote("\"#{ $common-icon-None }\"");     
+    content: $common-icon-None;     
     color: #666;
   }
 }
 .common-icon-settings-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-settings-icon }\""); 
+    content: $common-icon-settings-icon; 
   }
 }
 .common-icon-reopen {
   &:before {
-    content: unquote("\"#{ $common-icon-reopen }\"");     
+    content: $common-icon-reopen;     
     color: #666;
   }
 }
 .common-icon-projects {
   &:before {
-    content: unquote("\"#{ $common-icon-projects }\""); 
+    content: $common-icon-projects; 
   }
 }
 .common-icon-view-levels1 {
   &:before {
-    content: unquote("\"#{ $common-icon-view-levels1 }\"");     
+    content: $common-icon-view-levels1;     
     color: #e76e25;
   }
 }
 .common-icon-metro-flow-tree {
   &:before {
-    content: unquote("\"#{ $common-icon-metro-flow-tree }\"");     
+    content: $common-icon-metro-flow-tree;     
     color: #666;
   }
 }
 .common-icon-smartgate-scanning {
   &:before {
-    content: unquote("\"#{ $common-icon-smartgate-scanning }\""); 
+    content: $common-icon-smartgate-scanning; 
   }
 }
 .common-icon-my-favarite-app {
   &:before {
-    content: unquote("\"#{ $common-icon-my-favarite-app }\"");     
+    content: $common-icon-my-favarite-app;     
     color: #666;
   }
 }
 .common-icon-manage-favorite-app {
   &:before {
-    content: unquote("\"#{ $common-icon-manage-favorite-app }\"");     
+    content: $common-icon-manage-favorite-app;     
     color: #666;
   }
 }
 .common-icon-column-edit-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-column-edit-icon }\""); 
+    content: $common-icon-column-edit-icon; 
   }
 }
 .common-icon-portfolio {
   &:before {
-    content: unquote("\"#{ $common-icon-portfolio }\""); 
+    content: $common-icon-portfolio; 
   }
 }
 .common-icon-user-role-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-user-role-icon }\"");     
+    content: $common-icon-user-role-icon;     
     color: #ed7532;
   }
 }
 .common-icon-temperature {
   &:before {
-    content: unquote("\"#{ $common-icon-temperature }\"");     
+    content: $common-icon-temperature;     
     color: #ed7532;
   }
 }
 .common-icon-no-group-available {
   &:before {
-    content: unquote("\"#{ $common-icon-no-group-available }\""); 
+    content: $common-icon-no-group-available; 
   }
 }
 .common-icon-map-point {
   &:before {
-    content: unquote("\"#{ $common-icon-map-point }\"");     
+    content: $common-icon-map-point;     
     color: #666;
   }
 }
 .common-icon-global-settings {
   &:before {
-    content: unquote("\"#{ $common-icon-global-settings }\"");     
+    content: $common-icon-global-settings;     
     color: #3a56e2;
   }
 }
 .common-icon-qualifications-and-certs {
   &:before {
-    content: unquote("\"#{ $common-icon-qualifications-and-certs }\"");     
+    content: $common-icon-qualifications-and-certs;     
     color: #f2bb13;
   }
 }
 .common-icon-select-from-drive {
   &:before {
-    content: unquote("\"#{ $common-icon-select-from-drive }\"");     
+    content: $common-icon-select-from-drive;     
     color: #ed7532;
   }
 }
 .common-icon-drive-settings {
   &:before {
-    content: unquote("\"#{ $common-icon-drive-settings }\"");     
+    content: $common-icon-drive-settings;     
     color: #666;
   }
 }
 .common-icon-group-72969 .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-group-72969-path1 }\"");  
+    content: $common-icon-group-72969-path1;  
     color: rgb(101, 101, 101);
   }
 }
 .common-icon-group-72969 .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-group-72969-path2 }\"");  
+    content: $common-icon-group-72969-path2;  
     margin-left: -0.9208984375em;  
     color: rgb(102, 102, 102);
   }
 }
 .common-icon-group-72969 .path3 {
   &:before {
-    content: unquote("\"#{ $common-icon-group-72969-path3 }\"");  
+    content: $common-icon-group-72969-path3;  
     margin-left: -0.9208984375em;  
     color: rgb(102, 102, 102);
   }
 }
 .common-icon-group-72969 .path4 {
   &:before {
-    content: unquote("\"#{ $common-icon-group-72969-path4 }\"");  
+    content: $common-icon-group-72969-path4;  
     margin-left: -0.9208984375em;  
     color: rgb(102, 102, 102);
   }
 }
 .common-icon-group-72969 .path5 {
   &:before {
-    content: unquote("\"#{ $common-icon-group-72969-path5 }\"");  
+    content: $common-icon-group-72969-path5;  
     margin-left: -0.9208984375em;  
     color: rgb(102, 102, 102);
   }
 }
 .common-icon-project-central {
   &:before {
-    content: unquote("\"#{ $common-icon-project-central }\"");     
+    content: $common-icon-project-central;     
     color: #ec711c;
   }
 }
 .common-icon-Blockchain {
   &:before {
-    content: unquote("\"#{ $common-icon-Blockchain }\""); 
+    content: $common-icon-Blockchain; 
   }
 }
 .common-icon-Minimize {
   &:before {
-    content: unquote("\"#{ $common-icon-Minimize }\"");     
+    content: $common-icon-Minimize;     
     color: #8d8d8d;
   }
 }
 .common-icon-AllDate {
   &:before {
-    content: unquote("\"#{ $common-icon-AllDate }\""); 
+    content: $common-icon-AllDate; 
   }
 }
 .common-icon-Upcoming {
   &:before {
-    content: unquote("\"#{ $common-icon-Upcoming }\""); 
+    content: $common-icon-Upcoming; 
   }
 }
 .common-icon-Overdue {
   &:before {
-    content: unquote("\"#{ $common-icon-Overdue }\""); 
+    content: $common-icon-Overdue; 
   }
 }
 .common-icon-Today {
   &:before {
-    content: unquote("\"#{ $common-icon-Today }\""); 
+    content: $common-icon-Today; 
   }
 }
 .common-icon-bring-forward {
   &:before {
-    content: unquote("\"#{ $common-icon-bring-forward }\""); 
+    content: $common-icon-bring-forward; 
   }
 }
 .common-icon-bring-front {
   &:before {
-    content: unquote("\"#{ $common-icon-bring-front }\""); 
+    content: $common-icon-bring-front; 
   }
 }
 .common-icon-noteswidget {
   &:before {
-    content: unquote("\"#{ $common-icon-noteswidget }\""); 
+    content: $common-icon-noteswidget; 
   }
 }
 .common-icon-send-back {
   &:before {
-    content: unquote("\"#{ $common-icon-send-back }\""); 
+    content: $common-icon-send-back; 
   }
 }
 .common-icon-send-backward {
   &:before {
-    content: unquote("\"#{ $common-icon-send-backward }\""); 
+    content: $common-icon-send-backward; 
   }
 }
 .common-icon-outline-user {
   &:before {
-    content: unquote("\"#{ $common-icon-outline-user }\"");     
+    content: $common-icon-outline-user;     
     color: #999;
   }
 }
 .common-icon-Project-Numer01 {
   &:before {
-    content: unquote("\"#{ $common-icon-Project-Numer01 }\"");     
+    content: $common-icon-Project-Numer01;     
     color: #666;
   }
 }
 .common-icon-Project-NumberOption {
   &:before {
-    content: unquote("\"#{ $common-icon-Project-NumberOption }\"");     
+    content: $common-icon-Project-NumberOption;     
     color: #666;
   }
 }
 .common-icon-duration-time {
   &:before {
-    content: unquote("\"#{ $common-icon-duration-time }\""); 
+    content: $common-icon-duration-time; 
   }
 }
 .common-icon-sort {
   &:before {
-    content: unquote("\"#{ $common-icon-sort }\"");     
+    content: $common-icon-sort;     
     color: #666;
   }
 }
 .common-icon-monthly {
   &:before {
-    content: unquote("\"#{ $common-icon-monthly }\""); 
+    content: $common-icon-monthly; 
   }
 }
 .common-icon-duration {
   &:before {
-    content: unquote("\"#{ $common-icon-duration }\""); 
+    content: $common-icon-duration; 
   }
 }
 .common-icon-mute {
   &:before {
-    content: unquote("\"#{ $common-icon-mute }\""); 
+    content: $common-icon-mute; 
   }
 }
 .common-icon-magnetize {
   &:before {
-    content: unquote("\"#{ $common-icon-magnetize }\""); 
+    content: $common-icon-magnetize; 
   }
 }
 .common-icon-iql-copy {
   &:before {
-    content: unquote("\"#{ $common-icon-iql-copy }\"");     
+    content: $common-icon-iql-copy;     
     color: #666;
   }
 }
 .common-icon-import-status {
   &:before {
-    content: unquote("\"#{ $common-icon-import-status }\""); 
+    content: $common-icon-import-status; 
   }
 }
 .common-icon-No-Item-Available {
   &:before {
-    content: unquote("\"#{ $common-icon-No-Item-Available }\"");     
+    content: $common-icon-No-Item-Available;     
     color: #d9d9d9;
   }
 }
 .common-icon-comments-reply {
   &:before {
-    content: unquote("\"#{ $common-icon-comments-reply }\""); 
+    content: $common-icon-comments-reply; 
   }
 }
 .common-icon-multi {
   &:before {
-    content: unquote("\"#{ $common-icon-multi }\""); 
+    content: $common-icon-multi; 
   }
 }
 .common-icon-follow-ups {
   &:before {
-    content: unquote("\"#{ $common-icon-follow-ups }\""); 
+    content: $common-icon-follow-ups; 
   }
 }
 .common-icon-invite {
   &:before {
-    content: unquote("\"#{ $common-icon-invite }\""); 
+    content: $common-icon-invite; 
   }
 }
 .common-icon-no-items-available {
   &:before {
-    content: unquote("\"#{ $common-icon-no-items-available }\""); 
+    content: $common-icon-no-items-available; 
   }
 }
 .common-icon-stamp {
   &:before {
-    content: unquote("\"#{ $common-icon-stamp }\"");     
+    content: $common-icon-stamp;     
     color: #8d8d8d;
   }
 }
 .common-icon-stamp-std {
   &:before {
-    content: unquote("\"#{ $common-icon-stamp-std }\"");     
+    content: $common-icon-stamp-std;     
     color: #666;
   }
 }
 .common-icon-insert-locations {
   &:before {
-    content: unquote("\"#{ $common-icon-insert-locations }\"");     
+    content: $common-icon-insert-locations;     
     color: #bfbfbf;
   }
 }
 .common-icon-stamp-time {
   &:before {
-    content: unquote("\"#{ $common-icon-stamp-time }\""); 
+    content: $common-icon-stamp-time; 
   }
 }
 .common-icon-daily-photos {
   &:before {
-    content: unquote("\"#{ $common-icon-daily-photos }\""); 
+    content: $common-icon-daily-photos; 
   }
 }
 .common-icon-meeting-minutes {
   &:before {
-    content: unquote("\"#{ $common-icon-meeting-minutes }\"");     
+    content: $common-icon-meeting-minutes;     
     color: #f8a129;
   }
 }
 .common-icon-stamp1 {
   &:before {
-    content: unquote("\"#{ $common-icon-stamp1 }\"");     
+    content: $common-icon-stamp1;     
     color: #00b555;
   }
 }
 .common-icon-SOS-bulletin-notifications {
   &:before {
-    content: unquote("\"#{ $common-icon-SOS-bulletin-notifications }\"");     
+    content: $common-icon-SOS-bulletin-notifications;     
     color: #666;
   }
 }
 .common-icon-task {
   &:before {
-    content: unquote("\"#{ $common-icon-task }\"");     
+    content: $common-icon-task;     
     color: #ec711c;
   }
 }
 .common-icon-safety-bulkletin {
   &:before {
-    content: unquote("\"#{ $common-icon-safety-bulkletin }\"");     
+    content: $common-icon-safety-bulkletin;     
     color: #666;
   }
 }
 .common-icon-Stamp-File2 {
   &:before {
-    content: unquote("\"#{ $common-icon-Stamp-File2 }\"");     
+    content: $common-icon-Stamp-File2;     
     color: #666;
   }
 }
 .common-icon-full-screen {
   &:before {
-    content: unquote("\"#{ $common-icon-full-screen }\"");     
+    content: $common-icon-full-screen;     
     color: #666;
   }
 }
 .common-icon-stamp-file {
   &:before {
-    content: unquote("\"#{ $common-icon-stamp-file }\""); 
+    content: $common-icon-stamp-file; 
   }
 }
 .common-icon-record-dragging {
   &:before {
-    content: unquote("\"#{ $common-icon-record-dragging }\"");     
+    content: $common-icon-record-dragging;     
     color: #666;
   }
 }
 .common-icon-blockchain {
   &:before {
-    content: unquote("\"#{ $common-icon-blockchain }\"");     
+    content: $common-icon-blockchain;     
     color: #666;
   }
 }
 .common-icon-file-drawing-route {
   &:before {
-    content: unquote("\"#{ $common-icon-file-drawing-route }\"");     
+    content: $common-icon-file-drawing-route;     
     color: #666;
   }
 }
 .common-icon-livesupport-help {
   &:before {
-    content: unquote("\"#{ $common-icon-livesupport-help }\""); 
+    content: $common-icon-livesupport-help; 
   }
 }
 .common-icon-rearrange-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-rearrange-icon }\""); 
+    content: $common-icon-rearrange-icon; 
   }
 }
 .common-icon-Live-Support-Help {
   &:before {
-    content: unquote("\"#{ $common-icon-Live-Support-Help }\"");     
+    content: $common-icon-Live-Support-Help;     
     color: #ee7532;
   }
 }
 .common-icon-cart {
   &:before {
-    content: unquote("\"#{ $common-icon-cart }\""); 
+    content: $common-icon-cart; 
   }
 }
 .common-icon-payment-complete .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-complete-path1 }\"");  
+    content: $common-icon-payment-complete-path1;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-payment-complete .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-complete-path2 }\"");  
+    content: $common-icon-payment-complete-path2;  
     margin-left: -1em;  
     color: rgb(236, 106, 31);
   }
 }
 .common-icon-Verification-projectteam {
   &:before {
-    content: unquote("\"#{ $common-icon-Verification-projectteam }\"");     
+    content: $common-icon-Verification-projectteam;     
     color: #a7a7a7;
   }
 }
 .common-icon-both-side-Icons {
   &:before {
-    content: unquote("\"#{ $common-icon-both-side-Icons }\"");     
+    content: $common-icon-both-side-Icons;     
     color: #059cdf;
   }
 }
 .common-icon-oneside {
   &:before {
-    content: unquote("\"#{ $common-icon-oneside }\"");     
+    content: $common-icon-oneside;     
     color: #059cdf;
   }
 }
 .common-icon-exclude-include-dropdown {
   &:before {
-    content: unquote("\"#{ $common-icon-exclude-include-dropdown }\""); 
+    content: $common-icon-exclude-include-dropdown; 
   }
 }
 .common-icon-Certification-approve-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-Certification-approve-icon }\"");     
+    content: $common-icon-Certification-approve-icon;     
     color: #0ed62d;
   }
 }
 .common-icon-ORG-Console {
   &:before {
-    content: unquote("\"#{ $common-icon-ORG-Console }\"");     
+    content: $common-icon-ORG-Console;     
     color: #666;
   }
 }
 .common-icon-Connect-Icon {
   &:before {
-    content: unquote("\"#{ $common-icon-Connect-Icon }\"");     
+    content: $common-icon-Connect-Icon;     
     color: #666;
   }
 }
 .common-icon-email-projecteam {
   &:before {
-    content: unquote("\"#{ $common-icon-email-projecteam }\""); 
+    content: $common-icon-email-projecteam; 
   }
 }
 .common-icon-Runways {
   &:before {
-    content: unquote("\"#{ $common-icon-Runways }\"");     
+    content: $common-icon-Runways;     
     color: #059cdf;
   }
 }
 .common-icon-Template {
   &:before {
-    content: unquote("\"#{ $common-icon-Template }\"");     
+    content: $common-icon-Template;     
     color: #666;
   }
 }
 .common-icon-Select-Layer {
   &:before {
-    content: unquote("\"#{ $common-icon-Select-Layer }\""); 
+    content: $common-icon-Select-Layer; 
   }
 }
 .common-icon-Settings {
   &:before {
-    content: unquote("\"#{ $common-icon-Settings }\""); 
+    content: $common-icon-Settings; 
   }
 }
 .common-icon-gis-connector {
   &:before {
-    content: unquote("\"#{ $common-icon-gis-connector }\""); 
+    content: $common-icon-gis-connector; 
   }
 }
 .common-icon-location12 {
   &:before {
-    content: unquote("\"#{ $common-icon-location12 }\""); 
+    content: $common-icon-location12; 
   }
 }
 .common-icon-connecting {
   &:before {
-    content: unquote("\"#{ $common-icon-connecting }\""); 
+    content: $common-icon-connecting; 
   }
 }
 .common-icon-gate-entrance {
   &:before {
-    content: unquote("\"#{ $common-icon-gate-entrance }\"");     
+    content: $common-icon-gate-entrance;     
     color: #666;
   }
 }
 .common-icon-upload-file {
   &:before {
-    content: unquote("\"#{ $common-icon-upload-file }\""); 
+    content: $common-icon-upload-file; 
   }
 }
 .common-icon-cluster {
   &:before {
-    content: unquote("\"#{ $common-icon-cluster }\""); 
+    content: $common-icon-cluster; 
   }
 }
 .common-icon-call {
   &:before {
-    content: unquote("\"#{ $common-icon-call }\"");     
+    content: $common-icon-call;     
     color: #666;
   }
 }
 .common-icon-work-category {
   &:before {
-    content: unquote("\"#{ $common-icon-work-category }\"");     
+    content: $common-icon-work-category;     
     color: #ec711c;
   }
 }
 .common-icon-test-history {
   &:before {
-    content: unquote("\"#{ $common-icon-test-history }\"");     
+    content: $common-icon-test-history;     
     color: #059cdf;
   }
 }
 .common-icon-medal {
   &:before {
-    content: unquote("\"#{ $common-icon-medal }\""); 
+    content: $common-icon-medal; 
   }
 }
 .common-icon-download-no-caret {
   &:before {
-    content: unquote("\"#{ $common-icon-download-no-caret }\""); 
+    content: $common-icon-download-no-caret; 
   }
 }
 .common-icon-enterprise-role-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-enterprise-role-manager }\""); 
+    content: $common-icon-enterprise-role-manager; 
   }
 }
 .common-icon-notification-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-notification-manager }\""); 
+    content: $common-icon-notification-manager; 
   }
 }
 .common-icon-vendor-data-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-vendor-data-manager }\"");     
+    content: $common-icon-vendor-data-manager;     
     color: #666;
   }
 }
 .common-icon-vendor-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-vendor-manager }\"");     
+    content: $common-icon-vendor-manager;     
     color: #666;
   }
 }
 .common-icon-global-delegation-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-global-delegation-manager }\""); 
+    content: $common-icon-global-delegation-manager; 
   }
 }
 .common-icon-global-gecurtity-group-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-global-gecurtity-group-manager }\""); 
+    content: $common-icon-global-gecurtity-group-manager; 
   }
 }
 .common-icon-user-company-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-user-company-manager }\"");     
+    content: $common-icon-user-company-manager;     
     color: #666;
   }
 }
 .common-icon-Iq-sketch-symbols-palettes {
   &:before {
-    content: unquote("\"#{ $common-icon-Iq-sketch-symbols-palettes }\"");     
+    content: $common-icon-Iq-sketch-symbols-palettes;     
     color: #666;
   }
 }
 .common-icon-OCR-template-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-OCR-template-manager }\""); 
+    content: $common-icon-OCR-template-manager; 
   }
 }
 .common-icon-universal-symbol-pallets {
   &:before {
-    content: unquote("\"#{ $common-icon-universal-symbol-pallets }\""); 
+    content: $common-icon-universal-symbol-pallets; 
   }
 }
 .common-icon-API-keys {
   &:before {
-    content: unquote("\"#{ $common-icon-API-keys }\""); 
+    content: $common-icon-API-keys; 
   }
 }
 .common-icon-view-selection {
   &:before {
-    content: unquote("\"#{ $common-icon-view-selection }\""); 
+    content: $common-icon-view-selection; 
   }
 }
 .common-icon-safety-failed {
   &:before {
-    content: unquote("\"#{ $common-icon-safety-failed }\"");     
+    content: $common-icon-safety-failed;     
     color: #d53e3a;
   }
 }
 .common-icon-safety-tracking1 {
   &:before {
-    content: unquote("\"#{ $common-icon-safety-tracking1 }\"");     
+    content: $common-icon-safety-tracking1;     
     color: #666;
   }
 }
 .common-icon-gantter-tag {
   &:before {
-    content: unquote("\"#{ $common-icon-gantter-tag }\""); 
+    content: $common-icon-gantter-tag; 
   }
 }
 .common-icon-RightArrowQ {
   &:before {
-    content: unquote("\"#{ $common-icon-RightArrowQ }\"");     
+    content: $common-icon-RightArrowQ;     
     color: #059cdf;
   }
 }
 .common-icon-admin-console {
   &:before {
-    content: unquote("\"#{ $common-icon-admin-console }\""); 
+    content: $common-icon-admin-console; 
   }
 }
 .common-icon-ID-card {
   &:before {
-    content: unquote("\"#{ $common-icon-ID-card }\""); 
+    content: $common-icon-ID-card; 
   }
 }
 .common-icon-registration-completetion {
   &:before {
-    content: unquote("\"#{ $common-icon-registration-completetion }\""); 
+    content: $common-icon-registration-completetion; 
   }
 }
 .common-icon-erase-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-erase-icon }\"");     
+    content: $common-icon-erase-icon;     
     color: #059cdf;
   }
 }
 .common-icon-certification {
   &:before {
-    content: unquote("\"#{ $common-icon-certification }\""); 
+    content: $common-icon-certification; 
   }
 }
 .common-icon-calendar_48dp {
   &:before {
-    content: unquote("\"#{ $common-icon-calendar_48dp }\""); 
+    content: $common-icon-calendar_48dp; 
   }
 }
 .common-icon-text_area_48dp {
   &:before {
-    content: unquote("\"#{ $common-icon-text_area_48dp }\"");     
+    content: $common-icon-text_area_48dp;     
     color: #2380c4;
   }
 }
 .common-icon-image_write_24dp {
   &:before {
-    content: unquote("\"#{ $common-icon-image_write_24dp }\""); 
+    content: $common-icon-image_write_24dp; 
   }
 }
 .common-icon-yes-no-Icon {
   &:before {
-    content: unquote("\"#{ $common-icon-yes-no-Icon }\"");     
+    content: $common-icon-yes-no-Icon;     
     color: #ec7120;
   }
 }
 .common-icon-new-signature {
   &:before {
-    content: unquote("\"#{ $common-icon-new-signature }\"");     
+    content: $common-icon-new-signature;     
     color: #ed7532;
   }
 }
 .common-icon-multiple-choice {
   &:before {
-    content: unquote("\"#{ $common-icon-multiple-choice }\"");     
+    content: $common-icon-multiple-choice;     
     color: #ec7120;
   }
 }
 .common-icon-policy-notification-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-policy-notification-icon }\"");     
+    content: $common-icon-policy-notification-icon;     
     color: #ffce02;
   }
 }
 .common-icon-include {
   &:before {
-    content: unquote("\"#{ $common-icon-include }\""); 
+    content: $common-icon-include; 
   }
 }
 .common-icon-exclude {
   &:before {
-    content: unquote("\"#{ $common-icon-exclude }\""); 
+    content: $common-icon-exclude; 
   }
 }
 .common-icon-new-gear {
   &:before {
-    content: unquote("\"#{ $common-icon-new-gear }\""); 
+    content: $common-icon-new-gear; 
   }
 }
 .common-icon-Jobsite-Board {
   &:before {
-    content: unquote("\"#{ $common-icon-Jobsite-Board }\""); 
+    content: $common-icon-Jobsite-Board; 
   }
 }
 .common-icon-Safety-Kiosk-Bundle--Option1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Kiosk-Bundle--Option1 }\""); 
+    content: $common-icon-Safety-Kiosk-Bundle--Option1; 
   }
 }
 .common-icon-RTLS-Bundle {
   &:before {
-    content: unquote("\"#{ $common-icon-RTLS-Bundle }\""); 
+    content: $common-icon-RTLS-Bundle; 
   }
 }
 .common-icon-Commit-Plan-Board-1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Commit-Plan-Board-1 }\""); 
+    content: $common-icon-Commit-Plan-Board-1; 
   }
 }
 .common-icon-SafetyAuthorization {
   &:before {
-    content: unquote("\"#{ $common-icon-SafetyAuthorization }\""); 
+    content: $common-icon-SafetyAuthorization; 
   }
 }
 .common-icon-SafetyPermit {
   &:before {
-    content: unquote("\"#{ $common-icon-SafetyPermit }\""); 
+    content: $common-icon-SafetyPermit; 
   }
 }
 .common-icon-stage {
   &:before {
-    content: unquote("\"#{ $common-icon-stage }\""); 
+    content: $common-icon-stage; 
   }
 }
 .common-icon-file {
   &:before {
-    content: unquote("\"#{ $common-icon-file }\""); 
+    content: $common-icon-file; 
   }
 }
 .common-icon-Request-Safety-Permit {
   &:before {
-    content: unquote("\"#{ $common-icon-Request-Safety-Permit }\"");     
+    content: $common-icon-Request-Safety-Permit;     
     color: #666;
   }
 }
 .common-icon-stationary {
   &:before {
-    content: unquote("\"#{ $common-icon-stationary }\""); 
+    content: $common-icon-stationary; 
   }
 }
 .common-icon-cloud-upload {
   &:before {
-    content: unquote("\"#{ $common-icon-cloud-upload }\""); 
+    content: $common-icon-cloud-upload; 
   }
 }
 .common-icon-custom {
   &:before {
-    content: unquote("\"#{ $common-icon-custom }\""); 
+    content: $common-icon-custom; 
   }
 }
 .common-icon-gear {
   &:before {
-    content: unquote("\"#{ $common-icon-gear }\""); 
+    content: $common-icon-gear; 
   }
 }
 .common-icon-pdf {
   &:before {
-    content: unquote("\"#{ $common-icon-pdf }\""); 
+    content: $common-icon-pdf; 
   }
 }
 .common-icon-report {
   &:before {
-    content: unquote("\"#{ $common-icon-report }\""); 
+    content: $common-icon-report; 
   }
 }
 .common-icon-smartapp-logo .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapp-logo-path1 }\"");  
+    content: $common-icon-smartapp-logo-path1;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-smartapp-logo .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapp-logo-path2 }\"");  
+    content: $common-icon-smartapp-logo-path2;  
     margin-left: -1.005859375em;  
     color: rgb(16, 15, 12);
   }
 }
 .common-icon-smartapp-logo .path3 {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapp-logo-path3 }\"");  
+    content: $common-icon-smartapp-logo-path3;  
     margin-left: -1.005859375em;  
     color: rgb(228, 87, 24);
   }
 }
 .common-icon-area {
   &:before {
-    content: unquote("\"#{ $common-icon-area }\""); 
+    content: $common-icon-area; 
   }
 }
 .common-icon-suggest-assist-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-suggest-assist-icon }\"");     
+    content: $common-icon-suggest-assist-icon;     
     color: #fcfc3d;
   }
 }
 .common-icon-uniEAE6 {
   &:before {
-    content: unquote("\"#{ $common-icon-uniEAE6 }\""); 
+    content: $common-icon-uniEAE6; 
   }
 }
 .common-icon-link-sketch {
   &:before {
-    content: unquote("\"#{ $common-icon-link-sketch }\""); 
+    content: $common-icon-link-sketch; 
   }
 }
 .common-icon-orgconsole-profile {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-profile }\""); 
+    content: $common-icon-orgconsole-profile; 
   }
 }
 .common-icon-user-details {
   &:before {
-    content: unquote("\"#{ $common-icon-user-details }\""); 
+    content: $common-icon-user-details; 
   }
 }
 .common-icon-sync-all-apps {
   &:before {
-    content: unquote("\"#{ $common-icon-sync-all-apps }\""); 
+    content: $common-icon-sync-all-apps; 
   }
 }
 .common-icon-badge {
   &:before {
-    content: unquote("\"#{ $common-icon-badge }\""); 
+    content: $common-icon-badge; 
   }
 }
 .common-icon-equipment {
   &:before {
-    content: unquote("\"#{ $common-icon-equipment }\""); 
+    content: $common-icon-equipment; 
   }
 }
 .common-icon-gateway {
   &:before {
-    content: unquote("\"#{ $common-icon-gateway }\""); 
+    content: $common-icon-gateway; 
   }
 }
 .common-icon-permits {
   &:before {
-    content: unquote("\"#{ $common-icon-permits }\""); 
+    content: $common-icon-permits; 
   }
 }
 .common-icon-visit-log {
   &:before {
-    content: unquote("\"#{ $common-icon-visit-log }\"");     
+    content: $common-icon-visit-log;     
     color: #666;
   }
 }
 .common-icon-approval-all-option {
   &:before {
-    content: unquote("\"#{ $common-icon-approval-all-option }\""); 
+    content: $common-icon-approval-all-option; 
   }
 }
 .common-icon-BIM-extract-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-BIM-extract-icon }\""); 
+    content: $common-icon-BIM-extract-icon; 
   }
 }
 .common-icon-analytic {
   &:before {
-    content: unquote("\"#{ $common-icon-analytic }\""); 
+    content: $common-icon-analytic; 
   }
 }
 .common-icon-calibaration {
   &:before {
-    content: unquote("\"#{ $common-icon-calibaration }\""); 
+    content: $common-icon-calibaration; 
   }
 }
 .common-icon-daily {
   &:before {
-    content: unquote("\"#{ $common-icon-daily }\""); 
+    content: $common-icon-daily; 
   }
 }
 .common-icon-gantter {
   &:before {
-    content: unquote("\"#{ $common-icon-gantter }\""); 
+    content: $common-icon-gantter; 
   }
 }
 .common-icon-tag {
   &:before {
-    content: unquote("\"#{ $common-icon-tag }\""); 
+    content: $common-icon-tag; 
   }
 }
 .common-icon-must-picklist--1 {
   &:before {
-    content: unquote("\"#{ $common-icon-must-picklist--1 }\"");     
+    content: $common-icon-must-picklist--1;     
     color: #ed7532;
   }
 }
 .common-icon-safety-tick {
   &:before {
-    content: unquote("\"#{ $common-icon-safety-tick }\"");     
+    content: $common-icon-safety-tick;     
     color: #0a8727;
   }
 }
 .common-icon-org-project-symbol {
   &:before {
-    content: unquote("\"#{ $common-icon-org-project-symbol }\""); 
+    content: $common-icon-org-project-symbol; 
   }
 }
 .common-icon-Grid {
   &:before {
-    content: unquote("\"#{ $common-icon-Grid }\"");     
+    content: $common-icon-Grid;     
     color: #666;
   }
 }
 .common-icon-Schdule-Work {
   &:before {
-    content: unquote("\"#{ $common-icon-Schdule-Work }\""); 
+    content: $common-icon-Schdule-Work; 
   }
 }
 .common-icon-LinkedField {
   &:before {
-    content: unquote("\"#{ $common-icon-LinkedField }\""); 
+    content: $common-icon-LinkedField; 
   }
 }
 .common-icon-Links {
   &:before {
-    content: unquote("\"#{ $common-icon-Links }\""); 
+    content: $common-icon-Links; 
   }
 }
 .common-icon-Lebel {
   &:before {
-    content: unquote("\"#{ $common-icon-Lebel }\""); 
+    content: $common-icon-Lebel; 
   }
 }
 .common-icon-ItemBarcode {
   &:before {
-    content: unquote("\"#{ $common-icon-ItemBarcode }\""); 
+    content: $common-icon-ItemBarcode; 
   }
 }
 .common-icon-Signature {
   &:before {
-    content: unquote("\"#{ $common-icon-Signature }\""); 
+    content: $common-icon-Signature; 
   }
 }
 .common-icon-DrawingLog {
   &:before {
-    content: unquote("\"#{ $common-icon-DrawingLog }\""); 
+    content: $common-icon-DrawingLog; 
   }
 }
 .common-icon-AutoCheckin {
   &:before {
-    content: unquote("\"#{ $common-icon-AutoCheckin }\""); 
+    content: $common-icon-AutoCheckin; 
   }
 }
 .common-icon-CurrentTime {
   &:before {
-    content: unquote("\"#{ $common-icon-CurrentTime }\""); 
+    content: $common-icon-CurrentTime; 
   }
 }
 .common-icon-ContactPicker {
   &:before {
-    content: unquote("\"#{ $common-icon-ContactPicker }\""); 
+    content: $common-icon-ContactPicker; 
   }
 }
 .common-icon-CatalogGrid {
   &:before {
-    content: unquote("\"#{ $common-icon-CatalogGrid }\""); 
+    content: $common-icon-CatalogGrid; 
   }
 }
 .common-icon-BlackInputGrid {
   &:before {
-    content: unquote("\"#{ $common-icon-BlackInputGrid }\""); 
+    content: $common-icon-BlackInputGrid; 
   }
 }
 .common-icon-Checkbox1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Checkbox1 }\""); 
+    content: $common-icon-Checkbox1; 
   }
 }
 .common-icon-stage-MakeDefault {
   &:before {
-    content: unquote("\"#{ $common-icon-stage-MakeDefault }\"");     
+    content: $common-icon-stage-MakeDefault;     
     color: #666;
   }
 }
 .common-icon-Notes {
   &:before {
-    content: unquote("\"#{ $common-icon-Notes }\""); 
+    content: $common-icon-Notes; 
   }
 }
 .common-icon-Integer1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Integer1 }\""); 
+    content: $common-icon-Integer1; 
   }
 }
 .common-icon-Decimal1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Decimal1 }\""); 
+    content: $common-icon-Decimal1; 
   }
 }
 .common-icon-Date1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Date1 }\""); 
+    content: $common-icon-Date1; 
   }
 }
 .common-icon-adminNote {
   &:before {
-    content: unquote("\"#{ $common-icon-adminNote }\"");     
+    content: $common-icon-adminNote;     
     color: #ed7532;
   }
 }
 .common-icon-external1 {
   &:before {
-    content: unquote("\"#{ $common-icon-external1 }\""); 
+    content: $common-icon-external1; 
   }
 }
 .common-icon-play-left {
   &:before {
-    content: unquote("\"#{ $common-icon-play-left }\""); 
+    content: $common-icon-play-left; 
   }
 }
 .common-icon-play-right {
   &:before {
-    content: unquote("\"#{ $common-icon-play-right }\""); 
+    content: $common-icon-play-right; 
   }
 }
 .common-icon-map-location {
   &:before {
-    content: unquote("\"#{ $common-icon-map-location }\""); 
+    content: $common-icon-map-location; 
   }
 }
 .common-icon-road {
   &:before {
-    content: unquote("\"#{ $common-icon-road }\""); 
+    content: $common-icon-road; 
   }
 }
 .common-icon-add-circle {
   &:before {
-    content: unquote("\"#{ $common-icon-add-circle }\""); 
+    content: $common-icon-add-circle; 
   }
 }
 .common-icon-add-polygon {
   &:before {
-    content: unquote("\"#{ $common-icon-add-polygon }\""); 
+    content: $common-icon-add-polygon; 
   }
 }
 .common-icon-drawing-location {
   &:before {
-    content: unquote("\"#{ $common-icon-drawing-location }\"");     
+    content: $common-icon-drawing-location;     
     color: #666;
   }
 }
 .common-icon-RTF {
   &:before {
-    content: unquote("\"#{ $common-icon-RTF }\""); 
+    content: $common-icon-RTF; 
   }
 }
 .common-icon-ODT {
   &:before {
-    content: unquote("\"#{ $common-icon-ODT }\""); 
+    content: $common-icon-ODT; 
   }
 }
 .common-icon-EPUB {
   &:before {
-    content: unquote("\"#{ $common-icon-EPUB }\""); 
+    content: $common-icon-EPUB; 
   }
 }
 .common-icon-linear {
   &:before {
-    content: unquote("\"#{ $common-icon-linear }\"");     
+    content: $common-icon-linear;     
     color: #666;
   }
 }
 .common-icon-meters {
   &:before {
-    content: unquote("\"#{ $common-icon-meters }\"");     
+    content: $common-icon-meters;     
     color: #666;
   }
 }
 .common-icon-floor {
   &:before {
-    content: unquote("\"#{ $common-icon-floor }\""); 
+    content: $common-icon-floor; 
   }
 }
 .common-icon-building {
   &:before {
-    content: unquote("\"#{ $common-icon-building }\""); 
+    content: $common-icon-building; 
   }
 }
 .common-icon-view-level {
   &:before {
-    content: unquote("\"#{ $common-icon-view-level }\""); 
+    content: $common-icon-view-level; 
   }
 }
 .common-icon-orgconsole-profile-name {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-profile-name }\"");     
+    content: $common-icon-orgconsole-profile-name;     
     color: #c3c3c3;
   }
 }
 .common-icon-name {
   &:before {
-    content: unquote("\"#{ $common-icon-name }\""); 
+    content: $common-icon-name; 
   }
 }
 .common-icon-orgconsole-contact {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-contact }\""); 
+    content: $common-icon-orgconsole-contact; 
   }
 }
 .common-icon-orgconsole-access-code {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-access-code }\""); 
+    content: $common-icon-orgconsole-access-code; 
   }
 }
 .common-icon-orgconsole-regions {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-regions }\""); 
+    content: $common-icon-orgconsole-regions; 
   }
 }
 .common-icon-orgconsole-revisions {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-revisions }\""); 
+    content: $common-icon-orgconsole-revisions; 
   }
 }
 .common-icon-orgconsole-rules {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-rules }\""); 
+    content: $common-icon-orgconsole-rules; 
   }
 }
 .common-icon-orgconsole-SAC {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-SAC }\""); 
+    content: $common-icon-orgconsole-SAC; 
   }
 }
 .common-icon-orgconsole-safety-policies {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-safety-policies }\""); 
+    content: $common-icon-orgconsole-safety-policies; 
   }
 }
 .common-icon-orgconsole-shifts-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-shifts-icon }\""); 
+    content: $common-icon-orgconsole-shifts-icon; 
   }
 }
 .common-icon-orgconsole-SIC {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-SIC }\""); 
+    content: $common-icon-orgconsole-SIC; 
   }
 }
 .common-icon-orgconsole-SID {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-SID }\""); 
+    content: $common-icon-orgconsole-SID; 
   }
 }
 .common-icon-orgconsole-skills-certs {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-skills-certs }\""); 
+    content: $common-icon-orgconsole-skills-certs; 
   }
 }
 .common-icon-orgconsole-SRM {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-SRM }\""); 
+    content: $common-icon-orgconsole-SRM; 
   }
 }
 .common-icon-orgconsole-STAC {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-STAC }\""); 
+    content: $common-icon-orgconsole-STAC; 
   }
 }
 .common-icon-orgconsole-tags {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-tags }\""); 
+    content: $common-icon-orgconsole-tags; 
   }
 }
 .common-icon-orgconsole-team-safety-credentials {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-team-safety-credentials }\""); 
+    content: $common-icon-orgconsole-team-safety-credentials; 
   }
 }
 .common-icon-orgconsole-templates {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-templates }\""); 
+    content: $common-icon-orgconsole-templates; 
   }
 }
 .common-icon-orgconsole-trades {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-trades }\""); 
+    content: $common-icon-orgconsole-trades; 
   }
 }
 .common-icon-orgconsole-work-cataegories {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-work-cataegories }\""); 
+    content: $common-icon-orgconsole-work-cataegories; 
   }
 }
 .common-icon-orgconsole-work-teams {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-work-teams }\""); 
+    content: $common-icon-orgconsole-work-teams; 
   }
 }
 .common-icon-orgconsole-connectors1 {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-connectors1 }\""); 
+    content: $common-icon-orgconsole-connectors1; 
   }
 }
 .common-icon-orgconsole-copy {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-copy }\""); 
+    content: $common-icon-orgconsole-copy; 
   }
 }
 .common-icon-orgconsole-daily-settings {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-daily-settings }\""); 
+    content: $common-icon-orgconsole-daily-settings; 
   }
 }
 .common-icon-orgconsole-drive-safety-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-drive-safety-icon }\""); 
+    content: $common-icon-orgconsole-drive-safety-icon; 
   }
 }
 .common-icon-orgconsole-list-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-list-manager }\""); 
+    content: $common-icon-orgconsole-list-manager; 
   }
 }
 .common-icon-orgconsole-location {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-location }\""); 
+    content: $common-icon-orgconsole-location; 
   }
 }
 .common-icon-orgconsole-palettes {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-palettes }\""); 
+    content: $common-icon-orgconsole-palettes; 
   }
 }
 .common-icon-orgconsole-permission-groups {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-permission-groups }\""); 
+    content: $common-icon-orgconsole-permission-groups; 
   }
 }
 .common-icon-orgconsole-project-supplemental-info {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-project-supplemental-info }\""); 
+    content: $common-icon-orgconsole-project-supplemental-info; 
   }
 }
 .common-icon-orgconsole-analytics {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-analytics }\""); 
+    content: $common-icon-orgconsole-analytics; 
   }
 }
 .common-icon-orgconsole-api {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-api }\""); 
+    content: $common-icon-orgconsole-api; 
   }
 }
 .common-icon-orgconsole-apps {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-apps }\""); 
+    content: $common-icon-orgconsole-apps; 
   }
 }
 .common-icon-orgconsole-app-studio {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-app-studio }\""); 
+    content: $common-icon-orgconsole-app-studio; 
   }
 }
 .common-icon-orgconsole-calendar {
   &:before {
-    content: unquote("\"#{ $common-icon-orgconsole-calendar }\""); 
+    content: $common-icon-orgconsole-calendar; 
   }
 }
 .common-icon-companies {
   &:before {
-    content: unquote("\"#{ $common-icon-companies }\""); 
+    content: $common-icon-companies; 
   }
 }
 .common-icon-vendor-id {
   &:before {
-    content: unquote("\"#{ $common-icon-vendor-id }\""); 
+    content: $common-icon-vendor-id; 
   }
 }
 .common-icon-Admin-Settings {
   &:before {
-    content: unquote("\"#{ $common-icon-Admin-Settings }\"");     
+    content: $common-icon-Admin-Settings;     
     color: #666;
   }
 }
 .common-icon-Approval-Role {
   &:before {
-    content: unquote("\"#{ $common-icon-Approval-Role }\""); 
+    content: $common-icon-Approval-Role; 
   }
 }
 .common-icon-Ato-Z {
   &:before {
-    content: unquote("\"#{ $common-icon-Ato-Z }\"");     
+    content: $common-icon-Ato-Z;     
     color: #666;
   }
 }
 .common-icon-Calender {
   &:before {
-    content: unquote("\"#{ $common-icon-Calender }\"");     
+    content: $common-icon-Calender;     
     color: #666;
   }
 }
 .common-icon-Checkbox {
   &:before {
-    content: unquote("\"#{ $common-icon-Checkbox }\"");     
+    content: $common-icon-Checkbox;     
     color: #666;
   }
 }
 .common-icon-Comment--1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Comment--1 }\"");     
+    content: $common-icon-Comment--1;     
     color: #666;
   }
 }
 .common-icon-Comment {
   &:before {
-    content: unquote("\"#{ $common-icon-Comment }\"");     
+    content: $common-icon-Comment;     
     color: #666;
   }
 }
 .common-icon-Companies {
   &:before {
-    content: unquote("\"#{ $common-icon-Companies }\"");     
+    content: $common-icon-Companies;     
     color: #666;
   }
 }
 .common-icon-Date {
   &:before {
-    content: unquote("\"#{ $common-icon-Date }\"");     
+    content: $common-icon-Date;     
     color: #666;
   }
 }
 .common-icon-Date-1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Date-1 }\"");     
+    content: $common-icon-Date-1;     
     color: #666;
   }
 }
 .common-icon-Decimal {
   &:before {
-    content: unquote("\"#{ $common-icon-Decimal }\"");     
+    content: $common-icon-Decimal;     
     color: #666;
   }
 }
 .common-icon-Edit {
   &:before {
-    content: unquote("\"#{ $common-icon-Edit }\""); 
+    content: $common-icon-Edit; 
   }
 }
 .common-icon-Email {
   &:before {
-    content: unquote("\"#{ $common-icon-Email }\"");     
+    content: $common-icon-Email;     
     color: #666;
   }
 }
 .common-icon-FIELD-TM-Settings {
   &:before {
-    content: unquote("\"#{ $common-icon-FIELD-TM-Settings }\"");     
+    content: $common-icon-FIELD-TM-Settings;     
     color: #44d789;
   }
 }
 .common-icon-Finished {
   &:before {
-    content: unquote("\"#{ $common-icon-Finished }\"");     
+    content: $common-icon-Finished;     
     color: #666;
   }
 }
 .common-icon-Inspection-Template {
   &:before {
-    content: unquote("\"#{ $common-icon-Inspection-Template }\""); 
+    content: $common-icon-Inspection-Template; 
   }
 }
 .common-icon-Integer {
   &:before {
-    content: unquote("\"#{ $common-icon-Integer }\"");     
+    content: $common-icon-Integer;     
     color: #666;
   }
 }
 .common-icon-Last-Name {
   &:before {
-    content: unquote("\"#{ $common-icon-Last-Name }\""); 
+    content: $common-icon-Last-Name; 
   }
 }
 .common-icon-List-Manger {
   &:before {
-    content: unquote("\"#{ $common-icon-List-Manger }\"");     
+    content: $common-icon-List-Manger;     
     color: #666;
   }
 }
 .common-icon-Location {
   &:before {
-    content: unquote("\"#{ $common-icon-Location }\""); 
+    content: $common-icon-Location; 
   }
 }
 .common-icon-Locations {
   &:before {
-    content: unquote("\"#{ $common-icon-Locations }\""); 
+    content: $common-icon-Locations; 
   }
 }
 .common-icon-Note {
   &:before {
-    content: unquote("\"#{ $common-icon-Note }\"");     
+    content: $common-icon-Note;     
     color: #ec711c;
   }
 }
 .common-icon-Note-1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Note-1 }\"");     
+    content: $common-icon-Note-1;     
     color: #666;
   }
 }
 .common-icon-Photo-Upload {
   &:before {
-    content: unquote("\"#{ $common-icon-Photo-Upload }\"");     
+    content: $common-icon-Photo-Upload;     
     color: #a3a4a4;
   }
 }
 .common-icon-Planner-Team-Settings {
   &:before {
-    content: unquote("\"#{ $common-icon-Planner-Team-Settings }\"");     
+    content: $common-icon-Planner-Team-Settings;     
     color: #239bf9;
   }
 }
 .common-icon-Print {
   &:before {
-    content: unquote("\"#{ $common-icon-Print }\"");     
+    content: $common-icon-Print;     
     color: #666;
   }
 }
 .common-icon-Pro-TM-Settings {
   &:before {
-    content: unquote("\"#{ $common-icon-Pro-TM-Settings }\"");     
+    content: $common-icon-Pro-TM-Settings;     
     color: #f7713d;
   }
 }
 .common-icon-Project-Info {
   &:before {
-    content: unquote("\"#{ $common-icon-Project-Info }\""); 
+    content: $common-icon-Project-Info; 
   }
 }
 .common-icon-Project-Setting--1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Project-Setting--1 }\"");     
+    content: $common-icon-Project-Setting--1;     
     color: #666;
   }
 }
 .common-icon-Project-Team {
   &:before {
-    content: unquote("\"#{ $common-icon-Project-Team }\""); 
+    content: $common-icon-Project-Team; 
   }
 }
 .common-icon-Request-Template {
   &:before {
-    content: unquote("\"#{ $common-icon-Request-Template }\"");     
+    content: $common-icon-Request-Template;     
     color: #ec711c;
   }
 }
 .common-icon-Safety-Authorization-Categories {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Authorization-Categories }\"");     
+    content: $common-icon-Safety-Authorization-Categories;     
     color: #666;
   }
 }
 .common-icon-Safety-Credentials {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Credentials }\"");     
+    content: $common-icon-Safety-Credentials;     
     color: #666;
   }
 }
 .common-icon-Safety-Incident-Categories {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Incident-Categories }\"");     
+    content: $common-icon-Safety-Incident-Categories;     
     color: #666;
   }
 }
 .common-icon-Safety-Incident-Category {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Incident-Category }\"");     
+    content: $common-icon-Safety-Incident-Category;     
     color: #ec711c;
   }
 }
 .common-icon-Safety-Incident-Directory {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Incident-Directory }\"");     
+    content: $common-icon-Safety-Incident-Directory;     
     color: #666;
   }
 }
 .common-icon-Safety-Onboarding-Flyer {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Onboarding-Flyer }\""); 
+    content: $common-icon-Safety-Onboarding-Flyer; 
   }
 }
 .common-icon-Safety-Policies {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Policies }\"");     
+    content: $common-icon-Safety-Policies;     
     color: #666;
   }
 }
 .common-icon-Safety-Rules-Manager {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Rules-Manager }\"");     
+    content: $common-icon-Safety-Rules-Manager;     
     color: #666;
   }
 }
 .common-icon-Safety-Settings {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Settings }\""); 
+    content: $common-icon-Safety-Settings; 
   }
 }
 .common-icon-Safety-Task-Analysis-Categories {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Task-Analysis-Categories }\"");     
+    content: $common-icon-Safety-Task-Analysis-Categories;     
     color: #666;
   }
 }
 .common-icon-Safety-Tm-Seetings {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Tm-Seetings }\""); 
+    content: $common-icon-Safety-Tm-Seetings; 
   }
 }
 .common-icon-Safety-Tracking {
   &:before {
-    content: unquote("\"#{ $common-icon-Safety-Tracking }\"");     
+    content: $common-icon-Safety-Tracking;     
     color: #656565;
   }
 }
 .common-icon-Select-app {
   &:before {
-    content: unquote("\"#{ $common-icon-Select-app }\"");     
+    content: $common-icon-Select-app;     
     color: #ec711c;
   }
 }
 .common-icon-Select-Mode {
   &:before {
-    content: unquote("\"#{ $common-icon-Select-Mode }\"");     
+    content: $common-icon-Select-Mode;     
     color: #ec711c;
   }
 }
 .common-icon-Select-Your-language {
   &:before {
-    content: unquote("\"#{ $common-icon-Select-Your-language }\"");     
+    content: $common-icon-Select-Your-language;     
     color: #666;
   }
 }
 .common-icon-Select-Your-state {
   &:before {
-    content: unquote("\"#{ $common-icon-Select-Your-state }\""); 
+    content: $common-icon-Select-Your-state; 
   }
 }
 .common-icon-SmartApp-BLE-RTLS {
   &:before {
-    content: unquote("\"#{ $common-icon-SmartApp-BLE-RTLS }\""); 
+    content: $common-icon-SmartApp-BLE-RTLS; 
   }
 }
 .common-icon-Smartapp {
   &:before {
-    content: unquote("\"#{ $common-icon-Smartapp }\"");     
+    content: $common-icon-Smartapp;     
     color: #666;
   }
 }
 .common-icon-Start1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Start1 }\"");     
+    content: $common-icon-Start1;     
     color: #666;
   }
 }
 .common-icon-Status1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Status1 }\"");     
+    content: $common-icon-Status1;     
     color: #666;
   }
 }
 .common-icon-Team-Members {
   &:before {
-    content: unquote("\"#{ $common-icon-Team-Members }\"");     
+    content: $common-icon-Team-Members;     
     color: #ec711c;
   }
 }
 .common-icon-Team-Safety-Credentials {
   &:before {
-    content: unquote("\"#{ $common-icon-Team-Safety-Credentials }\""); 
+    content: $common-icon-Team-Safety-Credentials; 
   }
 }
 .common-icon-Text {
   &:before {
-    content: unquote("\"#{ $common-icon-Text }\"");     
+    content: $common-icon-Text;     
     color: #666;
   }
 }
 .common-icon-Timer--1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Timer--1 }\"");     
+    content: $common-icon-Timer--1;     
     color: #666;
   }
 }
 .common-icon-Timer--2 {
   &:before {
-    content: unquote("\"#{ $common-icon-Timer--2 }\"");     
+    content: $common-icon-Timer--2;     
     color: #666;
   }
 }
 .common-icon-Timer {
   &:before {
-    content: unquote("\"#{ $common-icon-Timer }\"");     
+    content: $common-icon-Timer;     
     color: #666;
   }
 }
 .common-icon-Unattended-Mode {
   &:before {
-    content: unquote("\"#{ $common-icon-Unattended-Mode }\"");     
+    content: $common-icon-Unattended-Mode;     
     color: #666;
   }
 }
 .common-icon-Upload-File {
   &:before {
-    content: unquote("\"#{ $common-icon-Upload-File }\"");     
+    content: $common-icon-Upload-File;     
     color: #ec711c;
   }
 }
 .common-icon-Upload {
   &:before {
-    content: unquote("\"#{ $common-icon-Upload }\"");     
+    content: $common-icon-Upload;     
     color: #666;
   }
 }
 .common-icon-Upload-1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Upload-1 }\""); 
+    content: $common-icon-Upload-1; 
   }
 }
 .common-icon-User-name {
   &:before {
-    content: unquote("\"#{ $common-icon-User-name }\"");     
+    content: $common-icon-User-name;     
     color: #666;
   }
 }
 .common-icon-Verification-Sucessfully {
   &:before {
-    content: unquote("\"#{ $common-icon-Verification-Sucessfully }\"");     
+    content: $common-icon-Verification-Sucessfully;     
     color: #52861e;
   }
 }
 .common-icon-Visitor-Tracking {
   &:before {
-    content: unquote("\"#{ $common-icon-Visitor-Tracking }\"");     
+    content: $common-icon-Visitor-Tracking;     
     color: #666;
   }
 }
 .common-icon-Visitor {
   &:before {
-    content: unquote("\"#{ $common-icon-Visitor }\""); 
+    content: $common-icon-Visitor; 
   }
 }
 .common-icon-Workactivity {
   &:before {
-    content: unquote("\"#{ $common-icon-Workactivity }\"");     
+    content: $common-icon-Workactivity;     
     color: #666;
   }
 }
 .common-icon-Worker {
   &:before {
-    content: unquote("\"#{ $common-icon-Worker }\""); 
+    content: $common-icon-Worker; 
   }
 }
 .common-icon-photo {
   &:before {
-    content: unquote("\"#{ $common-icon-photo }\""); 
+    content: $common-icon-photo; 
   }
 }
 .common-icon-download-folder {
   &:before {
-    content: unquote("\"#{ $common-icon-download-folder }\""); 
+    content: $common-icon-download-folder; 
   }
 }
 .common-icon-pln {
   &:before {
-    content: unquote("\"#{ $common-icon-pln }\""); 
+    content: $common-icon-pln; 
   }
 }
 .common-icon-super-admin {
   &:before {
-    content: unquote("\"#{ $common-icon-super-admin }\"");     
+    content: $common-icon-super-admin;     
     color: #666;
   }
 }
 .common-icon-calendar-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-calendar-newtag }\"");     
+    content: $common-icon-calendar-newtag;     
     color: #999;
   }
 }
 .common-icon-checkbox_checked-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-checkbox_checked-newtag }\""); 
+    content: $common-icon-checkbox_checked-newtag; 
   }
 }
 .common-icon-checkbox-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-checkbox-newtag }\""); 
+    content: $common-icon-checkbox-newtag; 
   }
 }
 .common-icon-complete-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-complete-newtag }\"");     
+    content: $common-icon-complete-newtag;     
     color: #666;
   }
 }
 .common-icon-ellipse-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-ellipse-newtag }\"");     
+    content: $common-icon-ellipse-newtag;     
     color: #666;
   }
 }
 .common-icon-location-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-location-newtag }\""); 
+    content: $common-icon-location-newtag; 
   }
 }
 .common-icon-note-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-note-newtag }\""); 
+    content: $common-icon-note-newtag; 
   }
 }
 .common-icon-planing-duration-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-planing-duration-newtag }\""); 
+    content: $common-icon-planing-duration-newtag; 
   }
 }
 .common-icon-portfolio-newtag {
   &:before {
-    content: unquote("\"#{ $common-icon-portfolio-newtag }\""); 
+    content: $common-icon-portfolio-newtag; 
   }
 }
 .common-icon-smartapp-field {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapp-field }\"");     
+    content: $common-icon-smartapp-field;     
     color: #6dce81;
   }
 }
 .common-icon-smartapp-planner {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapp-planner }\"");     
+    content: $common-icon-smartapp-planner;     
     color: #29a5ff;
   }
 }
 .common-icon-smartapp-pro {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapp-pro }\"");     
+    content: $common-icon-smartapp-pro;     
     color: #ed7532;
   }
 }
 .common-icon-report-manger {
   &:before {
-    content: unquote("\"#{ $common-icon-report-manger }\"");     
+    content: $common-icon-report-manger;     
     color: #666;
   }
 }
 .common-icon-default-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-default-icon }\"");     
+    content: $common-icon-default-icon;     
     color: #666;
   }
 }
 .common-icon-calender-31 {
   &:before {
-    content: unquote("\"#{ $common-icon-calender-31 }\"");     
+    content: $common-icon-calender-31;     
     color: #ec711c;
   }
 }
 .common-icon-info-white {
   &:before {
-    content: unquote("\"#{ $common-icon-info-white }\"");     
+    content: $common-icon-info-white;     
     color: #666;
   }
 }
 .common-icon-API {
   &:before {
-    content: unquote("\"#{ $common-icon-API }\"");     
+    content: $common-icon-API;     
     color: #666;
   }
 }
 .common-icon-connectors {
   &:before {
-    content: unquote("\"#{ $common-icon-connectors }\"");     
+    content: $common-icon-connectors;     
     color: #666;
   }
 }
 .common-icon-pro-settings {
   &:before {
-    content: unquote("\"#{ $common-icon-pro-settings }\"");     
+    content: $common-icon-pro-settings;     
     color: #666;
   }
 }
 .common-icon-Ato-Z-filtering {
   &:before {
-    content: unquote("\"#{ $common-icon-Ato-Z-filtering }\"");     
+    content: $common-icon-Ato-Z-filtering;     
     color: #666;
   }
 }
 .common-icon-external {
   &:before {
-    content: unquote("\"#{ $common-icon-external }\""); 
+    content: $common-icon-external; 
   }
 }
 .common-icon-restore {
   &:before {
-    content: unquote("\"#{ $common-icon-restore }\""); 
+    content: $common-icon-restore; 
   }
 }
 .common-icon-live-support .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-live-support-path1 }\"");  
+    content: $common-icon-live-support-path1;  
     color: rgb(238, 117, 50);
   }
 }
 .common-icon-live-support .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-live-support-path2 }\"");  
+    content: $common-icon-live-support-path2;  
     margin-left: -1.0234375em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-reciept {
   &:before {
-    content: unquote("\"#{ $common-icon-reciept }\""); 
+    content: $common-icon-reciept; 
   }
 }
 .common-icon-appdependenticon {
   &:before {
-    content: unquote("\"#{ $common-icon-appdependenticon }\""); 
+    content: $common-icon-appdependenticon; 
   }
 }
 .common-icon-appnodependenticon {
   &:before {
-    content: unquote("\"#{ $common-icon-appnodependenticon }\""); 
+    content: $common-icon-appnodependenticon; 
   }
 }
 .common-icon-smartapptype {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapptype }\""); 
+    content: $common-icon-smartapptype; 
   }
 }
 .common-icon-team {
   &:before {
-    content: unquote("\"#{ $common-icon-team }\""); 
+    content: $common-icon-team; 
   }
 }
 .common-icon-smartlayers {
   &:before {
-    content: unquote("\"#{ $common-icon-smartlayers }\""); 
+    content: $common-icon-smartlayers; 
   }
 }
 .common-icon-enterprise {
   &:before {
-    content: unquote("\"#{ $common-icon-enterprise }\""); 
+    content: $common-icon-enterprise; 
   }
 }
 .common-icon-invited {
   &:before {
-    content: unquote("\"#{ $common-icon-invited }\""); 
+    content: $common-icon-invited; 
   }
 }
 .common-icon-default-board-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-default-board-icon }\"");     
+    content: $common-icon-default-board-icon;     
     color: #666;
   }
 }
 .common-icon-polygon {
   &:before {
-    content: unquote("\"#{ $common-icon-polygon }\""); 
+    content: $common-icon-polygon; 
   }
 }
 .common-icon-user-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-user-icon }\"");     
+    content: $common-icon-user-icon;     
     color: #4d4d4d;
   }
 }
 .common-icon-anchor-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-anchor-manager }\""); 
+    content: $common-icon-anchor-manager; 
   }
 }
 .common-icon-battery {
   &:before {
-    content: unquote("\"#{ $common-icon-battery }\""); 
+    content: $common-icon-battery; 
   }
 }
 .common-icon-logouticon {
   &:before {
-    content: unquote("\"#{ $common-icon-logouticon }\""); 
+    content: $common-icon-logouticon; 
   }
 }
 .common-icon-Importui-appcls {
   &:before {
-    content: unquote("\"#{ $common-icon-Importui-appcls }\"");     
+    content: $common-icon-Importui-appcls;     
     color: #666;
   }
 }
 .common-icon-Import-latest {
   &:before {
-    content: unquote("\"#{ $common-icon-Import-latest }\"");     
+    content: $common-icon-Import-latest;     
     color: #666;
   }
 }
 .common-icon-link-map {
   &:before {
-    content: unquote("\"#{ $common-icon-link-map }\""); 
+    content: $common-icon-link-map; 
   }
 }
 .common-icon-no-dashboard {
   &:before {
-    content: unquote("\"#{ $common-icon-no-dashboard }\""); 
+    content: $common-icon-no-dashboard; 
   }
 }
 .common-icon-permission {
   &:before {
-    content: unquote("\"#{ $common-icon-permission }\""); 
+    content: $common-icon-permission; 
   }
 }
 .common-icon-home {
   &:before {
-    content: unquote("\"#{ $common-icon-home }\""); 
+    content: $common-icon-home; 
   }
 }
 .common-icon-drive-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-drive-icon }\""); 
+    content: $common-icon-drive-icon; 
   }
 }
 .common-icon-payment-successfull {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-successfull }\""); 
+    content: $common-icon-payment-successfull; 
   }
 }
 .common-icon-pencil {
   &:before {
-    content: unquote("\"#{ $common-icon-pencil }\""); 
+    content: $common-icon-pencil; 
   }
 }
 .common-icon-activity {
   &:before {
-    content: unquote("\"#{ $common-icon-activity }\""); 
+    content: $common-icon-activity; 
   }
 }
 .common-icon-filters {
   &:before {
-    content: unquote("\"#{ $common-icon-filters }\""); 
+    content: $common-icon-filters; 
   }
 }
 .common-icon-flags {
   &:before {
-    content: unquote("\"#{ $common-icon-flags }\""); 
+    content: $common-icon-flags; 
   }
 }
 .common-icon-Items {
   &:before {
-    content: unquote("\"#{ $common-icon-Items }\""); 
+    content: $common-icon-Items; 
   }
 }
 .common-icon-collapse-on {
   &:before {
-    content: unquote("\"#{ $common-icon-collapse-on }\""); 
+    content: $common-icon-collapse-on; 
   }
 }
 .common-icon-collapase-off {
   &:before {
-    content: unquote("\"#{ $common-icon-collapase-off }\""); 
+    content: $common-icon-collapase-off; 
   }
 }
 .common-icon-company-filter {
   &:before {
-    content: unquote("\"#{ $common-icon-company-filter }\"");     
+    content: $common-icon-company-filter;     
     color: #666;
   }
 }
 .common-icon-item-filter {
   &:before {
-    content: unquote("\"#{ $common-icon-item-filter }\""); 
+    content: $common-icon-item-filter; 
   }
 }
 .common-icon-user-filter {
   &:before {
-    content: unquote("\"#{ $common-icon-user-filter }\"");     
+    content: $common-icon-user-filter;     
     color: #666;
   }
 }
 .common-icon-comment-reply {
   &:before {
-    content: unquote("\"#{ $common-icon-comment-reply }\"");     
+    content: $common-icon-comment-reply;     
     color: #666;
   }
 }
 .common-icon-flag {
   &:before {
-    content: unquote("\"#{ $common-icon-flag }\""); 
+    content: $common-icon-flag; 
   }
 }
 .common-icon-toggle-on {
   &:before {
-    content: unquote("\"#{ $common-icon-toggle-on }\"");     
+    content: $common-icon-toggle-on;     
     color: #059cdf;
   }
 }
 .common-icon-toggle-off {
   &:before {
-    content: unquote("\"#{ $common-icon-toggle-off }\"");     
+    content: $common-icon-toggle-off;     
     color: #666;
   }
 }
 .common-icon-Status-new {
   &:before {
-    content: unquote("\"#{ $common-icon-Status-new }\"");     
+    content: $common-icon-Status-new;     
     color: #666;
   }
 }
 .common-icon-Calender-new {
   &:before {
-    content: unquote("\"#{ $common-icon-Calender-new }\"");     
+    content: $common-icon-Calender-new;     
     color: #666;
   }
 }
 .common-icon-list-menu {
   &:before {
-    content: unquote("\"#{ $common-icon-list-menu }\""); 
+    content: $common-icon-list-menu; 
   }
 }
 .common-icon-vendor-manager-menu {
   &:before {
-    content: unquote("\"#{ $common-icon-vendor-manager-menu }\""); 
+    content: $common-icon-vendor-manager-menu; 
   }
 }
 .common-icon-personal-info {
   &:before {
-    content: unquote("\"#{ $common-icon-personal-info }\""); 
+    content: $common-icon-personal-info; 
   }
 }
 .common-icon-this-project {
   &:before {
-    content: unquote("\"#{ $common-icon-this-project }\""); 
+    content: $common-icon-this-project; 
   }
 }
 .common-icon-all-project {
   &:before {
-    content: unquote("\"#{ $common-icon-all-project }\""); 
+    content: $common-icon-all-project; 
   }
 }
 .common-icon-link {
   &:before {
-    content: unquote("\"#{ $common-icon-link }\""); 
+    content: $common-icon-link; 
   }
 }
 .common-icon-Calendar-outlined {
   &:before {
-    content: unquote("\"#{ $common-icon-Calendar-outlined }\""); 
+    content: $common-icon-Calendar-outlined; 
   }
 }
 .common-icon-Play {
   &:before {
-    content: unquote("\"#{ $common-icon-Play }\"");     
+    content: $common-icon-Play;     
     color: #30840a;
   }
 }
 .common-icon-open-in-desktop {
   &:before {
-    content: unquote("\"#{ $common-icon-open-in-desktop }\""); 
+    content: $common-icon-open-in-desktop; 
   }
 }
 .common-icon-lock-fill {
   &:before {
-    content: unquote("\"#{ $common-icon-lock-fill }\""); 
+    content: $common-icon-lock-fill; 
   }
 }
 .common-icon-help {
   &:before {
-    content: unquote("\"#{ $common-icon-help }\""); 
+    content: $common-icon-help; 
   }
 }
 .common-icon-logout {
   &:before {
-    content: unquote("\"#{ $common-icon-logout }\""); 
+    content: $common-icon-logout; 
   }
 }
 .common-icon-edit-profile {
   &:before {
-    content: unquote("\"#{ $common-icon-edit-profile }\""); 
+    content: $common-icon-edit-profile; 
   }
 }
 .common-icon-bd-tax {
   &:before {
-    content: unquote("\"#{ $common-icon-bd-tax }\""); 
+    content: $common-icon-bd-tax; 
   }
 }
 .common-icon-bd-phone {
   &:before {
-    content: unquote("\"#{ $common-icon-bd-phone }\""); 
+    content: $common-icon-bd-phone; 
   }
 }
 .common-icon-bd-organisation {
   &:before {
-    content: unquote("\"#{ $common-icon-bd-organisation }\""); 
+    content: $common-icon-bd-organisation; 
   }
 }
 .common-icon-bd-name {
   &:before {
-    content: unquote("\"#{ $common-icon-bd-name }\""); 
+    content: $common-icon-bd-name; 
   }
 }
 .common-icon-bd-adress {
   &:before {
-    content: unquote("\"#{ $common-icon-bd-adress }\""); 
+    content: $common-icon-bd-adress; 
   }
 }
 .common-icon-smartapp-BLE-RTLS {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapp-BLE-RTLS }\"");     
+    content: $common-icon-smartapp-BLE-RTLS;     
     color: #666;
   }
 }
 .common-icon-download {
   &:before {
-    content: unquote("\"#{ $common-icon-download }\""); 
+    content: $common-icon-download; 
   }
 }
 .common-icon-by-owner {
   &:before {
-    content: unquote("\"#{ $common-icon-by-owner }\""); 
+    content: $common-icon-by-owner; 
   }
 }
 .common-icon-filter-ob {
   &:before {
-    content: unquote("\"#{ $common-icon-filter-ob }\""); 
+    content: $common-icon-filter-ob; 
   }
 }
 .common-icon-gruping-ob {
   &:before {
-    content: unquote("\"#{ $common-icon-gruping-ob }\""); 
+    content: $common-icon-gruping-ob; 
   }
 }
 .common-icon-bid {
   &:before {
-    content: unquote("\"#{ $common-icon-bid }\""); 
+    content: $common-icon-bid; 
   }
 }
 .common-icon-marketplace {
   &:before {
-    content: unquote("\"#{ $common-icon-marketplace }\""); 
+    content: $common-icon-marketplace; 
   }
 }
 .common-icon-switch-tiles {
   &:before {
-    content: unquote("\"#{ $common-icon-switch-tiles }\""); 
+    content: $common-icon-switch-tiles; 
   }
 }
 .common-icon-switch-analytics {
   &:before {
-    content: unquote("\"#{ $common-icon-switch-analytics }\""); 
+    content: $common-icon-switch-analytics; 
   }
 }
 .common-icon-album {
   &:before {
-    content: unquote("\"#{ $common-icon-album }\""); 
+    content: $common-icon-album; 
   }
 }
 .common-icon-bim {
   &:before {
-    content: unquote("\"#{ $common-icon-bim }\""); 
+    content: $common-icon-bim; 
   }
 }
 .common-icon-drawings {
   &:before {
-    content: unquote("\"#{ $common-icon-drawings }\""); 
+    content: $common-icon-drawings; 
   }
 }
 .common-icon-external-url {
   &:before {
-    content: unquote("\"#{ $common-icon-external-url }\""); 
+    content: $common-icon-external-url; 
   }
 }
 .common-icon-files {
   &:before {
-    content: unquote("\"#{ $common-icon-files }\""); 
+    content: $common-icon-files; 
   }
 }
 .common-icon-iq360 {
   &:before {
-    content: unquote("\"#{ $common-icon-iq360 }\""); 
+    content: $common-icon-iq360; 
   }
 }
 .common-icon-subsketch {
   &:before {
-    content: unquote("\"#{ $common-icon-subsketch }\""); 
+    content: $common-icon-subsketch; 
   }
 }
 .common-icon-view-point {
   &:before {
-    content: unquote("\"#{ $common-icon-view-point }\""); 
+    content: $common-icon-view-point; 
   }
 }
 .common-icon-ProjectApp {
   &:before {
-    content: unquote("\"#{ $common-icon-ProjectApp }\""); 
+    content: $common-icon-ProjectApp; 
   }
 }
 .common-icon-none {
   &:before {
-    content: unquote("\"#{ $common-icon-none }\""); 
+    content: $common-icon-none; 
   }
 }
 .common-icon-email-message {
   &:before {
-    content: unquote("\"#{ $common-icon-email-message }\""); 
+    content: $common-icon-email-message; 
   }
 }
 .common-icon-header-print {
   &:before {
-    content: unquote("\"#{ $common-icon-header-print }\""); 
+    content: $common-icon-header-print; 
   }
 }
 .common-icon-add-new-contact {
   &:before {
-    content: unquote("\"#{ $common-icon-add-new-contact }\"");     
+    content: $common-icon-add-new-contact;     
     color: #666;
   }
 }
 .common-icon-add-new-user {
   &:before {
-    content: unquote("\"#{ $common-icon-add-new-user }\"");     
+    content: $common-icon-add-new-user;     
     color: #666;
   }
 }
 .common-icon-admin-with-billing {
   &:before {
-    content: unquote("\"#{ $common-icon-admin-with-billing }\"");     
+    content: $common-icon-admin-with-billing;     
     color: #666;
   }
 }
 .common-icon-Deactivate {
   &:before {
-    content: unquote("\"#{ $common-icon-Deactivate }\""); 
+    content: $common-icon-Deactivate; 
   }
 }
 .common-icon-resolve {
   &:before {
-    content: unquote("\"#{ $common-icon-resolve }\""); 
+    content: $common-icon-resolve; 
   }
 }
 .common-icon-crop {
   &:before {
-    content: unquote("\"#{ $common-icon-crop }\""); 
+    content: $common-icon-crop; 
   }
 }
 .common-icon-paymeny-successful .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path1 }\"");  
+    content: $common-icon-paymeny-successful-path1;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-paymeny-successful .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path2 }\"");  
+    content: $common-icon-paymeny-successful-path2;  
     margin-left: -1em;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-paymeny-successful .path3 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path3 }\"");  
+    content: $common-icon-paymeny-successful-path3;  
     margin-left: -1em;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-paymeny-successful .path4 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path4 }\"");  
+    content: $common-icon-paymeny-successful-path4;  
     margin-left: -1em;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-paymeny-successful .path5 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path5 }\"");  
+    content: $common-icon-paymeny-successful-path5;  
     margin-left: -1em;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-paymeny-successful .path6 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path6 }\"");  
+    content: $common-icon-paymeny-successful-path6;  
     margin-left: -1em;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-paymeny-successful .path7 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path7 }\"");  
+    content: $common-icon-paymeny-successful-path7;  
     margin-left: -1em;  
     color: rgb(255, 255, 255);
   }
 }
 .common-icon-paymeny-successful .path8 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path8 }\"");  
+    content: $common-icon-paymeny-successful-path8;  
     margin-left: -1em;  
     color: rgb(0, 153, 255);
   }
 }
 .common-icon-paymeny-successful .path9 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path9 }\"");  
+    content: $common-icon-paymeny-successful-path9;  
     margin-left: -1em;  
     color: rgb(0, 153, 255);
   }
 }
 .common-icon-paymeny-successful .path10 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path10 }\"");  
+    content: $common-icon-paymeny-successful-path10;  
     margin-left: -1em;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-paymeny-successful .path11 {
   &:before {
-    content: unquote("\"#{ $common-icon-paymeny-successful-path11 }\"");  
+    content: $common-icon-paymeny-successful-path11;  
     margin-left: -1em;  
     color: rgb(155, 155, 155);
   }
 }
 .common-icon-credit-card {
   &:before {
-    content: unquote("\"#{ $common-icon-credit-card }\""); 
+    content: $common-icon-credit-card; 
   }
 }
 .common-icon-invoice {
   &:before {
-    content: unquote("\"#{ $common-icon-invoice }\""); 
+    content: $common-icon-invoice; 
   }
 }
 .common-icon-contract-type-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-contract-type-icon }\""); 
+    content: $common-icon-contract-type-icon; 
   }
 }
 .common-icon-Pro-Icon {
   &:before {
-    content: unquote("\"#{ $common-icon-Pro-Icon }\""); 
+    content: $common-icon-Pro-Icon; 
   }
 }
 .common-icon-external-link {
   &:before {
-    content: unquote("\"#{ $common-icon-external-link }\""); 
+    content: $common-icon-external-link; 
   }
 }
 .common-icon-timelapsemp4 {
   &:before {
-    content: unquote("\"#{ $common-icon-timelapsemp4 }\""); 
+    content: $common-icon-timelapsemp4; 
   }
 }
 .common-icon-print1 {
   &:before {
-    content: unquote("\"#{ $common-icon-print1 }\""); 
+    content: $common-icon-print1; 
   }
 }
 .common-icon-double-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-double-arrow }\""); 
+    content: $common-icon-double-arrow; 
   }
 }
 .common-icon-bim-pdf {
   &:before {
-    content: unquote("\"#{ $common-icon-bim-pdf }\""); 
+    content: $common-icon-bim-pdf; 
   }
 }
 .common-icon-Distance-Icon {
   &:before {
-    content: unquote("\"#{ $common-icon-Distance-Icon }\"");     
+    content: $common-icon-Distance-Icon;     
     color: #666;
   }
 }
 .common-icon-left-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-left-arrow }\"");     
+    content: $common-icon-left-arrow;     
     color: #666;
   }
 }
 .common-icon-Location-filled {
   &:before {
-    content: unquote("\"#{ $common-icon-Location-filled }\""); 
+    content: $common-icon-Location-filled; 
   }
 }
 .common-icon-Location-outlined {
   &:before {
-    content: unquote("\"#{ $common-icon-Location-outlined }\""); 
+    content: $common-icon-Location-outlined; 
   }
 }
 .common-icon-Right-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-Right-arrow }\"");     
+    content: $common-icon-Right-arrow;     
     color: #666;
   }
 }
 .common-icon-unlock-padlock {
   &:before {
-    content: unquote("\"#{ $common-icon-unlock-padlock }\""); 
+    content: $common-icon-unlock-padlock; 
   }
 }
 .common-icon-apps1 {
   &:before {
-    content: unquote("\"#{ $common-icon-apps1 }\""); 
+    content: $common-icon-apps1; 
   }
 }
 .common-icon-archive {
   &:before {
-    content: unquote("\"#{ $common-icon-archive }\""); 
+    content: $common-icon-archive; 
   }
 }
 .common-icon-billings {
   &:before {
-    content: unquote("\"#{ $common-icon-billings }\""); 
+    content: $common-icon-billings; 
   }
 }
 .common-icon-cart1 {
   &:before {
-    content: unquote("\"#{ $common-icon-cart1 }\""); 
+    content: $common-icon-cart1; 
   }
 }
 .common-icon-category-Icon {
   &:before {
-    content: unquote("\"#{ $common-icon-category-Icon }\""); 
+    content: $common-icon-category-Icon; 
   }
 }
 .common-icon-chat-Icon {
   &:before {
-    content: unquote("\"#{ $common-icon-chat-Icon }\""); 
+    content: $common-icon-chat-Icon; 
   }
 }
 .common-icon-company {
   &:before {
-    content: unquote("\"#{ $common-icon-company }\""); 
+    content: $common-icon-company; 
   }
 }
 .common-icon-company-Icon {
   &:before {
-    content: unquote("\"#{ $common-icon-company-Icon }\""); 
+    content: $common-icon-company-Icon; 
   }
 }
 .common-icon-contract-type {
   &:before {
-    content: unquote("\"#{ $common-icon-contract-type }\""); 
+    content: $common-icon-contract-type; 
   }
 }
 .common-icon-copy1 {
   &:before {
-    content: unquote("\"#{ $common-icon-copy1 }\""); 
+    content: $common-icon-copy1; 
   }
 }
 .common-icon-delete1 {
   &:before {
-    content: unquote("\"#{ $common-icon-delete1 }\""); 
+    content: $common-icon-delete1; 
   }
 }
 .common-icon-down-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-down-arrow }\""); 
+    content: $common-icon-down-arrow; 
   }
 }
 .common-icon-filter {
   &:before {
-    content: unquote("\"#{ $common-icon-filter }\""); 
+    content: $common-icon-filter; 
   }
 }
 .common-icon-group {
   &:before {
-    content: unquote("\"#{ $common-icon-group }\""); 
+    content: $common-icon-group; 
   }
 }
 .common-icon-hide-sample-project-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-hide-sample-project-icon }\""); 
+    content: $common-icon-hide-sample-project-icon; 
   }
 }
 .common-icon-industry-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-industry-icon }\""); 
+    content: $common-icon-industry-icon; 
   }
 }
 .common-icon-info {
   &:before {
-    content: unquote("\"#{ $common-icon-info }\""); 
+    content: $common-icon-info; 
   }
 }
 .common-icon-location1 {
   &:before {
-    content: unquote("\"#{ $common-icon-location1 }\""); 
+    content: $common-icon-location1; 
   }
 }
 .common-icon-menu {
   &:before {
-    content: unquote("\"#{ $common-icon-menu }\""); 
+    content: $common-icon-menu; 
   }
 }
 .common-icon-notification-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-notification-icon }\""); 
+    content: $common-icon-notification-icon; 
   }
 }
 .common-icon-payment {
   &:before {
-    content: unquote("\"#{ $common-icon-payment }\""); 
+    content: $common-icon-payment; 
   }
 }
 .common-icon-payment-type {
   &:before {
-    content: unquote("\"#{ $common-icon-payment-type }\""); 
+    content: $common-icon-payment-type; 
   }
 }
 .common-icon-pick-role {
   &:before {
-    content: unquote("\"#{ $common-icon-pick-role }\""); 
+    content: $common-icon-pick-role; 
   }
 }
 .common-icon-pin {
   &:before {
-    content: unquote("\"#{ $common-icon-pin }\""); 
+    content: $common-icon-pin; 
   }
 }
 .common-icon-product--tour {
   &:before {
-    content: unquote("\"#{ $common-icon-product--tour }\""); 
+    content: $common-icon-product--tour; 
   }
 }
 .common-icon-project-area {
   &:before {
-    content: unquote("\"#{ $common-icon-project-area }\""); 
+    content: $common-icon-project-area; 
   }
 }
 .common-icon-project-budget {
   &:before {
-    content: unquote("\"#{ $common-icon-project-budget }\""); 
+    content: $common-icon-project-budget; 
   }
 }
 .common-icon-project-duration {
   &:before {
-    content: unquote("\"#{ $common-icon-project-duration }\""); 
+    content: $common-icon-project-duration; 
   }
 }
 .common-icon-project-name {
   &:before {
-    content: unquote("\"#{ $common-icon-project-name }\""); 
+    content: $common-icon-project-name; 
   }
 }
 .common-icon-project-team {
   &:before {
-    content: unquote("\"#{ $common-icon-project-team }\""); 
+    content: $common-icon-project-team; 
   }
 }
 .common-icon-project-type {
   &:before {
-    content: unquote("\"#{ $common-icon-project-type }\""); 
+    content: $common-icon-project-type; 
   }
 }
 .common-icon-refresh1 {
   &:before {
-    content: unquote("\"#{ $common-icon-refresh1 }\""); 
+    content: $common-icon-refresh1; 
   }
 }
 .common-icon-roles {
   &:before {
-    content: unquote("\"#{ $common-icon-roles }\""); 
+    content: $common-icon-roles; 
   }
 }
 .common-icon-share {
   &:before {
-    content: unquote("\"#{ $common-icon-share }\""); 
+    content: $common-icon-share; 
   }
 }
 .common-icon-stream_icon {
   &:before {
-    content: unquote("\"#{ $common-icon-stream_icon }\""); 
+    content: $common-icon-stream_icon; 
   }
 }
 .common-icon-subscription {
   &:before {
-    content: unquote("\"#{ $common-icon-subscription }\""); 
+    content: $common-icon-subscription; 
   }
 }
 .common-icon-subscription-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-subscription-icon }\""); 
+    content: $common-icon-subscription-icon; 
   }
 }
 .common-icon-switch-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-switch-icon }\""); 
+    content: $common-icon-switch-icon; 
   }
 }
 .common-icon-time-zone-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-time-zone-icon }\""); 
+    content: $common-icon-time-zone-icon; 
   }
 }
 .common-icon-trail-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-trail-icon }\""); 
+    content: $common-icon-trail-icon; 
   }
 }
 .common-icon-verification-cod {
   &:before {
-    content: unquote("\"#{ $common-icon-verification-cod }\""); 
+    content: $common-icon-verification-cod; 
   }
 }
 .common-icon-wrong-code {
   &:before {
-    content: unquote("\"#{ $common-icon-wrong-code }\""); 
+    content: $common-icon-wrong-code; 
   }
 }
 .common-icon-your-email {
   &:before {
-    content: unquote("\"#{ $common-icon-your-email }\""); 
+    content: $common-icon-your-email; 
   }
 }
 .common-icon-File-search {
   &:before {
-    content: unquote("\"#{ $common-icon-File-search }\"");     
+    content: $common-icon-File-search;     
     color: #666;
   }
 }
 .common-icon-Hashword-search {
   &:before {
-    content: unquote("\"#{ $common-icon-Hashword-search }\"");     
+    content: $common-icon-Hashword-search;     
     color: #666;
   }
 }
 .common-icon-Owner-search {
   &:before {
-    content: unquote("\"#{ $common-icon-Owner-search }\""); 
+    content: $common-icon-Owner-search; 
   }
 }
 .common-icon-Status-search .path1 {
   &:before {
-    content: unquote("\"#{ $common-icon-Status-search-path1 }\"");  
+    content: $common-icon-Status-search-path1;  
     color: rgb(153, 153, 153);
   }
 }
 .common-icon-Status-search .path2 {
   &:before {
-    content: unquote("\"#{ $common-icon-Status-search-path2 }\"");  
+    content: $common-icon-Status-search-path2;  
     margin-left: -1em;  
     color: rgb(102, 102, 102);
   }
 }
 .common-icon-Activate-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Activate-ap }\""); 
+    content: $common-icon-Activate-ap; 
   }
 }
 .common-icon-Calender-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Calender-ap }\"");     
+    content: $common-icon-Calender-ap;     
     color: #666;
   }
 }
 .common-icon-Cart-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Cart-ap }\""); 
+    content: $common-icon-Cart-ap; 
   }
 }
 .common-icon-Checklist-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Checklist-ap }\""); 
+    content: $common-icon-Checklist-ap; 
   }
 }
 .common-icon-Copy-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Copy-ap }\""); 
+    content: $common-icon-Copy-ap; 
   }
 }
 .common-icon-Delete-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Delete-ap }\"");     
+    content: $common-icon-Delete-ap;     
     color: #bfbfbf;
   }
 }
 .common-icon-Form-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Form-ap }\"");     
+    content: $common-icon-Form-ap;     
     color: #999;
   }
 }
 .common-icon-Import-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Import-ap }\""); 
+    content: $common-icon-Import-ap; 
   }
 }
 .common-icon-Info-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Info-ap }\""); 
+    content: $common-icon-Info-ap; 
   }
 }
 .common-icon-Play-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Play-ap }\""); 
+    content: $common-icon-Play-ap; 
   }
 }
 .common-icon-Project-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Project-ap }\""); 
+    content: $common-icon-Project-ap; 
   }
 }
 .common-icon-Refresh-ap {
   &:before {
-    content: unquote("\"#{ $common-icon-Refresh-ap }\""); 
+    content: $common-icon-Refresh-ap; 
   }
 }
 .common-icon-Dispatch-Board {
   &:before {
-    content: unquote("\"#{ $common-icon-Dispatch-Board }\"");     
+    content: $common-icon-Dispatch-Board;     
     color: #666;
   }
 }
 .common-icon-calendar-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-calendar-icon }\""); 
+    content: $common-icon-calendar-icon; 
   }
 }
 .common-icon-message1 {
   &:before {
-    content: unquote("\"#{ $common-icon-message1 }\""); 
+    content: $common-icon-message1; 
   }
 }
 .common-icon-awaiting-schedule {
   &:before {
-    content: unquote("\"#{ $common-icon-awaiting-schedule }\"");     
+    content: $common-icon-awaiting-schedule;     
     color: #666;
   }
 }
 .common-icon-AssignedTo {
   &:before {
-    content: unquote("\"#{ $common-icon-AssignedTo }\"");     
+    content: $common-icon-AssignedTo;     
     color: #666;
   }
 }
 .common-icon-Calendar {
   &:before {
-    content: unquote("\"#{ $common-icon-Calendar }\"");     
+    content: $common-icon-Calendar;     
     color: #fff;
   }
 }
 .common-icon-Carpenter {
   &:before {
-    content: unquote("\"#{ $common-icon-Carpenter }\"");     
+    content: $common-icon-Carpenter;     
     color: #666;
   }
 }
 .common-icon-Clock {
   &:before {
-    content: unquote("\"#{ $common-icon-Clock }\"");     
+    content: $common-icon-Clock;     
     color: #ec711c;
   }
 }
 .common-icon-Company {
   &:before {
-    content: unquote("\"#{ $common-icon-Company }\""); 
+    content: $common-icon-Company; 
   }
 }
 .common-icon-Graph {
   &:before {
-    content: unquote("\"#{ $common-icon-Graph }\"");     
+    content: $common-icon-Graph;     
     color: #666;
   }
 }
 .common-icon-Location-Pin {
   &:before {
-    content: unquote("\"#{ $common-icon-Location-Pin }\"");     
+    content: $common-icon-Location-Pin;     
     color: #666;
   }
 }
 .common-icon-Pin {
   &:before {
-    content: unquote("\"#{ $common-icon-Pin }\"");     
+    content: $common-icon-Pin;     
     color: #666;
   }
 }
 .common-icon-Plumber {
   &:before {
-    content: unquote("\"#{ $common-icon-Plumber }\"");     
+    content: $common-icon-Plumber;     
     color: #666;
   }
 }
 .common-icon-Progress-Tick {
   &:before {
-    content: unquote("\"#{ $common-icon-Progress-Tick }\"");     
+    content: $common-icon-Progress-Tick;     
     color: #666;
   }
 }
 .common-icon-Resources {
   &:before {
-    content: unquote("\"#{ $common-icon-Resources }\""); 
+    content: $common-icon-Resources; 
   }
 }
 .common-icon-Send-Back {
   &:before {
-    content: unquote("\"#{ $common-icon-Send-Back }\"");     
+    content: $common-icon-Send-Back;     
     color: #666;
   }
 }
 .common-icon-Start {
   &:before {
-    content: unquote("\"#{ $common-icon-Start }\"");     
+    content: $common-icon-Start;     
     color: #666;
   }
 }
 .common-icon-Status {
   &:before {
-    content: unquote("\"#{ $common-icon-Status }\""); 
+    content: $common-icon-Status; 
   }
 }
 .common-icon-User-Tick {
   &:before {
-    content: unquote("\"#{ $common-icon-User-Tick }\"");     
+    content: $common-icon-User-Tick;     
     color: #666;
   }
 }
 .common-icon-Verify {
   &:before {
-    content: unquote("\"#{ $common-icon-Verify }\""); 
+    content: $common-icon-Verify; 
   }
 }
 .common-icon-Work-Activity {
   &:before {
-    content: unquote("\"#{ $common-icon-Work-Activity }\"");     
+    content: $common-icon-Work-Activity;     
     color: #666;
   }
 }
 .common-icon-add-comment {
   &:before {
-    content: unquote("\"#{ $common-icon-add-comment }\""); 
+    content: $common-icon-add-comment; 
   }
 }
 .common-icon-down-arrow1 {
   &:before {
-    content: unquote("\"#{ $common-icon-down-arrow1 }\""); 
+    content: $common-icon-down-arrow1; 
   }
 }
 .common-icon-schdulenow {
   &:before {
-    content: unquote("\"#{ $common-icon-schdulenow }\"");     
+    content: $common-icon-schdulenow;     
     color: #666;
   }
 }
 .common-icon-s_icon {
   &:before {
-    content: unquote("\"#{ $common-icon-s_icon }\"");     
+    content: $common-icon-s_icon;     
     color: #0b8f18;
   }
 }
 .common-icon-refresh11 {
   &:before {
-    content: unquote("\"#{ $common-icon-refresh11 }\""); 
+    content: $common-icon-refresh11; 
   }
 }
 .common-icon-schedule {
   &:before {
-    content: unquote("\"#{ $common-icon-schedule }\""); 
+    content: $common-icon-schedule; 
   }
 }
 .common-icon-calendar1 {
   &:before {
-    content: unquote("\"#{ $common-icon-calendar1 }\""); 
+    content: $common-icon-calendar1; 
   }
 }
 .common-icon-local-upload {
   &:before {
-    content: unquote("\"#{ $common-icon-local-upload }\"");     
+    content: $common-icon-local-upload;     
     color: #666;
   }
 }
 .common-icon-cloud-drive {
   &:before {
-    content: unquote("\"#{ $common-icon-cloud-drive }\"");     
+    content: $common-icon-cloud-drive;     
     color: #666;
   }
 }
 .common-icon-clipmap {
   &:before {
-    content: unquote("\"#{ $common-icon-clipmap }\"");     
+    content: $common-icon-clipmap;     
     color: #666;
   }
 }
 .common-icon-outdoor {
   &:before {
-    content: unquote("\"#{ $common-icon-outdoor }\""); 
+    content: $common-icon-outdoor; 
   }
 }
 .common-icon-indoorpin {
   &:before {
-    content: unquote("\"#{ $common-icon-indoorpin }\"");     
+    content: $common-icon-indoorpin;     
     color: #059cdf;
   }
 }
 .common-icon-sketch {
   &:before {
-    content: unquote("\"#{ $common-icon-sketch }\""); 
+    content: $common-icon-sketch; 
   }
 }
 .common-icon-people-marker {
   &:before {
-    content: unquote("\"#{ $common-icon-people-marker }\""); 
+    content: $common-icon-people-marker; 
   }
 }
 .common-icon-play-timelapse {
   &:before {
-    content: unquote("\"#{ $common-icon-play-timelapse }\""); 
+    content: $common-icon-play-timelapse; 
   }
 }
 .common-icon-becon-location {
   &:before {
-    content: unquote("\"#{ $common-icon-becon-location }\"");     
+    content: $common-icon-becon-location;     
     color: #666;
   }
 }
 .common-icon-becon {
   &:before {
-    content: unquote("\"#{ $common-icon-becon }\"");     
+    content: $common-icon-becon;     
     color: #666;
   }
 }
 .common-icon-map-marker {
   &:before {
-    content: unquote("\"#{ $common-icon-map-marker }\""); 
+    content: $common-icon-map-marker; 
   }
 }
 .common-icon-company-new {
   &:before {
-    content: unquote("\"#{ $common-icon-company-new }\""); 
+    content: $common-icon-company-new; 
   }
 }
 .common-icon-Arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-Arrow }\""); 
+    content: $common-icon-Arrow; 
   }
 }
 .common-icon-manager {
   &:before {
-    content: unquote("\"#{ $common-icon-manager }\""); 
+    content: $common-icon-manager; 
   }
 }
 .common-icon-discipline {
   &:before {
-    content: unquote("\"#{ $common-icon-discipline }\""); 
+    content: $common-icon-discipline; 
   }
 }
 .common-icon-filter-option {
   &:before {
-    content: unquote("\"#{ $common-icon-filter-option }\""); 
+    content: $common-icon-filter-option; 
   }
 }
 .common-icon-resource {
   &:before {
-    content: unquote("\"#{ $common-icon-resource }\""); 
+    content: $common-icon-resource; 
   }
 }
 .common-icon-maximise {
   &:before {
-    content: unquote("\"#{ $common-icon-maximise }\""); 
+    content: $common-icon-maximise; 
   }
 }
 .common-icon-view1 {
   &:before {
-    content: unquote("\"#{ $common-icon-view1 }\""); 
+    content: $common-icon-view1; 
   }
 }
 .common-icon-manage {
   &:before {
-    content: unquote("\"#{ $common-icon-manage }\""); 
+    content: $common-icon-manage; 
   }
 }
 .common-icon-multiple-user {
   &:before {
-    content: unquote("\"#{ $common-icon-multiple-user }\""); 
+    content: $common-icon-multiple-user; 
   }
 }
 .common-icon-adduser {
   &:before {
-    content: unquote("\"#{ $common-icon-adduser }\"");     
+    content: $common-icon-adduser;     
     color: #999;
   }
 }
 .common-icon-user-space {
   &:before {
-    content: unquote("\"#{ $common-icon-user-space }\""); 
+    content: $common-icon-user-space; 
   }
 }
 .common-icon-left-indent {
   &:before {
-    content: unquote("\"#{ $common-icon-left-indent }\""); 
+    content: $common-icon-left-indent; 
   }
 }
 .common-icon-right-indent {
   &:before {
-    content: unquote("\"#{ $common-icon-right-indent }\""); 
+    content: $common-icon-right-indent; 
   }
 }
 .common-icon-exesting-symbol {
   &:before {
-    content: unquote("\"#{ $common-icon-exesting-symbol }\""); 
+    content: $common-icon-exesting-symbol; 
   }
 }
 .common-icon-insert {
   &:before {
-    content: unquote("\"#{ $common-icon-insert }\""); 
+    content: $common-icon-insert; 
   }
 }
 .common-icon-color-palette {
   &:before {
-    content: unquote("\"#{ $common-icon-color-palette }\""); 
+    content: $common-icon-color-palette; 
   }
 }
 .common-icon-upload1 {
   &:before {
-    content: unquote("\"#{ $common-icon-upload1 }\""); 
+    content: $common-icon-upload1; 
   }
 }
 .common-icon-abc {
   &:before {
-    content: unquote("\"#{ $common-icon-abc }\""); 
+    content: $common-icon-abc; 
   }
 }
 .common-icon-add {
   &:before {
-    content: unquote("\"#{ $common-icon-add }\""); 
+    content: $common-icon-add; 
   }
 }
 .common-icon-save {
   &:before {
-    content: unquote("\"#{ $common-icon-save }\""); 
+    content: $common-icon-save; 
   }
 }
 .common-icon-template {
   &:before {
-    content: unquote("\"#{ $common-icon-template }\""); 
+    content: $common-icon-template; 
   }
 }
 .common-icon-tick {
   &:before {
-    content: unquote("\"#{ $common-icon-tick }\""); 
+    content: $common-icon-tick; 
   }
 }
 .common-icon-export {
   &:before {
-    content: unquote("\"#{ $common-icon-export }\"");     
+    content: $common-icon-export;     
     color: #666;
   }
 }
 .common-icon-import {
   &:before {
-    content: unquote("\"#{ $common-icon-import }\"");     
+    content: $common-icon-import;     
     color: #666;
   }
 }
 .common-icon-active {
   &:before {
-    content: unquote("\"#{ $common-icon-active }\"");     
+    content: $common-icon-active;     
     color: #666;
   }
 }
 .common-icon-add-user {
   &:before {
-    content: unquote("\"#{ $common-icon-add-user }\""); 
+    content: $common-icon-add-user; 
   }
 }
 .common-icon-list {
   &:before {
-    content: unquote("\"#{ $common-icon-list }\""); 
+    content: $common-icon-list; 
   }
 }
 .common-icon-livehuddle {
   &:before {
-    content: unquote("\"#{ $common-icon-livehuddle }\""); 
+    content: $common-icon-livehuddle; 
   }
 }
 .common-icon-searching {
   &:before {
-    content: unquote("\"#{ $common-icon-searching }\""); 
+    content: $common-icon-searching; 
   }
 }
 .common-icon-stylus {
   &:before {
-    content: unquote("\"#{ $common-icon-stylus }\""); 
+    content: $common-icon-stylus; 
   }
 }
 .common-icon-pause {
   &:before {
-    content: unquote("\"#{ $common-icon-pause }\""); 
+    content: $common-icon-pause; 
   }
 }
 .common-icon-manage-dashboard {
   &:before {
-    content: unquote("\"#{ $common-icon-manage-dashboard }\""); 
+    content: $common-icon-manage-dashboard; 
   }
 }
 .common-icon-verify-report {
   &:before {
-    content: unquote("\"#{ $common-icon-verify-report }\""); 
+    content: $common-icon-verify-report; 
   }
 }
 .common-icon-barcode1 {
   &:before {
-    content: unquote("\"#{ $common-icon-barcode1 }\""); 
+    content: $common-icon-barcode1; 
   }
 }
 .common-icon-bluetooth {
   &:before {
-    content: unquote("\"#{ $common-icon-bluetooth }\""); 
+    content: $common-icon-bluetooth; 
   }
 }
 .common-icon-bluetooth-new {
   &:before {
-    content: unquote("\"#{ $common-icon-bluetooth-new }\""); 
+    content: $common-icon-bluetooth-new; 
   }
 }
 .common-icon-location11 {
   &:before {
-    content: unquote("\"#{ $common-icon-location11 }\""); 
+    content: $common-icon-location11; 
   }
 }
 .common-icon-timelapse-icon {
   &:before {
-    content: unquote("\"#{ $common-icon-timelapse-icon }\"");     
+    content: $common-icon-timelapse-icon;     
     color: #666;
   }
 }
 .common-icon-downarrow {
   &:before {
-    content: unquote("\"#{ $common-icon-downarrow }\""); 
+    content: $common-icon-downarrow; 
   }
 }
 .common-icon-calender-Icon {
   &:before {
-    content: unquote("\"#{ $common-icon-calender-Icon }\"");     
+    content: $common-icon-calender-Icon;     
     color: #666;
   }
 }
 .common-icon-note {
   &:before {
-    content: unquote("\"#{ $common-icon-note }\""); 
+    content: $common-icon-note; 
   }
 }
 .common-icon-trade {
   &:before {
-    content: unquote("\"#{ $common-icon-trade }\""); 
+    content: $common-icon-trade; 
   }
 }
 .common-icon-warning {
   &:before {
-    content: unquote("\"#{ $common-icon-warning }\""); 
+    content: $common-icon-warning; 
   }
 }
 .common-icon-business {
   &:before {
-    content: unquote("\"#{ $common-icon-business }\""); 
+    content: $common-icon-business; 
   }
 }
 .common-icon-email {
   &:before {
-    content: unquote("\"#{ $common-icon-email }\""); 
+    content: $common-icon-email; 
   }
 }
 .common-icon-mail {
   &:before {
-    content: unquote("\"#{ $common-icon-mail }\""); 
+    content: $common-icon-mail; 
   }
 }
 .common-icon-mobile {
   &:before {
-    content: unquote("\"#{ $common-icon-mobile }\""); 
+    content: $common-icon-mobile; 
   }
 }
 .common-icon-website {
   &:before {
-    content: unquote("\"#{ $common-icon-website }\""); 
+    content: $common-icon-website; 
   }
 }
 .common-icon-phone {
   &:before {
-    content: unquote("\"#{ $common-icon-phone }\""); 
+    content: $common-icon-phone; 
   }
 }
 .common-icon-barcode {
   &:before {
-    content: unquote("\"#{ $common-icon-barcode }\""); 
+    content: $common-icon-barcode; 
   }
 }
 .common-icon-upload-video {
   &:before {
-    content: unquote("\"#{ $common-icon-upload-video }\""); 
+    content: $common-icon-upload-video; 
   }
 }
 .common-icon-video {
   &:before {
-    content: unquote("\"#{ $common-icon-video }\""); 
+    content: $common-icon-video; 
   }
 }
 .common-icon-back {
   &:before {
-    content: unquote("\"#{ $common-icon-back }\""); 
+    content: $common-icon-back; 
   }
 }
 .common-icon-livelink {
   &:before {
-    content: unquote("\"#{ $common-icon-livelink }\""); 
+    content: $common-icon-livelink; 
   }
 }
 .common-icon-next-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-next-arrow }\""); 
+    content: $common-icon-next-arrow; 
   }
 }
 .common-icon-previous-arrow {
   &:before {
-    content: unquote("\"#{ $common-icon-previous-arrow }\""); 
+    content: $common-icon-previous-arrow; 
   }
 }
 .common-icon-session {
   &:before {
-    content: unquote("\"#{ $common-icon-session }\""); 
+    content: $common-icon-session; 
   }
 }
 .common-icon-vertical-menu {
   &:before {
-    content: unquote("\"#{ $common-icon-vertical-menu }\""); 
+    content: $common-icon-vertical-menu; 
   }
 }
 .common-icon-version-delete {
   &:before {
-    content: unquote("\"#{ $common-icon-version-delete }\""); 
+    content: $common-icon-version-delete; 
   }
 }
 .common-icon-version-download {
   &:before {
-    content: unquote("\"#{ $common-icon-version-download }\""); 
+    content: $common-icon-version-download; 
   }
 }
 .common-icon-daily-tick {
   &:before {
-    content: unquote("\"#{ $common-icon-daily-tick }\""); 
+    content: $common-icon-daily-tick; 
   }
 }
 .common-icon-manage-version {
   &:before {
-    content: unquote("\"#{ $common-icon-manage-version }\""); 
+    content: $common-icon-manage-version; 
   }
 }
 .common-icon-create-version {
   &:before {
-    content: unquote("\"#{ $common-icon-create-version }\""); 
+    content: $common-icon-create-version; 
   }
 }
 .common-icon-delete-fill {
   &:before {
-    content: unquote("\"#{ $common-icon-delete-fill }\""); 
+    content: $common-icon-delete-fill; 
   }
 }
 .common-icon-edit-fill {
   &:before {
-    content: unquote("\"#{ $common-icon-edit-fill }\""); 
+    content: $common-icon-edit-fill; 
   }
 }
 .common-icon-play {
   &:before {
-    content: unquote("\"#{ $common-icon-play }\""); 
+    content: $common-icon-play; 
   }
 }
 .common-icon-capture-canvas {
   &:before {
-    content: unquote("\"#{ $common-icon-capture-canvas }\""); 
+    content: $common-icon-capture-canvas; 
   }
 }
 .common-icon-QR-Code {
   &:before {
-    content: unquote("\"#{ $common-icon-QR-Code }\""); 
+    content: $common-icon-QR-Code; 
   }
 }
 .common-icon-add-comments {
   &:before {
-    content: unquote("\"#{ $common-icon-add-comments }\""); 
+    content: $common-icon-add-comments; 
   }
 }
 .common-icon-chat {
   &:before {
-    content: unquote("\"#{ $common-icon-chat }\""); 
+    content: $common-icon-chat; 
   }
 }
 .common-icon-chatting {
   &:before {
-    content: unquote("\"#{ $common-icon-chatting }\""); 
+    content: $common-icon-chatting; 
   }
 }
 .common-icon-close {
   &:before {
-    content: unquote("\"#{ $common-icon-close }\""); 
+    content: $common-icon-close; 
   }
 }
 .common-icon-company1 {
   &:before {
-    content: unquote("\"#{ $common-icon-company1 }\""); 
+    content: $common-icon-company1; 
   }
 }
 .common-icon-filter1 {
   &:before {
-    content: unquote("\"#{ $common-icon-filter1 }\""); 
+    content: $common-icon-filter1; 
   }
 }
 .common-icon-item {
   &:before {
-    content: unquote("\"#{ $common-icon-item }\""); 
+    content: $common-icon-item; 
   }
 }
 .common-icon-resize {
   &:before {
-    content: unquote("\"#{ $common-icon-resize }\""); 
+    content: $common-icon-resize; 
   }
 }
 .common-icon-search {
   &:before {
-    content: unquote("\"#{ $common-icon-search }\""); 
+    content: $common-icon-search; 
   }
 }
 .common-icon-smartapp {
   &:before {
-    content: unquote("\"#{ $common-icon-smartapp }\""); 
+    content: $common-icon-smartapp; 
   }
 }
 .common-icon-streams {
   &:before {
-    content: unquote("\"#{ $common-icon-streams }\""); 
+    content: $common-icon-streams; 
   }
 }
 .common-icon-users {
   &:before {
-    content: unquote("\"#{ $common-icon-users }\""); 
+    content: $common-icon-users; 
   }
 }
 .common-icon-join {
   &:before {
-    content: unquote("\"#{ $common-icon-join }\""); 
+    content: $common-icon-join; 
   }
 }
 .common-icon-exit {
   &:before {
-    content: unquote("\"#{ $common-icon-exit }\""); 
+    content: $common-icon-exit; 
   }
 }
 .common-icon-delete11 {
   &:before {
-    content: unquote("\"#{ $common-icon-delete11 }\""); 
+    content: $common-icon-delete11; 
   }
 }
 .common-icon-edit {
   &:before {
-    content: unquote("\"#{ $common-icon-edit }\""); 
+    content: $common-icon-edit; 
   }
 }
 .common-icon-minimize {
   &:before {
-    content: unquote("\"#{ $common-icon-minimize }\""); 
+    content: $common-icon-minimize; 
   }
 }
 .common-icon-maximize3 {
   &:before {
-    content: unquote("\"#{ $common-icon-maximize3 }\""); 
+    content: $common-icon-maximize3; 
   }
 }
 

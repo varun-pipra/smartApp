@@ -9,16 +9,17 @@
         min-width: unset;
         min-height: unset;
         height: max-content;
-        border-radius: 0.5em;
+        border-radius: 0.4em;
     }
     .MuiDialogContent-root {
         padding: 1.0em 2em !important;
         display: flex;
         flex-direction: column;
-        gap: 1.5em;
+        gap: 0.5em;
         border: 0px;
-        min-height: 334px;
+        min-height: fit-content;
         .bm-type {
+            margin-bottom: 14px;
             .MuiFormGroup-root {
                 padding-left: 0.5em;
                 display: flex;
@@ -31,6 +32,9 @@
                     }
                 }
             }
+        }
+        .select-file-cls {
+            margin-bottom: 20px;
         }
         .info-box {
             padding: 1em 0.8em;
@@ -75,16 +79,112 @@
                 padding-top: 0px !important;
             }
         }
+        .validate-sucess-cls,
+        .validate-sucess-cls {
+            display: contents;
+            text-align: center;
+            .common-icon-tickmark {
+                margin-bottom: 12px;
+                &:before {
+                    color: #77b43f;
+                    font-size: 98px;
+                }
+            }
+            .validate-text {
+                color: #454545;
+                font-size: 18px;
+            }
+            .begin-text {
+                color: green;
+                font-size: 14px;
+            }
+            .wait-text {
+                color: #666;
+                font-size: 14px;
+            }
+            .validate-animation {
+                background-image: url(/resources/images/import-animation.gif);
+                background-size: 280px 210px;
+                background-repeat: no-repeat;
+                width: 300px;
+                height: 166px;
+                display: block;
+                margin: 0px auto;
+                margin-top: -58px;
+            }
+        }
     }
     .question-cls {
         font-size: 16px;
         color: #333;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
     }
     .iq-fileupload-field {
         gap: 0.4em;
     }
     .MuiDialogActions-root {
         padding: 1.0em 2em 2em 2em !important;
+    }
+    &.warning {
+        .MuiDialogContent-root {
+            min-height: fit-content;
+            display: block;
+        }
+        .title-text {
+            font-size: 22px;
+        }
+        .MuiPaper-root {
+            background-color: #fff2cb;
+            margin-top: 18%;
+            border-left: 10px solid #fd9000;
+            border-radius: 4px;
+            .warning-icon-cls {
+                width: 50px;
+                text-align: center;
+                background-color: #fd9000;
+                height: 50px;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                float: left;
+                display: flex;
+                span:before {
+                    color: #fff;
+                    font-size: 32px;
+                }
+            }
+            .warning-text {
+                float: left;
+                display: block;
+                width: 70%;
+                margin-left: 22px;
+                line-height: 1.6;
+                font-size: 15px;
+                font-weight: bold;
+            }
+            .MuiDialogActions-root {
+                .warning-footer {
+                    .iq-button {
+                        border-radius: 2px;
+                        display: inline-block;
+                        background-color: transparent;
+                        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .15);
+                        &.grey {
+                            border: 1px solid #666;
+                            color: #333;
+                            margin-right: 20px;
+                        }
+                        &.blue {
+                            border: 1px solid #059cdf;
+                            color: #059cdf;
+                        }
+                    }
+                }
+            }
+            .warning-confirm {
+                margin-left: 70px;
+                margin-top: 14px;
+            }
+        }
     }
 }

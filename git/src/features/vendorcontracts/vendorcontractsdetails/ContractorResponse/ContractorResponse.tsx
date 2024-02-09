@@ -67,7 +67,6 @@ const ContractorResponseTooltip = (props: any) => {
 }
 
 export const ContractorResponse = (props: ContractorResponseProps) => {
-	console.log("props ContractorResponse", props)
 	return (
 		<div className='contract-footer-class'>
 			<DynamicTooltip

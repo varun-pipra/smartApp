@@ -10,7 +10,7 @@ import { TextField } from '@mui/material';
 import TLLinks from './tabs/links/Links';
 import Details from './tabs/details/Details';
 import { ContractorResponse } from 'features/vendorcontracts/vendorcontractsdetails/ContractorResponse/ContractorResponse';
-import { setSelectedTimeLog } from '../stores/TimeLogSlice';
+import { setSelectedTimeLogDetails } from '../stores/TimeLogSlice';
 import { stringToUSDateTime2 } from 'utilities/commonFunctions';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import { timelogStatusMap } from '../TimeLogConstants';
@@ -20,10 +20,12 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	const { server } = useAppSelector(state => state.appInfo);
 	const appInfo = useAppSelector(getServer);
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
+	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status);
+	const [closeSubtitle, setCloseSubtitle] = React.useState<any>(true)
 
 	useEffect(() => {
 		if (data?.id) {
-			dispatch(setSelectedTimeLog(data));
+			dispatch(setSelectedTimeLogDetails(data));
 		}
 	}, [data?.id]);
 
@@ -55,14 +57,14 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 
 	const lidProps = {
 		title: <TitleUpdate />,
-		showSubTitle: true,
-		subtitle: <SubTitleContent />,
+		showSubTitle: closeSubtitle,
+		subtitle: selectedTimeLogDetails.status == 'SentBack' || selectedTimeLogDetails.status == 'Reported' ? <SubTitleContent toast={(value: any) => { setCloseSubtitle(value) }} /> : null,
 		defaultTabId: 'details',
 		tabPadValue: 10,
 		headContent: {
 			showCollapsed: true,
-			regularContent: <HeaderContentUpdate />,
-			collapsibleContent: <CollapseContent />
+			regularContent: <HeaderContentUpdate status={stateObject} />,
+			collapsibleContent: <CollapseContent status={stateObject} />
 		},
 		tabs: tabConfig,
 		footer: {
@@ -121,8 +123,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 const HeaderContent = memo((props: any) => {
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
-
-	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status);
+	const stateObject = props.status;
 
 	return <div className='kpi-section'>
 		<div className='kpi-vertical-container'>
@@ -155,8 +156,8 @@ const HeaderContent = memo((props: any) => {
 const CollapseContent = memo((props: any) => {
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
+	const stateObject = props.status;
 
-	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status);
 	return <div className='kpi-section'>
 		<div className='kpi-vertical-container'>
 			<div className='lid-details-container'>
@@ -185,6 +186,8 @@ const Title = memo(() => {
 })
 
 const SubTitleContent = (props: any) => {
+	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
+	const Status = selectedTimeLogDetails.status;
 
 	return (
 		<div style={{
@@ -198,16 +201,11 @@ const SubTitleContent = (props: any) => {
 			width: 'fit-content',
 			border: '2px solid #fae57a'
 		}}>
-			<span className='common-icon-exclamation'
-				style={{ color: 'red', fontSize: "30px", marginTop: "-1px", }}
-			/>
-			<div style={{
-				fontSize: '14px',
-				fontFamily: "Roboto-Regular",
-				color: 'black',
-				fontWeight: 500
-			}}>
-				{'The Time was not entered anywhere within the Job Location'}</div>
+			<span className={`${Status == 'SentBack' ? 'common-icon-sku' : 'common-icon-exclamation'}`} style={{ color: Status === 'SentBack' ? 'orange' : 'red', fontSize: "30px", marginTop: "-1px", }} />
+			<div style={{ fontSize: '14px', fontFamily: "Roboto-Regular", color: 'black', fontWeight: 500 }}>
+				{Status == 'SentBack' ? 'The Split Time entry was Created from the orignal Time Segment ID: TS00.' : 'The Time was not entered anywhere within the Job Location'}
+			</div>
+			{Status == 'SentBack' && <span className={'closeicon common-icon-close'} onClick={() => { props.toast(false) }} />}
 		</div>
 	)
 };

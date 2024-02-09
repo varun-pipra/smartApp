@@ -131,7 +131,25 @@
             font-size: 14px;
             font-weight: bold;
         }
-    }
+	}
+	.timeaddedto{
+		display: flex;
+		align-items: center;
+		gap:8px;
+		>img{
+			width: 24px;
+			height: 24px ;
+			border-radius: 2px;
+		}
+		>span{
+			color:#059cdf;
+		}
+	}
+	.phaseimage{
+		width: 24px;
+		height: 24px ;
+		border-radius: 2px;
+	}
     .iconmodify {
         color: #ed7431 !important;
         font-size: 20px !important;

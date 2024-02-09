@@ -26,7 +26,7 @@ import {
 	setShowSettingPopup2, setBudgetLocked,
 	fetchBudgetLock,
 	getViewBuilderPopup,
-	setShowSettingPopup3, setToastMessage
+	setShowSettingPopup3, setToastMessage, setOpenNotification
 } from "./operations/tableColumnsSlice";
 import { useAppSelector, useAppDispatch } from "app/hooks";
 import ImportCSVData from "components/importcsv/ImportCSVData";
@@ -56,6 +56,7 @@ const BudgetManagerToolbar = (props: any) => {
 	const { selectedRows, bidPackagesList, vendorContractsList, clientContractsList } = useAppSelector(state => state.gridData);
 	const { selectedRow } = useAppSelector(state => state.rightPanel);
 	const { isBudgetLocked, budgetTemplate } = useAppSelector(state => state.tableColumns);
+	const { costCodeDropdownData, divisionCostCodeFilterData } = useAppSelector(state => state.settings);	
 	const tableViewType = useAppSelector(getTableViewType);
 	const openSettingPopup = useAppSelector(getShowSettingPopup);
 	const viewBuilderPopup = useAppSelector(getViewBuilderPopup);
@@ -79,6 +80,16 @@ const BudgetManagerToolbar = (props: any) => {
 	const [isImportVisible, setImportVisible] = useState<boolean>(false);
 	const [divisions, setDivisions] = useState<any>([]);
 	const [costCodeList, setCostCodeList] = useState<any>([]);
+	const [costCodeLevels, setCostCodeLevels] = useState<any>(0);	
+
+	useEffect(() => {
+		let noOfLevels = 0;
+		costCodeDropdownData?.forEach((obj:any) => {
+			const levels = obj?.hierarchy?.split(',')?.length;
+			if(levels > noOfLevels) noOfLevels = levels
+		})
+		setCostCodeLevels(noOfLevels+1);
+	}, [costCodeDropdownData])
 
 	useEffect(() => {
 		if (originalGridApiData?.length > 0) {
@@ -539,7 +550,7 @@ const BudgetManagerToolbar = (props: any) => {
 			) : (
 				<></>
 			)} */}
-			{isImportVisible && <BudgetImporter onClose={() => setImportVisible(false)} noOfBudgetItems={gridData?.length} downloadTemplateUrl={budgetTemplate} />}
+			{isImportVisible && <BudgetImporter onClose={() => setImportVisible(false)} noOfBudgetItems={gridData?.length} noOfLevels={costCodeLevels} openNotification={(val:boolean) => dispatch(setOpenNotification(val))} />}
 			{openSettingPopup && (
 				<SUIDrawer
 					PaperProps={{

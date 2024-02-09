@@ -6,7 +6,7 @@ import SUIGrid from "sui-components/Grid/Grid";
 import IQSearch from "components/iqsearchfield/IQSearchField";
 import './BudgetManager.scss';
 import { ColDef } from "ag-grid-community";
-import { getAmountAlignment, providerSourceObj } from "utilities/commonutills";
+import { billableInCCObj, getAmountAlignment, providerSourceObj } from "utilities/commonutills";
 import SUIAlert from "sui-components/Alert/Alert";
 import _ from "lodash";
 import IQBaseWindow from 'components/iqbasewindow/IQBaseWindow';
@@ -246,6 +246,11 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],			
 		},
 		{
+			headerName: 'Billable In Client Contract',
+			field: 'billableInCC',
+			valueGetter: (params: any) => billableInCCObj?.[params.data?.billableInCC],			
+		},
+		{
 			headerName: 'Location',
 			field: 'locations',
 			suppressMenu: true,
@@ -419,6 +424,15 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
             obj.providerSource?.toString()
           );
         });
+      } if (
+        filters.billableInCC?.length > 0 &&
+        !filters.billableInCC?.includes("all")
+      ) {
+        filteredRecs = filteredRecs?.filter((obj: any) => {
+          return filters.billableInCC.includes(
+            obj.billableInCC?.toString()
+          );
+        });
       }
 	  if (filters.location?.length > 0 && !filters.location?.includes("all")) {
 		filteredRecs = filteredRecs?.filter((obj: any) => {
@@ -498,6 +512,18 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 					{text: "Self Perform", id: '1', value: '1', key: '1'},
 					{text: "Trade Partner", id: '2', value: '0', key: '0'},
 				],
+			},
+		},
+		{
+			text: "Billable In Client Contract",
+			value: 'billableInCC',
+			key: 'billableInCC',
+			children: {
+				type: "checkbox",
+				items: [
+					{ text: "Billable", id: '1', value: '1', key: '1' },
+					{ text: "NonBillable", id: '2', value: '0', key: '0' },
+				]
 			},
 		},
 		{

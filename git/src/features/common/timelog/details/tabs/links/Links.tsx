@@ -13,8 +13,9 @@ import IQSubMenuButton from 'components/iqmenu/IQSubMenuButton';
 import { postMessage } from "app/utils";
 import { deleteLinksRecs } from 'features/safety/sbsmanager/operations/sbsManagerAPI';
 import { getSBSDetailsById } from "features/safety/sbsmanager/operations/sbsManagerSlice";
+import { AppList_PostMessage } from '../../../utils';
 
-const AddLinksData = [
+const linksOptions = [
 	{
 		"text": "New Smart Item",
 		"value": "New Smart Item",
@@ -56,46 +57,68 @@ const AddLinksData = [
 	},
 ];
 
-const linksData = [
+const linksgridData = [
 	{
-		id: 1,
-		name: 'Electricals',
-		description: 'Electronics is a branch',
-		createdby: 'Philip , Parker',
-		date: '2023-12-29T18:30:00Z',
-		type: 'Safety Task Analysis Log',
-		stage: 'New',
-		color: 'red'
+		"sbsId": 2,
+		"name": "1",
+		"stagename": "Approval",
+		"stageColor": "4A148C",
+		"type": 0,
+		"linkType": "CASymbols",
+		"description": "",
+		"createdBy": {
+			"id": null,
+			"name": "Mani, Vimal Raj"
+		},
+		"createdDate": "2024-01-19T10:46:56.903",
+		"objectId": 2288057,
+		"id": "8049d1ce-05c3-44cf-af03-01dcb8823810",
+		"thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/a1ec16cd64194fb8a28a3c58e4f9d8de",
 	},
 	{
-		id: 2,
-		name: 'ST0001',
-		description: 'Description is the pattern',
-		createdby: 'Philip , Parker',
-		date: '2023-12-29T18:30:00Z',
-		type: 'Fuse Tracker',
-		stage: 'Work Activity',
-		color: 'orange'
-	}, {
-		id: 3,
-		name: 'ST0002',
-		description: 'Description is the pattern',
-		createdby: 'Philip , Parker',
-		date: '2023-12-29T18:30:00Z',
-		type: 'Fuse Tracker',
-		stage: 'Verified',
-		color: 'green'
+		"sbsId": 2,
+		"name": "AR - 0023",
+		"stagename": "Report Prepared",
+		"stageColor": "59D800",
+		"type": 0,
+		"linkType": "Accident Report",
+		"description": "test",
+		"createdBy": {
+			"id": null,
+			"name": "MK, Sudeep"
+		},
+		"createdDate": "2024-01-29T09:52:22.717",
+		"objectId": 3410732,
+		"id": "179ac9c4-d9eb-47e0-8fc2-013c45f31837",
+		"thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f6222293d88145acbc2ce2de6df8d9b5",
+	},
+	{
+		"sbsId": 2,
+		"name": "123 -123",
+		"stagename": "For Record",
+		"stageColor": "558B2F",
+		"type": 0,
+		"linkType": "Bid Packages",
+		"description": "Architectural-123",
+		"createdBy": {
+			"id": null,
+			"name": "Mani, Vimal Raj"
+		},
+		"createdDate": "2024-01-19T10:46:29.81",
+		"objectId": 3133282,
+		"id": "7db51d7e-6938-4d6d-91b2-9473789d117d",
+		"thumbnail": "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2Fiqthumbnail%2F41cba6bdb70846489b4048993c7561c3%2F1b39047498b04b679400301e6c286161.png?generation=1655379006248906&alt=media",
 	}
 ]
 
 const filterOptions = [
 	{
-		text: "Smart Item",value: "Smart Item",key: "Smart Item",
-		children: {type: "checkbox",items: [],},
+		text: "Smart Item", value: "SmartItem", key: "SmartItem",
+		children: { type: "checkbox", items: [], },
 	},
 	{
-		text: "File Type",value: "File Type",key: "File Type",
-		children: {type: "checkbox",items: [],},
+		text: "File Type", value: "FileType", key: "FileType",
+		children: { type: "checkbox", items: [], },
 	},
 ]
 
@@ -107,7 +130,7 @@ const Links = () => {
 	const [disableDeleteBtn, setDisableDeleteBtn] = useState<boolean>(true);
 	const [selected, setSelected] = useState<any>();
 
-	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(AddLinksData)
+	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(linksOptions)
 	const [linksData, setLinksData] = useState<any>([])
 
 	const [gridData, setGridData] = useState<any>([]);
@@ -115,10 +138,27 @@ const Links = () => {
 	const [searchText, setSearchText] = useState<any>();
 	const [filterKeyValue, setFilterKeyValue] = useState<any>([]);
 
-	useEffect(() => {
-		setLinksData(detailsData?.links?.length ? detailsData?.links : [])
-		setGridData(detailsData?.links?.length ? detailsData?.links : [])
-	}, [detailsData])
+	useMemo(() => {
+		setLinksData(linksgridData?.length ? linksgridData : [])
+		setGridData(linksgridData?.length ? linksgridData : [])
+	}, [linksgridData])
+
+	useMemo(() => {
+		if (linksgridData?.length > 0) {
+			const filtersCopy = [...filters];
+			let FileType = filtersCopy.find((rec: any) => rec?.value === "FileType");
+			const uniqueTypes = new Set();
+			const linkType_array = linksgridData?.reduce((acc: any, item: any) => {
+				if (!uniqueTypes.has(item.linkType)) {
+					uniqueTypes.add(item.linkType);
+					acc.push({ text: item.linkType, id: item.linkType, key: item.linkType, value: item.linkType, });
+				}
+				return acc;
+			}, []);
+			FileType.children.items = linkType_array;
+			setFilters(filtersCopy);
+		}
+	}, [linksgridData]);
 
 	useEffect(() => {
 		const addLinksOptionsCopy = [...addLinksOptions];
@@ -179,8 +219,8 @@ const Links = () => {
 		if (lastvalue == 'all') {
 			filteredData = linksData
 		}
-		if (filterValue?.apps?.length > 0) {
-			const linkTypearray = filteredData?.filter((obj: any) => filterValue?.apps?.includes(obj.linkType));
+		if (filterValue?.FileType?.length > 0) {
+			const linkTypearray = filteredData?.filter((obj: any) => filterValue?.FileType?.includes(obj.linkType));
 			filteredData = linkTypearray;
 		}
 		return filteredData;
@@ -208,9 +248,12 @@ const Links = () => {
 			cellRenderer: (params: any) => {
 				return params.data && (
 					<div className={`app-items-cell-contentt`}>
-						<span className='link-name-icon'>
-							<span className="common-icon-drawings"></span>
-						</span>
+						{params?.data?.thumbnail && <img
+							src={params?.data?.thumbnail || ''}
+							alt='Avatar'
+							style={{ width: '28px', height: '28px' }}
+							className='base-custom-img companyimg-cls'
+						/>}
 						<span className='link-name-tag' style={{ color: params.data?.smartAppId ? '#059CDF' : '' }}>{params.value}</span>
 					</div>
 				);
@@ -243,7 +286,7 @@ const Links = () => {
 		},
 		{
 			headerName: 'Type',
-			field: 'type',
+			field: 'linkType',
 			suppressMenu: true,
 		},
 		{
@@ -285,24 +328,6 @@ const Links = () => {
 		setSelected(selectedRowData);
 	}
 
-
-	const handleMenu = (e: any) => {
-		let sendMsg = {
-			event: "common",
-			body: {
-				evt: "smartitemlink",
-				isNew: e.isNew,
-				data: {
-					"Id": e.id,
-					"smartAppId": e.appid,
-					"Text": e.text,
-					"Type": e.type,
-				}
-			}
-		}
-		postMessage(sendMsg);
-	};
-
 	return (
 		<div className='timelog-Links'>
 			<div className='timelog-details-header'>
@@ -315,7 +340,7 @@ const Links = () => {
 				<div className='left-Section'>
 					<IQSubMenuButton
 						menuOptions={addLinksOptions || []}
-						handleMenuChange={handleMenu}
+						handleMenuChange={(e: any) => { AppList_PostMessage(e) }}
 						startIcon={<span className="common-icon-Add" />}
 						endIcon={<span className="common-icon-down-arrow1" />}
 						label={'Add Links'}

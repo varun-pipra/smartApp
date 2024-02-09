@@ -44,6 +44,7 @@ const IQFileUploadField = (props: IQFileUploadFieldProps) => {
 			style={{display: "none"}}
 			ref={inputRef}
 			type="file"
+			accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
 			onChange={handleFileChange}
 		/>
 	</Box>;

@@ -35,42 +35,36 @@
                 padding: 0 0.5rem 0 1rem;
                 line-height: 1;
             }
-
             .MuiDialog-Presence.NoTools {
                 padding: 0px 1rem;
-				display: flex;
-				align-items: center;
-				justify-content: flex-end;
-
-				.brena-ai-btn {
-					height: max-content;
-					padding: unset !important;
-					border: 1px solid #d5d1d1;
-					border-radius: 50%;
-					box-shadow: 0px 1px 2px #9a9a9a;
-
-					[class*=common-icon] {
-						&:before {
-							color: #ed7532;
-							font-size: 32px;
-						}
-					}
-				}
-
-				.budgetmanager-presence {
-					display: flex;
-					align-items: center;
-
-					.common-participant-control {
-						display: flex;
-						align-items: center;
-
-						div.cell {
-							display: flex;
-							align-items: center;
-						}
-					}
-				}
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                .brena-ai-btn {
+                    height: max-content;
+                    padding: unset !important;
+                    border: 1px solid #d5d1d1;
+                    border-radius: 50%;
+                    box-shadow: 0px 1px 2px #9a9a9a;
+                    [class*=common-icon] {
+                        &:before {
+                            color: #ed7532;
+                            font-size: 32px;
+                        }
+                    }
+                }
+                .budgetmanager-presence {
+                    display: flex;
+                    align-items: center;
+                    .common-participant-control {
+                        display: flex;
+                        align-items: center;
+                        div.cell {
+                            display: flex;
+                            align-items: center;
+                        }
+                    }
+                }
             }
             .MuiDialogContent-root {
                 display: flex;
@@ -109,7 +103,6 @@
                 }
             }
         }
-
         div[data-component-name="DynamicPageContent"] {
             flex: 4.5;
             display: flex;
@@ -117,7 +110,6 @@
             padding: 0;
         }
     }
-
     .MuiDialog-Presence.MuiDialog-PresenceTools {
         .budgetmanager-presence {
             max-height: 50px;
@@ -174,24 +166,37 @@
 .required_color {
     color: red;
 }
-.budget-importer {
-    font-size: 16px;
-    border-radius: 1px solid lightgray;
+
+.bd-importer {
+    font-size: 14px;
+    border-radius: 2px;
+    border: 1px solid #ccc;
     &_progress {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
         background: #fff;
-        padding: 10px;
-        line-height: 32px;
+        padding: 10px 15px;
     }
     &_template {
         display: flex;
-        justify-content: space-around;
-        padding: 4px;
+        padding: 4px 10px;
         align-items: center;
-        background: lightgray;
-        line-height: 32px;
+        background: #f5f5f5;
+        border: 1px solid #f5f5f5;
+        border-top: 1px solid #dadada;
+        gap: 1em;
+        .template-text-cls {
+            color: #666;
+            margin-right: 20px;
+        }
+        .common-icon-excel:before {
+            color: #217446;
+            font-size: 28px;
+        }
+        .common-icon-Progress-Tick:before {
+            color: #059cdf;
+            font-size: 16px;
+        }
     }
 }

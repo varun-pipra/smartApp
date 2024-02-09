@@ -142,6 +142,11 @@ const AppRoutes = () => {
 			<Route path='common'>
 				<Route path='supplementalContracts' element={<SupplementalContracts open={true} />} />
 				<Route path='timelog' element={<TimeLogWindow />} />
+				{/* <Route path='timelog/fromOrg' element={<TimeLogWindow />} /> */}
+				<Route path='timelog/fromOrg' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
 			</Route>
 			<Route path='examples'>
 				<Route path='infinite-scroll' element={<GridInfiniteScroll />} />

@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?j8egnu');
-  src:  url('fonts/common-webfont.eot?j8egnu#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?j8egnu') format('truetype'),
-    url('fonts/common-webfont.woff?j8egnu') format('woff'),
-    url('fonts/common-webfont.svg?j8egnu#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?mosuph');
+  src:  url('fonts/common-webfont.eot?mosuph#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?mosuph') format('truetype'),
+    url('fonts/common-webfont.woff?mosuph') format('woff'),
+    url('fonts/common-webfont.svg?mosuph#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-excel:before {
+  content: "\ec81";
+}
 .common-icon-details:before {
   content: "\ec80";
 }

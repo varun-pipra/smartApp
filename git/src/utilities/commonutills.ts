@@ -59,3 +59,14 @@ export const providerSourceObj:any = {
 	0: 'Trade Partner',
 	1: 'Self Perform'
 }
+
+export const importType:any = {
+		'new': 0, 
+        'replace': 1,
+        'append': 2,
+        'merge': 3
+};
+export const billableInCCObj:any = {
+	0: 'Non-Billable',
+	1: 'Billable'
+}

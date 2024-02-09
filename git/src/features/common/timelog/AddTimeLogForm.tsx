@@ -6,14 +6,16 @@ import { useAppDispatch, useAppSelector } from "app/hooks";
 import IQButton from "components/iqbutton/IQButton";
 import SmartDropDown from "components/smartDropdown";
 import _ from "lodash";
-import {InputAdornment,InputLabel,TextField,TextFieldProps,} from "@mui/material";
+import { postMessage } from "app/utils";
+import { InputAdornment, InputLabel, TextField, TextFieldProps, } from "@mui/material";
 import DatePickerComponent from "components/datepicker/DatePicker";
 import InputIcon from "react-multi-date-picker/components/input_icon";
 import TimeLogPicker from "sui-components/TimeLogPicker/TimeLogPicker";
 import convertDateToDisplayFormat from "utilities/commonFunctions";
 import WorkerDailog from "./workerDailog/WorkerDailog";
 import { makeStyles, createStyles } from "@mui/styles";
-import{setToast}from './stores/TimeLogSlice';
+import { setToast } from './stores/TimeLogSlice';
+import { AppList, AppList_PostMessage } from './utils';
 
 interface TimeLogFormProps {
 	resource?: string;
@@ -22,24 +24,7 @@ interface TimeLogFormProps {
 	duration?: any;
 	smartItems?: any;
 }
-const AddLinksData = [
-	{
-		"text": "New Smart Item",
-		"value": "New Smart Item",
-		"id": 1,
-		"type": "Custom",
-		iconCls: "common-icon-new-smart-item",
-		children: []
-	},
-	{
-		"text": "Existing Smart Items",
-		"value": "Existing Smart Items",
-		"id": 2,
-		"type": "Custom",
-		children: [],
-		iconCls: "common-icon-existing-smart-items",
-	}
-];
+
 const useStyles: any = makeStyles((theme: any) =>
 	createStyles({
 		menuPaper: {
@@ -50,9 +35,13 @@ const useStyles: any = makeStyles((theme: any) =>
 		}
 	})
 );
+
 const AddTimeLogForm = (props: any) => {
 	const dispatch = useAppDispatch();
+	const appInfo = useAppSelector(getServer);
 	const classes = useStyles();
+	const { appsList } = useAppSelector(state => state.sbsManager);
+	const { access } = useAppSelector(state => state.timeLogRequest);
 	const defaultValues: TimeLogFormProps = useMemo(() => {
 		return {
 			resource: "",
@@ -78,56 +67,39 @@ const AddTimeLogForm = (props: any) => {
 	const [isBudgetDisabled, setBudgetDisabled] = useState<boolean>(true);
 	const [isAddDisabled, setAddDisabled] = useState<boolean>(true);
 	const [contractOptions, setContractOptions] = useState<any>([]);
-	const [resourceOptions, setResourceOptions] = useState<any>(resource);
+	const [resourceOptions, setResourceOptions] = useState<any>([]);
 	const [budgetsList, setBudgetsList] = useState<any>([]);
 	const [disableOptionsList, setDisableOptionsList] = useState<any>([]);
 	const [isDescExists, setIsDescExists] = useState(false);
 	const [openWorkerDialog, setOpenWorkerDialog] = useState(false);
-	const appInfo = useAppSelector(getServer);
-	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(AddLinksData);
-	const { appsList } = useAppSelector(state => state.sbsManager);
+	const [addLinksOptions, setAddLinksOptions] = React.useState<any>();
 	const [selectedSmartItem, setSelectedSmartItem] = React.useState("");
 	const [selectedWorkers, setSelectedWorkers] = React.useState<Boolean>(false);
 
-	useEffect(() => {
-		const addLinksOptionsCopy = [...addLinksOptions];
-		let newSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "New Smart Item");
-		let existingSmartItem = addLinksOptionsCopy.find((rec: any) => rec.value === "Existing Smart Items");
-
-		const appsForNew = appsList?.map((obj: any) => {
-			return {
-				...obj,
-				isNew: true,
-				"text": obj?.name,
-				"value": obj?.name,
-				"id": obj?.id,
-				icon: obj?.thumbnailUrl,
-				"appid": obj?.objectId,
-				"type": "Document"
-			};
-		});
-		const appsForExisting = appsList?.map((obj: any) => {
-			return {
-				...obj,
-				isNew: false,
-				"text": obj?.name,
-				"value": obj?.name,
-				"id": obj?.id,
-				icon: obj?.thumbnailUrl,
-				"appid": obj?.objectId,
-				"type": "Document"
-			};
-		});
-		newSmartItem.children = appsForNew;
-		existingSmartItem.children = appsForExisting;
+	useMemo(() => {
+		const addLinksOptionsCopy = AppList(appsList);
 		setAddLinksOptions(addLinksOptionsCopy);
 	}, [appsList]);
+
+	useMemo(() => {
+		if (resource && resource.length > 0) {
+			const companyArray = ['Me', 'mycompany'];
+			const workerArray = ['Me', 'workteam'];
+
+			const updatedarray = resource?.filter((data: any) => {
+				return access == 'Company' ? companyArray?.includes(data.value) 
+					: access == 'Workers' ? workerArray?.includes(data.value) 
+					: data
+			});
+			console.log('updatedarray', updatedarray)
+			setResourceOptions(updatedarray);
+		}
+	}, [access]);
 
 	const handleFieldChange = (event: any, name: any) => {
 		setSelectedWorkers(event === "workteam" ? true : false)
 		setTimeLog((currentState) => {
 			const newState = { ...currentState, ...{ [name]: event } };
-			console.log("newState", newState);
 			checkFormValidity(newState);
 			return newState;
 		});
@@ -144,24 +116,10 @@ const AddTimeLogForm = (props: any) => {
 	const handleAdd = () => {
 		dispatch(setToast('Time Logged Sucessfully.'));
 	};
-	
-	const handleMenu = (e: any, value: any) => {
-		// let sendMsg = {
-		// 	event: "common",
-		// 	body: {
-		// 		evt: "smartitemlink",
-		// 		isNew: e.isNew,
-		// 		data:{
-		// 			"Id": e.id,
-		// 			"smartAppId": e.appid,
-		// 			"Text": e.text,
-		// 			"Type": e.type,
-		// 		}
-		// 	}
-		// }
-		// postMessage(sendMsg);
+
+	const smartItemOnClick = (e: any) => {
+		AppList_PostMessage(e);
 		setSelectedSmartItem(e?.displayField);
-		console.log("Menu Item Selected", e, value);
 	};
 	return (
 		<>
@@ -253,13 +211,13 @@ const AddTimeLogForm = (props: any) => {
 							name='smartItems'
 							LeftIcon={<span className='common-icon-smartapp'> </span>}
 							options={addLinksOptions || []}
-							outSideOfGrid={false}
+							outSideOfGrid={true}
 							isSearchField={false}
 							isFullWidth
 							Placeholder={'Select'}
 							selectedValue={selectedSmartItem}
 							isMultiple={false}
-							handleChange={handleMenu}
+							handleChange={(e: any) => { smartItemOnClick(e) }}
 							isDropdownSubMenu={true}
 							menuProps={classes.menuPaper}
 						/>

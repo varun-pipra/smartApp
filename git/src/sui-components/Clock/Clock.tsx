@@ -40,12 +40,10 @@ const SUIClock = (props: ClockProps) => {
 		// setPickerTime(defaultTime ? new Date(defaultTime) : new Date())
 
 		if (typeof defaultTime === 'string') {
-			console.log('defaultTime', defaultTime)
 			// let currentTime = convertTimetoDate(defaultTime);
 			// setPickerTime(currentTime);
 			// setTime(dayjs(currentTime).format("hh:mm A"));
 			let currentTime = convertTimetoDate(defaultTime);
-			console.log('currentTime', currentTime)
 			if (currentTime != null) {
 				setPickerTime(currentTime);
 				setTime(dayjs(currentTime).format("hh:mm A"));

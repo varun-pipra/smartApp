@@ -5,41 +5,40 @@ import SUIGrid from "sui-components/Grid/Grid";
 import "./WorkerGrid.scss";
 import IQButton from "components/iqbutton/IQButton";
 import ManageWorkers from "./addManageWorkers/ManageWorkers";
-
-import { getWorkTeamData , getWorkTeamGridData} from "../stores/TimeLogSlice"
+import { getWorkTeamData, getWorkTeamGridData } from "../stores/TimeLogSlice";
 import { useAppDispatch, useAppSelector } from "app/hooks";
+
 const WorkersGrid = () => {
-	const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [selectedRowData, setSelectedRowData] = useState<any>([]);
   const [openManageWorkers, setOpenManageWorkers] = useState<any>(false);
-  const [workData , setWorkData] = useState<any>([]);
-  const [teamData , setTeamData] = useState<any>([]);
+  const [workData, setWorkData] = useState<any>([]);
+  const [teamData, setTeamData] = useState<any>([]);
 
-  
-  const { workTeamData , workTeamGridData } = useAppSelector((state) => state.timeLogRequest);
+  const { workTeamData, workTeamGridData } = useAppSelector(
+    (state) => state.timeLogRequest
+  );
   const rowSelected = (sltdRows: any) => {
     const selectedRowData = sltdRows.api.getSelectedRows();
     setSelectedRowData(selectedRowData);
   };
 
+  useEffect(() => {
+    dispatch(getWorkTeamData());
+    dispatch(getWorkTeamGridData());
+  }, []);
 
-  useEffect(()=>{
-   dispatch(getWorkTeamData());
-   dispatch(getWorkTeamGridData()) 
-  },[])
+  useEffect(() => {
+    setTeamData(workTeamData || []);
+  }, [workTeamData]);
 
-  useEffect(()=>{
-     setTeamData(workTeamData || [])
-   },[workTeamData])
+  useEffect(() => {
+    setWorkData(workTeamGridData || []);
+  }, [workTeamGridData]);
 
-
-   useEffect(()=>{
-    console.log(workTeamData || workTeamGridData , "workTeamGridData");
-    setWorkData(workTeamGridData || [])
- },[workTeamGridData])
-
-
-  const handelAddSelect = (isOpen: boolean) => {};
+  const handelAddSelect = (isOpen: boolean) => {
+    setOpenManageWorkers(isOpen);
+  };
 
   const headers = useMemo(
     () => [
