@@ -57,9 +57,16 @@ const BudgetManagerWindow = (props: any) => {
 		setToastMessage({...showToastMessage});
 	}, [showToastMessage]);
 	useEffect(() => {setOpen(openNotification)}, [openNotification])
-	useEffect(() => {if(importStatus == 1) { setOpen(false); dispatch(setImportBudgetsStatus(null))}  }, [importStatus])
-	
-
+	useEffect(() => {
+		if(importStatus == 1) { 
+			setOpen(false); dispatch(setImportBudgetsStatus(null));
+			setToastMessage({ displayToast: true, message: 'Budget Line Items added successfully' });
+		}
+		if(importStatus == 2) {
+			setOpen(false); dispatch(setImportBudgetsStatus(null));	
+			setToastMessage({displayToast: true, message: 'Your Budget File was not imported. We found one or many issues with the import file...'});			
+		} 
+	}, [importStatus])	
 
 	const presenceRef = useRef(false);
 	const presenceId = 'budgetmanager-presence';
@@ -368,7 +375,7 @@ const BudgetManagerWindow = (props: any) => {
 				{toastMessage.displayToast ? <Toast message={toastMessage.message} interval={3000} /> : null}
 				{showTableColumnsPopup && <ManageTableColumns />}
 			</SmartDialog >
-			<Snackbar open={open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+			<Snackbar open={open} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
 				<Paper sx={{ width: 300, maxWidth: '100%' }}>
 						<div className="bd-importer">
 							<div className="bd-importer_progress">

@@ -40,6 +40,9 @@ const BudgetImporter = (props: any) => {
 		if(importStatus == 1) { 
 			props?.onClose(true); 
 			dispatch(setToastMessage({ displayToast: true, message: 'Budget Line Items added successfully' }))
+		}
+		if(importStatus == 2) { setShowError(true);
+			setShowSuccess(false)
 		}			
 		dispatch(setImportBudgetsStatus(importStatus));
 
@@ -54,14 +57,15 @@ const BudgetImporter = (props: any) => {
 				setImportResponse(response)
 				setShowSuccess(true)
 				let statusResult:any=0;
-				const refreshIntervalId = setInterval(() => {
+				const interval = setInterval(function() {
+					if([1,2]?.includes(statusResult)){
+						clearInterval(interval);
+					}
 					fetchImportStatus(appInfo, response?.ResultId, (statusResp:any) => {
 						statusResult=statusResp
 						if(statusResp) setImportStatus(statusResp)
 					});
-				}, 2000);
-				if([1,2]?.includes(statusResult)) return(() => { clearInterval(refreshIntervalId) });
-				if(statusResult==2)	setShowError(true)			
+				}, 3000);
 			} else {
 				setShowInProgress(false)
 				setShowError(true)
@@ -95,7 +99,7 @@ const BudgetImporter = (props: any) => {
 	};
 	const onCancelImport = () => { setShowInProgress(false); setShowSuccess(false); setShowError(false); cancelImport(appInfo, importResponse?.ResultId, (resp:any) => {}) };
 	const onNotifyAfterImport = () => { props?.onClose(false); props?.openNotification(true) };
-	const onStartOver = () => { };
+	const onStartOver = () => {setShowError(false); setImportStatus(0); callImport()};
 	const handleOnOptionChange = (event:any) => {
 		console.log("event", event?.target.value);
 		setImportOption(event.target.value);

@@ -13,11 +13,10 @@ import {isUserGCForCC} from 'features/clientContracts/utils';
 import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
-import {blockchainStates} from 'app/common/blockchain/BlockchainSlice';
+import {blockchain, blockchainStates} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultCCStatusFilter: any = [];
-let clientContractBlockchain = false;
 
 const ClientContractsGrid = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -37,7 +36,20 @@ const ClientContractsGrid = (props: any) => {
 	const showLineItemDetails = useAppSelector((state) => state.clientContracts.showLineItemDetails);
 	const [gridRef, setGridRef] = useState<any>();
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
-	clientContractBlockchain = blockchainEnabled;
+	const clientContractBlockchainRef: any = useRef(false);
+
+	useEffect(()=> {
+		clientContractBlockchainRef.current = blockchainEnabled;
+		if (gridRef?.current?.api) {
+			setTimeout(()=> {
+				gridRef.current.api.refreshCells({
+					force: true,
+					  rowNodes: gridRef.current.api.getRenderedNodes() || [],
+				})
+			}, 500)
+		}
+	}, [blockchainEnabled])
+	
 
 	if(statusFilter) defaultCCStatusFilter = activeMainGridFilters.status;
 
@@ -207,7 +219,7 @@ const ClientContractsGrid = (props: any) => {
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
 					const bcStatus = params.data?.blockChainStatus;
-					const showBCIcon = (clientContractBlockchain && blockchainStates.indexOf(bcStatus) === -1);
+					const showBCIcon = (clientContractBlockchainRef?.current && blockchainStates.indexOf(bcStatus) === -1);
 					return <>
 						{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '8%', marginTop: '8px', fontSize: '1.6em'}}></span>}
 						{params?.data?.hasChangeOrder && <IQTooltip
@@ -327,7 +339,7 @@ const ClientContractsGrid = (props: any) => {
 			minWidth: 250,
 			valueGetter: (params: any) => params.data?.acceptedOn ? formatDate(params.data?.acceptedOn) : "",
 		},
-	], [defaultCCStatusFilter]);
+	], [defaultCCStatusFilter, blockchainEnabled]);
 
 	const [columns, setColumns] = React.useState<any>(headers);
 

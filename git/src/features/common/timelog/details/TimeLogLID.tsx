@@ -23,6 +23,14 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status);
 	const [closeSubtitle, setCloseSubtitle] = React.useState<any>(true)
 
+
+	useEffect(() => {
+		if (selectedTimeLogDetails?.id) {
+			const subtitleEnable: any = selectedTimeLogDetails?.status == 'SentBack' || selectedTimeLogDetails?.overlapTimeEntries;
+			setCloseSubtitle(subtitleEnable)
+		}
+	}, [selectedTimeLogDetails?.id]);
+
 	useEffect(() => {
 		if (data?.id) {
 			dispatch(setSelectedTimeLogDetails(data));
@@ -69,29 +77,38 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 		tabs: tabConfig,
 		footer: {
 			rightNode: <>
-				<IQButton className='sendback-buttons' disabled={false} onClick={() => { console.log('sendback') }}>
-					SEND BACK
-				</IQButton>
-				<IQButton className='accept-buttons' disabled={false} onClick={() => { console.log('ACCEPT') }}>
-					ACCEPT
-				</IQButton>
-				<IQButton className='save-buttons' disabled={false} onClick={() => { console.log('SAVE') }}>
-					SAVE
-				</IQButton>
-				<IQButton className='resubmit-buttons' disabled={false} onClick={() => { console.log('Resubmit') }}>
-					Resubmit
-				</IQButton>
+				{
+					selectedTimeLogDetails.status == 'Accepted' ? <></> :
+						selectedTimeLogDetails.status == 'SentBack' ?
+							<IQButton className='resubmit-buttons' disabled={false} onClick={() => { console.log('Resubmit') }}>
+								Resubmit
+							</IQButton>
+							:
+							<>
+								<IQButton className='sendback-buttons' disabled={selectedTimeLogDetails.status.includes('Accepted', 'SentBack', 'Planned') ? true : false} onClick={() => { console.log('sendback') }}>
+									SEND BACK
+								</IQButton>
+								<IQButton className='accept-buttons' disabled={selectedTimeLogDetails.status.includes('Accepted', 'SentBack', 'Planned') ? true : false} onClick={() => { console.log('ACCEPT') }}>
+									ACCEPT
+								</IQButton>
+								<IQButton className='save-buttons' disabled={false} onClick={() => { console.log('SAVE') }}>
+									SAVE
+								</IQButton>
+							</>
+				}
 			</>,
 			leftNode: <>
-				<ContractorResponse
-					text={'Time Log Entries Sent Back for Revision'}
-					contractorName={'Gerald,Alexendra'}
-					respondedOn={'05/01/2024'}
-					responseType={1}
-					reason={'cross check the timelog'}
-					sign={'sign'}
-					thumbNailImg={''}
-				/>
+				{selectedTimeLogDetails.status == 'SentBack' &&
+					<ContractorResponse
+						text={'Time Log Entries Sent Back for Revision'}
+						contractorName={'Gerald,Alexendra'}
+						respondedOn={'05/01/2024'}
+						responseType={1}
+						reason={'cross check the timelog'}
+						sign={'sign'}
+						thumbNailImg={''}
+					/>
+				}
 			</>,
 			toast: <></>
 		},
@@ -187,7 +204,13 @@ const Title = memo(() => {
 
 const SubTitleContent = (props: any) => {
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
+
 	const Status = selectedTimeLogDetails.status;
+	const Title = Status == 'SentBack' ? 'The Split Time entry was Created from the orignal Time Segment ID: TS00.' :
+		selectedTimeLogDetails?.overlapTimeEntries == true ? 'There seems to be a duplicate or an overlapping time entry'
+			: null;
+	const iconClass = Status == 'SentBack' ? 'common-icon-sku'
+		: selectedTimeLogDetails?.overlapTimeEntries == true ? 'common-icon-exclamation' : '';
 
 	return (
 		<div style={{
@@ -201,9 +224,9 @@ const SubTitleContent = (props: any) => {
 			width: 'fit-content',
 			border: '2px solid #fae57a'
 		}}>
-			<span className={`${Status == 'SentBack' ? 'common-icon-sku' : 'common-icon-exclamation'}`} style={{ color: Status === 'SentBack' ? 'orange' : 'red', fontSize: "30px", marginTop: "-1px", }} />
+			<span className={iconClass} style={{ color: Status === 'SentBack' ? 'orange' : 'red', fontSize: "30px", marginTop: "-1px", }} />
 			<div style={{ fontSize: '14px', fontFamily: "Roboto-Regular", color: 'black', fontWeight: 500 }}>
-				{Status == 'SentBack' ? 'The Split Time entry was Created from the orignal Time Segment ID: TS00.' : 'The Time was not entered anywhere within the Job Location'}
+				{Title}
 			</div>
 			{Status == 'SentBack' && <span className={'closeicon common-icon-close'} onClick={() => { props.toast(false) }} />}
 		</div>

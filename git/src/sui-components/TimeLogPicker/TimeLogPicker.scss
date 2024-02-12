@@ -28,8 +28,14 @@
             margin-right: 15px;
             width: 250px;
             .common-icon-Description:before {
-                color: #ec711c;
+                color: #666;
                 font-size: 24px;
+                line-height: 0.8;
+            }
+        }
+        .delete-btn {
+            span:before {
+                color: #333;
             }
         }
         &:first-child {
@@ -39,9 +45,8 @@
                     content: "\e945";
                     background-color: #059cdf;
                     color: #fff;
-                    border-radius: 50%;
-                    padding: 4px;
-                    font-size: 18px;
+                    border-radius: 50%; //padding: 4px;
+                    font-size: 14px;
                 }
             }
         }

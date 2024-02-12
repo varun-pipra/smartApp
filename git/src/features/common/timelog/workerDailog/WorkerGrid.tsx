@@ -84,9 +84,8 @@ const WorkersGrid = () => {
   );
 
   return (
-    <div className="workers-main-container">
-      <div>
-        <Box className="tab-bid-queries">
+    <div className="workers-main-container" style={{ height: 'calc(100% - 70px)' }}>
+        <Box>
           <Stack direction="row" className="search-box">
             <IQSearch />
           </Stack>
@@ -100,7 +99,6 @@ const WorkersGrid = () => {
             getRowId={(record: any) => record.data.id}
           />
         </div>
-      </div>
       <div className="footer">
         <span
           style={{ padding: "0px 15px", fontStyle: "italic", color: "gray" }}

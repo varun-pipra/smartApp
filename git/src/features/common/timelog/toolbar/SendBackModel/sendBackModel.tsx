@@ -35,7 +35,7 @@ const PaymentDetailsForm = (props: any) => {
 			className="sendback-details-cls"
 			disableEscapeKeyDown={true}
 			PaperProps={{
-				sx: { height: '90%', width: '80%', minWidth: '60%' },
+				sx: { height: '90%', width: '80%', minWidth: '98%' },
 			}}
 			custom={{
 				closable: true,

@@ -70,7 +70,18 @@ const ClientPayApplicationsWindow = (props: any) => {
 	const [selectedGroup, setSelectedGroup] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
-	cpaBlockchain = blockchainEnabled;
+	const cpaBlockchainRef: any = useRef(false);
+	useEffect(()=> {
+		cpaBlockchainRef.current = blockchainEnabled;
+		if (gridRef?.current?.api) {
+			setTimeout(()=> {
+				gridRef?.current?.api?.refreshCells({
+					force: true,
+					rowNodes: gridRef?.current?.api?.getRenderedNodes() || [],
+				})
+			}, 500)
+		}
+	},[blockchainEnabled])
 
 	const groupOptions = [
 		{text: 'Payment Status', value: 'status'},
@@ -351,7 +362,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
 					const bcStatus = params.data?.blockChainStatus;
-					const showBCIcon = (cpaBlockchain && blockchainStates.indexOf(bcStatus) === -1);
+					const showBCIcon = (cpaBlockchainRef?.current && blockchainStates.indexOf(bcStatus) === -1);
 					return (
 						<>
 							{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '2%', marginTop: '8px', fontSize: '1.6em'}}></span>}
@@ -494,7 +505,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 					: '',
 		},
 	]
-		: [], [appInfo, defaultCPAStatusFilter, selectedGroup]);
+		: [], [appInfo, defaultCPAStatusFilter, selectedGroup, blockchainEnabled]);
 
 	// const onRowDoubleClick = (row: any, tableRef: any) => {
 	// 	if(row && row.data) {

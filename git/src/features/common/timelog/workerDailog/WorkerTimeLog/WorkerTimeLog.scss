@@ -64,22 +64,20 @@
 
 .time-log-container {
     .common-icon-title:before {
-        color: #666 !important;
+        color: #ed7431 !important;
     }
     .common-icon-CurrentTime:before {
-        color: #666 !important;
-    }
-    .common-icon-CurrentTime:before {
-        color: #666 !important;
+        color: #ed7431 !important;
     }
     .common-icon-add:before {
-        height: 27px;
-        width: 27px;
+        height: 22px;
+        width: 22px;
         border-radius: 50%;
         color: white !important;
-        background-color: #1976d2 !important;
+        background-color: #059cdf !important;
         display: flex;
         justify-content: center;
         align-items: center;
+        font-size: 14px;
     }
 }

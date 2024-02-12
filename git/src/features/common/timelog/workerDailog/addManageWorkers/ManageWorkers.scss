@@ -1,46 +1,67 @@
-.worker-title-section{
+.worker-title-section {
     display: flex;
-    padding: 0px 15px;
-        .worker-name-section{
-            padding: 10px 15px;            
-            .worker-hours{
-                color: #ed7431 !important;
-            }
+    padding: 0px 0px;
+    .worker-name-section {
+        padding: 2px 15px 2px 2px;
+        .worker-name {
+            font-size: 15px;
+            color: #333;
+            font-weight: 600;
+            line-height: 1.5;
         }
-        .worker-image-section{
-            height: 45px;
-            width: 45px;
+        .worker-hours {
+            font-size: 14px;
+            color: #ed7431 !important;
+        }
+    }
+    .worker-image-section {
+        height: 45px;
+        width: 45px;
+        border-radius: 50%;
+        .worker-image {
+            height: 40px;
+            width: 40px;
             border-radius: 50%;
-            .worker-image{
-                height: 45px;
-                width: 45px;
-                border-radius: 50%;
-                // padding: 10px 15px;
-            }
+            border: 1px solid #ccc; // padding: 10px 15px;
         }
+    }
 }
 
-.Add-manage-workers-titel{
+.Add-manage-workers-titel {
     display: flex;
     justify-content: space-between;
     padding: 20px;
     text-align: center;
-    background-color: #f8f2f3;
+    background-color: #fff9f5;
     align-items: center;
-    .add-manage-workers-member-or-hrs{
-        color: #ed7431;
-       font-size: xx-large
+    .summary-text {
+        color: #666;
+    }
+    .total-hours {
+        color: #333;
+    }
+    .add-manage-workers-member-or-hrs {
+        color: #e45718;
+        font-size: 30px;
     }
 }
 
-.worker-info{
-    padding: 20px 10px;
+.Add-manage-button {
+    display: flex;
+    justify-content: center;
+    height: 80px;
+    align-items: center;
+    box-shadow: 0 1px 4px 0px rgba(0, 0, 0, 0.15);
+}
+
+.worker-info {
+    padding: 20px 20px;
     box-shadow: 0 0 1px #a4b3c5
 }
 
-.btn-add-manage-worker{
-    background-color: #ed7431 !important;
+.btn-add-manage-worker {
+    background-color: #e45718 !important;
+    width: 26%;
+    justify-content: center !important;
+    border-radius: 6px !important;
 }
-
-        
-    

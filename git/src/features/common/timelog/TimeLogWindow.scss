@@ -97,3 +97,15 @@
         }
     }
 }
+
+.timer-animation {
+    background-image: url(/resources/images/stop-watch_1.gif);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    margin-left: -6px !important;
+}
+.hand-pointer {
+    cursor: pointer;
+}

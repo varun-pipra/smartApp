@@ -56,7 +56,7 @@ const ManageWorkers = (props: any) => {
       // isFullView={isFullView}
       disableEscapeKeyDown={true}
       PaperProps={{
-        sx: { height: "80%", width: "65%" },
+        sx: { height: "80%", width: "60%" },
       }}
       // onMaximize={handleWindowMaximize}
       moduleColor="#00e5b0"
@@ -86,7 +86,7 @@ const ManageWorkers = (props: any) => {
       <div style={{ overflow: "auto" }}>
         <div className="Add-manage-workers-titel">
           <div>
-            <div>SUMMARY</div>
+            <div className="summary-text">SUMMARY</div>
             <div className="add-manage-workers-member-or-hrs">16</div>
             <div>Total Workers</div>
           </div>
@@ -94,18 +94,10 @@ const ManageWorkers = (props: any) => {
             <div className="add-manage-workers-member-or-hrs">
               1280 Hrs 00 mins
             </div>
-            <div>Total Hours</div>
+            <div className="total-hours">Total Hours</div>
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            height: "100px",
-            alignItems: "center",
-            boxShadow: "0 0 3px #a4b3c5",
-          }}
-        >
+        <div className="Add-manage-button">
           <IQButton
             disabled={false}
             className="btn-add-manage-worker"

@@ -70,7 +70,18 @@ const VendorPayApplicationsWindow = (props: any) => {
 	let gridRef = useRef<AgGridReact>();
 	if (statusFilter) defaultVPAStatusFilter = mainGridFilters.status;
 	const { blockchainEnabled } = useAppSelector((state) => state.blockchain);
-	vpaBlockchain = blockchainEnabled;
+	const vpaBlockchainRef: any = useRef(false);
+	useEffect(()=> {
+		vpaBlockchainRef.current = blockchainEnabled;
+		if (gridRef?.current?.api) {
+			setTimeout(()=> {
+				gridRef?.current?.api?.refreshCells({
+					force: true,
+					rowNodes: gridRef?.current?.api?.getRenderedNodes() || [],
+				})
+			}, 500)
+		}
+	}, [blockchainEnabled])
 
 	const tabEnum: any = {
 		payAppDetails: 'pay-Application-Details',
@@ -387,7 +398,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 			comparator: (valueA: any, valueB: any) => valueA?.toLowerCase().localeCompare(valueB?.toLowerCase()),
 			_cellRenderer: (params: any) => {
 				const bcStatus = params.data?.blockChainStatus;
-				const showBCIcon = (vpaBlockchain && blockchainStates.indexOf(bcStatus) === -1);
+				const showBCIcon = (vpaBlockchainRef?.current && blockchainStates.indexOf(bcStatus) === -1);
 				return (
 					<>
 						{showBCIcon && <span className='common-icon-Block-chain' style={{ position: 'absolute', left: '2%', marginTop: '8px', fontSize: '1.6em' }}></span>}
@@ -527,7 +538,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 			field: 'submittedOn',
 			valueGetter: (params: any) => params.data?.submittedOn ? formatDate(params.data?.submittedOn) : ''
 		}
-	] : [], [appInfo, defaultVPAStatusFilter, selectedGroup]);
+	] : [], [appInfo, defaultVPAStatusFilter, selectedGroup, blockchainEnabled]);
 
 	const handleClose = () => {
 		postMessage({

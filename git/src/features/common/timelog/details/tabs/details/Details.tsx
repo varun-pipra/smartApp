@@ -9,9 +9,17 @@ import { InputAdornment, InputLabel, TextField, TextFieldProps, Button } from '@
 import SmartDropDown from 'components/smartDropdown';
 import Location from 'features/common/locationfield/LocationField';
 import { fetchLocationData } from 'features/common/locationfield/LocationStore';
-import { AppList, AppList_PostMessage } from '../../../utils';
-
+import { AppList, AppList_PostMessage, getPickerDefaultTime } from '../../../utils';
+import SUIClock from 'sui-components/Clock/Clock';
+import { getTime } from 'utilities/datetime/DateTimeUtils';
 import _ from "lodash";
+import moment from "moment";
+
+
+const getDuration = (data:any) => {
+	const dataArray = data?.split(":");
+	return `${dataArray?.[0]} Hrs ${dataArray?.[1] ? dataArray?.[1] : '00'} Mins`
+}
 
 const details = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -45,7 +53,7 @@ const details = (props: any) => {
 	const [locationType, setLocationType] = useState<any>();
 	const [locationValue, setlocationValue] = useState<any>('');
 	const [timeadded, setTimeAdded] = useState<any>('');
-
+	let statusbasedDisable = ['Reported', 'InProgress', 'SentBack'];
 	useMemo(() => {
 		const addLinksOptionsCopy = AppList(appsList);
 		setTimeAddedOptions(addLinksOptionsCopy);
@@ -61,15 +69,19 @@ const details = (props: any) => {
 	useEffect(() => {
 		console.log('selectedTimeLogDetails', selectedTimeLogDetails);
 		const data = {
+			...selectedTimeLogDetails,
 			name: selectedTimeLogDetails?.createdBy?.name,
 			company: selectedTimeLogDetails?.company,
 			startdate: selectedTimeLogDetails?.startDate,
 			enddate: selectedTimeLogDetails?.endDate,
+			startTime: selectedTimeLogDetails?.startTime,
+			endTime: selectedTimeLogDetails?.endTime,
 			duration: selectedTimeLogDetails?.duration,
 			source: selectedTimeLogDetails?.source,
 			description: selectedTimeLogDetails?.smartItem?.description,
 			thumbnail: thumbnail,
 			phaseIcon: thumbnail,
+			timeadded: selectedTimeLogDetails?.smartItem?.name,
 		}
 		setDetails({ ...details, ...data })
 	}, [selectedTimeLogDetails])
@@ -205,13 +217,41 @@ const details = (props: any) => {
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>Start Time</div>
 						<div className='timelog-info-data-box'>
+							<SUIClock
+								onTimeSelection={(value: any) => {
+									handleFieldChange(getTime(value), "startTime");
+								}}
+								disabled={!(statusbasedDisable.includes(details?.status))}
+								defaultTime={moment.utc(details?.startTime).format('h:mm A') || ""}
+								pickerDefaultTime={getPickerDefaultTime(details?.startTime, true)}
+								placeholder={"HH:MM"}
+								// actions={[]}
+								ampmInClock={true}
+							></SUIClock>
+
+						</div>
+					</span>
+					<span className='timelog-info-tile'>
+						<div className='timelog-info-label'>End Time</div>
+						<div className='timelog-info-data-box'>
+							<SUIClock
+								onTimeSelection={(value: any) => {
+									handleFieldChange(getTime(value), "endTime");
+								}}
+								disabled={!(statusbasedDisable.includes(details.status))}
+								defaultTime={moment.utc(details.endTime).format('h:mm A') || ""}
+								pickerDefaultTime={getPickerDefaultTime(details?.endTime, true)}
+								placeholder={"HH:MM"}
+								// actions={[]}
+								ampmInClock={true}
+							></SUIClock>
 						</div>
 					</span>
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>Duration</div>
 						<div className='timelog-info-data-box'>
 							<span className='common-icon-monthly iconmodify'></span>
-							<span className='client-contract-info-data'>{details?.duration}</span>
+							<span className='client-contract-info-data'>{getDuration(details?.duration)}</span>
 						</div>
 					</span>
 					<span className='timelog-info-tile'>

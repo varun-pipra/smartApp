@@ -12,6 +12,7 @@ export interface TimeLogRequestState {
 	access?: any;
 	workTeamData: any;
 	workTeamGridData: any;
+	splitTimeSegmentBtn: boolean;
 };
 const initialState: TimeLogRequestState = {
 	loading: false,
@@ -22,6 +23,7 @@ const initialState: TimeLogRequestState = {
 	access: '',
 	workTeamData: [],
 	workTeamGridData: [],
+	splitTimeSegmentBtn : false
 }
 
 
@@ -85,6 +87,9 @@ export const timeLogRequest = createSlice({
 		setSelectedTimeLogDetails: (state, action: PayloadAction<any>) => {
 			state.selectedTimeLogDetails = action.payload;
 		},
+		setSplitTimeSegmentBtn: (state, action: PayloadAction<boolean>) => {
+			state.splitTimeSegmentBtn = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -113,5 +118,5 @@ export const timeLogRequest = createSlice({
 	},
 });
 
-export const { setSelectedTimeLogDetails,setSelectedRowData,setSourceList, setToast, setAccess } = timeLogRequest.actions;
+export const { setSelectedTimeLogDetails,setSelectedRowData,setSourceList, setToast, setAccess, setSplitTimeSegmentBtn } = timeLogRequest.actions;
 export default timeLogRequest.reducer;

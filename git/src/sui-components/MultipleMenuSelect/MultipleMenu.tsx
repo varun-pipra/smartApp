@@ -13,10 +13,12 @@ interface MeltipleMenuProps {
 	vendorPermission?: any;
 	MenuOptionsClick?: (value: any, isDirty: any) => any;
 	Menuheading?: any;
+	Menuheading1?:any;
+	option3?:any;
 }
 
 const MultipleMenuSelect = (props: MeltipleMenuProps) => {
-	const { icon, iconDisable, options, options2, Menuheading, MenuOptionsClick, userPrivileges, vendorPermission } = props;
+	const { icon, iconDisable, options, options2, option3, Menuheading,Menuheading1, MenuOptionsClick, userPrivileges, vendorPermission } = props;
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [toggleChecked, setToggleChecked] = React.useState<any>();
 	const [isDirty, setIsDirty] = React.useState<any>(false);
@@ -82,6 +84,18 @@ const MultipleMenuSelect = (props: MeltipleMenuProps) => {
 	const handleClose = () => {
 		setAnchorEl(null);
 		setCallAPI(!callAPI);
+	};
+	const onTimeLogChange = (value: any) => {
+		const index = [...option3].indexOf(value);
+		const newArray = [...option3];
+		if (index === -1) {
+			options2.map((o: any) => {
+				const idx = selectedOptions.indexOf(o.value);
+				idx >= 0 && newArray.splice(idx, 1);
+			})
+			setSelectedOptions([...newArray, value]);
+			if (props.MenuOptionsClick) props.MenuOptionsClick([...newArray, value], true);
+		}
 	};
 	const onUserPrivilageChange = (value: any) => {
 		const index = selectedOptions.indexOf(value);
@@ -149,6 +163,24 @@ const MultipleMenuSelect = (props: MeltipleMenuProps) => {
 							<ListItemText className={data?.selectionClass} key={i + '_text'}>{data.text}</ListItemText>
 							<ListItemIcon className='menuItem-trick-icon'><span className={data?.tickIcon}></span></ListItemIcon>
 						</ListItem>
+					)
+				})}
+				{Menuheading1 && <MenuItem><span className='common-icon-Timer icon-size'></span> {Menuheading1}</MenuItem>}
+				{(option3 || [])?.length > 0 && option3?.map((data: any, i: any) => {
+					return (data?.value ?
+						<ListItem
+							className={'menuItem-list submenuitem-cls '+ data?.selectionClass}
+							key={i}
+							onClick={() => { data?.disable ? '' : onTimeLogChange(data?.value) }}
+							disabled={data?.disable}
+							onMouseEnter={highlightItem}
+							onMouseLeave={highlightItem}
+						>
+							<ListItemIcon key={i + '_icon'}><span className={`${data?.icon} icon-size`}></span></ListItemIcon>
+							<ListItemText className={data?.selectionClass} key={i + '_text'}>{data.text}</ListItemText>
+							<ListItemIcon className='menuItem-trick-icon'><span className={data?.tickIcon}></span></ListItemIcon>
+						</ListItem> :
+						<MenuItem className="submenuitem-cls">{data?.text}</MenuItem>
 					)
 				})}
 				{Menuheading && <MenuItem><span className='common-icon-finance icon-size'></span> {Menuheading}</MenuItem>}

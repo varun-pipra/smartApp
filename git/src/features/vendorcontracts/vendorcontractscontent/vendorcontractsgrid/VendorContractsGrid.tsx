@@ -18,7 +18,6 @@ import {blockchainStates} from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVCStatusFilter: any = [];
-let vendorContractBlockchain = false;
 
 const VendorContractsGrid = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -38,7 +37,19 @@ const VendorContractsGrid = (props: any) => {
 	const [aliasOriginalGridData, setAliasOriginalGridData] = useState(gridOriginalData);
 	const showLineItemDetails = useAppSelector((state) => state.vendorContracts.showLineItemDetails);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
-	vendorContractBlockchain = blockchainEnabled;
+	const vendorContractBlockchainRef: any = useRef(false);
+
+	useEffect(()=>{
+		vendorContractBlockchainRef.current = blockchainEnabled;
+		if (gridRef?.current?.api) {
+			setTimeout(()=> {
+				gridRef.current.api.refreshCells({
+					force: true,
+					  rowNodes: gridRef.current.api.getRenderedNodes() || [],
+				})
+			}, 500)
+		}
+	}, [blockchainEnabled])
 
 	if(statusFilter) defaultVCStatusFilter = activeMainGridFilters.status;
 
@@ -222,7 +233,7 @@ const VendorContractsGrid = (props: any) => {
 				suppressDoubleClickExpand: true,
 				innerRenderer: (params: any) => {
 					const bcStatus = params.data?.blockChainStatus;
-					const showBCIcon = (vendorContractBlockchain && blockchainStates.indexOf(bcStatus) === -1);
+					const showBCIcon = (vendorContractBlockchainRef?.current && blockchainStates.indexOf(bcStatus) === -1);
 					return <>
 						{showBCIcon && <span className='common-icon-Block-chain' style={{position: 'absolute', left: '8%', marginTop: '8px', fontSize: '1.6em'}}></span>}
 						{params?.data?.hasChangeOrder && <IQTooltip
@@ -344,7 +355,7 @@ const VendorContractsGrid = (props: any) => {
 			minWidth: 250,
 			valueGetter: (params: any) => params.data?.acceptedOn ? formatDate(params.data?.acceptedOn) : '',
 		}
-	], [defaultVCStatusFilter]);
+	], [defaultVCStatusFilter, blockchainEnabled]);
 
 	const [columns, setColumns] = useState<any>(isUserGC(appInfo) ? [...headers] : [...headers]);
 

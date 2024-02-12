@@ -1,48 +1,10 @@
-export const timelogList = [{
-	id: 1,
-	timeSegmentId: 'TS00198',
-	status: 'Reported',
-	entryFor: 'Justin, Robinson',
-	company: 'ACME Electricals Inc.',
-	startDate: "2024-01-05T10:00:00.00Z",
-	endDate: "2024-01-05T18:30:00.00Z",
-	startTime: "2024-01-05T10:00:00.00Z",
-	endTime: "2024-01-05T18:30:00.00Z",
-	duration: '06:30',
-	source: 'Manual',
-	project: 'Capital Commercial Solutions',
-	region: 'Asia-India',
-	orgLocation: 'India-Banglore',
-	conflicting: 'Conflicting Time',
-	"createdBy": {
-		"id": 534919,
-		"name": 'Justin'
-	},
-	smartItem: {
-		"id": 532653,
-		"name": "RFI",
-		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/4ecf490f75ce4ba8856be8f640f9dfc3",
-		"description": "fdghdfgh",
-	},
-	workTeam: 'Carpenter Team',
-	location: 'Building 1 - Floor 2',
-	sbs: 'Structural - Walls & Finishes',
-	"phase": [
-		{
-			"id": 1,
-			"name": "Pre Construction",
-			"color": "#81c3dc",
-			"uniqueId": null,
-			"sequenceNo": null
-		}
-	],
-	timeLogId: '0000-0001'
-}, {
+export const timelogList = [
+ {
 	id: 3,
 	timeSegmentId: 'TS00199',
 	status: 'Reported',
-	entryFor: 'Justin,Robinson',
-	company: 'ACME Electricals Inc.',
+	entryFor: 'Justin,inson',
+	company: 'ACME ElectrRobicals Inc.',
 	startDate: "2024-01-05T10:00:00.00Z",
 	endDate: "2024-01-05T18:30:00.00Z",
 	startTime: "2024-01-05T10:00:00.00Z",
@@ -52,6 +14,7 @@ export const timelogList = [{
 	project: 'Capital City',
 	region: 'Europe',
 	orgLocation: 'Italy-Venice',
+	orgProfile: 'My Org Profile',
 	conflicting: 'Conflicting Location',
 	"createdBy": {
 		"id": 534919,
@@ -91,6 +54,7 @@ export const timelogList = [{
 	project: 'Capital Commercial Solutions',
 	region: 'North America',
 	orgLocation: 'Canada-Quebec City',
+	orgProfile: 'My Org Profile',
 	conflicting: 'Conflicting Time',
 	"createdBy": {
 		"id": 534917,
@@ -130,6 +94,7 @@ export const timelogList = [{
 	project: 'Capital City',
 	region: 'Middle East',
 	orgLocation: 'Bahrain-Manama',
+	orgProfile: 'Commercial Constructions',
 	conflicting: 'Conflicting Time',
 	"createdBy": {
 		"id": 534917,
@@ -168,6 +133,7 @@ export const timelogList = [{
 	project: 'Capital Commercial Solutions',
 	region: 'Asia-India',
 	orgLocation: 'India-Hyderabad',
+	orgProfile: 'Commercial Constructions',
 	source: 'Manual',
 	conflicting: 'Conflicting Time',
 	"createdBy": {
@@ -206,6 +172,7 @@ export const timelogList = [{
 	duration: '02:00',
 	project: 'Capital City',
 	region: 'Japan',
+	orgProfile: 'Commercial Constructions',
 	orgLocation: 'Japan-Tokyo',
 	source: 'Manual',
 	conflicting: 'Conflicting Time',
@@ -248,6 +215,7 @@ export const timelogList = [{
 	project: 'Capital Commercial Solutions',
 	region: 'Asia-India',
 	orgLocation: 'India-Banglore',
+	orgProfile: 'Commercial Constructions',
 	"createdBy": {
 		"id": 534917,
 		"name": 'Justin, Robinson'

@@ -32,6 +32,7 @@ const WorkerDailog = (props: any) => {
 		onClose={props.closeWorkersDlg}
 		moduleColor='#379000'
 		inlineModule={isInline}
+		withInModule={true}
 		isFullView={isFullView}
 		maxByDefault={isMaxByDefault}
 		// onIconClick={handleIconClick}

@@ -5,6 +5,7 @@ import { getTime, addTimeToDate } from "utilities/datetime/DateTimeUtils";
 
 import "./WorkerTimeLog.scss";
 const WorkerTimeLog = (props: any) => {
+  const {showDuration = false} = props;
   const rowObj = { startTime: "", endTime: "", notes: "", duration: "" };
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [logEntries, setLogEntries] = useState<any>([
@@ -121,7 +122,12 @@ const WorkerTimeLog = (props: any) => {
             maxEndTime = rec.endTime;
           }
         }
-      }
+      };
+      const hours = Math.floor(wholeDuration / (60 * 60));
+      const minutes = Math.floor(wholeDuration / 60) % 60;
+      if (rec.startTime !== '' && rec.endTime !== '') {
+        rec.durationFormat = `${hours ?? 0} Hrs ${minutes ?? 0} Mins`;
+      };
     });
     if (wholeDuration > 0) {
       const hours = Math.floor(wholeDuration / (60 * 60));
@@ -152,7 +158,7 @@ const WorkerTimeLog = (props: any) => {
    * @returns HTML row with the fields based on record data.
    * @author Srinivas Nadendla
    */
-  const generateFormRow = (rec: any, index: any) => {
+  const generateFormRow = (rec: any, index: any, showDuration?:any) => {
     return (
       <div className="time-log-modal_form-row time-log-container">
         <div className="time-field">
@@ -199,7 +205,26 @@ const WorkerTimeLog = (props: any) => {
             ampmInClock={true}
           ></SUIClock>
         </div>
-        <div className="notes-field">
+        {showDuration && (
+          <div className="duration-field">
+            <InputLabel
+              className="inputlabel"
+              sx={{
+                "& .MuiFormLabel-asterisk": {
+                  color: "red",
+                },
+              }}
+            >
+              Duration
+            </InputLabel>
+            <div style={{display:'flex', alignItems:'center', gap : '2px'}}>
+                <span className="common-icon-CurrentTime" />
+                <div>{rec.durationFormat}</div>
+            </div>
+          </div>
+        )}
+        {!showDuration && (
+          <div className="notes-field">
           <InputLabel
             className="inputlabel"
             sx={{
@@ -214,7 +239,7 @@ const WorkerTimeLog = (props: any) => {
             fullWidth
             disabled={logEntries.length - 1 !== index}
             InputProps={{
-              startAdornment: <span className="common-icon-title"></span>,
+              startAdornment: <span className="common-icon-Description"></span>,
             }}
             name="name"
             variant="standard"
@@ -222,8 +247,9 @@ const WorkerTimeLog = (props: any) => {
             onChange={(e: any) => onDataChange("notes", e.target?.value, index)}
           />
         </div>
+        )}
         {index !== 0 && (
-          <IconButton
+          <IconButton  className="delete-btn"
             data-action="delete"
             onClick={(e: any) => onDeleteBtnClick(index)}
           >
@@ -246,7 +272,7 @@ const WorkerTimeLog = (props: any) => {
           {logEntries.map((rec: any, index: any) => {
             return (
               <React.Fragment key={rec.id || index}>
-                {generateFormRow(rec, index)}
+                {generateFormRow(rec, index, showDuration)}
               </React.Fragment>
             );
           })}

@@ -95,6 +95,10 @@ const IQBaseWindow = ({ open, appType, appInfo, actions, className, maxByDefault
 					<span className='message-text'>{centerPiece}</span>
 				</div>}
 			</div>
+			{dialogProps?.rightSideText && <div className='message'>
+				<span className='message-text'>{dialogProps?.rightSideText}</span>
+			</div>}
+
 			<div className='titlebar-inner-items title-tools'>
 				{!isFullView ? <WindowTools
 					{...tools}

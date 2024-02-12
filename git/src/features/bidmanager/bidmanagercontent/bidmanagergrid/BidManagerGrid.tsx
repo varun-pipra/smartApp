@@ -52,7 +52,6 @@ const BidManagerGrid = (props: any) => {
 	const selectedRecord = useAppSelector((state) => state.bidManager.selectedRecord);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
-	bidManagerBlockchain = blockchainEnabled;
 
 	useEffect(() => {
 		gridRef?.current?.api?.applyTransaction(liveData);
@@ -62,6 +61,10 @@ const BidManagerGrid = (props: any) => {
 		setRowData(gridData);
 		setFilteredRecords(gridData);
 	}, [gridData]);
+
+	useEffect(()=> {
+		bidManagerBlockchain = blockchainEnabled;
+	}, [blockchainEnabled])
 
 	if(statusFilter) defaultBidStatusFilter = activeMainGridFilters.status?.length > 0 ? [...activeMainGridFilters.status] : undefined;
 
@@ -424,7 +427,7 @@ const BidManagerGrid = (props: any) => {
 			keyCreator: (params: any) => {return params?.data?.company?.name;},
 			valueGetter: (params: any) => {return params?.data?.company?.name;}
 		}
-	], [defaultBidStatusFilter, activeMainGridGroupKey]);
+	], [defaultBidStatusFilter, activeMainGridGroupKey, blockchainEnabled]);
 
 	const detailCellRendererParams = useMemo(() => {
 		const details = {

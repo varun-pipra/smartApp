@@ -730,9 +730,9 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</span>
 					</>
 				)}
-				{formData?.costType == 'E - Equipment' && <div>
+				{formData?.costType == 'E - Equipment' && <div className="source-type-cls">
 					<div className="budget-info-subheader">Source Type</div>
-					<span>
+					<span className="source-checkbox-cls">
 						<RadioGroup
 							row
 							aria-labelledby="demo-row-radio-buttons-group-label"
@@ -1091,8 +1091,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</span>
 					</div>
 				</span>
+				<div className="budget-billable-cls">
+				<div className="budget-bill-provider-cls">
 				<div className="budget-info-subheader">Provider Source</div>
-				<span>
+				<span className="source-checkbox-cls">
 					<RadioGroup
 						row
 						aria-labelledby="demo-row-radio-buttons-group-label"
@@ -1108,15 +1110,17 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						/>
 					</RadioGroup>
 				</span>
+				</div>
+				<div className="budget-bill-Client-cls">
 				<div className="budget-info-subheader">
 					<span>Billable in Client Contract</span>
 					<IQTooltip
 								title={
-								<div>
+								<div  className="billable-tooltip-cls">
 									<h6>Billable</h6>
-									<span>Budget Item type of Billable will be available for the selection in the Client Contract.</span>
+									<span className="tooltip-text-cls">Budget Item type of Billable will be available for the selection in the Client Contract.</span>									
 									<h6>Non-Billable</h6>
-									<span>Budget Item type of Non-Billable will not be available for the selection in the Client Contract.</span>										
+									<span  className="tooltip-text-cls">Budget Item type of Non-Billable will not be available for the selection in the Client Contract.</span>
 								</div>}
 								placement="bottom"
 								arrow={true}
@@ -1125,7 +1129,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					</IQTooltip>
 
 				</div>
-				<span>
+				<span className="source-checkbox-cls">
 					<RadioGroup
 						row
 						aria-labelledby="demo-row-radio-buttons-group-label"
@@ -1141,6 +1145,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						/>
 					</RadioGroup>
 				</span>
+				</div>
+				</div>
 				<div className="budget-info-subheader">Bid Details</div>
 				<span className="budget-info-tile">
 					<div className="budget-info-label">Bid Package</div>

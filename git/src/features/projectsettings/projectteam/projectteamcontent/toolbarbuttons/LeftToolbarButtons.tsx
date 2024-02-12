@@ -5,7 +5,7 @@ import { isLocalhost, postMessage } from "app/utils";
 import IconMenu from 'components/iqsearchfield/iqiconbuttonmenu/IQIconButtonMenu';
 import IQToggle from "components/iqtoggle/IQToggle";
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { assignUnassignData, assignUnassignData2, assignUnassignDataNonMTA, generalPermissionsMap, generalPermissionsMapNonMTA, userPermissionTypeMap } from 'data/projectteam/menudata';
+import { assignUnassignData, assignUnassignData2, assignUnassignDataNonMTA, generalPermissionsMap, generalPermissionsMapNonMTA, timelogAssignUnassignData, userPermissionTypeMap } from 'data/projectteam/menudata';
 import React, { memo, useState } from "react";
 import MultipleMenuSelect from 'sui-components/MultipleMenuSelect/MultipleMenu';
 import { getReports, updateGeneralPermissions, updateSettings, updateVendorPermissions } from "../../operations/ptDataAPI";
@@ -376,8 +376,10 @@ const LeftToolbarButtons = (props: any) => {
 				iconDisable={ disableUserPrivilege }
 				options={ vendorMenuItems }
 				options2={ generalPermissions }
+				option3={timelogAssignUnassignData}
 				userPrivileges={ userPrivileges }
 				Menuheading={ vendorMenuItems.length > 0? 'Finance Permissions': '' }
+				Menuheading1={ vendorMenuItems.length > 0? 'Time Log': '' }
 				MenuOptionsClick={ (data: any, isDirty: any) => { assignOrUnassignUserPermission(data, isDirty); } }
 			/>
 		</IQTooltip> }

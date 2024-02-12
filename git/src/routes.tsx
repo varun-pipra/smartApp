@@ -147,6 +147,22 @@ const AppRoutes = () => {
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
+				<Route path='timelog/planner' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
+				<Route path='timelog/field' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
+				<Route path='timelog/finance' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
+				<Route path='timelog/safety' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
 			</Route>
 			<Route path='examples'>
 				<Route path='infinite-scroll' element={<GridInfiniteScroll />} />

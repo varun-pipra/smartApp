@@ -51,4 +51,5 @@ export type IQBaseWindowProps = DialogProps & {
 	titleInfo?: Nullable<{ imgSrc: string, text: string; }>;
 	isBrenaOpen?: boolean;
 	withInModule?:boolean;	
+	rightSideText?:any;
 };

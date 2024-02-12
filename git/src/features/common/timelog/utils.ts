@@ -1,6 +1,8 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { postMessage } from "app/utils";
+import moment from "moment";
+
 export const AddLinksData = [
 	{
 		"text": "New Smart Item",
@@ -64,3 +66,36 @@ export const AppList_PostMessage = (e: any) => {
 		console.log('sendMsg', sendMsg)
 		postMessage(sendMsg);
 };
+	export const getPickerDefaultTime = (time: any, incrementDecrement: any) => {
+		const ConvertDate: any = new Date(time);
+		if (isNaN(ConvertDate)) {
+			return '';
+		};
+		const ConvertTime: any = moment.utc(time).format('hh:mm A');
+		let [hours, minutes, ampm] = ConvertTime?.split(/:|\s/);
+		hours = parseInt(hours, 10);
+		minutes = parseInt(minutes, 10);
+		if (isNaN(hours) && isNaN(minutes)) {
+			return '';
+		}
+		if (incrementDecrement) {
+			minutes += 5;
+			if (minutes >= 60) {
+				minutes -= 60;
+				hours = (hours + 1) % 12;
+			}
+		} else {
+			minutes -= 5;
+			if (minutes < 0) {
+				minutes += 60;
+				hours = (hours - 1 + 12) % 12;
+			}
+		}
+		// Format the new time
+		hours = hours === 0 ? 12 : hours; // Handle midnight (0 hours)
+		if (hours === 12 && minutes === 0) {
+			ampm = ampm?.toLowerCase() === "am" ? "PM" : "AM";
+		}
+		let newTime = `${hours}:${String(minutes).padStart(2, "0")} ${ampm}`;
+		return newTime;
+	}

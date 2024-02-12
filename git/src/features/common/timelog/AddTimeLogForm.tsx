@@ -87,9 +87,9 @@ const AddTimeLogForm = (props: any) => {
 			const workerArray = ['Me', 'workteam'];
 
 			const updatedarray = resource?.filter((data: any) => {
-				return access == 'Company' ? companyArray?.includes(data.value) 
-					: access == 'Workers' ? workerArray?.includes(data.value) 
-					: data
+				return access == 'Company' ? companyArray?.includes(data.value)
+					: access == 'Workers' ? workerArray?.includes(data.value)
+						: data
 			});
 			console.log('updatedarray', updatedarray)
 			setResourceOptions(updatedarray);
@@ -114,6 +114,9 @@ const AddTimeLogForm = (props: any) => {
 	};
 
 	const handleAdd = () => {
+		const payload = { ...timelog, smartItems: selectedSmartItem };
+		console.log('payload', payload)
+
 		dispatch(setToast('Time Logged Sucessfully.'));
 	};
 
@@ -144,6 +147,7 @@ const AddTimeLogForm = (props: any) => {
 								</span>
 							}
 							options={resourceOptions}
+							ignoreSorting={true}
 							outSideOfGrid={true}
 							isSearchField={false}
 							isFullWidth
@@ -185,6 +189,7 @@ const AddTimeLogForm = (props: any) => {
 								onDurationChange={(value: any) =>
 									handleFieldChange(value, "duration")
 								}
+								TimeonChange={(data: any) => { handleFieldChange(data, 'time') }}
 							></TimeLogPicker>
 							:
 							<TextField

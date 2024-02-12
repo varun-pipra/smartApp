@@ -147,7 +147,8 @@ const TimeLogPicker = (props: any) => {
       setTimeLogVal(`HH:MM - ${maxEndTime}`);
     } else {
       setTimeLogVal('');
-    }
+	}
+	props.TimeonChange(logEntries);
   }, [logEntries]);
 
   useEffect(() => {

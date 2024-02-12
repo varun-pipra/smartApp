@@ -21,6 +21,10 @@ export const appInfoData: any = {
 		'companyId': 1139284,
 		'userGlobalId': "2de492c1-cf1f-49a5-8c1f-bfad6b16234c",
 	},
+	orgData:{
+		orgID: "ORG-23466",
+		profileName:"Org Master"
+	},
 	"gblConfig": {
 		isProjectAdmin: false,
 		isAdmin: false,

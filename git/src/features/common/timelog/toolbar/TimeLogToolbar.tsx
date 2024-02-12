@@ -2,7 +2,7 @@ import { getServer } from 'app/common/appInfoSlice';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 // Project files and internal support import
 import IQTooltip from 'components/iqtooltip/IQTooltip';
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState, useMemo } from 'react';
 import SUIAlert from 'sui-components/Alert/Alert';
 
 import { Gavel, GridOn, Refresh, TableRows } from '@mui/icons-material';
@@ -10,17 +10,20 @@ import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import { Button, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 import SendBackModel from './SendBackModel/sendBackModel';
+import { setSplitTimeSegmentBtn } from '../stores/TimeLogSlice';
 
 // Component definition
 export const TLLeftButtons = memo(() => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 
+	const { selectedRowData } = useAppSelector(state => state.timeLogRequest);
+	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
+
 	const [sendBackClick, setSendBackClick] = useState<boolean>(false);
 	const [acceptClick, setacceptClick] = useState<boolean>(false);
-	const { selectedRowData } = useAppSelector(state => state.timeLogRequest);
-	const [acceptBtn, setAcceptBtn] = useState<boolean>(false);
-	const [sendBackBtn, setsendBackBtn] = useState<boolean>(false);
+	const [acceptBtn, setAcceptBtn] = useState<boolean>(true);
+	const [sendBackBtn, setsendBackBtn] = useState<boolean>(true);
 
 
 	const acceptModel = (e: any, type: any) => {
@@ -29,8 +32,16 @@ export const TLLeftButtons = memo(() => {
 			console.log('click')
 		}
 	}
-	useEffect(()=>{
-		console.log('selectedRowData', selectedRowData)	
+	useMemo(() => {
+		let array: any = selectedRowData?.map((value: any) => value.status == 'Reported' ? value.status : '')
+		if (selectedRowData.length > 0 && array.includes('Reported')) {
+			setAcceptBtn(false);
+			setsendBackBtn(false);
+		}
+		else {
+			setAcceptBtn(true);
+			setsendBackBtn(true);
+		}
 	}, [selectedRowData]);
 
 	return <>
@@ -54,6 +65,9 @@ export const TLLeftButtons = memo(() => {
 		</IconButton>
 		<Button className={`tl-toolbar-btn  ${!acceptBtn ? 'accept-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-accept'></span>} disabled={acceptBtn} onClick={() => { setacceptClick(true) }}>
 			Accept
+		</Button>
+		<Button className='tl-toolbar-btn' variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} onClick={() => { dispatch(setSplitTimeSegmentBtn(true)) }}>
+			Split
 		</Button>
 		<Button className={`tl-toolbar-btn  ${!sendBackBtn ? 'sendBack-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} disabled={sendBackBtn} onClick={() => { setSendBackClick(true) }}>
 			Send Back

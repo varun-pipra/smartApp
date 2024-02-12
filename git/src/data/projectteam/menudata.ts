@@ -49,4 +49,9 @@ export const assignUnassignData2 = [
 	{ text: 'Create and Manage my Company Pay Application', value: 'Sub Contract Pay Manager', icon: 'common-icon-vendor-contracts', disable: false, key: 'subContractPayManager' },
 	{ text: 'Respond to Quote Requests for my Company', value: 'Sub Contractor Change Event Manager', icon: 'common-icon-bid-response', disable: false, key: 'subContractorChangeEventManager' },	
 	{ text: 'Safety Requirement Manager', value: 'Safety Requirement Manager', icon: 'common-icon-Safety-Onboarding-Flyer', disable: false, key: 'safetyRequirementManager' }
-]
+];
+
+export const timelogAssignUnassignData = [
+	{ text: 'Can Manage Time for this Project', value: 'Time Log', icon: 'common-icon-Timer', disable: false, key: 'timeLog'},
+	{ text: 'Can Manage Time for My Company', value: 'Time Log', icon: 'common-icon-Timer', disable: false, key: 'timeLog'},
+];
