@@ -47,6 +47,7 @@ export const findAndUpdateFiltersData = (filterOptions:any, data: any,key: strin
               id: item?.id,
             })
           });
+        
           return data;
       } else if (nested)
         return {
@@ -61,6 +62,7 @@ export const findAndUpdateFiltersData = (filterOptions:any, data: any,key: strin
           id: rec?.id,
         };
     });
+    console.log('formattedData',formattedData)
     const filtersCopy: any = [...filterOptions];
     let currentItem: any = filtersCopy.find((rec: any) => rec?.keyValue === key);
     currentItem.children.items = GetUniqueList(formattedData?.flat(), "text");

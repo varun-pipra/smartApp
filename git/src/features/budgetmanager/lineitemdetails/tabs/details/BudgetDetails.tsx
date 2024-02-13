@@ -243,8 +243,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		else if (name === 'providerSource') {
 			setAlert({ show: true, key: 'providerSource', type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}` });
 
-		} else if (name === 'billableInCC') {
-			setAlert({ show: true, key: 'billableInCC', type: 'Confirmation', msg: `Are you sure you want to update the Billable in Client Contract from ${formData?.providerSource == 1 ? 'Billable' : 'Non-Billable'} to ${value == 1 ? 'Billable' : 'Non-Billable?'}` });
+		} else if (name === 'isBillable') {
+			setAlert({ show: true, key: 'isBillable', type: 'Confirmation', msg: `Are you sure you want to update the Billable in Client Contract from ${formData?.isBillable  ? 'Billable' : 'Non-Billable'} to ${!value ? 'Billable' : 'Non-Billable?'}` });
 
 		} else if (name === 'sbsPhaseId') {
 			setFormData({ ...formData, [name]: value?.id, sbsPhaseName: value?.name });
@@ -303,6 +303,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 			equipmentManufacturerId: formData?.equipmentManufacturer?.[0]?.objectId || '',
 			equipmentCatalogId: formData?.equipmentCatalogId,
 			providerSource: formData?.providerSource,
+			isBillable: formData?.isBillable,
+			sourceType: formData?.sourceType,			
 			sbsIds: formData?.sbs?.length ? formData?.sbs?.map((item:any) => { return item?.id }) : [],
 			sbsPhaseId: formData?.sbsPhaseId ? formData?.sbsPhaseId : null
 		};
@@ -488,7 +490,9 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const handleProviderSourceChange = (type: string, key:string) => {
 		if (type == 'yes') {
 			console.log("yeeeee", formData)
-			setFormData({ ...formData, [key]: formData?.providerSource == 0 ? 1 : 0 })
+			if(key == 'providerSource') setFormData({ ...formData, [key]: formData?.providerSource == 0 ? 1 : 0 });
+			if(key == 'isBillable') setFormData({ ...formData, [key]: !formData?.isBillable })
+			
 			setAlert({ show: false, type: '', msg: '' })
 		}
 		else setAlert({ show: false, type: '', msg: '' })
@@ -730,28 +734,251 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</span>
 					</>
 				)}
+				<div className="budget-info-subheader">Labor Cost</div>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Work Category</div>
+					<div className="budget-info-data-box">
+						{gridIcon}
+						<span className="budget-info-data">
+							{formData?.category}
+						</span>
+					</div>
+				</span>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Trade</div>
+					<div className="budget-info-data-box">
+						{gridIcon}
+						<span className="budget-info-data">
+							{formData?.trade}
+						</span>
+					</div>
+				</span>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Default Rate(per Hour)</div>
+					<div className="budget-info-data-box">
+						{gridIcon}
+						<span className="budget-info-data">
+							{formData?.defaultRate}
+						</span>
+					</div>
+				</span>
+				{/* <span className='budget-info-tile span-2'>
+					<div className='budget-info-label'>Associate To?</div>
+					<div className='budget-info-data-box'>
+						{gridIcon}
+						<RadioGroup row
+							name='associatedTo'
+							className='associated-to'
+							value={formData.associatedTo}
+							onChange={(e: any) => handleDropdownChange(e.target.value, 'associatedTo')}
+						>
+							<FormControlLabel value={1} control={<Radio />} label='System' />
+							<FormControlLabel value={0} control={<Radio />} label='Location' />
+						</RadioGroup>
+					</div>
+				</span>
+				<span className='budget-info-tile span-2'>
+					<div className='budget-info-label'>Location</div>
+					<div className='budget-info-data-box'>
+						<Location
+							fullWidth
+							multiple={true}
+							options={[]}
+							value={location}
+							onChange={(e, newValue) => {handleLocationChange(newValue);}}
+							getOptionLabel={(option: any) => option?.text || ''}
+						/>
+					</div>
+				</span> */}
+				<span className="budget-info-tile">
+					<div className="budget-info-label">
+						Cost Type <span className="required_color">*</span>
+					</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? formData?.costType : <SmartDropDown
+							options={costTypeOpts?.length > 0 ? costTypeOpts : []}
+							required={true}
+							LeftIcon={gridIcon}
+							isSearchField
+							isFullWidth
+							outSideOfGrid={false}
+							selectedValue={formData.costType}
+							menuProps={classes.menuPaper}
+							sx={{ fontSize: "18px" }}
+							handleChange={(value: string | undefined | string[]) => {
+								handleDropdownChange(value ? value[0] : "", "costType");
+							}}
+						/>}
+					</div>
+				</span>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Curve</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? formData?.curve : <SmartDropDown
+							LeftIcon={<span className="common-icon-Curve"></span>}
+							options={curveList}
+							outSideOfGrid={false}
+							isSearchField={false}
+							isFullWidth
+							selectedValue={formData.curve}
+							menuProps={classes.menuPaper}
+							handleChange={(value: any) =>
+								handleDropdownChange(value, "curve")
+							}
+						/>}
+					</div>
+				</span>
+				<span className="budget-info-tile vendor-field">
+					<div className="budget-info-label">Vendor</div>
+					<div className="budget-info-data-box">
+						{formData.bidPackage?.status == "Awarded" || isReadOnly ? (
+							<>
+								<span className="common-icon-info-icon common-icon-Budgetcalculator"></span>
+								{formData?.Vendors?.map((data: any, i: any) => {
+									return (
+										<IQTooltip
+											title={
+												"Vendor has been awarded the Bid and the Vendor cannot be updated"
+											}
+											placement={"bottom"}
+											arrow={true}
+										>
+											<span key={i}>
+												{i > 0 && ",  "}
+												{data.name}
+											</span>
+										</IQTooltip>
+									);
+								})}
+							</>
+						) : (
+							<VendorList
+								value={formData.Vendors}
+								handleVendorChange={(values: any, params: any) =>
+									handleDropdownChange(values, "Vendors")
+								}
+								outSideOfGrid={true}
+								icon={gridIcon}
+								showFilter={true}
+							/>
+						)}
+					</div>
+				</span>
+				<div className="budget-billable-cls">
+				<div className="budget-bill-provider-cls">
+				<div className="budget-info-subheader">
+					<span>Provider Source</span>
+					<IQTooltip
+								title={
+								<div  className="billable-tooltip-cls">
+								<span>This is Provider Source</span>
+								</div>}
+								placement="bottom"
+								arrow={true}
+							>
+							<span className='common-icon-infoicon'></span>
+					</IQTooltip>
+				</div>
+				<span className="source-checkbox-cls">
+					<RadioGroup
+						row
+						aria-labelledby="demo-row-radio-buttons-group-label"
+						name="row-radio-buttons-group"
+						value={formData?.providerSource == 1 ? 'self' : 'trade'}
+						onChange={(e) => { handleDropdownChange(e.target.value == 'self' ? 1 : 0, "providerSource") }}
+					>
+						<FormControlLabel value="self" control={<Radio />} label="Self Perform"
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+						/>
+						<FormControlLabel value="trade" control={<Radio />} label="Trade Partner"
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+						/>
+					</RadioGroup>
+				</span>
+				</div>
+				<div className="budget-bill-Client-cls">
+				<div className="budget-info-subheader">
+					<span>Billable in Client Contract</span>
+					<IQTooltip
+								title={
+								<div  className="billable-tooltip-cls">
+									<h6>Billable</h6>
+									<span className="tooltip-text-cls">Budget Item type of Billable will be available for the selection in the Client Contract.</span>									
+									<h6>Non-Billable</h6>
+									<span  className="tooltip-text-cls">Budget Item type of Non-Billable will not be available for the selection in the Client Contract.</span>
+								</div>}
+								placement="bottom"
+								arrow={true}
+							>
+							<span className='common-icon-infoicon'></span>
+					</IQTooltip>
+
+				</div>
+				<span className="source-checkbox-cls">
+					<RadioGroup
+						row
+						aria-labelledby="demo-row-radio-buttons-group-label"
+						name="row-radio-buttons-group"
+						value={formData?.isBillable}
+						onChange={(e) => { handleDropdownChange(e.target.value, "isBillable") }}
+					>
+						<FormControlLabel value={true} control={<Radio />} label="Billable"
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+						/>
+						<FormControlLabel value={false} control={<Radio />} label="Non-Billable"
+							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+						/>
+					</RadioGroup>
+				</span>
+				</div>
+				</div>
+				
 				{formData?.costType == 'E - Equipment' && <div className="source-type-cls">
-					<div className="budget-info-subheader">Source Type</div>
+					<div className="budget-info-subheader">
+						<span>Source Type</span>
+						<IQTooltip
+								title={
+								<div  className="billable-tooltip-cls">
+								<span>This is Source Type</span>
+								</div>}
+								placement="bottom"
+								arrow={true}
+							>
+							<span className='common-icon-infoicon'></span>
+					</IQTooltip>
+					</div>
 					<span className="source-checkbox-cls">
 						<RadioGroup
 							row
 							aria-labelledby="demo-row-radio-buttons-group-label"
 							name="row-radio-buttons-group"
-							value={formData?.sourceType == 1 ? 'purchase' : 'rent'}
-							onChange={(e) => { handleDropdownChange(e.target.value == 'purchase' ? 1 : 0, "sourceType") }}
+							value={formData?.sourceType}
+							onChange={(e) => { handleDropdownChange(e.target.value, "sourceType") }}
 						>
-							<FormControlLabel value="purchase" control={<Radio />} label="Purchase"
+							<FormControlLabel value={0} control={<Radio />} label="Purchase"
 								disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
 							/>
-							<FormControlLabel value="rent" control={<Radio />} label="Rent"
+							<FormControlLabel value={1} control={<Radio />} label="Rent"
 								disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
 							/>
 						</RadioGroup>
 					</span>
 				</div>}
-
-				{formData?.allowMarkupFee && (
+				{formData?.allowMarkupFee ? (
 					<span className="budget-info-tile span-3 mark-up-fee">
+						<div className="budget-info-subheader">
+							<span>Mark-Up Fee</span>
+							<IQTooltip
+									title={
+									<div  className="billable-tooltip-cls">
+									<span>This is Mark Up Fee</span>
+									</div>}
+									placement="bottom"
+									arrow={true}
+								>
+								<span className='common-icon-infoicon'></span>
+						</IQTooltip>
+						</div>
 						<div className="budget-info-data-box">
 							<div className="budget-info-label">
 								Do you want to add Mark-up Fee?
@@ -866,109 +1093,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							</RadioGroup>
 						</div>
 					</span>
-				)}
-				{/* <span className='budget-info-tile span-2'>
-					<div className='budget-info-label'>Associate To?</div>
-					<div className='budget-info-data-box'>
-						{gridIcon}
-						<RadioGroup row
-							name='associatedTo'
-							className='associated-to'
-							value={formData.associatedTo}
-							onChange={(e: any) => handleDropdownChange(e.target.value, 'associatedTo')}
-						>
-							<FormControlLabel value={1} control={<Radio />} label='System' />
-							<FormControlLabel value={0} control={<Radio />} label='Location' />
-						</RadioGroup>
-					</div>
-				</span>
-				<span className='budget-info-tile span-2'>
-					<div className='budget-info-label'>Location</div>
-					<div className='budget-info-data-box'>
-						<Location
-							fullWidth
-							multiple={true}
-							options={[]}
-							value={location}
-							onChange={(e, newValue) => {handleLocationChange(newValue);}}
-							getOptionLabel={(option: any) => option?.text || ''}
-						/>
-					</div>
-				</span> */}
-				<span className="budget-info-tile">
-					<div className="budget-info-label">
-						Cost Type <span className="required_color">*</span>
-					</div>
-					<div className="budget-info-data-box">
-						{isReadOnly ? formData?.costType : <SmartDropDown
-							options={costTypeOpts?.length > 0 ? costTypeOpts : []}
-							required={true}
-							LeftIcon={gridIcon}
-							isSearchField
-							isFullWidth
-							outSideOfGrid={false}
-							selectedValue={formData.costType}
-							menuProps={classes.menuPaper}
-							sx={{ fontSize: "18px" }}
-							handleChange={(value: string | undefined | string[]) => {
-								handleDropdownChange(value ? value[0] : "", "costType");
-							}}
-						/>}
-					</div>
-				</span>
-				<span className="budget-info-tile">
-					<div className="budget-info-label">Curve</div>
-					<div className="budget-info-data-box">
-						{isReadOnly ? formData?.curve : <SmartDropDown
-							LeftIcon={<span className="common-icon-Curve"></span>}
-							options={curveList}
-							outSideOfGrid={false}
-							isSearchField={false}
-							isFullWidth
-							selectedValue={formData.curve}
-							menuProps={classes.menuPaper}
-							handleChange={(value: any) =>
-								handleDropdownChange(value, "curve")
-							}
-						/>}
-					</div>
-				</span>
-				<span className="budget-info-tile vendor-field">
-					<div className="budget-info-label">Vendor</div>
-					<div className="budget-info-data-box">
-						{formData.bidPackage?.status == "Awarded" || isReadOnly ? (
-							<>
-								<span className="common-icon-info-icon common-icon-Budgetcalculator"></span>
-								{formData?.Vendors?.map((data: any, i: any) => {
-									return (
-										<IQTooltip
-											title={
-												"Vendor has been awarded the Bid and the Vendor cannot be updated"
-											}
-											placement={"bottom"}
-											arrow={true}
-										>
-											<span key={i}>
-												{i > 0 && ",  "}
-												{data.name}
-											</span>
-										</IQTooltip>
-									);
-								})}
-							</>
-						) : (
-							<VendorList
-								value={formData.Vendors}
-								handleVendorChange={(values: any, params: any) =>
-									handleDropdownChange(values, "Vendors")
-								}
-								outSideOfGrid={true}
-								icon={gridIcon}
-								showFilter={true}
-							/>
-						)}
-					</div>
-				</span>
+				) : formData?.costType == 'E - Equipment' ? <span /> : null}
+				{formData?.costType == 'E - Equipment' ? <span /> : null}
+
+				
 				<span className="budget-info-tile date-field">
 					<div className="budget-info-label">Estimated Start Date</div>
 					<div className="budget-info-data-box">
@@ -1091,62 +1219,6 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</span>
 					</div>
 				</span>
-				<div className="budget-billable-cls">
-				<div className="budget-bill-provider-cls">
-				<div className="budget-info-subheader">Provider Source</div>
-				<span className="source-checkbox-cls">
-					<RadioGroup
-						row
-						aria-labelledby="demo-row-radio-buttons-group-label"
-						name="row-radio-buttons-group"
-						value={formData?.providerSource == 1 ? 'self' : 'trade'}
-						onChange={(e) => { handleDropdownChange(e.target.value == 'self' ? 1 : 0, "providerSource") }}
-					>
-						<FormControlLabel value="self" control={<Radio />} label="Self Perform"
-							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
-						/>
-						<FormControlLabel value="trade" control={<Radio />} label="Trade Partner"
-							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
-						/>
-					</RadioGroup>
-				</span>
-				</div>
-				<div className="budget-bill-Client-cls">
-				<div className="budget-info-subheader">
-					<span>Billable in Client Contract</span>
-					<IQTooltip
-								title={
-								<div  className="billable-tooltip-cls">
-									<h6>Billable</h6>
-									<span className="tooltip-text-cls">Budget Item type of Billable will be available for the selection in the Client Contract.</span>									
-									<h6>Non-Billable</h6>
-									<span  className="tooltip-text-cls">Budget Item type of Non-Billable will not be available for the selection in the Client Contract.</span>
-								</div>}
-								placement="bottom"
-								arrow={true}
-							>
-							<span className='common-icon-infoicon'></span>
-					</IQTooltip>
-
-				</div>
-				<span className="source-checkbox-cls">
-					<RadioGroup
-						row
-						aria-labelledby="demo-row-radio-buttons-group-label"
-						name="row-radio-buttons-group"
-						value={formData?.billableInCC == 0 ? 'nonBillable' : 'billable'}
-						onChange={(e) => { handleDropdownChange(e.target.value == 'billable' ? 1 : 0, "billableInCC") }}
-					>
-						<FormControlLabel value="billable" control={<Radio />} label="Billable"
-							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
-						/>
-						<FormControlLabel value="nonBillable" control={<Radio />} label="Non-Billable"
-							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
-						/>
-					</RadioGroup>
-				</span>
-				</div>
-				</div>
 				<div className="budget-info-subheader">Bid Details</div>
 				<span className="budget-info-tile">
 					<div className="budget-info-label">Bid Package</div>

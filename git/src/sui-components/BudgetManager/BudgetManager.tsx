@@ -247,8 +247,8 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 		},
 		{
 			headerName: 'Billable In Client Contract',
-			field: 'billableInCC',
-			valueGetter: (params: any) => billableInCCObj?.[params.data?.billableInCC],			
+			field: 'isBillable',
+			valueGetter: (params: any) => billableInCCObj?.[params.data?.isBillable],			
 		},
 		{
 			headerName: 'Location',
@@ -425,12 +425,12 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
           );
         });
       } if (
-        filters.billableInCC?.length > 0 &&
-        !filters.billableInCC?.includes("all")
+        filters.isBillable?.length > 0 &&
+        !filters.isBillable?.includes("all")
       ) {
         filteredRecs = filteredRecs?.filter((obj: any) => {
-          return filters.billableInCC.includes(
-            obj.billableInCC?.toString()
+          return filters.isBillable.includes(
+            obj.isBillable?.toString()
           );
         });
       }
@@ -516,8 +516,8 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 		},
 		{
 			text: "Billable In Client Contract",
-			value: 'billableInCC',
-			key: 'billableInCC',
+			value: 'isBillable',
+			key: 'isBillable',
 			children: {
 				type: "checkbox",
 				items: [

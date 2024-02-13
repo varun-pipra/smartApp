@@ -7,7 +7,7 @@ import {
 	getServer
 } from 'app/common/appInfoSlice';
 import _ from 'lodash';
-// import {getAmountAlignmentNew} from 'utilities/commonutills';
+import {billableInCCObj, sourceTypeObj} from 'utilities/commonutills';
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import { useAppDispatch, useAppSelector, useHotLink } from 'app/hooks';
 import { postMessage } from 'app/utils';
@@ -551,13 +551,13 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
 				if (params?.value && params?.node?.footer) {
-					return currencySymbol + ' ' + params?.value?.toLocaleString("en-US");
+					return amountFormatWithSymbol(params?.value);
 				}
 				else if (params?.data && params?.value && params?.data?.markupFeePercentage) {
-					return currencySymbol + ' ' + params?.value?.toLocaleString("en-US") + `(${params?.data?.markupFeePercentage}%)`;
+					return amountFormatWithSymbol(params?.value) + `(${params?.data?.markupFeePercentage}%)`;
 				}
 				else if (params?.data && params?.value && params?.data?.markupFeePercentage == null) {
-					return params?.value == 'N/A' ? 'N/A' : currencySymbol + ' ' + params?.value?.toLocaleString("en-US");
+					return params?.value == 'N/A' ? 'N/A' : amountFormatWithSymbol(params?.value);
 				}
 			}
 		},
@@ -624,7 +624,10 @@ const TableGrid = (props: TableGridProps) => {
 			hide: false,
 			valueGetter: (params: any) => providerSourceObj?.[params.data?.providerSource],
 		},
-		{ headerName: 'Billable in Client Contract', field: 'billableInCC', hide: false, suppressMenu: true },		
+		{ headerName: 'Billable in Client Contract', field: 'isBillable', 
+			hide: false, suppressMenu: true,
+			valueGetter: (params: any) => billableInCCObj?.[params.data?.isBillable],						
+		},		
 		{
 			headerName: 'Work Break Down Structure (WBS)',
 			field: 'rollupTaskIds',
@@ -1202,7 +1205,12 @@ const TableGrid = (props: TableGridProps) => {
 		},
 		{ headerName: 'Manufacturer', field: 'equipmentManufacturer', hide: false, suppressMenu: true },
 		{ headerName: 'Model Number', field: 'equipmentModel', hide: false, suppressMenu: true },
-		{ headerName: 'Source Type', field: 'sourceType', hide: false, suppressMenu: true },		
+		{ headerName: 'Source Type',
+			field: 'sourceType', 
+			hide: false, 
+			valueGetter:(params:any) => params?.data?.sourceType ? sourceTypeObj?.[params?.data?.sourceType] : '',
+			suppressMenu: true,
+		},		
 	];
 
 	const [columnDefs, setColumnDefs] = useState<any>(columns);

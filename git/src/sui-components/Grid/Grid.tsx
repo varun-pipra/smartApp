@@ -185,6 +185,8 @@ const SUIGrid = (props: TableGridProps) => {
 					markupFeeAmount: payloadObj?.markupFeeAmount,
 					markupFeePercentage: payloadObj?.markupFeePercentage,
 					providerSource: payloadObj?.providerSource,
+					isBillable: payloadObj?.isBillable,
+					sourceType: payloadObj?.sourceType,
 					sbsIds: payloadObj?.sbs?.length ? payloadObj?.sbs?.map((item:any) => { return item?.id }) : [],
 					sbsPhaseId: payloadObj?.sbsPhaseId ? payloadObj?.sbsPhaseId : null								
 				};

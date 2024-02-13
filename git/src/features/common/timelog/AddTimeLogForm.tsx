@@ -16,11 +16,13 @@ import WorkerDailog from "./workerDailog/WorkerDailog";
 import { makeStyles, createStyles } from "@mui/styles";
 import { setToast } from './stores/TimeLogSlice';
 import { AppList, AppList_PostMessage } from './utils';
+import { addTimeToDate } from 'utilities/datetime/DateTimeUtils';
+import { addTimeLog } from './stores/TimeLogAPI';
 
 interface TimeLogFormProps {
 	resource?: string;
 	date?: any;
-	time?: string;
+	time?: any;
 	duration?: any;
 	smartItems?: any;
 }
@@ -46,7 +48,7 @@ const AddTimeLogForm = (props: any) => {
 		return {
 			resource: "",
 			date: "",
-			time: "",
+			time: [],
 			duration: "0 Hrs 00 Mins",
 			smartItems: "",
 		};
@@ -63,7 +65,7 @@ const AddTimeLogForm = (props: any) => {
 		{ id: 3, label: "My Company", value: "mycompany" },
 		{ id: 4, label: "Ad-hoc Users", value: "Ad-hoc-users" },
 	];
-	const [timelog, setTimeLog] = useState<TimeLogFormProps>(defaultValues);
+	const [timelogForm, setTimeLogForm] = useState<TimeLogFormProps>(defaultValues);
 	const [isBudgetDisabled, setBudgetDisabled] = useState<boolean>(true);
 	const [isAddDisabled, setAddDisabled] = useState<boolean>(true);
 	const [contractOptions, setContractOptions] = useState<any>([]);
@@ -91,14 +93,14 @@ const AddTimeLogForm = (props: any) => {
 					: access == 'Workers' ? workerArray?.includes(data.value)
 						: data
 			});
-			console.log('updatedarray', updatedarray)
 			setResourceOptions(updatedarray);
 		}
 	}, [access]);
 
 	const handleFieldChange = (event: any, name: any) => {
+		console.log("Date", event, name)
 		setSelectedWorkers(event === "workteam" ? true : false)
-		setTimeLog((currentState) => {
+		setTimeLogForm((currentState) => {
 			const newState = { ...currentState, ...{ [name]: event } };
 			checkFormValidity(newState);
 			return newState;
@@ -114,10 +116,23 @@ const AddTimeLogForm = (props: any) => {
 	};
 
 	const handleAdd = () => {
-		const payload = { ...timelog, smartItems: selectedSmartItem };
-		console.log('payload', payload)
+		// const payload = { ...timelogForm, smartItems: selectedSmartItem };
+		console.log('timelogForm', timelogForm);
+		const timeEntries = timelogForm?.time?.map((obj:any) => {
+			return {
+				startTime: addTimeToDate(timelogForm?.date, obj?.startTime),
+				endTime: addTimeToDate(timelogForm?.date, obj?.endTime),
+				userId: timelogForm?.resource == 'Me' ? appInfo?.currentUserInfo?.userid : '',
+			}
+		})
+		const payload = {
+			segments: [...timeEntries]
+		};
+		console.log('timeEntries', timeEntries, payload);
+		addTimeLog(payload, (resp:any) => {
+			dispatch(setToast('Time Logged Successfully.'));
+		});		
 
-		dispatch(setToast('Time Logged Sucessfully.'));
 	};
 
 	const smartItemOnClick = (e: any) => {
@@ -152,7 +167,7 @@ const AddTimeLogForm = (props: any) => {
 							isSearchField={false}
 							isFullWidth
 							Placeholder={"Select"}
-							selectedValue={timelog?.resource}
+							selectedValue={timelogForm?.resource}
 							isMultiple={false}
 							handleChange={(value: any) =>
 								handleFieldChange(value[0], "resource")
@@ -176,9 +191,9 @@ const AddTimeLogForm = (props: any) => {
 								/>
 							}
 							defaultValue={
-								timelog?.date ? convertDateToDisplayFormat(timelog?.date) : ""
+								timelogForm?.date ? convertDateToDisplayFormat(timelogForm?.date) : ""
 							}
-							onChange={(val: any) => handleFieldChange(val, "date")}
+							onChange={(val: any) => handleFieldChange(new Date(val)?.toISOString(), "date")}
 						/>
 					</div>
 					<div className="time-field">
@@ -194,7 +209,7 @@ const AddTimeLogForm = (props: any) => {
 							:
 							<TextField
 								InputProps={{
-									startAdornment: <span className="common-icon-Team-Members resourcedropdown"></span>,
+									startAdornment: <span className="common-icon-workers resourcedropdown"></span>,
 								}}
 								name="name"
 								variant="standard"
@@ -206,7 +221,7 @@ const AddTimeLogForm = (props: any) => {
 					</div>
 					<div className="duration-field">
 						<InputLabel className="inputlabel">{!selectedWorkers ? 'Duration' : 'Total Hours'}</InputLabel>
-						<span className="common-icon-monthly"></span> {timelog.duration}
+						<span className="common-icon-monthly"></span> {timelogForm.duration}
 					</div>
 					<div className="smart-item-field">
 						<InputLabel className="inputlabel">

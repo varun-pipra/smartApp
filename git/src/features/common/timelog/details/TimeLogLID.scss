@@ -10,18 +10,20 @@
                 .image-section {
                     .image {
                         border-radius: 50%;
-                        width: 65px;
-                        height: 65px;
+                        width: 45px;
+                        height: 45px;
                     }
                 }
                 .name-section {
                     .name {
                         font-weight: bold;
+                        font-size: 15px;
                     }
                     .companyName {
                         font-weight: normal;
-                        color: #d1cccc;
+                        color: #666;
                         padding-top: 6px;
+                        font-size: 14px;
                     }
                 }
             }
@@ -136,9 +138,13 @@
                 background-color: #666;
             }
             .accept-buttons {
+                background-color: #059cdf;
+                color: whitw;
+            }
+            .split-buttons {
                 background-color: transparent;
-                border: 1px solid #059cdf;
-                color: #059cdf;
+                border: 1px solid #666;
+                color: #666
             }
         }
     }

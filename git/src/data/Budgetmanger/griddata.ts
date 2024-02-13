@@ -64,7 +64,7 @@ export const gridData = {
 			"costCodeGroup": null,
 			"markupFeeType": 0,
 			"markupFeePercentage": null,
-			"markupFeeAmount": 1000,
+			"markupFeeAmount": 1500000.00,
 			allowMarkupFee: true,
 			providerSource: 1,
 			sbsPhaseId: 2,
@@ -147,6 +147,10 @@ export const gridData = {
 				" Flagpoles 10350"
 			],
 			providerSource: 0,
+			"markupFeeType": 0,
+			"markupFeePercentage": null,
+			"markupFeeAmount": 789459.00,
+			allowMarkupFee: true,
 		},
 		{
 			"id": "33e13aef-c11d-4326-b1e9-02084e6b98a2",
@@ -214,6 +218,10 @@ export const gridData = {
 				" Furniture, Furniture Systems, and Furniture 12620"
 			],
 			providerSource: 0,
+			"markupFeeType": 0,
+			"markupFeePercentage": null,
+			"markupFeeAmount": 45789.00,
+			allowMarkupFee: true,
 		},
 		{
 			"id": "5ac93bad-6ce9-4775-b93f-022a17de5d34",
@@ -284,7 +292,11 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+			"costCodeGroup": null,
+			"markupFeeType": 0,
+			"markupFeePercentage": null,
+			"markupFeeAmount": 1500.00,
+			allowMarkupFee: true,
 		},
 		{
 			"id": "7a3aad84-1e51-4b57-a93d-02b38ef12217",
@@ -349,6 +361,10 @@ export const gridData = {
 			"rollupTaskIds": [],
 			"costCodeGroup": null,
 			providerSource: 0,
+			"markupFeeType": 0,
+			"markupFeePercentage": null,
+			"markupFeeAmount": 789564.00,
+			allowMarkupFee: true,
 		},
 		{
 			"id": "0004ac7c-c555-487f-8fd7-02d878bf5028",

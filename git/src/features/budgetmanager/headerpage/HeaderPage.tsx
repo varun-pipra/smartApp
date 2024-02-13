@@ -30,6 +30,7 @@ import { menusData, optionsdata } from "examples/Costcodeselectexample/costCodeS
 import { CostCodeFilterData, DivisionCostCodeDropdownData } from "data/MultiLevelFilterData";
 import { settingcostcodetypeData } from "data/SettingsCosttypeData";
 import { postMessage } from "../../../app/utils";
+import { LaborSheetModel } from "../lineitemdetails/tabs/details/laborSheet/LaborSheet";
 interface HeaderPageProps {
 	onLineItemAdded?: (value: any) => void;
 }
@@ -80,6 +81,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 	const [originalBudgetCatalogReadOnly, setOriginalBudgetCatalogReadOnly] = React.useState<any>({unitofMeasure: false,quantity: false,cost: false});
 	const [originalBudgetCatalogData, setOriginalBudgetCatalogData] = React.useState<any>({unitOfMeasure: '',quantity: '',cost: ''});
 	console.log("divisionCostCodeFilterData", divisionCostCodeFilterData)
+	const [showWorkersDialog, setShowWorkersDialog] = React.useState<any>(false);
 
 	React.useEffect(() => {
 		let costTypeTimeList: any = [];
@@ -155,7 +157,12 @@ const HeaderPage = (props: HeaderPageProps) => {
 			unitQuantity: headerPageData?.originalBudgetAmount.quantity,
 			unitCost: headerPageData?.originalBudgetAmount.cost,
 			status: 0,
-			description: lineItemDescription ? lineItemDescription : ''
+			description: lineItemDescription ? lineItemDescription : '',
+			equipmentManufacturer: originalBudgetCatalogData?.equipmentManufacturer,
+			equipmentManufacturerId: originalBudgetCatalogData?.equipmentManufacturerId,
+			equipmentModel: originalBudgetCatalogData?.equipmentModel,
+			equipmentCatalogId: originalBudgetCatalogData?.equipmentCatalogId,
+
 		}
 		console.log('dataAfterAdd', data)
 		const dataAfterAdd = {
@@ -176,20 +183,20 @@ const HeaderPage = (props: HeaderPageProps) => {
 		dispatch(setLineItemDescription(''));
 	};
 	const handleCatalogSubmit = () => {
-		if (isLocalhost) {
-			let catalogData = {
-				unitOfMeasure: 'lf',
-				quantity: 10,
-				cost: 50
-			};
-			setOriginalBudgetCatalogData(catalogData);
-			setOriginalBudgetCatalogReadOnly({
-				unitofMeasure: true,
-				quantity: false,
-				cost: true
-			});
-		} else {
-			postMessage({
+		// if (isLocalhost) {
+		// 	let catalogData = {
+		// 		unitOfMeasure: 'lf',
+		// 		quantity: 10,
+		// 		cost: 50
+		// 	};
+		// 	setOriginalBudgetCatalogData(catalogData);
+		// 	setOriginalBudgetCatalogReadOnly({
+		// 		unitofMeasure: true,
+		// 		quantity: false,
+		// 		cost: true
+		// 	});
+		// } else {
+			headerPageData?.costType == 'E - Equipment' && postMessage({
 				event: 'opencatalog',
 				body: {
 					data: {
@@ -198,7 +205,9 @@ const HeaderPage = (props: HeaderPageProps) => {
 					}
 				}
 			});
-		}
+			console.log("headerPageData", headerPageData?.costType)
+			headerPageData?.costType == 'L - Labor' && setShowWorkersDialog(true);
+		// }
 	};
 	useEffect(() => {
     	window.addEventListener("message",(event: any) => {
@@ -213,14 +222,18 @@ const HeaderPage = (props: HeaderPageProps) => {
 					let catalogData = {
 						unitOfMeasure: '',
 						quantity: catObj.quantity,
-						cost: catObj.price
+						cost: catObj.price,
+						equipmentManufacturer: catObj?.manufacturer?.name,
+						equipmentManufacturerId: catObj?.manufacturer?.id,
+						equipmentModel: catObj?.sku,
+						equipmentCatalogId: catObj?.id
 					};
 					setOriginalBudgetCatalogData(catalogData);
-					setOriginalBudgetCatalogReadOnly({
-						unitofMeasure: true,
-						quantity: true,
-						cost: true
-					})
+					// setOriginalBudgetCatalogReadOnly({
+					// 	unitofMeasure: true,
+					// 	quantity: true,
+					// 	cost: true
+					// })
 				}
 				break;
 			}}
@@ -355,6 +368,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 					readOnly={false}
 					disabled={isBudgetLocked}
 					showCatalogBtn={headerPageData?.costType === 'E - Equipment'}
+					showLaborBtn={headerPageData?.costType === 'L - Labor'}					
 					handleCatalogSubmit={() => handleCatalogSubmit()}
 					data={originalBudgetCatalogData}
 					textFieldReadonly={originalBudgetCatalogReadOnly}
@@ -372,7 +386,9 @@ const HeaderPage = (props: HeaderPageProps) => {
 					+ Add
 				</Button>
 			</MuiGrid>
+			{showWorkersDialog && <LaborSheetModel onClose={() => setShowWorkersDialog(false)}/>}
 		</MuiGrid >
+
 	)
 }
 

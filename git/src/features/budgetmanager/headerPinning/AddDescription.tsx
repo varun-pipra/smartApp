@@ -67,6 +67,8 @@ export const AddDescription = ({ value, showicon = true,disabled=false }: AddDes
 				equipmentManufacturerId: selectedRow?.equipmentManufacturerId,
 				equipmentCatalogId: selectedRow?.equipmentCatalogId,
 				providerSource: selectedRow?.providerSource,
+				isBillable: selectedRow?.isBillable,
+				sourceType: selectedRow?.sourceType,
 				sbsIds: selectedRow?.sbs?.length ? selectedRow?.sbs?.map((item:any) => { return item?.id }) : [],
 				sbsPhaseId: selectedRow?.sbsPhaseId ? selectedRow?.sbsPhaseId : null		
 			}

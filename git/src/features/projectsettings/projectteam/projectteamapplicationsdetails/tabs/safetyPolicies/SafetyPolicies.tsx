@@ -149,7 +149,7 @@ const SafetyPolicies = (props: any) => {
 						}),
 						verifyAllPayload = {
 							"userId": userdata?.objectId, //appInfo.gblConfig.currentUserId,
-							"verifiedBy": userdata?.objectId, //appInfo.gblConfig.currentUserId,
+							"verifiedBy": appInfo?.gblConfig?.currentUserId,
 							"documentFor": "worker",
 							"currentDateTime": new Date(),
 							"signatureData": null,

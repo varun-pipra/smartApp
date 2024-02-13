@@ -34,6 +34,15 @@
     text-align: center;
     background-color: #fff9f5;
     align-items: center;
+    &:before {
+        content: "\eac8";
+        font-size: 6em;
+        font-family: 'common-webfont';
+        position: absolute;
+        right: 31px;
+        opacity: 0.1;
+        color: #ed7532;
+    }
     .summary-text {
         color: #666;
     }
@@ -64,4 +73,29 @@
     width: 26%;
     justify-content: center !important;
     border-radius: 6px !important;
+}
+
+.vendor-contracts-window {
+    &.workers-cls {
+        .MuiDialogContent-root {
+            &:before {
+                content: "\ec83";
+                font-size: 16em;
+                font-family: "common-webfont";
+                position: absolute;
+                right: -34px;
+                opacity: 0.1;
+                color: #ed7532;
+                bottom: 100px;
+            }
+        }
+        .MuiDialogActions-root {
+            background-color: #fff;
+            z-index: 1;
+            box-shadow: 0 -1px 5px 0 rgba(0, 0, 0, .15);
+            .iq-button {
+                background-color: #059cdf !important;
+            }
+        }
+    }
 }

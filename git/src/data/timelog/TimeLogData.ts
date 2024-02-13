@@ -1,26 +1,38 @@
-export const timelogList = [
+
+export const timelogList = {
+	segments: [
  {
-	id: 3,
+	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e01",
 	timeSegmentId: 'TS00199',
-	status: 'Reported',
-	entryFor: 'Justin,inson',
-	company: 'ACME ElectrRobicals Inc.',
-	startDate: "2024-01-05T10:00:00.00Z",
-	endDate: "2024-01-05T18:30:00.00Z",
-	startTime: "2024-01-05T10:00:00.00Z",
-	endTime: "2024-01-05T18:30:00.00Z",
-	duration: '06:35',
-	source: 'Manual',
+	status: 0,
+	timeEntryFor: 'Justin,inson',
+	company:{
+        "id": "f5547234-7940-48fd-a716-ec336b6eb761",
+        "name": 'ACME ElectrRobicals Inc.'
+		},
+		startDate: "2024-02-05T10:00:00.00Z",
+		endDate: "2024-02-05T18:30:00.00Z",
+	startTime: "2024-02-05T10:00:00.00Z",
+	endTime: "2024-02-05T18:30:00.00Z",
+	duration: 350,
+	"hasTimeOverlap": true,	
+	source: 0,
 	project: 'Capital City',
+	"hasLocationConflict": false,	
 	region: 'Europe',
 	orgLocation: 'Italy-Venice',
 	orgProfile: 'My Org Profile',
 	conflicting: 'Conflicting Location',
+	createdDate: "2022-09-19T14:41:29.29",
 	"createdBy": {
-		"id": 534919,
-		"name": 'Justin'
+		"ID": "00000000-0000-0000-0000-000000000000",
+        "firstName": 'Justin',
+        "lastName": 'inson',
+        "email": null,
+        "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
+		"stage": 'Existing',		
 		"id": 532653,
 		"name": "RFI",
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/4ecf490f75ce4ba8856be8f640f9dfc3",
@@ -38,29 +50,48 @@ export const timelogList = [
 			"sequenceNo": null
 		}
 	],
-	timeLogId: '0000-0001'
+	timeLogId: 'TL0001',
+	"user": {
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "firstName": "Juntin",
+        "lastName": "inson",
+				"email": "juntin@smartapp.com",
+				"phone":'9123454433',
+        "globalId": "6bef26ad-e7be-422e-b544-95f8fd2e4e55"
+		},
+		notes:'example',
 }, {
-	id: 2,
+	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e02",
 	timeSegmentId: 'TS00197',
-	status: 'InProgress',
-	entryFor: 'Kevin,Morgan',
-	company: 'JK Electrical LLC',
-	startDate: "2024-01-11T10:00:00.00Z",
-	endDate: "2024-01-11T12:30:00.00Z",
-	startTime: "2024-10-01T10:00:00.00Z",
-	endTime: "2024-01-10T12:00:00.00Z",
-	duration: '02:00',
-	source: 'Manual',
+	status: 1,
+	timeEntryFor: 'Kevin,Morgan',
+	company: {
+        "id": "f5547234-7940-48fd-a716-ec336b6eb761",		
+		"name": 'JK Electrical LLC',
+	},
+	"hasLocationConflict": false,	
+	startDate: "2024-02-11T10:00:00.00Z",
+	endDate: "2024-02-11T12:30:00.00Z",
+	startTime: "2024-02-09T17:30:00",
+	endTime: "2024-02-09T18:30:00",
+	duration: 60,
+	source: 1,
 	project: 'Capital Commercial Solutions',
 	region: 'North America',
 	orgLocation: 'Canada-Quebec City',
 	orgProfile: 'My Org Profile',
 	conflicting: 'Conflicting Time',
+	createdDate: "2024-02-10T14:41:29.29",	
+	"hasTimeOverlap": false,	
 	"createdBy": {
 		"id": 534917,
-		"name": 'Justin, Robinson'
+        "firstName": 'Morgan',
+        "lastName": 'Carr',
+        "email": null,
+        "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
+		"stage": 'NEW',				
 		"id": 2518274,
 		"name": "Room Mapping",
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
@@ -78,29 +109,45 @@ export const timelogList = [
 			"sequenceNo": null
 		}
 	],
-	timeLogId: null
+	timeLogId: "TL0002",
+	"user": {
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "firstName": "Kevin",
+        "lastName": "Morgan",
+				"email": "jcarr@smartapp.com",
+				"phone":'9874532156',
+        "globalId": "6bef26ad-e7be-422e-b544-95f8fd2e4e55"
+		},
+		notes:'example1',
 }, {
-	id: 4,
+	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e03",
 	timeSegmentId: 'TS00195',
-	status: 'SentBack',
-	entryFor: 'Robert,Kelly',
-	company: 'Zane Engineering',
+	status: 5,
+	timeEntryFor: 'Robert,Kelly',
+	company: {id: "45678hj", name:'Zane Engineering'},
 	startDate: "2024-01-10T10:00:00.00Z",
 	endDate: "2024-02-08T12:30:00.00Z",
-	startTime: "2024-10-01T10:00:00.00Z",
-	endTime: "2024-01-10T12:00:00.00Z",
-	duration: '02:00',
-	source: 'Manual',
+	startTime: "2024-02-01T10:00:00.00Z",
+	endTime: "2024-02-02T12:00:00.00Z",
+	duration: 120,
+	source: 2,
+	createdDate: "2024-02-07T14:30:29.29",		
+	"hasTimeOverlap": false,	
 	project: 'Capital City',
+	"hasLocationConflict": false,	
 	region: 'Middle East',
 	orgLocation: 'Bahrain-Manama',
 	orgProfile: 'Commercial Constructions',
 	conflicting: 'Conflicting Time',
 	"createdBy": {
-		"id": 534917,
-		"name": 'Justin, Robinson'
+		"id": 534915,
+		"firstName": 'Justin',
+        "lastName": 'Robinson',
+        "email": null,
+        "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
+		"stage": 'NEW',				
 		"id": 2518274,
 		"name": "Room Mapping",
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
@@ -118,29 +165,44 @@ export const timelogList = [
 			"sequenceNo": null
 		}
 	],
-	timeLogId: null
+	timeLogId: "TL0003",
+	"user": {
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "firstName": "Robert",
+        "lastName": "Kelly",
+        "email": "kelly@smartapp.com",
+        "globalId": "6bef26ad-e7be-422e-b544-95f8fd2e4e55"
+		},
+		notes:'example',
 }, {
-	id: 5,
+	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e04",
 	timeSegmentId: 'TS00192',
-	status: 'SentBack',
-	entryFor: 'Ann,Peterson',
-	company: 'ACME Electricals Inc.',
+	status: 5,
+	timeEntryFor: 'Ann,Peterson',
+	"hasTimeOverlap": false,	
+	"hasLocationConflict": false,	
+	createdDate: "2024-02-02T13:41:29.29",		
+	company: {id: 'ghjk45678', name: 'ACME Electricals Inc.'},
 	startDate: "2023-11-10T10:00:00.00Z",
 	endDate: "2023-12-16T12:30:00.00Z",
-	startTime: "2024-10-01T10:00:00.00Z",
-	endTime: "2024-01-10T12:00:00.00Z",
-	duration: '02:00',
+	startTime: "2024-02-02T10:00:00.00Z",
+	endTime: "2024-02-03T12:00:00.00Z",
+	duration: 120,
 	project: 'Capital Commercial Solutions',
 	region: 'Asia-India',
 	orgLocation: 'India-Hyderabad',
 	orgProfile: 'Commercial Constructions',
-	source: 'Manual',
+	source: 3,
 	conflicting: 'Conflicting Time',
 	"createdBy": {
 		"id": 534917,
-		"name": 'Justin, Robinson'
+		"firstName": 'Justin',
+        "lastName": 'Robinson',
+        "email": null,
+        "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
+		"stage": 'Existing',				
 		"id": 2518274,
 		"name": "Room Mapping",
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
@@ -158,29 +220,44 @@ export const timelogList = [
 			"sequenceNo": null
 		}
 	],
-	timeLogId: null
+	timeLogId: "TL0004",
+	"user": {
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "firstName": "Anna",
+        "lastName": "Peterson",
+        "email": "anna@smartapp.com",
+        "globalId": "6bef26ad-e7be-422e-b544-95f8fd2e4e55"
+		},
+		notes:'example',
 }, {
-	id: 6,
+	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e05",
 	timeSegmentId: 'TS0099',
-	status: 'Reported',
-	entryFor: 'Justin, Robinson',
-	company: 'ACME Electricals Inc.',
+	status: 0,
+	timeEntryFor: 'Justin, Robinson',
+	"hasTimeOverlap": false,	
+	"hasLocationConflict": false,	
+	company: {id: "567cfghj5467", name:'ACME Electricals Inc.'},
 	startDate: "2024-01-10T10:00:00.00Z",
 	endDate: "2024-02-16T12:30:00.00Z",
-	startTime: "2024-10-01T10:00:00.00Z",
-	endTime: "2024-01-10T12:00:00.00Z",
-	duration: '02:00',
+	startTime: "2024-02-03T10:00:00.00Z",
+	endTime: "2024-02-03T12:00:00.00Z",
+	createdDate: "2024-02-03T10:41:29.29",		
+	duration: 120,
 	project: 'Capital City',
 	region: 'Japan',
 	orgProfile: 'Commercial Constructions',
 	orgLocation: 'Japan-Tokyo',
-	source: 'Manual',
+	source: 0,
 	conflicting: 'Conflicting Time',
 	"createdBy": {
-		"id": 534917,
-		"name": 'Justin, Robinson'
+		"id": 534911,
+		"firstName": 'Justin',
+        "lastName": 'Robinson',
+        "email": null,
+        "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
+		"stage": 'NEW',				
 		"id": 2518274,
 		"name": "Room Mapping",
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
@@ -198,29 +275,44 @@ export const timelogList = [
 			"sequenceNo": null
 		}
 	],
-	timeLogId: null
+	timeLogId: "TL0005",
+	"user": {
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "firstName": "Justin",
+        "lastName": "Robinson",
+        "email": "jcarr1@smartapp.com",
+        "globalId": "6bef26ad-e7be-422e-b544-95f8fd2e4e55"
+		},
+		notes:'example',
+		
 }, {
-	id: 7,
+	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e06",
 	timeSegmentId: 'TS0099',
-	status: 'Planned',
-	entryFor: 'Justin',
-	company: 'No Company',
+	status: 3,
+	timeEntryFor: 'Justin',
+	company: {id: "ghjk5678vbn", name: 'No Company'},
 	startDate: "2024-01-10T10:00:00.00Z",
 	endDate: "2024-01-16T12:30:00.00Z",
+	"hasTimeOverlap": false,	
+	"hasLocationConflict": false,	
 	startTime: "2024-10-01T10:00:00.00Z",
 	endTime: "2024-01-10T12:00:00.00Z",
-	duration: '02:00',
-	source: 'Manual',
+	duration: 220,
+	source: 1,
 	conflicting: 'Conflicting Time',
 	project: 'Capital Commercial Solutions',
 	region: 'Asia-India',
 	orgLocation: 'India-Banglore',
 	orgProfile: 'Commercial Constructions',
+	createdDate: "2024-01-10T12:31:29.29",		
 	"createdBy": {
-		"id": 534917,
-		"name": 'Justin, Robinson'
+		"id": 534912,
+		"firstName": 'Justin',
+		"lastName": "Robert"
+		
 	},
 	smartItem: {
+		"stage": 'NEW',
 		"id": 2518274,
 		"name": "Room Mapping",
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
@@ -238,8 +330,70 @@ export const timelogList = [
 			"sequenceNo": null
 		}
 	],
-	timeLogId: null
-}];
+	timeLogId: "TL0006",
+	"user": {
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "firstName": "Jeremy",
+        "lastName": "Carr",
+        "email": "jcarr@smartapp.com",
+        "globalId": "6bef26ad-e7be-422e-b544-95f8fd2e4e55"
+		},
+		notes:'example',
+	},
+	{
+		id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e07",
+		timeSegmentId: 'TS0092',
+		status: 2,
+		timeEntryFor: 'Justin Robert',
+		company: {id: "ghjk5678vbn", name: 'No Company'},
+		startDate: "2024-01-10T10:00:00.00Z",
+		endDate: "2024-01-16T12:30:00.00Z",
+		"hasTimeOverlap": false,	
+		"hasLocationConflict": false,	
+		startTime: "2024-01-01T10:00:00.00Z",
+		endTime: "2024-01-10T14:00:00.00Z",
+		duration: 400,
+		createdDate: "2024-02-09T10:41:29.29",		
+		source: 1,
+		conflicting: 'Conflicting Time',
+		project: 'Capital Commercial Solutions2',
+		region: 'Asia-India',
+		orgLocation: 'India-Banglore',
+		orgProfile: 'Commercial Constructions',
+		"createdBy": {
+			"id": 534917,
+			"name": 'Justin, Robert'
+		},
+		smartItem: {
+			"stage": 'NEW',
+			"id": 2518274,
+			"name": "Room Mapping",
+			"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
+			"description": ""
+		},
+		workTeam: 'Others',
+		location: 'Conference Room',
+		sbs: 'Electrical - Fire Alarm',
+		"phase": [
+			{
+				"id": 2,
+				"name": "In Construction",
+				"color": "#d6a827",
+				"uniqueId": null,
+				"sequenceNo": null
+			}
+		],
+		timeLogId: "TL0009",
+		"user": {
+			"ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+			"firstName": "Justin",
+			"lastName": "Robert",
+			"email": "jcarr@smartapp.com",
+			"globalId": "6bef26ad-e7be-422e-b544-95f8fd2e4e55"
+			},
+			notes:'example',
+		},
+]};
 
 export const workTeamData = [
 	{

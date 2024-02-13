@@ -1,6 +1,6 @@
 import { RootState } from "app/store";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchWorkTeamData, fetchWorkTeamGridData } from "./TimeLogAPI";
+import { fetchTimeLog, fetchWorkTeamData, fetchWorkTeamGridData, fetchTimeLogDetails } from "./TimeLogAPI";
 import { errorMsg } from "utilities/commonutills";
 
 export interface TimeLogRequestState {
@@ -13,6 +13,8 @@ export interface TimeLogRequestState {
 	workTeamData: any;
 	workTeamGridData: any;
 	splitTimeSegmentBtn: boolean;
+	TimeLogGridList:any;
+	DetailspayloadSave:any
 };
 const initialState: TimeLogRequestState = {
 	loading: false,
@@ -23,7 +25,9 @@ const initialState: TimeLogRequestState = {
 	access: '',
 	workTeamData: [],
 	workTeamGridData: [],
-	splitTimeSegmentBtn : false
+	splitTimeSegmentBtn : false,
+	TimeLogGridList: [],
+	DetailspayloadSave:{},
 }
 
 
@@ -45,12 +49,31 @@ export const getWorkTeamGridData = createAsyncThunk<any>(
 	}
 );
 
-// export const getTimeLogList = createAsyncThunk<any>('TimeLogList',
-// 	async () => {
-// 		const response = await fetchTimeLog();
-// 		return response;
-// 	}
-// );
+export const getTimeLogList = createAsyncThunk<any>('TimeLogList',
+	async () => {
+		const response = await fetchTimeLog();
+		const modifiedResp = response?.map((obj:any) => {
+			return {
+				...obj,
+				startDate: obj?.startTime,
+				endDate: obj?.endTime,
+			}
+		})
+		return modifiedResp;
+	}
+);
+
+export const getTimeLogDetails = createAsyncThunk<any, string>('TimeLogDetails',
+	async (id) => {
+		const response = await fetchTimeLogDetails(id);
+		console.log('response slice',response)
+		return {
+			...response,
+			startDate: response?.startTime,
+			endDate: response?.endTime,
+		}
+	}
+);
 
 export const timeLogRequest = createSlice({
 	name: "timeLogRequest",
@@ -90,6 +113,9 @@ export const timeLogRequest = createSlice({
 		setSplitTimeSegmentBtn: (state, action: PayloadAction<boolean>) => {
 			state.splitTimeSegmentBtn = action.payload;
 		},
+		setDetailsPayloadSave: (state, action: PayloadAction<boolean>) => {
+			state.DetailspayloadSave = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -114,9 +140,29 @@ export const timeLogRequest = createSlice({
 			.addCase(getWorkTeamGridData.rejected, (state) => {
 				state.toast = errorMsg;
 				state.loading = false;
+			})
+			.addCase(getTimeLogList.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(getTimeLogList.fulfilled, (state, action) => {
+				state.loading = false;
+				state.TimeLogGridList = action.payload;
+			})
+			.addCase(getTimeLogList.rejected, (state) => {
+				state.loading = false;
+			})
+			.addCase(getTimeLogDetails.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(getTimeLogDetails.fulfilled, (state, action) => {
+				state.loading = false;
+				state.selectedTimeLogDetails = action.payload;
+			})
+			.addCase(getTimeLogDetails.rejected, (state) => {
+				state.loading = false;
 			});
 	},
 });
 
-export const { setSelectedTimeLogDetails,setSelectedRowData,setSourceList, setToast, setAccess, setSplitTimeSegmentBtn } = timeLogRequest.actions;
+export const { setSelectedTimeLogDetails,setSelectedRowData,setSourceList, setToast, setAccess, setSplitTimeSegmentBtn,setDetailsPayloadSave } = timeLogRequest.actions;
 export default timeLogRequest.reducer;

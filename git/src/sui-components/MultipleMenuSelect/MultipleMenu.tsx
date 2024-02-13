@@ -14,16 +14,17 @@ interface MeltipleMenuProps {
 	MenuOptionsClick?: (value: any, isDirty: any) => any;
 	Menuheading?: any;
 	Menuheading1?:any;
-	option3?:any;
+	options3?:any;
 }
 
 const MultipleMenuSelect = (props: MeltipleMenuProps) => {
-	const { icon, iconDisable, options, options2, option3, Menuheading,Menuheading1, MenuOptionsClick, userPrivileges, vendorPermission } = props;
+	const { icon, iconDisable, options, options2, options3, Menuheading,Menuheading1, MenuOptionsClick, userPrivileges, vendorPermission } = props;
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [toggleChecked, setToggleChecked] = React.useState<any>();
 	const [isDirty, setIsDirty] = React.useState<any>(false);
 	const [MenuOptions, setMenuOptions] = React.useState<any>([]);
 	const [MenuOptions2, setMenuOptions2] = React.useState<any>([]);
+	const [MenuOptions3, setMenuOptions3] = React.useState<any>([]);
 	const [selectedOptions, setSelectedOptions] = useState<any>([]);
 	const [callAPI, setCallAPI] = useState<any>(false);
 	const open = Boolean(anchorEl);
@@ -43,6 +44,12 @@ const MultipleMenuSelect = (props: MeltipleMenuProps) => {
 			setMenuOptions2([...options2]);
 		}
 	}, [options2])
+
+	React.useEffect(() => {
+		if (options3 && options3.length > 0) {
+			setMenuOptions3([...options3]);
+		}
+	}, [options3]);
 
 	React.useEffect(() => {
 		if (selectedOptions && selectedOptions.length > 0) {
@@ -75,6 +82,21 @@ const MultipleMenuSelect = (props: MeltipleMenuProps) => {
 				})
 				setMenuOptions2([...options2]);
 			}
+
+			if(options3 && options3.length > 0){
+				options3.map((val: any) => {
+					var idx = selectedOptions.findIndex((o:any) => { return val.text == o})
+					if(idx > -1) {
+						val.selectionClass = 'selected-text-cls';
+						val.tickIcon = 'common-icon-tick selected';
+					} else {
+						val.selectionClass = '';
+						val.tickIcon = '';
+					}
+					return val;
+				})
+				setMenuOptions3([...options2]);
+			}
 		}
 	}, [selectedOptions])
 
@@ -86,15 +108,15 @@ const MultipleMenuSelect = (props: MeltipleMenuProps) => {
 		setCallAPI(!callAPI);
 	};
 	const onTimeLogChange = (value: any) => {
-		const index = [...option3].indexOf(value);
-		const newArray = [...option3];
+		const index = [...options3].indexOf(value);
+		const newArray = [...options3];
 		if (index === -1) {
 			options2.map((o: any) => {
 				const idx = selectedOptions.indexOf(o.value);
 				idx >= 0 && newArray.splice(idx, 1);
 			})
 			setSelectedOptions([...newArray, value]);
-			if (props.MenuOptionsClick) props.MenuOptionsClick([...newArray, value], true);
+			// if (props.MenuOptionsClick) props.MenuOptionsClick([...newArray, value], true);
 		}
 	};
 	const onUserPrivilageChange = (value: any) => {
@@ -166,7 +188,7 @@ const MultipleMenuSelect = (props: MeltipleMenuProps) => {
 					)
 				})}
 				{Menuheading1 && <MenuItem><span className='common-icon-Timer icon-size'></span> {Menuheading1}</MenuItem>}
-				{(option3 || [])?.length > 0 && option3?.map((data: any, i: any) => {
+				{(options3 || [])?.length > 0 && options3?.map((data: any, i: any) => {
 					return (data?.value ?
 						<ListItem
 							className={'menuItem-list submenuitem-cls '+ data?.selectionClass}

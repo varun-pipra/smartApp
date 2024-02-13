@@ -12,7 +12,7 @@ import {useAppSelector, useAppDispatch, useHomeNavigation} from "app/hooks";
 import {useLocation} from 'react-router-dom';
 import {appInfoData} from 'data/appInfo';
 import {getToastMessage, setImportBudgetsStatus, setOpenNotification} from './operations/tableColumnsSlice';
-import {setPresenceData} from './operations/gridSlice';
+import {fetchGridData, setPresenceData} from './operations/gridSlice';
 import {
 	getServer, setServer, setCostCodeList, setFullView,
 	setCostUnitList, setCurrencySymbol, setCurrencyCode, setAppWindowMaximize
@@ -61,6 +61,7 @@ const BudgetManagerWindow = (props: any) => {
 		if(importStatus == 1) { 
 			setOpen(false); dispatch(setImportBudgetsStatus(null));
 			setToastMessage({ displayToast: true, message: 'Budget Line Items added successfully' });
+			dispatch(fetchGridData(appInfo));
 		}
 		if(importStatus == 2) {
 			setOpen(false); dispatch(setImportBudgetsStatus(null));	

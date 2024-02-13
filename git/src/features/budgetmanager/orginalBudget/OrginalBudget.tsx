@@ -46,6 +46,7 @@ interface BasicPopoverProps {
 	placeholder?: string;
 	showCatalogBtn?:boolean;
 	handleCatalogSubmit?:any;
+	showLaborBtn?:boolean;
 }
 const readonlydata = {
 	unitofMeasure: false,
@@ -53,7 +54,7 @@ const readonlydata = {
 	cost: false
 }
 export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
-	iconColor, onSubmit, defaultValue, unitList, sx, clearBudgetFields, showCatalogBtn = false, handleCatalogSubmit = () => { },
+	iconColor, onSubmit, defaultValue, unitList, sx, clearBudgetFields, showCatalogBtn = false, showLaborBtn=false, handleCatalogSubmit = () => { },
 	label = "Original Budget", isRequired = true, isIcon = true, disabled = false, readOnly = false, cleartheValue = true,
 	data, onBlur, hideCalculateButton = false, disableUnderline = false, textFieldReadonly = { ...readonlydata }, placeholder = '', ...rest }) => {
 	// console.log("defaultValuedefaultValue", defaultValue)
@@ -259,7 +260,7 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 					style: {
 						backgroundColor: "white",
 						borderRadius: 5,
-						width: !showCatalogBtn ? "609px" : "750px",
+						width: (showCatalogBtn || showLaborBtn) ? "850px" : "609px",
 						zIndex: "108px",
 						marginTop: "10px",
 					},
@@ -301,8 +302,8 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 										<div className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>
 									</InputAdornment>
 								),
-								readOnly: textFieldReadonly.unitofMeasure,
-								disableUnderline: textFieldReadonly.unitofMeasure,
+								//readOnly: textFieldReadonly.unitofMeasure,
+								//disableUnderline: textFieldReadonly.unitofMeasure,
 							}}
 							SelectProps={{ displayEmpty: true }}
 							sx={{
@@ -338,8 +339,8 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 											<div className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>
 										</InputAdornment>
 									),
-									readOnly: textFieldReadonly.quantity,
-									disableUnderline: textFieldReadonly.quantity,
+									//readOnly: textFieldReadonly.quantity,
+									//disableUnderline: textFieldReadonly.quantity,
 								}}
 							/>
 						</div>
@@ -364,13 +365,13 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 
 										</InputAdornment>
 									),
-									readOnly: textFieldReadonly.cost,
-									disableUnderline: textFieldReadonly.cost,
+									//readOnly: textFieldReadonly.cost,
+									//disableUnderline: textFieldReadonly.cost,
 								}}
 							/>
 						</div>
 					</MUIGrid>
-					{showCatalogBtn  && (
+					{(showCatalogBtn || showLaborBtn)  && (
 						<MUIGrid item sm={3}>
 						<div className="popper-button-container">
 							<MUIButton
@@ -379,7 +380,7 @@ export const OriginalBudgetPopover: FC<BasicPopoverProps> = ({
 								className="custom-catalog-button"
 								startIcon={<span className="common-icon-from-catalog" />}
 							>
-								Pick from Catalog
+								{showLaborBtn ? 'Pick From Labor Sheet' : 'Pick from Catalog'}
 							</MUIButton>
 						</div>
 						</MUIGrid>

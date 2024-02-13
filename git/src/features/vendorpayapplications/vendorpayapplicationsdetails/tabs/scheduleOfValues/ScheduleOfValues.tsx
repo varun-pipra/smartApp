@@ -158,7 +158,7 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 				return <div {...styleOpts}>{payStatus}</div>;
 			} else if(payStatus === "ReadyToBePaid") {
 				const buttonStyles = {
-					backgroundColor: selectedRecs.includes(params.data) ? "#1976D2" : "",
+					backgroundColor: selectedRecs.includes(params.data) ? "#059cdf" : "",
 					color: selectedRecs.includes(params.data) ? "#fff" : "",
 				};
 				return (

@@ -43,6 +43,7 @@ export const getTime = (input: string) => {
  * time - string variable that has the time in the following format hh:mm AA | Example: 12:00 AM
  */
 export const addTimeToDate = (date: string, time: string) => {
+	console.log("add", date, time)
 	if(!date || !time) return;
 	else {
 		let [hourString, minuteMeridiem] = time.split(':'),

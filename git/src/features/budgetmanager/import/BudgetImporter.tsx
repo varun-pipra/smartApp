@@ -17,6 +17,7 @@ import { ErrorDialog } from "./Error";
 import { ConfirmationDialog } from "./ConfirmationDialog/ConfirmationDialog";
 import { importBudgets, fetchImportStatus, cancelImport, checkIsReplaceAllowed } from "../operations/budgetImportAPI";
 import { importType } from "utilities/commonutills";
+import { fetchGridData } from "../operations/gridSlice";
 
 const BudgetImporter = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -38,7 +39,7 @@ const BudgetImporter = (props: any) => {
 	React.useEffect(() => {props?.noOfBudgetItems == 0 ? setImportOption('new') : setImportOption('replace')}, [props?.noOfBudgetItems])
 	React.useEffect(() => {
 		if(importStatus == 1) { 
-			props?.onClose(true); 
+			props?.onClose(true);			
 			dispatch(setToastMessage({ displayToast: true, message: 'Budget Line Items added successfully' }))
 		}
 		if(importStatus == 2) { setShowError(true);
@@ -60,6 +61,7 @@ const BudgetImporter = (props: any) => {
 				const interval = setInterval(function() {
 					if([1,2]?.includes(statusResult)){
 						clearInterval(interval);
+						dispatch(fetchGridData(appInfo)); 
 					}
 					fetchImportStatus(appInfo, response?.ResultId, (statusResp:any) => {
 						statusResult=statusResp

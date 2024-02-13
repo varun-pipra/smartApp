@@ -56,6 +56,23 @@ export const AppList = (appsList:any) => {
 	return addLinksOptionsCopy
 }
 
+export const TimeLogRequest = async (appInfo: any, endPoint: string, opts: any, deleteMethod = false) => {
+	const baseURL: string = `${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/timelog/${appInfo?.uniqueId}`;
+	const session = endPoint?.includes('?') ? `&sessionId=${appInfo?.sessionId}` : `?sessionId=${appInfo?.sessionId}`;
+	const URL = baseURL + endPoint + session;
+	const options = opts ? opts : {};
+	const response = await fetch(URL, options);
+	if (!response.ok) {
+		const message = `API Request Error Time Log: ${response.status}`;
+		throw new Error(message);
+	}
+	if (deleteMethod) {
+		return response;
+	}
+	const data = await response.json();
+	return data;
+};
+
 export const AppList_PostMessage = (e: any) => {
 
 		const data = { "Id": e.id, "smartAppId": e.appid, "Text": e.text, "Type": e.type, }
@@ -66,36 +83,48 @@ export const AppList_PostMessage = (e: any) => {
 		console.log('sendMsg', sendMsg)
 		postMessage(sendMsg);
 };
-	export const getPickerDefaultTime = (time: any, incrementDecrement: any) => {
-		const ConvertDate: any = new Date(time);
-		if (isNaN(ConvertDate)) {
-			return '';
-		};
-		const ConvertTime: any = moment.utc(time).format('hh:mm A');
-		let [hours, minutes, ampm] = ConvertTime?.split(/:|\s/);
-		hours = parseInt(hours, 10);
-		minutes = parseInt(minutes, 10);
-		if (isNaN(hours) && isNaN(minutes)) {
-			return '';
-		}
-		if (incrementDecrement) {
-			minutes += 5;
-			if (minutes >= 60) {
-				minutes -= 60;
-				hours = (hours + 1) % 12;
-			}
-		} else {
-			minutes -= 5;
-			if (minutes < 0) {
-				minutes += 60;
-				hours = (hours - 1 + 12) % 12;
-			}
-		}
-		// Format the new time
-		hours = hours === 0 ? 12 : hours; // Handle midnight (0 hours)
-		if (hours === 12 && minutes === 0) {
-			ampm = ampm?.toLowerCase() === "am" ? "PM" : "AM";
-		}
-		let newTime = `${hours}:${String(minutes).padStart(2, "0")} ${ampm}`;
-		return newTime;
+
+export const getPickerDefaultTime = (time: any, incrementDecrement: any) => {
+	const ConvertDate: any = new Date(time);
+	if (isNaN(ConvertDate)) {
+		return '';
+	};
+	const ConvertTime: any = moment.utc(time).format('hh:mm A');
+	let [hours, minutes, ampm] = ConvertTime?.split(/:|\s/);
+	hours = parseInt(hours, 10);
+	minutes = parseInt(minutes, 10);
+	if (isNaN(hours) && isNaN(minutes)) {
+		return '';
 	}
+	if (incrementDecrement) {
+		minutes += 5;
+		if (minutes >= 60) {
+			minutes -= 60;
+			hours = (hours + 1) % 12;
+		}
+	} else {
+		minutes -= 5;
+		if (minutes < 0) {
+			minutes += 60;
+			hours = (hours - 1 + 12) % 12;
+		}
+	}
+	// Format the new time
+	hours = hours === 0 ? 12 : hours; // Handle midnight (0 hours)
+	if (hours === 12 && minutes === 0) {
+		ampm = ampm?.toLowerCase() === "am" ? "PM" : "AM";
+	}
+	let newTime = `${hours}:${String(minutes).padStart(2, "0")} ${ampm}`;
+	return newTime;
+}
+
+export const getDuration = (data:any) => {
+	if(data){
+		let hours = Math.floor(data / 60);
+		let minutes = data % 60 ?? "00";
+		return `${hours} Hrs ${minutes ? minutes : '00'} Mins`
+	}
+	else{
+		return '0 Hrs : 00 Mins'
+	}
+}

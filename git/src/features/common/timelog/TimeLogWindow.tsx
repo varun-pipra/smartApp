@@ -12,10 +12,10 @@ import _ from 'lodash';
 import { memo, useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { triggerEvent } from 'utilities/commonFunctions';
-import { getTime } from 'utilities/datetime/DateTimeUtils';
+import { formatDate, getTime } from 'utilities/datetime/DateTimeUtils';
 import SUIAlert from 'sui-components/Alert/Alert';
 import AddTimeLogForm from './AddTimeLogForm';
-import { timelogStatusMap } from './TimeLogConstants';
+import { timelogStatusMap ,timelogSourceMap} from './TimeLogConstants';
 import CustomFilterHeader from '../gridHelper/CustomFilterHeader';
 import { TLLeftButtons, TLRightButtons } from './toolbar/TimeLogToolbar';
 import { timelogList } from 'data/timelog/TimeLogData';
@@ -25,13 +25,13 @@ import { findAndUpdateFiltersData } from 'features/safety/sbsmanager/utils';
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList, getSBSGridList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
-import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn} from './stores/TimeLogSlice';
-import { getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
+import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList} from './stores/TimeLogSlice';
+import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import SplitTimeSegmentDialog from './timeSplitSegment/SplitTimeSegmentDialog';
-import { getPickerDefaultTime } from './utils';
+import { getPickerDefaultTime ,getDuration } from './utils';
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -43,7 +43,7 @@ const TimeLogWindow = (props: any) => {
 
 	const location = useLocation();
 	const { server } = useAppSelector((state) => state.appInfo);
-	const { toast } = useAppSelector((state) => state.timeLogRequest);
+	const { toast, TimeLogGridList } = useAppSelector((state) => state.timeLogRequest);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
@@ -75,7 +75,7 @@ const TimeLogWindow = (props: any) => {
 
 
 	const groupOptions = [{
-		text: 'Time Entry For', value: 'entryFor'
+		text: 'Time Entry For', value: 'timeEntryFor'
 	}, {
 		text: 'Work Team', value: 'workTeam'
 	}, {
@@ -137,7 +137,8 @@ const TimeLogWindow = (props: any) => {
 	useEffect(() => {
 		if (server) {
 			dispatch(getAppsList());
-
+			dispatch(getTimeLogList());
+			dispatch(getSBSGridList());
 		}
 	}, [server]);
 
@@ -240,6 +241,12 @@ const TimeLogWindow = (props: any) => {
 							}}>{data?.smartItem?.name?.toUpperCase()}</Avatar>
 					}
 					<span className="custom-group-header-label-cls">{data?.smartItem?.name || ""}</span>
+				</div>
+			);
+			else if (colName === 'company') return (
+				
+				<div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+					<span className="custom-group-header-label-cls">{data?.company?.name || ""}</span>
 				</div>
 			);
 			else return (
@@ -357,15 +364,15 @@ const TimeLogWindow = (props: any) => {
 			};
 			const filterVal = (_.isEmpty(filterValues) || (!_.isEmpty(filterValues)
 				&& (_.isEmpty(filterValues?.apps) || filterValues?.apps?.length === 0 || filterValues?.apps?.indexOf(item.smartItem.name) > -1)
-				&& (_.isEmpty(filterValues?.companies) || filterValues?.companies?.length === 0 || filterValues?.companies?.indexOf(item.company) > -1)
+				&& (_.isEmpty(filterValues?.companies) || filterValues?.companies?.length === 0 || filterValues?.companies?.indexOf(item.company.name) > -1)
 				&& (_.isEmpty(filterValues?.conflicting) || filterValues?.conflicting?.length === 0 || filterValues?.conflicting?.indexOf(item?.conflicting)) > -1)
 				&& (_.isEmpty(filterValues?.createdBy) || filterValues?.createdBy?.length === 0 || filterValues?.createdBy?.indexOf(item.createdBy?.name) > -1)
 				&& (_.isEmpty(filterValues?.location) || filterValues?.location?.length === 0 || filterValues?.location?.indexOf(item?.location)) > -1)
 				&& (_.isEmpty(filterValues?.sbs) || filterValues?.sbs?.length === 0 || filterValues?.sbs?.indexOf(item.sbs) > -1)
-				&& (_.isEmpty(filterValues?.entryFor) || filterValues?.entryFor?.length === 0 || filterValues?.entryFor?.indexOf(item.entryFor) > -1)
-				&& (_.isEmpty(filterValues?.source) || filterValues?.source?.length === 0 || filterValues?.source?.indexOf(item?.source) > -1)
+				&& (_.isEmpty(filterValues?.timeEntryFor) || filterValues?.timeEntryFor?.length === 0 || filterValues?.timeEntryFor?.indexOf(item.timeEntryFor) > -1)
+				&& (_.isEmpty(filterValues?.source) || filterValues?.source?.length === 0 || filterValues?.source?.indexOf(item?.source?.toString()) > -1)
 				&& (_.isEmpty(filterValues?.workTeam) || filterValues?.workTeam?.length === 0 || filterValues?.workTeam?.indexOf(item?.workTeam) > -1)
-				&& (_.isEmpty(filterValues?.status) || filterValues?.status?.length === 0 || filterValues?.status?.indexOf(item.status) > -1)
+				&& (_.isEmpty(filterValues?.status) || filterValues?.status?.length === 0 || filterValues?.status?.indexOf(item?.status?.toString()) > -1)
 				&& (_.isEmpty(filterValues?.dateRange) || filterValues?.dateRange?.length === 0 || item?.dateRange === 'custom' ? false : filterValues?.dateRange?.indexOf(item?.dateRange)) > -1;
 			const orgFilters = isFromOrg 
 				&& (_.isEmpty(filterValues) || (!_.isEmpty(filterValues) 
@@ -437,7 +444,7 @@ const TimeLogWindow = (props: any) => {
 				{!params?.node?.footer &&
 					<div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', position: 'absolute', left: '4px' }}>
 						{data?.status == 'InProgress' && <span className='timer-animation' style={{ fontSize: '1.8em' }}></span>}
-						{data?.overlapTimeEntries == true && <IQTooltip
+						{data?.hasTimeOverlap == true && <IQTooltip
 							title={
 								<Stack direction='row' className='tooltipcontent'>
 									<p className='tooltiptext'>There seems to be duplicate or an overlapping time entry.</p>
@@ -447,7 +454,19 @@ const TimeLogWindow = (props: any) => {
 						>
 							<span className='common-icon-exclamation hand-pointer' style={{ color: 'red', fontSize: '1.8em' }} />
 						</IQTooltip>}
-						{data?.status == 'SentBack' &&
+
+						{data?.hasLocationConflict == true && <IQTooltip
+							title={
+								<Stack direction='row' className='tooltipcontent'>
+									<p className='tooltiptext'>This Time was not entered anywhere within the Job Location.</p>
+								</Stack>}
+							placement={'bottom'}
+							arrow={true}
+						>
+							<span className='common-icon-exclamation hand-pointer' style={{ color: 'red', fontSize: '1.8em' }} />
+						</IQTooltip>}
+
+						{getTimeLogStatus(data?.status) == 'Sent Back' &&
 							<IQTooltip
 								title={
 									<Stack direction='row' className='tooltipcontent'>
@@ -500,7 +519,7 @@ const TimeLogWindow = (props: any) => {
 			},
 			keyCreator: (params: any) => getTimeLogStatus(params?.data?.status),
 			cellRenderer: (params: any) => {
-				const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === params?.value);
+				const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === params?.value?.toString());
 				return <div
 					className='status'
 					style={{
@@ -513,7 +532,7 @@ const TimeLogWindow = (props: any) => {
 			}
 		}, {
 			headerName: 'Time Entry For',
-			field: 'entryFor',
+			field: 'timeEntryFor',
 			width: 280,
 			pinned: 'left',
 			aggFunc: (params: any) => {
@@ -528,22 +547,7 @@ const TimeLogWindow = (props: any) => {
 			width: 280,
 			hide: !isFromOrg,
 			pinned: 'left',
-			// headerClass: 'custom-filter-header',
-			// headerComponent: CustomFilterHeader,
-			// headerComponentParams: {
-			// 	columnName: 'Project',
-			// 	options: timelogStatusMap,
-			// 	onSort: handleStatusColumnSort,
-			// 	onOpen: () => setStatusFilter(false),
-			// 	onClose: () => setStatusFilter(true),
-			// 	onFilter: handleStatusFilter
-			// },
-			// keyCreator: (params: any) => getTimeLogStatus(params?.data?.status),				
-			// aggFunc: (params: any) => {
-			// 	if (!params.rowNode?.key) {
-			// 		return 'Summary';
-			// 	} return `Sub Total - ${params.rowNode?.key}`;
-			// }
+			
 		},
 		{
 			headerName: 'Region',
@@ -558,27 +562,31 @@ const TimeLogWindow = (props: any) => {
 		},
 		{
 			headerName: 'Company',
-			field: 'company'
+			field: 'company',
+			valueGetter: (params: any) => params.data?.company?.name,
+			keyCreator: (params: any) => params.data?.company?.name || "None"
 		}, {
 			headerName: 'Start Date',
 			field: 'startDate',
+			valueGetter: (params: any) => params.data ? formatDate(params.data?.startDate) : '',		
 			keyCreator: (params: any) => {
 				return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
 			}
 		}, {
 			headerName: 'End Date',
-			field: 'endDate'
+			field: 'endDate',
+			valueGetter: (params: any) => params.data ? formatDate(params.data?.endDate) : '',					
 		}, {
 			headerName: 'Start Time',
 			field: 'startTime',
 			cellRenderer: (params: any) => {
-				let status = ['Reported','InProgress','SentBack'];
+				let status = ['0','2'];
 				return params?.data ? (
 					<SUIClock
 						onTimeSelection={(value: any) => {
 							onDataChange("startTime", getTime(value));
 						}}
-						disabled={!(status.includes(params?.data?.status))}
+						disabled={(status.includes(params?.data?.status?.toString()))}
 						defaultTime={moment.utc(params?.data?.startTime).format('h:mm A') || ""}
 						pickerDefaultTime={getPickerDefaultTime(params?.data?.startTime, true)}
 						placeholder={"HH:MM"}
@@ -591,13 +599,13 @@ const TimeLogWindow = (props: any) => {
 			headerName: 'End Time',
 			field: 'endTime',
 			cellRenderer: (params: any) => {
-				let status = ['Reported','InProgress','SentBack'];
+				let status = ['0','2'];
 				return params?.data ? (
 					<SUIClock
 						onTimeSelection={(value: any) => {
 							onDataChange("endTime", getTime(value));
 						}}
-						disabled={!(status.includes(params?.data?.status))}
+						disabled={(status.includes(params?.data?.status?.toString()))}
 						defaultTime={moment.utc(params?.data?.endTime).format('h:mm A') || ""}
 						pickerDefaultTime={getPickerDefaultTime(params?.data?.endTime, false)}
 						placeholder={"HH:MM"}
@@ -609,33 +617,22 @@ const TimeLogWindow = (props: any) => {
 		}, {
 			headerName: 'Duration',
 			field: 'duration',
-			aggFunc: (params: any) => {
-				let sum = 0;
-				params.values.forEach((time: any) => {
-					let a;
-					if (time?.includes('Hrs') || time?.includes('Mins')) {
-						a = time?.replace('Hrs', ':');
-						a = a?.replace('Mins', '');
-					} else a = time;
-					a = a?.split(":");
-					let calculate = +a[0] * 60 * 60 + +a[1] * 60;
-					sum += calculate;
-				});
-				if (moment(new Date(sum * 1000))?.isValid()) {
-					let finalCnt = new Date(sum * 1000)?.toISOString();
-					return finalCnt?.substr(11, 2) + " Hrs " + " " + finalCnt?.substr(14, 2) + " Mins "
-				};
-			},
-			valueGetter: (params: any) => params?.data?.duration
+			valueGetter: (params: any) => params?.data?.duration,
+			aggFunc: 'sum',
+			cellRenderer: (params: any) => {
+				return getDuration(params?.value)
+			}
+		
 		}, {
 			headerName: 'Source',
 			field: 'source',
-			keyCreator: (params: any) => params.data?.source || "None"
+			valueGetter: (params: any) => params.data && getSource(params.data?.source),
+			keyCreator: (params: any) =>  params.data ? getSource(params.data?.source)  : "None"
 		}, {
 			headerName: 'Created By',
 			field: 'createdBy',
-			valueGetter: (params: any) => params.data?.createdBy?.name,
-			keyCreator: (params: any) => params.data?.createdBy?.name || "None"
+			valueGetter: (params: any) => `${params.data?.createdBy?.firstName ? params.data?.createdBy?.firstName : ''} ${params.data?.createdBy?.lastName ? params.data?.createdBy?.lastName : ''}`,
+			keyCreator: (params: any) => params.data?.createdBy?.firstName || "None"
 		}, {
 			headerName: 'Smart Item',
 			field: 'smartItem',
@@ -644,8 +641,8 @@ const TimeLogWindow = (props: any) => {
 			keyCreator: (params: any) => params.data?.smartItem?.name || "None"
 		}, {
 			headerName: 'Work Team',
-			field: 'workTeam',
-			keyCreator: (params: any) => params.data?.workTeam || "None"
+			field: 'team',
+			keyCreator: (params: any) => params.data?.team || "None"
 		}, {
 			headerName: 'Location',
 			field: 'location',
@@ -655,13 +652,13 @@ const TimeLogWindow = (props: any) => {
 			field: 'sbs',
 		}, {
 			headerName: 'Phase',
-			field: 'phase',
-			keyCreator: (params: any) => params.data?.phase?.[0]?.name || "None",
+			field: 'sbsPhase',
+			keyCreator: (params: any) => params.data?.sbsPhase?.[0]?.name || "None",
 			minWidth: 260,
 			cellRenderer: (params: any) => {
-				const phase = params.data?.phase?.[0]?.name;
+				const phase = params.data?.sbsPhase?.[0]?.name;
 				const buttonStyle = {
-					backgroundColor: params.data?.phase?.[0]?.color ?? "red",
+					backgroundColor: params.data?.sbsPhase?.[0]?.color ?? "red",
 					color: "#fff",
 					alignItems: "center",
 				};
@@ -697,15 +694,15 @@ const TimeLogWindow = (props: any) => {
 	let filterOptions = useMemo(() => {
 		var filterMenu = [{
 			text: 'Time Entry For',
-			value: 'entryFor',
-			key: 'entryFor',
-			keyValue: 'entryFor',
+			value: 'timeEntryFor',
+			key: 'timeEntryFor',
+			keyValue: 'timeEntryFor',
 			children: { type: "checkbox", items: [] }
 		}, {
 			text: 'Work Team',
-			value: 'workTeam',
-			key: 'workTeam',
-			keyValue: 'workTeam',
+			value: 'team',
+			key: 'team',
+			keyValue: 'team',
 			children: { type: "checkbox", items: [] }
 		}, {
 			text: 'Companies',
@@ -733,7 +730,7 @@ const TimeLogWindow = (props: any) => {
 			value: 'source',
 			key: 'source',
 			keyValue: 'source',
-			children: { type: "checkbox", items: [] }
+			children: { type: "checkbox", items: timelogSourceMap }
 		}, {
 			text: 'Created By',
 			value: 'createdBy',
@@ -978,14 +975,13 @@ const TimeLogWindow = (props: any) => {
 	}, [search, filters]);
 
 	const GenerateFilters = () => {
-		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "workTeam"));
-		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "company"));
-		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "source"));
-		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "sbs"));
-		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "entryFor"));
-		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "location"));
-		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "createdBy", true, "name"));
-		setFilters(findAndUpdateFiltersData(filterOptions, timelogList, "smartItem", true, "name"));
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "team"));
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "company",true,"name"));
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "sbs"));
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "timeEntryFor"));
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "location"));
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "createdBy", true, "name"));
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "smartItem", true, "name"));
 
 	};
 	const GetDateRangeFilterData = (data: any) => {
@@ -1021,73 +1017,41 @@ const TimeLogWindow = (props: any) => {
 		else return 'future';
 	};
 
-	const overlapTimeEntries = (record: any) => {
-
-		const { startDate, endDate, startTime, endTime, location, entryFor } = record;
-		const startDateTime = new Date(startTime);
-		const endDateTime = new Date(endTime);
-
-		// Check for time overlap for the same person
-		const timeOverlap = timelogList?.some((otherRecord: any) => {
-			if (record.timeSegmentId !== otherRecord.timeSegmentId && otherRecord.entryFor === entryFor) {
-				const otherStartDateTime = new Date(otherRecord.startTime);
-				const otherEndDateTime = new Date(otherRecord.endTime);
-				return (startDateTime < otherEndDateTime && endDateTime > otherStartDateTime)
-			}
-			else {
-				return false;
-			}
-		});
-
-		// Check for location mismatch
-		const locationMismatch = timelogList?.some((otherRecord: any) => {
-			if (record.id !== otherRecord.id && otherRecord.entryFor === entryFor) {
-				return record.location !== otherRecord.location
-			} else {
-				return false;
-			}
-		});
-
-		// Set overlap key based on conditions
-		return timeOverlap || locationMismatch;
-
-	}
 
 	React.useEffect(() => {
-		if (timelogList.length > 0) {
+		if (TimeLogGridList.length > 0) {
 
-			let data = timelogList.map((item: any, index: any) => ({
+			let data = TimeLogGridList.map((item: any, index: any) => ({
 				...item,
 				dateRange: GetDateRangeFilterData(item),
-				overlapTimeEntries: overlapTimeEntries(item)
 			}));
 			setRowData(data);
 			setModifiedList(data);
 			GenerateFilters();
-		} else if (timelogList.length === 0) {
+		} else if (TimeLogGridList.length === 0) {
 			setModifiedList([]);
 			setRowData([]);
 			GenerateFilters();
 		}
-	}, [timelogList]);
+	}, [TimeLogGridList]);
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
 	return (
 		server && <> <GridWindow
 			open={true}
-			title={isFromOrg ? `Time Log (${timelogList?.length})` : 'Time Log'}
+			title={isFromOrg ? `Time Log (${TimeLogGridList?.length})` : 'Time Log'}
 			className='time-log-window'
-			iconCls={isFromOrg ? 'common-icon-home' : isFromPlanner ? 'common-icon-home' : isFromFinance ? 'common-icon-home' : isFromField ? 'common-icon-home' : isFromSafety ? 'common-icon-home' : 'common-icon-home'}
+			iconCls={isFromOrg ? 'common-icon-home org' : isFromPlanner ? 'common-icon-home planner' : isFromFinance ? 'common-icon-home finance' : isFromField ? 'common-icon-home field' : isFromSafety ? 'common-icon-home safety' : 'common-icon-home'}
 			appType={appType}
 			centerPiece={
 				(isFromOrg && <>{`Displaying Time Entries for the projects associated to the selected Profile.`}</>)
 			}
-			rightSideText={(isFromOrg && <div>
-				<span>Active Profile: </span>
-				<span>{server?.orgData?.profileName}</span>
-				<span>Org ID: </span>
-				<span onClick={() => {
+			rightSideText={(isFromOrg && <div className="active-profile-cls">
+				<span className="label-cls">Active Profile: </span>
+				<span className="org-master">{server?.orgData?.profileName}</span>
+				<span className="label-cls">Org ID: </span>
+				<span className="org-id" onClick={() => {
 					postMessage({
 						event: 'org-click',
 						// body: {},

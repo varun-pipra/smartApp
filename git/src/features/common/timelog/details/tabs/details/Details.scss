@@ -31,6 +31,11 @@
                 }
             }
         }
+        .timelog-details-content-col4 {
+            display: grid;
+            grid-gap: 1em 1em;
+            grid-template-columns: repeat(4, 24.5%);
+        }
         .timelog-details-content-col3 {
             display: grid;
             grid-gap: 1em 2em;

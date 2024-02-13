@@ -10,7 +10,8 @@ import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import { Button, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 import SendBackModel from './SendBackModel/sendBackModel';
-import { setSplitTimeSegmentBtn } from '../stores/TimeLogSlice';
+import { getTimeLogList, setSplitTimeSegmentBtn } from '../stores/TimeLogSlice';
+import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 
 // Component definition
 export const TLLeftButtons = memo(() => {
@@ -33,7 +34,8 @@ export const TLLeftButtons = memo(() => {
 		}
 	}
 	useMemo(() => {
-		let array: any = selectedRowData?.map((value: any) => value.status == 'Reported' ? value.status : '')
+		console.log('selectedRowData',selectedRowData)
+		let array: any = selectedRowData?.map((value: any) => getTimeLogStatus(value.status) == 'Reported' ? getTimeLogStatus(value.status) : '')
 		if (selectedRowData.length > 0 && array.includes('Reported')) {
 			setAcceptBtn(false);
 			setsendBackBtn(false);
@@ -46,7 +48,7 @@ export const TLLeftButtons = memo(() => {
 
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
-			<IconButton aria-label='Refresh Time Log List'>
+			<IconButton aria-label='Refresh Time Log List' onClick={() => { dispatch(getTimeLogList())}}>
 				<span className='common-icon-refresh'></span>
 			</IconButton>
 		</IQTooltip>

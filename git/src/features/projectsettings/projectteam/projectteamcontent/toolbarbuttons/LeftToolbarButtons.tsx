@@ -85,6 +85,16 @@ const LeftToolbarButtons = (props: any) => {
 					if (permissions.includes(o.value) || permissions.includes('Company Manager') || permissions.includes('Compliance Manager') || hasGeneralPermissions) {
 						return true;
 					}
+				}).includes(true),
+				hasTimeLogPermissions  = [...timelogAssignUnassignData].map((o: any) => {
+					!o.disable && checkedVendorPermissions.push({
+						"id": null,
+						"name": o.value,
+						"isDeleted": true
+					});
+					if (permissions.includes(o.value) || permissions.includes('Company Manager') || permissions.includes('Compliance Manager') || hasGeneralPermissions) {
+						return true;
+					}
 				}).includes(true);
 				checkedVendorPermissions.push({
 					"id": null,
@@ -115,7 +125,7 @@ const LeftToolbarButtons = (props: any) => {
 					}
 				}
 			}
-			if (isDirty || hasVendorPermissions || (!hasVendorPermissions && selectedMembers[ 0 ][ 'projectZonePermissions' ] && selectedMembers[ 0 ][ 'projectZonePermissions' ]?.length > 0)) {
+			if (isDirty || hasVendorPermissions || hasTimeLogPermissions || (!hasVendorPermissions && selectedMembers[ 0 ][ 'projectZonePermissions' ] && selectedMembers[ 0 ][ 'projectZonePermissions' ]?.length > 0)) {
 				checkedVendorPermissions.map((o: any) => {
 					if (permissions.includes(o.name)) {
 						o.isDeleted = false;
@@ -367,22 +377,23 @@ const LeftToolbarButtons = (props: any) => {
                 )}
 			</IconButton>
 		</IQTooltip> }
-		{ activeTab !== 'member' || (!isManager) ? '' : <IQTooltip title='Assign/Unassign to Security Group' placement='bottom'>
+		{/* { activeTab !== 'member' || (!isManager) ? '' : <IQTooltip title='Assign/Unassign to Security Group' placement='bottom'> */}
 			{/* <IconButton disabled={disableUserPrivilege}>
 				<span className='common-icon-none icon-size' />
 			</IconButton> */}
 			<MultipleMenuSelect
 				icon={ <span className='common-icon-none icon-size' /> }
-				iconDisable={ disableUserPrivilege }
+				// iconDisable={ disableUserPrivilege }
 				options={ vendorMenuItems }
 				options2={ generalPermissions }
-				option3={timelogAssignUnassignData}
+				options3={timelogAssignUnassignData}
 				userPrivileges={ userPrivileges }
 				Menuheading={ vendorMenuItems.length > 0? 'Finance Permissions': '' }
-				Menuheading1={ vendorMenuItems.length > 0? 'Time Log': '' }
+				Menuheading1={'Time Log' }
 				MenuOptionsClick={ (data: any, isDirty: any) => { assignOrUnassignUserPermission(data, isDirty); } }
 			/>
-		</IQTooltip> }
+		{/* </IQTooltip> 
+		 } */}
 		{ activeTab !== 'member' ? '' : <><IQTooltip title='LiveLink' placement='bottom'>
 			<IconButton disabled={ disableLiveLink } data-action='livelink' onClick={ clickHandler }>
 				<span className='common-icon-livelink icon-size' />

@@ -67,6 +67,10 @@ export const importType:any = {
         'merge': 3
 };
 export const billableInCCObj:any = {
-	0: 'Non-Billable',
-	1: 'Billable'
+	'false': 'Non-Billable',
+	'true': 'Billable'
 }
+export const sourceTypeObj:any = {
+	0: "Purchase",
+	1: "Rent"
+};

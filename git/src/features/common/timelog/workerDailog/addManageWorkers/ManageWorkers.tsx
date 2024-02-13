@@ -51,7 +51,7 @@ const ManageWorkers = (props: any) => {
   return (
     <IQBaseWindow
       open={true}
-      className="bid-manager-window vendor-contracts-window custom-style"
+      className="bid-manager-window vendor-contracts-window custom-style workers-cls"
       title="Workers"
       // isFullView={isFullView}
       disableEscapeKeyDown={true}

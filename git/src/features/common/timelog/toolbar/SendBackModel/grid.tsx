@@ -5,6 +5,8 @@ import { Button, Avatar } from '@mui/material';
 import { timelogStatusMap } from '../../TimeLogConstants';
 import moment from "moment";
 import { timelogList } from 'data/timelog/TimeLogData';
+import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
+import {getDuration} from '../../utils';
 const SendBackGrid = (props: any) => {
 	const [columns, setColumns] = useState([]);
 	let gridRef = useRef<AgGridReact>();
@@ -16,7 +18,7 @@ const SendBackGrid = (props: any) => {
 		if (props.griddata?.length > 0) {
 			setRowData(props.griddata);
 		} else {
-			setRowData([...timelogList]);
+			setRowData([...timelogList?.segments]);
 		}
 	}, [props.griddata]);
 
@@ -34,7 +36,7 @@ const SendBackGrid = (props: any) => {
 			cellClass: 'status-column',
 			headerClass: 'custom-filter-header',
 			cellRenderer: (params: any) => {
-				const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === params?.value);
+				const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === params?.value?.toString());
 				return <div
 					className='status'
 					style={{
@@ -47,7 +49,7 @@ const SendBackGrid = (props: any) => {
 			}
 		}, {
 			headerName: 'Time Entry For',
-			field: 'entryFor',
+			field: 'timeEntryFor',
 			pinned: 'left',
 			aggFunc: (params: any) => {
 				if (!params.rowNode?.key) {
@@ -62,21 +64,11 @@ const SendBackGrid = (props: any) => {
 			}
 		}, {
 			headerName: 'Company',
-			field: 'company'
+			field: 'company',
+			valueGetter: (params: any) => params.data?.company?.name,
 		}, {
 			headerName: 'Start Date',
 			field: 'startDate',
-			keyCreator: (params: any) => {
-				let now = moment.utc(new Date());
-				let lastContact = moment.utc(params?.data.endDate);
-				let days = now.diff(lastContact, 'days');
-				let label = '';
-				if (days >= 2) {
-					label = moment.utc(lastContact).fromNow(); // '2 days ago' etc.
-				};
-				label = lastContact.calendar().split(' ')[0];
-				return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${label})`) || "None";
-			},
 			valueGetter: (params: any) => `${moment.utc(params?.data?.startDate).format('DD/MM/YYYY')}`,
 		}, {
 			headerName: 'End Date',
@@ -93,23 +85,18 @@ const SendBackGrid = (props: any) => {
 		}, {
 			headerName: 'Duration',
 			field: 'duration',
-			aggFunc: (params: any) => {
-				let sum = 0;
-				params.values.forEach((time: any) => {
-					let a = time.split(":");
-					let calculate = +a[0] * 60 * 60 + +a[1] * 60;
-					sum += calculate;
-				});
-				if (moment(new Date(sum * 1000))?.isValid()) {
-					let finalCnt = new Date(sum * 1000)?.toISOString();
-					return finalCnt?.substr(11, 5);
-				}
-			},
-		}, {
+			valueGetter: (params: any) => params?.data?.duration,
+			aggFunc: 'sum',
+			cellRenderer: (params: any) => {
+				return getDuration(params?.value)
+			}
+		},
+		{
 			headerName: 'Source',
 			field: 'source',
-			keyCreator: (params: any) => params.data?.source || "None"
-		}, {
+			valueGetter: (params: any) => params.data ? getSource(params.data?.source) : ""
+		}, 
+		{
 			headerName: 'Created By',
 			field: 'createdBy',
 			valueGetter: (params: any) => params.data?.createdBy?.name,

@@ -279,20 +279,20 @@ const BudgetManagerToolbar = (props: any) => {
 			children: {
 				type: "checkbox",
 				items: [
-					{ text: "Purchase", id: '1', value: '1', key: '1' },
-					{ text: "Rent", id: '2', value: '0', key: '0' },
+					{ text: "Purchase", id: '1', value: '0', key: '0' },
+					{ text: "Rent", id: '2', value: '1', key: '1' },
 				]
 			},
 		},
 		{
 			text: "Billable In Client Contract",
-			value: 'billableInCC',
-			key: 'billableInCC',
+			value: 'isBillable',
+			key: 'isBillable',
 			children: {
 				type: "checkbox",
 				items: [
-					{ text: "Billable", id: '1', value: '1', key: '1' },
-					{ text: "NonBillable", id: '2', value: '0', key: '0' },
+					{ text: "Billable", id: '1', value: true, key: true },
+					{ text: "NonBillable", id: '2', value: false, key: false },
 				]
 			},
 		}
@@ -696,7 +696,7 @@ const getGroupMenuOptions = () => {
 	},
 	{
 		text: 'Billable In Client Contract',
-		value: 'billableInCC',
+		value: 'isBillable',
 		iconCls: ''
 	}
 	];

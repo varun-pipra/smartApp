@@ -117,6 +117,7 @@ const GeneralSettings = (props: any) => {
 			allowMultipleLineItems: fromDataClone?.allowMultipleLineItems ? fromDataClone?.allowMultipleLineItems : false,
 			allowMarkupFee: fromDataClone?.allowMarkupFee ? fromDataClone?.allowMarkupFee : false,	
 			providerSource: fromDataClone?.providerSource ? fromDataClone?.providerSource : 0,	
+			isBillable: fromDataClone?.isBillable,
 			showBalance: fromDataClone?.showBalance ? fromDataClone?.showBalance : false,
 			showBudget: fromDataClone?.showBudget ? fromDataClone?.showBudget : false,
 			showCost: fromDataClone?.showCost ? fromDataClone?.showCost : false,
@@ -216,11 +217,11 @@ const GeneralSettings = (props: any) => {
 					row
 					aria-labelledby="demo-row-radio-buttons-group-label"
 					name="row-radio-buttons-group"
-					value={formData?.billableInCC == 0 ? 'nonBillable' : 'billable'}
-        			onChange={(e) => { handleInputChange(e.target.value == 'billable' ? 1 : 0, 'billableInCC') }}
+					value={formData?.isBillable}
+        			onChange={(e) => { handleInputChange(e.target.value, 'isBillable') }}
 				>
-					<FormControlLabel value="billable" control={<Radio />} label="Billable" />
-					<FormControlLabel value="nonBillable" control={<Radio />} label="Non-Billable" />
+					<FormControlLabel value={true} control={<Radio />} label="Billable" />
+					<FormControlLabel value={false} control={<Radio />} label="Non-Billable" />
 				</RadioGroup>
 			</Stack>
 			<Divider />
