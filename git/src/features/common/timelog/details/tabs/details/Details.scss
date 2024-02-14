@@ -9,6 +9,9 @@
                 flex: 1;
                 display: flex;
                 align-items: center;
+                .common-icon-details:before {
+                    font-size: 24px;
+                }
                 .title {
                     font-family: "Roboto-Regular";
                     font-size: 16px;
@@ -110,6 +113,10 @@
             width: 25px;
             height: 25px;
             margin: 0px 10px;
+            img {
+                border: 1px solid #ccc;
+                margin-top: -2px;
+            }
         }
     }
     .description {
@@ -136,25 +143,25 @@
             font-size: 14px;
             font-weight: bold;
         }
-	}
-	.timeaddedto{
-		display: flex;
-		align-items: center;
-		gap:8px;
-		>img{
-			width: 24px;
-			height: 24px ;
-			border-radius: 2px;
-		}
-		>span{
-			color:#059cdf;
-		}
-	}
-	.phaseimage{
-		width: 24px;
-		height: 24px ;
-		border-radius: 2px;
-	}
+    }
+    .timeaddedto {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        >img {
+            width: 24px;
+            height: 24px;
+            border-radius: 2px;
+        }
+        >span {
+            color: #059cdf;
+        }
+    }
+    .phaseimage {
+        width: 24px;
+        height: 24px;
+        border-radius: 2px;
+    }
     .iconmodify {
         color: #ed7431 !important;
         font-size: 20px !important;
@@ -167,6 +174,14 @@
     }
     .common-icon-Workactivity:before {
         color: #ed7431 !important;
+        font-size: 24px !important;
+    }
+    .common-icon-companies:before {
+        color: #ed7431;
+        font-size: 18px;
+        vertical-align: text-top;
+    }
+    .common-icon-ContactPicker:before {
         font-size: 24px !important;
     }
     .ec-floating-toast-cls {

@@ -18,7 +18,8 @@ export const getTimeLogDateRange = (value: any) => {
 		'thisWeek': "This Week",
 		'thisMonth': 'This Month',
 		'lastMonth': 'Last Month',
-		'future': 'Future'
+		'future': 'Future',
+		'past' : 'Past'
 	};
 	return types[value];
 };

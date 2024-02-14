@@ -548,6 +548,7 @@ const ClientContractScheduleValues = (props: any) => {
 							dispatch(setSelectedRecord(response));
 						});
 					}}
+					moduleName={'ClientContracts'}					
 					allowMarkupFee={settingsData?.allowMarkupFee}					
 					getBudgetValue={(value: any) => { setBudgetValue(value); }}
 					onClose={(val: any) => setOpenBudget(val)} />

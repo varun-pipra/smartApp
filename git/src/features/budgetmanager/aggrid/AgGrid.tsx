@@ -246,7 +246,6 @@ const TableGrid = (props: TableGridProps) => {
 	};
 	const getSBSPhaseColor = (phaseId:any) => {
 		let phaseColor = 'red';
-		console.log("getSBSPhaseColor", getPhaseDropDownData(), phaseId)
 		getPhaseDropDownData()?.forEach((option:any) => {
 			if(option?.id == phaseId) phaseColor = option.color
 
@@ -322,7 +321,7 @@ const TableGrid = (props: TableGridProps) => {
 				let selectOptions: any = [...getDivisionOptions()];
 				let hiddenOptions: any = [];
 				let isCostCodeExistsInOptions: any = params?.data?.costCode ? isCostCodeExists(selectOptions, params?.data?.costCode) : false;
-				if (!isCostCodeExistsInOptions) {
+				//if (!isCostCodeExistsInOptions) {
 					let obj: any =
 					{
 						value: params?.data?.costCode,
@@ -331,7 +330,7 @@ const TableGrid = (props: TableGridProps) => {
 						isHidden: true,
 					};
 					hiddenOptions.push(obj);
-				}
+				//}
 				let inLinefilter: any = [];
 				getDivisionFilterOptions()?.map((option: any) => {
 					if (option?.value == params?.data?.division) {
@@ -387,7 +386,7 @@ const TableGrid = (props: TableGridProps) => {
 										showFilter={false}
 										selectedValue={
 											params?.data?.division && params?.data?.costCode
-												? (!isCostCodeExistsInOptions ? params?.data?.costCode : (params?.data?.division + "|" + params?.data?.costCode))
+												?  params?.data?.costCode
 												: ""
 										}
 										Placeholder={"Select"}
@@ -626,6 +625,7 @@ const TableGrid = (props: TableGridProps) => {
 		},
 		{ headerName: 'Billable in Client Contract', field: 'isBillable', 
 			hide: false, suppressMenu: true,
+			keyCreator: (params: any) => params.data.isBillable || 'None',
 			valueGetter: (params: any) => billableInCCObj?.[params.data?.isBillable],						
 		},		
 		{
@@ -1208,8 +1208,8 @@ const TableGrid = (props: TableGridProps) => {
 		{ headerName: 'Source Type',
 			field: 'sourceType', 
 			hide: false, 
-			valueGetter:(params:any) => params?.data?.sourceType ? sourceTypeObj?.[params?.data?.sourceType] : '',
 			suppressMenu: true,
+			valueGetter: (params: any) => sourceTypeObj?.[params.data?.sourceType],
 		},		
 	];
 
@@ -1411,7 +1411,8 @@ const customCellRendererClass = (params: any) => {
 			{[generatePresenceToolIds(params?.data)].map((presenceTool: any) => presenceTool)}
 			<span>{renderPresence(params?.data?.id)}</span>
 		</div>
-		{isCostCodeInvalid ?
+		{/* Pls don't remove this */}
+		{/* {isCostCodeInvalid ?
 			<IQTooltip
 				title={
 					<Stack direction='row' className='tooltipcontent'>
@@ -1441,7 +1442,7 @@ const customCellRendererClass = (params: any) => {
 				>
 					<WarningAmberIcon fontSize={primaryIconSize} style={{ color: 'red' }} />
 				</IQTooltip>)
-		}
+		} */}
 		{params?.data?.source === 1 &&
 			<IQTooltip
 				title={'Schedule Of Values of the Contract to be updated due to recent approval of the Change Event Request.'}
@@ -1753,6 +1754,8 @@ const searchAndFilter = (list: any) => {
 				&& (_.isEmpty(selectedFilters.location) || selectedFilters.location?.length === 0 || _.intersection(selectedFilters.location, locationIds).length > 0)
 				&& (_.isEmpty(selectedFilters.Vendors) || selectedFilters.Vendors?.length === 0 || _.intersection(selectedFilters.Vendors, vendorsIds).length > 0)
 				&& (_.isEmpty(selectedFilters.providerSource) || selectedFilters.providerSource?.length === 0 || selectedFilters.providerSource?.indexOf(item.providerSource?.toString()) > -1)
+				&& (_.isEmpty(selectedFilters.sourceType) || selectedFilters.sourceType?.length === 0 || selectedFilters.sourceType?.indexOf(item.sourceType?.toString()) > -1)
+				&& (_.isEmpty(selectedFilters.isBillable) || selectedFilters.isBillable?.length === 0 || selectedFilters.isBillable?.indexOf(item.isBillable?.toString()) > -1)
 			));
 	});
 };

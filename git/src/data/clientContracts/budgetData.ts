@@ -81,6 +81,7 @@ export const BudgetData = {
 			"markupFeePercentage": null,
 			"markupFeeAmount": 200.00,
 			providerSource: 0,
+			"isBillable":true
 		},
 		{
 			"id": "9e9e21d0-a1e4-4e04-8643-003c55952352",

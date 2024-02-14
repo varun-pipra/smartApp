@@ -28,6 +28,7 @@ export const fetchSettingsData = async (appInfo: any) => {
 };
 
 export const addSettings = async (appInfo: any, body: any, callback?: any) => {
+	console.log("settings", body)
 	let response;
 	if (!isLocalhost) {
 		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/budgets/${appInfo?.uniqueId}/settings?sessionId=${appInfo?.sessionId}`, {

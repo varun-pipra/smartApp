@@ -217,8 +217,8 @@ const GeneralSettings = (props: any) => {
 					row
 					aria-labelledby="demo-row-radio-buttons-group-label"
 					name="row-radio-buttons-group"
-					value={formData?.isBillable}
-        			onChange={(e) => { handleInputChange(e.target.value, 'isBillable') }}
+					value={formData?.isBillable?.toString()}
+        			onChange={(e) => { handleInputChange(e.target.value == 'true' ? true : false, 'isBillable') }}
 				>
 					<FormControlLabel value={true} control={<Radio />} label="Billable" />
 					<FormControlLabel value={false} control={<Radio />} label="Non-Billable" />

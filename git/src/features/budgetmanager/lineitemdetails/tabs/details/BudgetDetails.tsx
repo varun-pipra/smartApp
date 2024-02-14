@@ -140,7 +140,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		if (formData?.costCode && costCodeDropdownData?.length > 0) {
 			let isCostCodeExistsInOptionsList: any = isCostCodeExists(costCodeDropdownData, formData.costCode);
 			setIsCostCodeExistsInOptions(isCostCodeExistsInOptionsList);
-			if (!isCostCodeExistsInOptionsList) {
+			//if (!isCostCodeExistsInOptionsList) {
 				let obj: any =
 				{
 					value: formData?.costCode,
@@ -149,7 +149,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					isHidden: true,
 				}
 				setCostCodeHiddenOptions([obj]);
-			}
+			//}
 		}
 	}, [formData?.costCode, costCodeDropdownData])
 
@@ -207,9 +207,11 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 
 	React.useEffect(() => {
 		if (lineItem?.id) {
+			const obj = formatCompanyData().find((rec: any) => selectedRow.equipmentManufacturerId === rec.objectId);
 			setFormData({
 				...selectedRow,
-				equipmentManufacturer: formData?.equipmentManufacturer,
+				equipmentManufacturer: obj?.name ? [obj] : [],
+				equipmentManufacturerName: obj?.name,
 				equipmentModel: formData?.equipmentModel,
 				rollupTaskIds: lineItem?.rollupTaskIds,
 				addMarkupFee: formData?.addMarkupFee,
@@ -638,7 +640,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							startIcon={<span className="common-icon-Budgetcalculator"></span>}
 							checkedColor={'#0590cd'}
 							showFilter={false}
-							selectedValue={formData?.division && formData?.costCode ? (isCostCodeExistsInOptions ? (formData?.division + '|' + formData?.costCode) : formData?.costCode) : ''}
+							selectedValue={formData?.division && formData?.costCode ?  formData?.costCode : ''}
 							Placeholder={'Select'}
 							outSideOfGrid={true}
 							showFilterInSearch={true}
@@ -919,8 +921,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						row
 						aria-labelledby="demo-row-radio-buttons-group-label"
 						name="row-radio-buttons-group"
-						value={formData?.isBillable}
-						onChange={(e) => { handleDropdownChange(e.target.value, "isBillable") }}
+						value={formData?.isBillable?.toString()}
+						onChange={(e) => { handleDropdownChange(e.target.value == 'true' ? true : false, "isBillable") }}
 					>
 						<FormControlLabel value={true} control={<Radio />} label="Billable"
 							disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
@@ -932,6 +934,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				</span>
 				</div>
 				</div>
+				<span />
 				
 				{formData?.costType == 'E - Equipment' && <div className="source-type-cls">
 					<div className="budget-info-subheader">
@@ -952,8 +955,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							row
 							aria-labelledby="demo-row-radio-buttons-group-label"
 							name="row-radio-buttons-group"
-							value={formData?.sourceType}
-							onChange={(e) => { handleDropdownChange(e.target.value, "sourceType") }}
+							value={formData?.sourceType?.toString()}
+							onChange={(e) => { handleDropdownChange(e.target.value == "0" ? 0 : 1, "sourceType") }}
 						>
 							<FormControlLabel value={0} control={<Radio />} label="Purchase"
 								disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}

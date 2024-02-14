@@ -461,6 +461,15 @@
             }
         }
     }
+    &.project-team-cls-isOrgSubscribed {
+        .MuiPaper-root {
+            .MuiDialogTitle-root {
+                .title-text {
+                    margin: 2px 50px;
+                }
+            }
+        }
+    }
 }
 
 .teamorientation-true {

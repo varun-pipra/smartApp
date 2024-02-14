@@ -23,6 +23,7 @@ export const gridData = {
 			"modifiedDate": "2023-09-11T07:05:25.47",
 			"projectId": "6e83792a-3e66-49d6-9442-c6a1e918b48f",
 			"name": "00278",
+			isBillable: true,
 			"division": "03 - Concrete",
 			"costCode": "03100 Concrete Forms and Accessories",
 			"costType": "M - Materials",
@@ -61,7 +62,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": ['026221c7-ef06-4ba5-8cf2-6d44d9aba60d', '04c1dc39-2fc7-45c5-8c49-553a25d816ed'],
-			"costCodeGroup": null,
+"costCodeGroup": null, "sourceType" : 0,
 			"markupFeeType": 0,
 			"markupFeePercentage": null,
 			"markupFeeAmount": 1500000.00,
@@ -95,6 +96,7 @@ export const gridData = {
 			"modifiedDate": "2023-09-09T14:35:30.49",
 			"projectId": "6e83792a-3e66-49d6-9442-c6a1e918b48f",
 			"name": "00048",
+			isBillable: false,
 			"division": "10 - Specialties",
 			"costCode": "Flagpoles 10350",
 			"costType": "M - Materials",
@@ -292,7 +294,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null,
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0,
 			"markupFeeType": 0,
 			"markupFeePercentage": null,
 			"markupFeeAmount": 1500.00,
@@ -359,7 +361,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null,
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0,
 			providerSource: 0,
 			"markupFeeType": 0,
 			"markupFeePercentage": null,
@@ -499,7 +501,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"a6e28335-6cf0-4160-9686-b65e5deb2e90"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5d8c0685-9d71-435a-ac31-052c5dbd5183",
@@ -562,7 +564,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "8eceaf34-52d9-4995-ab77-05c37bfce33d",
@@ -625,7 +627,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "c95bda10-83c3-4d3f-bef7-068592431dfe",
@@ -688,7 +690,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2cedcaba-9bb6-4cc4-b1ee-06deef90bed8",
@@ -751,7 +753,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ea33dca4-e599-4337-a507-07b56e465af2",
@@ -959,7 +961,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"bbfa4fce-7438-41dd-aafe-fc26cc21281d"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ffa9b606-ff55-404d-9f54-09303192a2ee",
@@ -1187,7 +1189,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "18a6c12b-7c9c-40b0-81be-09f7506a1ccb",
@@ -1250,7 +1252,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "19fcec83-71dc-4c61-809d-0a7f47d2518a",
@@ -1313,7 +1315,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "f462a154-cebf-4829-b7a9-0aba65fd31c6",
@@ -1376,7 +1378,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "c63e8d61-51f7-474b-be2a-0b204f848aad",
@@ -1596,7 +1598,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "cc21fef7-2d14-458d-adef-0cbdea4ffa9c",
@@ -1732,7 +1734,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "6ed8b56f-b264-4cf0-a3ea-0de9df6234a3",
@@ -1795,7 +1797,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "cb204346-5121-4733-91c6-0e870e6d6b2a",
@@ -1875,7 +1877,7 @@ export const gridData = {
 				"3cde23da-7a2d-48e5-a16c-4c0f5f7454c5",
 				"e4de14f8-7aae-47e2-bb75-92c7c5714fc7"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "eed96c0c-65dc-4ab4-81ec-0f3d386ece52",
@@ -1938,7 +1940,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "0449adf4-0f53-4c17-8691-0f81b2a0c09a",
@@ -2001,7 +2003,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "41f6e688-eb3c-40b3-8bb7-0fcacd62ef3c",
@@ -2064,7 +2066,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "c7ae4c67-1be7-47f3-9318-12075a4f1493",
@@ -2130,7 +2132,7 @@ export const gridData = {
 				"34ae85a8-961a-4bb0-92d7-2ff1ef422e36",
 				"d3de7c4b-417e-40a0-af98-c5dc2ed7fdeb"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "b9545349-aa65-405d-8f55-125b9751997c",
@@ -2284,7 +2286,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "61f30f95-4a7f-4969-a809-13247fe4dfd7",
@@ -2504,7 +2506,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2a3b7bae-1152-45d8-8a5d-1565c6d24920",
@@ -2567,7 +2569,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "12bd651f-a228-4e34-9712-1693b517c705",
@@ -2802,7 +2804,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e2fed63e-35fa-497d-9a9f-1807aef975f1",
@@ -2937,7 +2939,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "fd2a1ea7-32de-4154-8a63-18c8a3b2cd4b",
@@ -3000,7 +3002,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "22a9a8ff-5ec9-475f-b244-19517d894839",
@@ -3063,7 +3065,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "3a435f57-ae5e-49c5-a27d-1b48b2a50413",
@@ -3128,7 +3130,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"fa5c7c0a-17e5-42f4-a1fb-e70ecad0c29f"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "90490c07-ca81-4a31-8bc1-1b59e6de6f5d",
@@ -3177,7 +3179,7 @@ export const gridData = {
 			"pendingChangeOrderAmount": 0.00,
 			"pendingTransactionAmount": 60000.00,
 			"pendingRefundAmount": null,
-			"budgetForecast": 120000.00,
+			"budgetForecast": 130000.00,
 			"balanceForecast": 60000.00,
 			"actualScheduleStart": null,
 			"actualScheduleEnd": null,
@@ -3201,7 +3203,9 @@ export const gridData = {
 			"costCodeGroup": [
 				"01 - General Requirement ",
 				" General Contractor- Low Rise Office 1012"
-			]
+			],
+			"isBillable":true,
+			"sourceType" : 0
 		},
 		{
 			"id": "e3c04518-535c-45d5-a0cf-1cb00df2a079",
@@ -3264,7 +3268,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "47e6f0c2-1fe4-417f-8fcf-1cb2afddb8a5",
@@ -3411,7 +3415,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "3832fc2e-60dc-4fc8-91ec-1f9464841e45",
@@ -3474,7 +3478,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "409a27b7-15a3-4de0-9313-1fdd0529e1de",
@@ -3628,7 +3632,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "7777f22e-f71a-45c1-b7d6-21805c5b9861",
@@ -3784,7 +3788,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "15132e68-95c9-477c-ad7b-222ce1f34a4b",
@@ -4264,7 +4268,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5d844a5e-2f49-4725-9e82-251a8a2b38ae",
@@ -4495,7 +4499,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "62649ab0-256a-4473-9c1d-28897ccde5de",
@@ -4558,7 +4562,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "70bc4316-e78a-4f9d-8f3f-29ec1f2b83a3",
@@ -4621,7 +4625,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "6e77a8d9-8cb0-473d-9f1f-2ae5376837d2",
@@ -4928,7 +4932,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d97e41aa-9731-464e-9083-2e67f4b1ec41",
@@ -5003,7 +5007,7 @@ export const gridData = {
 				"15bc6d68-d64f-4f31-9960-633563464935",
 				"ac9386bc-3c77-482f-a0d7-cb235ac3faa1"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "0cf3c0d0-e295-4012-b818-2ec2fa5e58f6",
@@ -5308,7 +5312,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "6544c860-b76c-4622-971a-31a4230ab77b",
@@ -5371,7 +5375,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "7742da8b-111e-4631-8358-31ea86a9bc9a",
@@ -5527,7 +5531,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "403186db-1fb0-4469-a5e0-32f4db484011",
@@ -5590,7 +5594,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "1bfcfde8-deb8-485b-b05e-32fe9d0237a0",
@@ -5653,7 +5657,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5b9d54dd-a8b2-41de-9a09-3423576bf87b",
@@ -5716,7 +5720,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "22b6d528-ba3a-4d70-b90e-36d34914a527",
@@ -5779,7 +5783,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "1bcb57c0-a7ed-46ac-9767-36f530f67f75",
@@ -5858,7 +5862,7 @@ export const gridData = {
 				"026221c7-ef06-4ba5-8cf2-6d44d9aba60d",
 				"89d3138c-7869-4b07-872e-f0a83d7d4d31"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "207843d5-deb4-4563-b47d-389fc90a955a",
@@ -6005,7 +6009,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "888b334e-e861-4363-8065-3a7199fb79f1",
@@ -6068,7 +6072,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "738e77c6-0259-4a38-af6b-3ae21a5491f7",
@@ -6131,7 +6135,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "52a59e17-0fd6-48b7-b4ff-3af24216d0bc",
@@ -6421,7 +6425,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "75e29cbe-9cdc-4bd4-81fb-3bf5997398b4",
@@ -6494,7 +6498,7 @@ export const gridData = {
 				"668230b5-ff2a-4e10-bff7-6b7a3c4da9f4",
 				"55781227-8a04-496c-9d07-a385d2eaa880"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "da1bb9ee-fe88-4b76-831c-3c004e03bf09",
@@ -6643,7 +6647,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "9e226103-6746-4cf4-bdf4-3ccc68bd9a9b",
@@ -6706,7 +6710,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "97e8f5c3-09de-4a8d-8b79-3d28fa773403",
@@ -6941,7 +6945,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "c8513647-6be9-4441-a2bd-4267c38dcd67",
@@ -7004,7 +7008,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "164d5851-badb-44ad-aea7-432526cd3278",
@@ -7069,7 +7073,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"8b836d7a-29c8-4cea-9924-b8fc8602b255"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "94b3e2a2-d111-44df-99e9-4347f04d5fec",
@@ -7132,7 +7136,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2a034d5f-bd43-4dc2-9a87-449a879e4923",
@@ -7195,7 +7199,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "eba16b36-41de-4016-ab2a-44e9961c3b51",
@@ -7278,7 +7282,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"6c34ef6f-d42a-42b0-be36-9aa02693a483"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5c752473-0ba3-4e6b-be42-455c427a557c",
@@ -7443,7 +7447,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2b8b8c46-6f56-4b23-96e7-45e15a7ffe7b",
@@ -7587,7 +7591,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "eaaaeec5-092e-48b5-8a48-472fb84cfad1",
@@ -7650,7 +7654,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "047ecea7-d04d-4d6c-951a-47694f58bd43",
@@ -7713,7 +7717,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "9e5ac82f-f156-4413-bbf7-48731da985e9",
@@ -7853,7 +7857,7 @@ export const gridData = {
 				"156d53e9-3a24-4873-b757-0921992c5739",
 				"d891c0c2-84ea-4823-9d00-c3efe4f224be"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "efc4c236-1c58-4620-b692-4967484f81ba",
@@ -8004,7 +8008,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"5e572c97-0430-40dc-b71d-e2b024278afe"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5c841c28-ee92-43c1-9bfe-4b853ae7773e",
@@ -8151,7 +8155,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "cd63c986-46d3-4922-8d2f-4c4d3ab0d621",
@@ -8305,7 +8309,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "18904815-da8e-4e99-9645-4d1086dd8b98",
@@ -8673,7 +8677,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "479b86fa-220b-45a6-a04d-50e95803e88f",
@@ -8736,7 +8740,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "7ba30162-bfc6-411e-83b4-51545b84ebc1",
@@ -8801,7 +8805,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"0b854c85-26d7-4e2f-8e26-d1cdbcee0cbc"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "28eba0c1-34d7-4daa-8d7d-5299bc158914",
@@ -8864,7 +8868,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "1001d665-5f25-4e2d-ab55-549fe8a6738e",
@@ -8927,7 +8931,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "bab4f4dd-3a4c-43f6-80a4-54f81b9073d1",
@@ -8990,7 +8994,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "a8512d7a-c8d5-4513-8e77-5589cbc4bd56",
@@ -9053,7 +9057,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "c3833975-a707-4a04-91cb-55c4c6dd3fd5",
@@ -9116,7 +9120,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2ab8b651-42c7-477b-8bfc-56552439c847",
@@ -9179,7 +9183,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "fce50cbc-7843-4b36-955e-568ad436284c",
@@ -9242,7 +9246,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "b93c39ee-c5cb-4cb9-81b6-56a616a3fc14",
@@ -9305,7 +9309,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ff788acf-0bb9-4cf5-8db4-56c9a3037500",
@@ -9368,7 +9372,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "72016789-abb8-42ba-b295-57e4ffc55cc6",
@@ -9431,7 +9435,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "979ecc02-de0f-477d-bf4b-59ffacdd9344",
@@ -9496,7 +9500,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"057afb20-ca1b-42e5-a009-4435274c55c3"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "47360c07-e684-4ed8-a40a-5a64e1b12698",
@@ -9650,7 +9654,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "c2a5416b-d36d-4f3f-b116-5b142d57f6fb",
@@ -9721,7 +9725,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"e399fe60-291e-4e0e-844d-5dac4811ef06"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "71a74cfd-50a2-43dd-a140-5b953945b016",
@@ -9863,7 +9867,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"88753950-456a-4e41-b697-3baa3b60aaf6"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "f3830b40-39d3-4416-a2bb-5c1d706bc7de",
@@ -10005,7 +10009,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "9ef49dd6-e66e-40f2-abf3-5dbf3eda4ce9",
@@ -10068,7 +10072,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "75d46417-067d-4803-b4b7-5e02a8ab79bc",
@@ -10203,7 +10207,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "15007461-4800-4bb5-bcca-5eaf96016064",
@@ -10266,7 +10270,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "17c1315a-fbba-4f5a-8373-5f7a4c40cd18",
@@ -10423,7 +10427,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2a6a9efc-7f33-4f23-a5eb-60a571e08766",
@@ -10486,7 +10490,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "33925cd6-9726-49c2-bbb8-615e20f5993a",
@@ -10549,7 +10553,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "8e64a012-2f56-460a-891d-62787f29200c",
@@ -10859,7 +10863,7 @@ export const gridData = {
 				"e6f9b657-d4ba-4444-9320-875a8efe0c59",
 				"8f7c208a-cc82-4d70-b4b0-cb80ef00b987"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "273beb97-f399-40df-b2ad-64c16e9a5ca3",
@@ -10922,7 +10926,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "c0f66aed-fde5-4921-8ef7-66555ade5089",
@@ -10985,7 +10989,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "61467308-9ab9-4e9a-8e02-66a415bc4cba",
@@ -11232,7 +11236,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "b1d15f87-ed3f-4d06-833a-67b175786018",
@@ -11295,7 +11299,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "605bef4c-2b95-466c-ac85-68812a7e3671",
@@ -11467,7 +11471,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "bc1aa76a-593a-43b0-a2d0-68fa3ead000f",
@@ -11530,7 +11534,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2cba3119-a0ca-4de4-95a3-6a4f29e19eb2",
@@ -11684,7 +11688,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "481fe16c-2d08-4548-9e7b-6b82002e3ab0",
@@ -11991,7 +11995,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5f8ca44d-96dd-423c-bd7f-6e592dd1cc8c",
@@ -12160,7 +12164,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"eda64b22-7c5a-4432-ade9-07e6886ed390"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e4015fad-5f1e-4379-b1ba-6f6ca9ce1229",
@@ -12295,7 +12299,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "fd6bf0a1-dee9-4338-b803-72e099c0b720",
@@ -12451,7 +12455,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "44ab4d82-47e2-4fdc-9c07-74f80266dbf3",
@@ -12591,7 +12595,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "52d7ec72-9dee-438b-8ed6-76bdd9e7f618",
@@ -12745,7 +12749,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "661d9aab-d495-4c4a-828e-78a0661ec2e5",
@@ -12808,7 +12812,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "1b89e000-3e7a-4d96-a789-795161dc5919",
@@ -12871,7 +12875,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5728a944-442c-4a69-aef0-7a4304ea5599",
@@ -12956,7 +12960,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"96eb2a0b-805e-4035-940c-2254f40f359b"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ecd4173f-679a-43ff-8662-7adb59628e34",
@@ -13019,7 +13023,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "b6b8b509-019b-469d-8cca-7b0e0334e05a",
@@ -13082,7 +13086,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "15a92189-a6fd-480d-8048-7b748c0e330e",
@@ -13214,7 +13218,7 @@ export const gridData = {
 				"891e7b0e-a54d-415b-be11-80aa97a3a83a",
 				"b24f742a-b3aa-4add-a232-83a67ae55cc6"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "33f68770-d338-4bdd-aa81-7ba3692e0d8d",
@@ -13277,7 +13281,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5c1bd676-e9b6-417d-a9b9-7bea4826fbfc",
@@ -13357,7 +13361,7 @@ export const gridData = {
 				"5d51d1e9-cb17-4e6b-ad32-7db449bbcf7b",
 				"e0611e4b-9ee1-4c3e-86b1-e9f6a5079b1a"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "4a5e38b5-1162-4661-9ccb-7c6a35872c63",
@@ -13420,7 +13424,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "1d5f1ef9-8ac3-4f3d-91e0-7e8115dfc8a3",
@@ -13486,7 +13490,7 @@ export const gridData = {
 				"b1b726c9-874a-4cb6-b096-2d670ff2c2d6",
 				"60ef8317-f17b-466a-8d74-6c3be4166423"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ea508e0e-265f-4ab6-ade4-7f9320927ca3",
@@ -13551,7 +13555,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"ab347721-1335-4f9c-9cfc-f3939b8aeb42"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "17edf491-cc91-4c94-b6ca-81164ac4523f",
@@ -14034,7 +14038,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "46e1de5d-4f63-410b-8471-855ef825cddf",
@@ -14099,7 +14103,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"becc2720-8778-47b0-9d29-9d3e1d255300"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "69c43f19-b0aa-4e72-b282-85b40796af7e",
@@ -14175,7 +14179,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "59f11ef7-a98f-4006-90a8-8662012103b3",
@@ -14238,7 +14242,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "7959b4e2-0de3-4f3e-9beb-8673c541ad78",
@@ -14301,7 +14305,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "515bded8-1d86-4541-b47a-871497d63a2a",
@@ -14364,7 +14368,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "56585fc6-e2af-4d4d-969b-87a2e42c58a5",
@@ -14444,7 +14448,7 @@ export const gridData = {
 				"2a5aa2b4-2f51-445e-aa70-6a9f6a35e874",
 				"a5092f0f-6c07-48e0-81e9-f72fde6bc520"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "36fdfc5f-eaac-4c0c-97ea-8800d5bbea9b",
@@ -14507,7 +14511,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "9b0676f1-48cb-43dc-928d-88a271e29398",
@@ -14570,7 +14574,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ebaeb41f-211b-4d3f-9c8b-88b851b4f371",
@@ -14784,7 +14788,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d8e4d946-1315-4bc8-b038-8b3982fd9a3c",
@@ -14847,7 +14851,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5d70be1e-dd1b-4e3c-8487-8b7c9e05293a",
@@ -14990,7 +14994,7 @@ export const gridData = {
 				"6b873617-bcfd-4bd2-8b52-24a095db12b8",
 				"98c7a500-bb7f-42e8-b176-93c126508694"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "01e01bad-006d-4123-9e62-8ccf86c622b2",
@@ -15053,7 +15057,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d9fa121a-1861-4aa7-8c21-8ce4cfcef557",
@@ -15229,7 +15233,7 @@ export const gridData = {
 				"code": "CE0053"
 			},
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "b46a1b9b-ddd0-4894-a45b-8f764523c430",
@@ -15367,7 +15371,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "56c0486a-7332-4a95-aade-908963b7af03",
@@ -15430,7 +15434,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d8067ac4-ceb4-48bd-b14a-9099da11f07a",
@@ -15493,7 +15497,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "017d61f6-7854-4df7-a558-90eb43c63366",
@@ -15572,7 +15576,7 @@ export const gridData = {
 				"8e21d531-e7ec-475d-b615-5097f0a4d1b2",
 				"5bed9a26-4cf1-4bb9-9519-bf7564b93c7e"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "a1668d05-fc39-465d-91d8-91220fc2c192",
@@ -15635,7 +15639,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e0c154b5-1fe7-4852-b6f4-91cfa9cd14ce",
@@ -15973,7 +15977,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "162569bc-68cf-4074-8186-936f2479a365",
@@ -16038,7 +16042,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"c07dd8a2-73eb-44e3-8a91-41e4faabc1fa"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "7ff6369a-a4aa-4c06-8f65-9399af95781f",
@@ -16326,7 +16330,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "168f4000-abf0-4426-92b5-96c0863649fa",
@@ -16389,7 +16393,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "0c48406c-ed1f-4f06-b206-9751f4c7af8e",
@@ -16538,7 +16542,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ea306ba4-5ce0-41a9-b250-992b800039b8",
@@ -16601,7 +16605,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d010bc40-835e-4f0d-8426-992bea94ed1d",
@@ -16780,7 +16784,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "df6c9421-4a10-442f-9ac1-9a923272f1ca",
@@ -16843,7 +16847,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "605c276d-ceaa-4d90-8b3e-9ad6bbf66d28",
@@ -16983,7 +16987,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "3aa4b631-eafb-447d-8669-9d2b95e36590",
@@ -17209,7 +17213,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "6548c1aa-2c23-4d5c-9c87-9f629833d6df",
@@ -17272,7 +17276,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "577f4ceb-b97c-423d-8461-9f93fecdc700",
@@ -17335,7 +17339,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "955cd443-7bb8-497a-9ff6-9fc35280212c",
@@ -17580,7 +17584,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e0726da3-f87e-4663-94f8-a2191ceaae0e",
@@ -17711,7 +17715,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "a1627c6b-f3db-4076-ba3b-a2be03709e1c",
@@ -17774,7 +17778,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "715589f1-8206-45f2-ab71-a30fb3c8c874",
@@ -17837,7 +17841,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "db78b4cf-b1e3-4f4f-a52a-a36c28ad133d",
@@ -17900,7 +17904,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "bfd6027e-e3dc-409c-a797-a4561eccd45e",
@@ -17963,7 +17967,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "73a59dfb-75ae-41cc-9dca-a460a54c0022",
@@ -18099,7 +18103,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "b1956095-59de-4e87-af1d-a58b020e1dc5",
@@ -18162,7 +18166,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e60b52d2-846d-41e2-b918-a618561d381b",
@@ -18293,7 +18297,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "fed2d40b-3bd7-4fe1-87b3-a7f463c1446c",
@@ -18428,7 +18432,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "23d35265-4ea4-4814-b488-a9555f411a14",
@@ -18493,7 +18497,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"c083eee8-635b-401d-83be-90b4ab77b97c"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "3ce8f973-6ebb-4a64-87c3-a9fb83652fd5",
@@ -18556,7 +18560,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "70c32a01-142c-4d89-974c-aa9ddf736648",
@@ -18771,7 +18775,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "b01dfd80-b24f-4c77-92e7-acabba24b6ef",
@@ -19011,7 +19015,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "dad3c9a4-932b-4799-85df-adece3c37fd2",
@@ -19074,7 +19078,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "6a1903f7-2dd5-4782-a1ba-ae0e532ba5fd",
@@ -19162,7 +19166,7 @@ export const gridData = {
 				"code": "CE0052"
 			},
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "090afc30-c111-4d7d-b160-ae90b0d29046",
@@ -19225,7 +19229,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ae7a8991-6d01-4230-bec1-af0f181d9fdb",
@@ -19288,7 +19292,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e0201508-078b-47ab-bba6-b07bffbd3e66",
@@ -19351,7 +19355,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "f88ecad5-745b-46c0-b570-b0971481dc74",
@@ -19510,7 +19514,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"563f1cf1-26e2-472f-ad39-1c68af8f7790"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "9eebc480-c9bb-48be-b65c-b1df68a7fea3",
@@ -19573,7 +19577,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5fcbec45-6625-4dbe-862b-b35143d2fa68",
@@ -19717,7 +19721,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5d0e2b3e-1366-4bef-adcf-b43e752a4717",
@@ -20043,7 +20047,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "6e0ebb6c-7506-4ba9-8542-b6058f2af94d",
@@ -20106,7 +20110,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "61e17e50-5f9e-44b3-8f26-b67eaec3b8c8",
@@ -20169,7 +20173,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "47a2576c-7977-4eba-85e9-b69566080414",
@@ -20323,7 +20327,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ee2b7ce1-b92a-44b0-89d0-b6fc9d4e4bc2",
@@ -20411,7 +20415,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "3190074d-2829-4ee5-849e-b74d73c4a254",
@@ -20621,7 +20625,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "63f011c8-3387-4d3e-99e8-b93eb7b370a1",
@@ -20684,7 +20688,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e571bb9b-29a1-41aa-a5bd-b9bb0b78cecf",
@@ -21008,7 +21012,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"fb108573-1294-4320-94e9-c8b92610918a"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "9182a63d-d961-45ad-af1b-bde0ca0c17d3",
@@ -21071,7 +21075,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d0f057a7-6d51-43ff-964e-c051da93e775",
@@ -21134,7 +21138,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "75ef9cd8-562b-49ce-82fd-c07bfb68f8f8",
@@ -21377,7 +21381,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"8935d0b8-03f1-438f-a0b5-bbc77dbd3df6"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "fa3f0e27-132b-4be5-83b7-c160a18e348c",
@@ -21531,7 +21535,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e4c7bc95-24cd-4401-add8-c61ba4e0699a",
@@ -21594,7 +21598,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "83ea6254-e83f-4a6f-aa05-c674b0ad13bf",
@@ -21657,7 +21661,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "8bbc8130-bbba-4d40-be3d-c68d2575da5a",
@@ -21900,7 +21904,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "74b267a9-7344-4833-8a06-c71f9128194c",
@@ -22081,7 +22085,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"04f2d87c-ec61-4237-9a89-39a6b1034449"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e2083f58-8e3a-4a2e-837b-c9299b05a76b",
@@ -22144,7 +22148,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "733a85ad-79eb-4ca3-ac48-c9bee2e84f70",
@@ -22207,7 +22211,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "aae8338d-fe9f-40ee-8e37-c9de3e8d50b1",
@@ -22270,7 +22274,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "22462b8d-16be-44b9-9155-ca6d480bc054",
@@ -22524,7 +22528,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"4dae26d7-9dcf-4f27-9894-729c84c870f9"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "357eb3c7-9f8e-440e-a960-ced24e5045d0",
@@ -22671,7 +22675,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "9c0709a3-ef72-4b4c-87db-cf11d5ac3f89",
@@ -22734,7 +22738,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "6f9974d3-4a0b-4d21-b03e-cf489c7440e9",
@@ -22804,7 +22808,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "696d5c4d-f3aa-4a56-b46c-cfe57f37b666",
@@ -23173,7 +23177,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"6615514f-7004-456e-aea1-d6d652462d91"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d1ed3ac0-37ea-41c5-94a7-d1b9b58f429b",
@@ -23236,7 +23240,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "31e88624-569e-4287-b07f-d29cf51b5a2d",
@@ -23572,7 +23576,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "e514bd5e-2581-46d3-a984-d4b5915b1dcf",
@@ -23656,7 +23660,7 @@ export const gridData = {
 				"82eba43f-9c81-4335-b258-0873945e940c",
 				"2e305a25-7876-4514-9fd1-73be23e16f3b"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d386ec98-2aec-4a4d-830a-d505623d477a",
@@ -23727,7 +23731,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"eaa5e11b-9618-4aa6-8982-8d6319617b49"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "119e6acf-b0e9-4ced-b1e4-d559ad522966",
@@ -23871,7 +23875,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "7ddc436c-2536-47b7-a36a-d5cdbacb6589",
@@ -24284,7 +24288,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "20201d71-4ad8-42ae-89b6-d7eaa0fe7ee3",
@@ -24653,7 +24657,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"bbe4d82c-426a-4f85-92b5-612050248f8d"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "4d348060-2bfc-43fa-8ad3-daa79adbd622",
@@ -24819,7 +24823,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"3122fd36-b14b-434c-ae32-582dd05bc289"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "bb981b87-723b-41cc-a93a-dd5f4b874385",
@@ -24966,7 +24970,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "0916f551-3985-46b4-999f-de7080700632",
@@ -25122,7 +25126,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "4e4a52b8-4c60-48cd-9658-df1a8e395dc4",
@@ -25185,7 +25189,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "602984a7-6344-41a1-9ad3-dfa60107dc57",
@@ -25472,7 +25476,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ee2f2ddc-aace-4b9b-8160-e2a7c61609f7",
@@ -25550,7 +25554,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"95a1982c-0ddf-4b7e-8676-fa513a9c9232"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "272880a7-1c27-4343-9227-e2e38f64201f",
@@ -25613,7 +25617,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "a842648b-b625-44a2-b5f1-e37681663683",
@@ -25701,7 +25705,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "3a7f0015-04c6-48e5-8fa0-e4b95d88b7c2",
@@ -25764,7 +25768,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "0839b6df-2774-446f-b3a5-e54c4ce8303f",
@@ -25827,7 +25831,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ea8c02c9-edac-4867-bac4-e5687e315542",
@@ -25890,7 +25894,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5d4c52a2-9d6d-4d9c-a0eb-e5a9ca445a5a",
@@ -25953,7 +25957,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "c27327d4-90f7-4a5e-a57f-e7dd977fe568",
@@ -26018,7 +26022,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"451047b6-e9db-432e-96b6-da936e633e0a"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ec74db63-a617-44af-aa50-e83d592dc11f",
@@ -26081,7 +26085,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "403732a4-674b-4416-9d44-e85aaded259f",
@@ -26230,7 +26234,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "91ff8bcc-ccdd-4a52-ad36-e9fc367cf6a2",
@@ -26293,7 +26297,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ff8556bb-d223-4dd7-8104-eab0c56e94b5",
@@ -26437,7 +26441,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "6821945c-83b6-4428-bd96-eb87a68151ea",
@@ -26500,7 +26504,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "1ced4dd8-55a1-4101-9e3a-eba3d0ad62b3",
@@ -26563,7 +26567,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "4485e5e2-6296-4a75-8788-ebe18f9eb10d",
@@ -26649,7 +26653,7 @@ export const gridData = {
 				"22b11693-99c6-4882-89df-66b5ac2ea961",
 				"747c5b78-485d-4866-915c-8b569e6dedff"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "8c9eb2ce-7952-48b5-9fe8-ec42d02f0445",
@@ -26712,7 +26716,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d8739b89-fc17-40d4-9aa1-ee496fff81f0",
@@ -26775,7 +26779,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "530e0085-491c-44fb-a93f-f049127885c0",
@@ -26840,7 +26844,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"81d64e26-8563-4bea-bb38-ccb14495fff9"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "d97239f8-3901-4009-a452-f0abef3073c0",
@@ -26903,7 +26907,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "a3a1196c-ab1a-43dd-bf1d-f12a70dcd131",
@@ -27213,7 +27217,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "28f50973-7728-40fb-a1bf-f3b3d560a4c7",
@@ -27276,7 +27280,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "f06cad77-e13c-49fa-9877-f416db6c74e8",
@@ -27423,7 +27427,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "3f9b5e64-4d1c-4fee-8c4d-f45931dc6017",
@@ -27486,7 +27490,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "911592fb-c469-4171-ba38-f51574a49137",
@@ -27549,7 +27553,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "f7518a03-e373-4676-a3ac-f6210454b8c9",
@@ -27612,7 +27616,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "7d58adee-6a0e-4591-ab6b-f7daa399e62a",
@@ -27793,7 +27797,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"79ff49a7-276d-4383-8394-92451b1b3c4b"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "54d55b9b-a726-421a-8ec2-f82464141472",
@@ -27856,7 +27860,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "db1ead18-31fc-4fe7-aa47-faa39a6a2949",
@@ -27991,7 +27995,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "061fd38e-7222-4195-a25c-fb0116bd445a",
@@ -28056,7 +28060,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"c2b67357-1d80-4ff4-98ef-e72fcf58aabc"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2f3471cb-f2a8-4f47-b3e6-fb60efe20272",
@@ -28119,7 +28123,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "ba348692-fa81-4bd2-a21b-fc5e46851e8e",
@@ -28182,7 +28186,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "5159e03e-726d-4455-b312-fcbc29eae8e0",
@@ -28322,7 +28326,7 @@ export const gridData = {
 			"source": 0,
 			"changeEvent": null,
 			"rollupTaskIds": [],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		},
 		{
 			"id": "2254ae1e-2306-409f-9f2a-fe9989d08640",
@@ -28471,7 +28475,7 @@ export const gridData = {
 			"rollupTaskIds": [
 				"939bb869-3520-461c-a410-7ac8b1ea9c8d"
 			],
-			"costCodeGroup": null
+"costCodeGroup": null, "isBillable":true, "sourceType" : 0
 		}
 	]
 };

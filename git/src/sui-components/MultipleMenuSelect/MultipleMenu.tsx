@@ -85,7 +85,7 @@ const MultipleMenuSelect = (props: MeltipleMenuProps) => {
 
 			if(options3 && options3.length > 0){
 				options3.map((val: any) => {
-					var idx = selectedOptions.findIndex((o:any) => { return val.text == o})
+					var idx = selectedOptions.findIndex((o:any) => { return val?.value == o})
 					if(idx > -1) {
 						val.selectionClass = 'selected-text-cls';
 						val.tickIcon = 'common-icon-tick selected';
@@ -108,16 +108,14 @@ const MultipleMenuSelect = (props: MeltipleMenuProps) => {
 		setCallAPI(!callAPI);
 	};
 	const onTimeLogChange = (value: any) => {
-		const index = [...options3].indexOf(value);
-		const newArray = [...options3];
-		if (index === -1) {
-			options2.map((o: any) => {
-				const idx = selectedOptions.indexOf(o.value);
-				idx >= 0 && newArray.splice(idx, 1);
-			})
-			setSelectedOptions([...newArray, value]);
-			// if (props.MenuOptionsClick) props.MenuOptionsClick([...newArray, value], true);
-		}
+		const index = selectedOptions?.indexOf(value);
+        if (index === -1) {
+            setSelectedOptions([...selectedOptions, value]);
+        } else {
+            const newArray = [...selectedOptions];
+            newArray.splice(index, 1);
+            setSelectedOptions([...newArray]);
+        };
 	};
 	const onUserPrivilageChange = (value: any) => {
 		const index = selectedOptions.indexOf(value);

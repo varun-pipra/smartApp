@@ -99,7 +99,12 @@ const AddTimeLogForm = (props: any) => {
 
 	const handleFieldChange = (event: any, name: any) => {
 		console.log("Date", event, name)
-		setSelectedWorkers(event === "workteam" ? true : false)
+		if((event === "workteam") || (event === "mycompany")){
+			setSelectedWorkers(true)
+		}else {
+			setSelectedWorkers(false)
+		}
+		
 		setTimeLogForm((currentState) => {
 			const newState = { ...currentState, ...{ [name]: event } };
 			checkFormValidity(newState);
@@ -139,6 +144,30 @@ const AddTimeLogForm = (props: any) => {
 		AppList_PostMessage(e);
 		setSelectedSmartItem(e?.displayField);
 	};
+
+	const openSelectResource = () => {
+    	// setOpenWorkerDialog(true);
+		let selectedOpt:any = {}
+		if(timelogForm.resource === 'workteam'){
+			selectedOpt['WorkTeam'] = true
+		}
+		if(timelogForm.resource === 'mycompany'){
+			selectedOpt['showCompanies'] = true
+		}
+		// if(timelogForm.resource === 'Ad-hoc-users'){
+		// 	selectedOpt['Contacts'] = true
+		// }
+		let sendMsg = {
+			event: "common",
+			body: {
+				evt: "resourcepicker",
+				data: selectedOpt
+			}
+		}
+		console.log('resouce sendMsg', sendMsg);
+		postMessage(sendMsg);
+  	};
+
 	return (
 		<>
 			<form className="timelog-form">
@@ -214,7 +243,7 @@ const AddTimeLogForm = (props: any) => {
 								name="name"
 								variant="standard"
 								//   value={}
-								onClick={(e: any) => setOpenWorkerDialog(true)}
+								onClick={openSelectResource}
 								placeholder='Select'
 							/>
 						}

@@ -69,6 +69,7 @@ const SplitTimeSegmentDialog = (props: any) => {
           </IQButton>
         </>
       }
+      withInModule={true}
     >
       <div style={{ overflow: "auto", padding: "0px 10px" }}>
         <div className="summary">

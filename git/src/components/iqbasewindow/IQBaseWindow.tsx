@@ -18,7 +18,7 @@ import { setIsAppMaximized } from "app/common/appInfoSlice";
 // Component definition
 const IQBaseWindow = ({ open, appType, appInfo, actions, className, maxByDefault, moduleColor, onIconClick,
 	inlineModule, isFullView, iconCls, title, tools, presenceProps, children, zIndex, centerPiece, titleInfo,
-	onMaximize, onClose, iFrameId, isFromHelpIcon, tabName, toast, toastTimeout, PaperProps, showBrena = false, isBrenaOpen = false, withInModule=false, ...dialogProps }: IQBaseWindowProps) => {
+	onMaximize, onClose, iFrameId, isFromHelpIcon, tabName, toast, toastTimeout, PaperProps, showBrena = false, isBrenaOpen = false, withInModule=false, commonModule=false, ...dialogProps }: IQBaseWindowProps) => {
 	// State declaration
 	const [isOpen, setOpen] = useState(open);
 	const [showToast, setShowToast] = useState(false);
@@ -85,7 +85,7 @@ const IQBaseWindow = ({ open, appType, appInfo, actions, className, maxByDefault
 				{iconCls && <span
 					onClick={onIconClick}
 					style={{ color: inlineModule ? moduleColor : 'initial' }}
-					className={`title-icon ${inlineModule ? 'common-icon-home' : iconCls}`}
+					className={`title-icon ${(inlineModule && !commonModule) ? 'common-icon-home' : iconCls}`}
 				></span>}
 				{title}
 			</div> : null}

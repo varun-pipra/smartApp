@@ -149,12 +149,20 @@ const AppRoutes = () => {
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
+				<Route path='timelog/t=2' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
 				{/* <Route path='timelog/fromOrg' element={<TimeLogWindow />} /> */}
 				<Route path='timelog/fromOrg' element={<TimeLogWindow />} >
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
 				<Route path='timelog/fromOrg/t=1' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
+				<Route path='timelog/fromOrg/t=2' element={<TimeLogWindow />} >
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
@@ -166,11 +174,19 @@ const AppRoutes = () => {
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
+				<Route path='timelog/planner/t=2' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
 				<Route path='timelog/field' element={<TimeLogWindow />} >
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
 				<Route path='timelog/field/t=1' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
+				<Route path='timelog/field/t=2' element={<TimeLogWindow />} >
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
@@ -182,11 +198,19 @@ const AppRoutes = () => {
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
+				<Route path='timelog/finance/t=2' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
 				<Route path='timelog/safety' element={<TimeLogWindow />} >
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>
 				<Route path='timelog/safety/t=1' element={<TimeLogWindow />} >
+					<Route path='fullView' element={<TimeLogWindow />} />
+					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
+				</Route>
+				<Route path='timelog/safety/t=2' element={<TimeLogWindow />} >
 					<Route path='fullView' element={<TimeLogWindow />} />
 					<Route path='home' element={<TimeLogWindow fullScreen={true} />} />
 				</Route>

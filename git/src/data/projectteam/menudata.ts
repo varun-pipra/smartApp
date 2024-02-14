@@ -52,6 +52,6 @@ export const assignUnassignData2 = [
 ];
 
 export const timelogAssignUnassignData = [
-	{ text: 'Can Manage Time for this Project', value: 'Manage Project Time Log', icon: 'common-icon-Timer', disable: false, key: 'timeLog'},
-	{ text: 'Can Manage Time for My Company', value: 'Manage Company Time Log', icon: 'common-icon-Timer', disable: false, key: 'timeLog'},
+	{ text: 'Can Manage Time for this Project', value: 'Can Manage Time for this Project', icon: 'common-icon-Timer', disable: false, key: 'projectTimeLog'},
+	{ text: 'Can Manage Time for My Company', value: 'Can Manage Time for My Company', icon: 'common-icon-Timer', disable: false, key: 'CompanyTimeLog'},
 ];

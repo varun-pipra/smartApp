@@ -335,7 +335,7 @@ const details = (props: any) => {
 						<div className='timelog-info-label'>Phase</div>
 						<div className='timelog-info-data-box'>
 							<TextField
-								id="phase"
+								id="sbsPhase"
 								fullWidth
 								InputProps={{
 									startAdornment: (
@@ -345,15 +345,21 @@ const details = (props: any) => {
 									),
 									endAdornment: (
 										<InputAdornment position='start'>
-											<span className='common-icon-phase'></span>
+											<span className='common-icon-phase'
+												style={{
+													backgroundColor: "#059cdf",
+													color: "#fff",
+													borderRadius:'10px'
+												}}
+											></span>
 										</InputAdornment>
 									)
 								}}
 								placeholder='Enter Phase'
 								name='name'
 								variant="standard"
-								value={details?.phase !== null && details?.phase?.[0]['name']}
-								onChange={(e: any) => handleFieldChange(e.target?.value, 'phase')}
+								value={details?.sbsPhase !== null && details?.sbsPhase?.[0]['name']}
+								onChange={(e: any) => handleFieldChange(e.target?.value, 'sbsPhase')}
 								disabled={true}
 							//onBlur={(e: any) => handleOnBlur('name')}
 							/>

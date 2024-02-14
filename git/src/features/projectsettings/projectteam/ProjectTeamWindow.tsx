@@ -199,6 +199,7 @@ const ProjectTeamWindow = (props: any) => {
 	const customFilterFields = ['permissions', 'onlineStatus', 'companyManagerAttestation', 'status'];
 	const hideRtlsColumns = ['company', 'roles', "tradeName", "skills", "workCategoryName", "safetyStatus", "policyStatus", "certificateStatus", 'projectZonePermissions'];
 	const isMTA = localhost ? true : (appInfo?.gblConfig?.project?.isProjectCentralZone) || false;
+	let isOrgSubscribed = localhost ? true : (appInfo?.gblConfig?.currentProjectInfo?.isOrgSubscribed);
 	const [groupKey, setGroupKey] = React.useState<any>('');
 	const [filteredValues, setFilteredValues] = React.useState<any>({});
 	const radioRef = useRef<any>('');
@@ -217,6 +218,7 @@ const ProjectTeamWindow = (props: any) => {
 		"sortBy": 'lastName',
 		"sortDirection": 'ASC'
 	};
+	
 	const datesRef = React.useRef<any>({});
 	const localRowDataRef = React.useRef<any>([]);
 	//Grid Management State's
@@ -4111,7 +4113,7 @@ const ProjectTeamWindow = (props: any) => {
 			<GridWindow
 				open={true}
 				title={popTitle}
-				className={`project-team-cls project-team-gridcls teamorientation-${appInfo?.viewConfig?.fromSafetyTab || false}`}
+				className={`project-team-cls project-team-gridcls teamorientation-${appInfo?.viewConfig?.fromSafetyTab || false}  ${isOrgSubscribed == false ? 'project-team-cls-isOrgSubscribed' : 'localhost'}`}
 				appType={appType}
 				appInfo={{ ...appInfo, fullScreen: fullScreen }}
 				iFrameId={iframeID}

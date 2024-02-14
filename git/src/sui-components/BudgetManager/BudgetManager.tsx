@@ -289,7 +289,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 
 	const isRowSelectable = useMemo(() => {
 		return (params: any) => {
-			return params.data && (props?.defaultRecords?.includes(params.data?.id) || params.data?.[props?.disableRowsKey ?? 'clientContract'] == null);
+			return params.data && ((props?.defaultRecords?.includes(params.data?.id) || params.data?.[props?.disableRowsKey ?? 'clientContract'] == null) && (props?.moduleName == 'ClientContracts' ? params?.data?.isBillable : true));
 		};
 	}, []);
 
@@ -474,10 +474,10 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 									onSelectionChanged={() => { onSelectionChanged(); }}
 									rowClassRules={{
 										"budget-manager-row-disabled-cls": (params: any) => {
-											return params?.data?.[props?.disableRowsKey ?? 'clientContract'] != null && !props?.defaultRecords?.includes(params?.data?.id);
+											return ((params?.data?.[props?.disableRowsKey ?? 'clientContract'] != null && !props?.defaultRecords?.includes(params?.data?.id)) || (props?.moduleName == 'ClientContracts' && params?.data?.isBillable == false));
 										},
 										"budget-manager-row-active-cls": (params: any) => {
-											return params?.data?.[props?.disableRowsKey ?? 'clientContract'] == null;
+											return params?.data?.[props?.disableRowsKey ?? 'clientContract'] == null && (props?.moduleName == 'ClientContracts' ?  params?.data?.isBillable : true);
 										},
 									}}
 								></SUIGrid>
@@ -521,8 +521,8 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			children: {
 				type: "checkbox",
 				items: [
-					{ text: "Billable", id: '1', value: '1', key: '1' },
-					{ text: "NonBillable", id: '2', value: '0', key: '0' },
+					{ text: "Billable", id: '1', value: 'true', key: '1' },
+					{ text: "NonBillable", id: '2', value: 'false', key: '0' },
 				]
 			},
 		},
@@ -559,6 +559,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 			className='bid-manager-window vendor-contracts-window add-budget-lineitem-cls custom-style'
 			title='Add Budget Line Item'
 			isFullView={isFullView}
+			withInModule={true}
 			disableEscapeKeyDown={true}
 			PaperProps={{
 				sx: { height: '90%', width: '95%' },

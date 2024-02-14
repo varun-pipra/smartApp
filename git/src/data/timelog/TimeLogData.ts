@@ -38,10 +38,10 @@ export const timelogList = {
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/4ecf490f75ce4ba8856be8f640f9dfc3",
 		"description": "fdghdfgh",
 	},
-	workTeam: 'Carpenter Team',
+	team: 'Carpenter Team',
 	location: 'Building3 - Floor3',
 	sbs: 'Structural - Walls & Finishes',
-	"phase": [
+	sbsPhase: [
 		{
 			"id": 1,
 			"name": "Pre Construction",
@@ -97,10 +97,10 @@ export const timelogList = {
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
 		"description": ""
 	},
-	workTeam: 'Others',
+	team: 'Carpenter',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
-	"phase": [
+	sbsPhase: [
 		{
 			"id": 2,
 			"name": "In Construction",
@@ -153,10 +153,10 @@ export const timelogList = {
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
 		"description": ""
 	},
-	workTeam: 'Others',
+	team: 'Others',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
-	"phase": [
+	sbsPhase: [
 		{
 			"id": 2,
 			"name": "In Construction",
@@ -208,10 +208,10 @@ export const timelogList = {
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
 		"description": ""
 	},
-	workTeam: 'Others',
+	team: 'Others',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
-	"phase": [
+	sbsPhase: [
 		{
 			"id": 2,
 			"name": "In Construction",
@@ -263,10 +263,10 @@ export const timelogList = {
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
 		"description": ""
 	},
-	workTeam: 'Others',
+	team: 'Others',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
-	"phase": [
+	sbsPhase: [
 		{
 			"id": 2,
 			"name": "In Construction",
@@ -295,7 +295,7 @@ export const timelogList = {
 	endDate: "2024-01-16T12:30:00.00Z",
 	"hasTimeOverlap": false,	
 	"hasLocationConflict": false,	
-	startTime: "2024-10-01T10:00:00.00Z",
+	startTime: "2024-01-01T10:00:00.00Z",
 	endTime: "2024-01-10T12:00:00.00Z",
 	duration: 220,
 	source: 1,
@@ -318,10 +318,10 @@ export const timelogList = {
 		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
 		"description": ""
 	},
-	workTeam: 'Others',
+	team: 'Carpenter',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
-	"phase": [
+	sbsPhase: [
 		{
 			"id": 2,
 			"name": "In Construction",
@@ -371,10 +371,10 @@ export const timelogList = {
 			"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
 			"description": ""
 		},
-		workTeam: 'Others',
+		team: 'Carpenter',
 		location: 'Conference Room',
 		sbs: 'Electrical - Fire Alarm',
-		"phase": [
+		sbsPhase: [
 			{
 				"id": 2,
 				"name": "In Construction",

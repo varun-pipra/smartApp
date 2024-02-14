@@ -77,7 +77,7 @@ const TimeLogWindow = (props: any) => {
 	const groupOptions = [{
 		text: 'Time Entry For', value: 'timeEntryFor'
 	}, {
-		text: 'Work Team', value: 'workTeam'
+		text: 'Work Team', value: 'team'
 	}, {
 		text: 'Companies', value: 'company'
 	}, {
@@ -187,6 +187,9 @@ const TimeLogWindow = (props: any) => {
 							case 'updatechildparticipants':
 								// console.log('updatechildparticipants', data)
 								// dispatch(setPresenceData(data.data));
+								break;
+							case 'resourcepicker':
+								console.log('resourcepicker', data)
 								break;
 						}
 					}
@@ -371,7 +374,7 @@ const TimeLogWindow = (props: any) => {
 				&& (_.isEmpty(filterValues?.sbs) || filterValues?.sbs?.length === 0 || filterValues?.sbs?.indexOf(item.sbs) > -1)
 				&& (_.isEmpty(filterValues?.timeEntryFor) || filterValues?.timeEntryFor?.length === 0 || filterValues?.timeEntryFor?.indexOf(item.timeEntryFor) > -1)
 				&& (_.isEmpty(filterValues?.source) || filterValues?.source?.length === 0 || filterValues?.source?.indexOf(item?.source?.toString()) > -1)
-				&& (_.isEmpty(filterValues?.workTeam) || filterValues?.workTeam?.length === 0 || filterValues?.workTeam?.indexOf(item?.workTeam) > -1)
+				&& (_.isEmpty(filterValues?.team) || filterValues?.team?.length === 0 || filterValues?.team?.indexOf(item?.team) > -1)
 				&& (_.isEmpty(filterValues?.status) || filterValues?.status?.length === 0 || filterValues?.status?.indexOf(item?.status?.toString()) > -1)
 				&& (_.isEmpty(filterValues?.dateRange) || filterValues?.dateRange?.length === 0 || item?.dateRange === 'custom' ? false : filterValues?.dateRange?.indexOf(item?.dateRange)) > -1;
 			const orgFilters = isFromOrg 
@@ -443,7 +446,7 @@ const TimeLogWindow = (props: any) => {
 			<>
 				{!params?.node?.footer &&
 					<div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', position: 'absolute', left: '4px' }}>
-						{data?.status == 'InProgress' && <span className='timer-animation' style={{ fontSize: '1.8em' }}></span>}
+						{getTimeLogStatus(data?.status) == 'In Progress' && <span className='timer-animation' style={{ fontSize: '1.8em' }}></span>}
 						{data?.hasTimeOverlap == true && <IQTooltip
 							title={
 								<Stack direction='row' className='tooltipcontent'>
@@ -486,8 +489,18 @@ const TimeLogWindow = (props: any) => {
 				</div>
 			</>
 		)
-	}
+	};
+	const CustomDateSorting = (valueA: any, valueB: any, nodeA: any, nodeB: any, order: any) => {
+		const a = valueA && new Date(valueA).getTime();
+		const b = valueB && new Date(valueB).getTime();
 
+		if (a == null && b == null) return 0;
+
+		if (a == null) return -1;
+		else if (b == null) return 1;
+
+		return a - b;
+	};
 	const headers: any = useMemo(() => [
 		{
 			headerName: 'Time Segment ID',
@@ -568,14 +581,17 @@ const TimeLogWindow = (props: any) => {
 		}, {
 			headerName: 'Start Date',
 			field: 'startDate',
+			sort:'desc',
+			comparator : CustomDateSorting,
 			valueGetter: (params: any) => params.data ? formatDate(params.data?.startDate) : '',		
 			keyCreator: (params: any) => {
-				return moment.utc(params?.data?.endDate).format('DD/MM/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
+				return moment.utc(params?.data?.endDate).format('MM/DD/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
 			}
 		}, {
 			headerName: 'End Date',
 			field: 'endDate',
-			valueGetter: (params: any) => params.data ? formatDate(params.data?.endDate) : '',					
+			comparator : CustomDateSorting,
+			valueGetter: (params: any) => params.data ? formatDate(params.data?.endDate) : '',				
 		}, {
 			headerName: 'Start Time',
 			field: 'startTime',
@@ -642,6 +658,7 @@ const TimeLogWindow = (props: any) => {
 		}, {
 			headerName: 'Work Team',
 			field: 'team',
+			valueGetter: (params: any) => params.data?.team,
 			keyCreator: (params: any) => params.data?.team || "None"
 		}, {
 			headerName: 'Location',
@@ -685,7 +702,7 @@ const TimeLogWindow = (props: any) => {
 			item.cellRenderer = (params: any) => {
 				if (!!params?.node?.footer) return null;
 				else return (
-					<>{moment.utc(params?.value).format('DD/MM/YYYY')}</>
+					<>{moment.utc(params?.value).format('MM/DD/YYYY')}</>
 				);
 			}
 		};
@@ -987,34 +1004,36 @@ const TimeLogWindow = (props: any) => {
 	const GetDateRangeFilterData = (data: any) => {
 		const todayDate = new Date();
 
-		const startDayOfThisWeek = moment(todayDate).startOf('week');
-		const lastDayOfThisWeek = moment(todayDate).endOf('week');
+		const startDayOfThisWeek = moment.utc(todayDate).startOf('week');
+		const lastDayOfThisWeek = moment.utc(todayDate).endOf('week');
 
-		const startDayOfPrevWeek = moment(startDayOfThisWeek).subtract(1, 'week').startOf('week');
-		const lastDayOfPrevWeek = moment(lastDayOfThisWeek).subtract(1, 'week').endOf('week');
+		const startDayOfPrevWeek = moment.utc(startDayOfThisWeek).subtract(1, 'week').startOf('week');
+		const lastDayOfPrevWeek = moment.utc(lastDayOfThisWeek).subtract(1, 'week').endOf('week');
 
-		const startDayOfPrevMonth = moment(todayDate).subtract(1, 'month').startOf('month');
-		const lastDayOfPrevMonth = moment(todayDate).subtract(1, 'month').endOf('month');
+		const startDayOfPrevMonth = moment.utc(todayDate).subtract(1, 'month').startOf('month');
+		const lastDayOfPrevMonth = moment.utc(todayDate).subtract(1, 'month').endOf('month');
 
-		const startDayOfThisMonth = moment(todayDate).startOf('month');
-		const lastDayOfThisMonth = moment(todayDate).endOf('month');
+		const startDayOfThisMonth = moment.utc(todayDate).startOf('month');
+		const lastDayOfThisMonth = moment.utc(todayDate).endOf('month');
 
-		const todayStart = moment().startOf('day');
-		const todayEnd = moment().endOf('day');
-		const yesterdayStart = moment().subtract(1, 'days').startOf('day');
-		const yesterdayEnd = moment().subtract(1, 'days').endOf('day');
-		const actualDate = moment(data?.endDate);
+		const todayStart = moment.utc().startOf('day');
+		const todayEnd = moment.utc().endOf('day');
+		const yesterdayStart = moment.utc().subtract(1, 'days').startOf('day');
+		const yesterdayEnd = moment.utc().subtract(1, 'days').endOf('day');
+		const actualDate = moment.utc(data?.endDate);
 
-		if (moment(actualDate).isBetween(todayStart, todayEnd)) return 'today';
-		else if (moment(actualDate).isBetween(yesterdayStart, yesterdayEnd)) return 'yesterday';
+		if(moment.utc(actualDate).isAfter(todayEnd)) return 'future';
 
-		else if (moment(actualDate).isBetween(startDayOfPrevWeek, lastDayOfPrevWeek)) return 'lastWeek';
-		else if (moment(actualDate).isBetween(startDayOfThisWeek, lastDayOfThisWeek)) return 'thisWeek';
+		else if (moment.utc(actualDate).isBetween(todayStart, todayEnd)) return 'today';
+		else if (moment.utc(actualDate).isBetween(yesterdayStart, yesterdayEnd)) return 'yesterday';
 
-		else if (moment(actualDate).isBetween(startDayOfThisMonth, lastDayOfThisMonth)) return 'thisMonth';
-		else if (moment(actualDate).isBetween(startDayOfPrevMonth, lastDayOfPrevMonth)) return 'lastMonth';
+		else if (moment.utc(actualDate).isBetween(startDayOfPrevWeek, lastDayOfPrevWeek)) return 'lastWeek';
+		else if (moment.utc(actualDate).isBetween(startDayOfThisWeek, lastDayOfThisWeek)) return 'thisWeek';
 
-		else return 'future';
+		else if (moment.utc(actualDate).isBetween(startDayOfThisMonth, lastDayOfThisMonth)) return 'thisMonth';
+		else if (moment.utc(actualDate).isBetween(startDayOfPrevMonth, lastDayOfPrevMonth)) return 'lastMonth';
+
+		else return 'past';
 	};
 
 
@@ -1044,6 +1063,7 @@ const TimeLogWindow = (props: any) => {
 			className='time-log-window'
 			iconCls={isFromOrg ? 'common-icon-home org' : isFromPlanner ? 'common-icon-home planner' : isFromFinance ? 'common-icon-home finance' : isFromField ? 'common-icon-home field' : isFromSafety ? 'common-icon-home safety' : 'common-icon-home'}
 			appType={appType}
+			commonModule={true}
 			centerPiece={
 				(isFromOrg && <>{`Displaying Time Entries for the projects associated to the selected Profile.`}</>)
 			}

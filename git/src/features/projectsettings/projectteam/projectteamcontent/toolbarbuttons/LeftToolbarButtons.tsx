@@ -166,6 +166,7 @@ const LeftToolbarButtons = (props: any) => {
 		userPrivileges = [ 'None' ],
 		userPermissionTypes: any = [],
 		vendorMenuItems: any = [],
+		timeLogMenuItems:any = [],
 		isDeactivedForViolation = false;
 	if (selectedMembers.length > 0) {
 		let zonePermission = selectedMembers[ 0 ] && selectedMembers[ 0 ][ 'projectZonePermissions' ] || [],
@@ -230,6 +231,14 @@ const LeftToolbarButtons = (props: any) => {
 				return v;
 			});
 		}
+		timeLogMenuItems = [...timelogAssignUnassignData];
+		if(timeLogMenuItems?.length > 0) {
+			timeLogMenuItems = timeLogMenuItems.map((v: any) => {
+				let name = v.value, checked = zonePermission.includes(name);
+				checked && userPrivileges.push(name);
+				return v;
+			});
+		};
 		var complianceMgr: any = generalPermissions.find((obj:any) => { 
 			return obj.value == 'Compliance Manager'
 		});
@@ -377,23 +386,22 @@ const LeftToolbarButtons = (props: any) => {
                 )}
 			</IconButton>
 		</IQTooltip> }
-		{/* { activeTab !== 'member' || (!isManager) ? '' : <IQTooltip title='Assign/Unassign to Security Group' placement='bottom'> */}
+		{ activeTab !== 'member' || (!isManager) ? '' : <IQTooltip title='Assign/Unassign to Security Group' placement='bottom'>
 			{/* <IconButton disabled={disableUserPrivilege}>
 				<span className='common-icon-none icon-size' />
 			</IconButton> */}
 			<MultipleMenuSelect
 				icon={ <span className='common-icon-none icon-size' /> }
-				// iconDisable={ disableUserPrivilege }
+				iconDisable={ disableUserPrivilege }
 				options={ vendorMenuItems }
 				options2={ generalPermissions }
-				options3={timelogAssignUnassignData}
+				options3={timeLogMenuItems}
 				userPrivileges={ userPrivileges }
 				Menuheading={ vendorMenuItems.length > 0? 'Finance Permissions': '' }
 				Menuheading1={'Time Log' }
 				MenuOptionsClick={ (data: any, isDirty: any) => { assignOrUnassignUserPermission(data, isDirty); } }
 			/>
-		{/* </IQTooltip> 
-		 } */}
+		</IQTooltip> }
 		{ activeTab !== 'member' ? '' : <><IQTooltip title='LiveLink' placement='bottom'>
 			<IconButton disabled={ disableLiveLink } data-action='livelink' onClick={ clickHandler }>
 				<span className='common-icon-livelink icon-size' />

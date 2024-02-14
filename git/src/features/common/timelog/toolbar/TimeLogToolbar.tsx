@@ -34,13 +34,18 @@ export const TLLeftButtons = memo(() => {
 		}
 	}
 	useMemo(() => {
-		console.log('selectedRowData',selectedRowData)
-		let array: any = selectedRowData?.map((value: any) => getTimeLogStatus(value.status) == 'Reported' ? getTimeLogStatus(value.status) : '')
-		if (selectedRowData.length > 0 && array.includes('Reported')) {
-			setAcceptBtn(false);
-			setsendBackBtn(false);
+		if (selectedRowData.length > 0){
+			let array: any = selectedRowData?.map((value: any) => getTimeLogStatus(value.status));
+			if (array.includes('Reported') && !array.includes('In Progress') && !array.includes('Accepted') && !array.includes('Planned') && !array.includes('Unavailable') && !array.includes('Sent Back')) {
+				setAcceptBtn(false);
+				setsendBackBtn(false);
+			}
+			else {
+				setAcceptBtn(true);
+				setsendBackBtn(true);
+			}
 		}
-		else {
+		else{
 			setAcceptBtn(true);
 			setsendBackBtn(true);
 		}

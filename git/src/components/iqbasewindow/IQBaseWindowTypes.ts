@@ -52,4 +52,5 @@ export type IQBaseWindowProps = DialogProps & {
 	isBrenaOpen?: boolean;
 	withInModule?:boolean;	
 	rightSideText?:any;
+	commonModule?:boolean;
 };

@@ -14,12 +14,9 @@ import { getTimeLogDetails, setSelectedTimeLogDetails } from '../stores/TimeLogS
 import { stringToUSDateTime2 } from 'utilities/commonFunctions';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import { timelogStatusMap } from '../TimeLogConstants';
+import {getDuration} from '../utils';
 
-const getDuration = (data:any) => {
-	let hours = Math.floor(data / 60);
-	let minutes = data % 60 ?? "00";
-	return `${hours} Hrs ${minutes ? minutes : '00'} Mins`
-}
+
 const TimeLogLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
 	const { server } = useAppSelector(state => state.appInfo);
@@ -53,7 +50,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 			label: 'Details',
 			showCount: false,
 			disabled: false,
-			iconCls: 'common-icon-change-event-details',
+			iconCls: 'common-icon-details',
 			content: <Details />
 		}, {
 			tabId: 'links',

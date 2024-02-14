@@ -28,37 +28,47 @@ export const addTimeLog = async (payload: any, callback: any) => {
 export const fetchTimeLog = async () => {
   const server: any = getServerInfo();
   const options = {
-		method: 'POST',
-		headers: { 'content-type': 'application/json' },
-		body: JSON.stringify({
-      "offset":0,
-      "rows":10000,
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      "offset": 0,
+      "rows": 10000,
     }),
-	};
-  const isMock = window.location.href?.includes('t=1')  
+  };
+  const isMock = window.location.href?.includes('t=1');
+  const isMReal = window.location.href?.includes('t=2');
   if (!isLocalhost) {
-    if(isMock) return timelogList?.segments
-    else { 
+    if (isMock) return timelogList?.segments
+    else {
       const response = await TimeLogRequest(server, '/segments/all', options);
-      return response?.segments;
+      if (isMReal) {
+        return [...timelogList?.segments, ...response?.segments];
+      }
+      else return response?.segments;
     }
 
   } else return timelogList?.segments;
 };
 
-export const fetchTimeLogDetails = async (timeLogId:any) => {
+export const fetchTimeLogDetails = async (timeLogId: any) => {
   const server: any = getServerInfo();
-  const isMock = window.location.href?.includes('t=1')  
+  const isMock = window.location.href?.includes('t=1');
+  const isMReal = window.location.href?.includes('t=2'); 
   if (!isLocalhost) {
-    if(isMock) return timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
-    else{
+    if (isMock) return timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
+    else {
       const response = await TimeLogRequest(server, `/segments/${timeLogId}`, {});
-      return response;
+      if(isMReal) {
+        const mockRecord = timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
+        console.log("mockRecord", mockRecord)
+        return mockRecord ? mockRecord : response;
+      }
+      else return response;
     }
 
   } else {
     const record = timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
-	  return record;
+    return record;
   }
 };
 

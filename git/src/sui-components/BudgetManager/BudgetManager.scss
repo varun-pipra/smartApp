@@ -37,10 +37,10 @@
 .budget-line-disable-cls {
     .budget-manager-row-disabled-cls {
         opacity: 0.4;
-        border-right: thin solid #999;
+        // border-right: thin solid #999;
         margin-left: 0.5px;
         box-shadow: none;
-        border-color: #b2b2b2;
+        // border-color: #b2b2b2;
     }
     .budget-manager-row-active-cls {
         opacity: 1 !important;
