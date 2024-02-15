@@ -42,10 +42,16 @@
                 grid-column: span 2;
             }
             &.span-3.mark-up-fee {
-                grid-column: span 3;
-                padding-top: 10px;
+                grid-column: span 2; // width: 42vw; 
                 .budget-info-label {
                     color: #333;
+                    min-width: 124px;
+                }
+                .associated-to {
+                    padding-left: 1.4em;
+                    .enter-value-cls {
+                        margin-left: 10px;
+                    }
                 }
             }
             &.division-cost-code-field {
@@ -116,6 +122,7 @@
                     }
                     .cc-schedule-values_list-item {
                         padding-top: 8px;
+                        width: 20%;
                     }
                 }
                 .budget-info-data {
@@ -177,7 +184,10 @@
             }
         }
         .budget-billable-cls {
-            display: contents;
+            //display: contents;
+            grid-column: span 3;
+            display: flex;
+            gap: 8rem;
             .budget-info-subheader {
                 min-height: 60px;
             }
@@ -191,6 +201,9 @@
                         margin-right: 30px;
                     }
                 }
+            }
+            &.Mark-Up-cls {
+                gap: 13rem;
             }
         }
     }

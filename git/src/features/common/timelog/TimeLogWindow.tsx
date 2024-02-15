@@ -32,6 +32,9 @@ import SUIClock from 'sui-components/Clock/Clock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import SplitTimeSegmentDialog from './timeSplitSegment/SplitTimeSegmentDialog';
 import { getPickerDefaultTime ,getDuration } from './utils';
+import ManageWorkers from './workerDailog/addManageWorkers/ManageWorkers';
+import {workTeamData} from "data/timelog/TimeLogData";
+
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -54,6 +57,8 @@ const TimeLogWindow = (props: any) => {
 	const [search, setSearch] = useState<string>('');
 	const [defaultFilters, setDefaultFilters] = useState<any>({});
 	const groupKeyValue = useRef<any>(null);
+	const [openManageWorkers, setOpenManageWorkers] = useState<any>(false);
+	const [workTeamDataFromExt, setWorkTeamDataFromExt] = useState([]);
 	// const [activeGroupKey, setActiveGroupKey] = useState<String>('');
 	const [columns, setColumns] = useState([]);
 	const [rowData, setRowData] = useState<Array<any>>([]);
@@ -189,7 +194,8 @@ const TimeLogWindow = (props: any) => {
 								// dispatch(setPresenceData(data.data));
 								break;
 							case 'resourcepicker':
-								console.log('resourcepicker', data)
+								setWorkTeamDataFromExt(data.response)
+								setOpenManageWorkers(true);
 								break;
 						}
 					}
@@ -432,6 +438,10 @@ const TimeLogWindow = (props: any) => {
 
 	};
 
+	const handelAddSelect = (isOpen: boolean) => {
+		setOpenManageWorkers(isOpen);		
+	};
+
 	// Function to check for time overlap or location mismatch
 
 	/**
@@ -603,7 +613,7 @@ const TimeLogWindow = (props: any) => {
 							onDataChange("startTime", getTime(value));
 						}}
 						disabled={(status.includes(params?.data?.status?.toString()))}
-						defaultTime={moment.utc(params?.data?.startTime).format('h:mm A') || ""}
+						defaultTime={getTime(params?.data?.startTime) || ""}
 						pickerDefaultTime={getPickerDefaultTime(params?.data?.startTime, true)}
 						placeholder={"HH:MM"}
 						// actions={[]}
@@ -622,7 +632,7 @@ const TimeLogWindow = (props: any) => {
 							onDataChange("endTime", getTime(value));
 						}}
 						disabled={(status.includes(params?.data?.status?.toString()))}
-						defaultTime={moment.utc(params?.data?.endTime).format('h:mm A') || ""}
+						defaultTime={getTime(params?.data?.endTime) || ''}
 						pickerDefaultTime={getPickerDefaultTime(params?.data?.endTime, false)}
 						placeholder={"HH:MM"}
 						// actions={[]}
@@ -1168,6 +1178,14 @@ const TimeLogWindow = (props: any) => {
 		{splitTimeSegmentBtn && (
 			<SplitTimeSegmentDialog onClose={() => dispatch(setSplitTimeSegmentBtn(false))} />
 		)}
+		{openManageWorkers ? (
+			<ManageWorkers
+				workerData={workTeamData}
+				onClose={() => handelAddSelect(false)}
+			/>
+			) : (
+			<></>
+			)}
 		</>
 		// : <SUIAlert
 		// 		open={true}

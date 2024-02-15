@@ -1,6 +1,34 @@
 
 export const timelogList = {
 	segments: [
+		{
+			"id": "a6388995-1469-4a75-b7cf-b094a9699a2f",
+			"timeLogId": "TS00156",
+			"timeSegmentId": "156",
+			"startTime": "2024-02-14T07:10:00Z",
+			"endTime": "2024-02-14T13:15:00Z",
+			"duration": 365,
+			"source": 0,
+			"smartItem": null,
+			"status": 0,
+			"hasTimeOverlap": false,
+			"hasLocationConflict": false,
+			"timeEntryFor": "Kolli, Swathi"
+	},
+	{
+    "id": "0751ef0c-9f83-4fe1-853d-a2671d59705e",
+    "timeLogId": "TS00156",
+    "timeSegmentId": "157",
+    "startTime": "2024-02-14T13:10:00Z",
+    "endTime": "2024-02-14T18:15:00Z",
+    "duration": 305,
+    "source": 0,
+    "smartItem": null,
+    "status": 0,
+    "hasTimeOverlap": false,
+    "hasLocationConflict": false,
+    "timeEntryFor": "Kolli, Swathi"
+},
  {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e01",
 	timeSegmentId: 'TS00199',

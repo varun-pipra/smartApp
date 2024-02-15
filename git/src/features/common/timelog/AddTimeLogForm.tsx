@@ -149,10 +149,19 @@ const AddTimeLogForm = (props: any) => {
     	// setOpenWorkerDialog(true);
 		let selectedOpt:any = {}
 		if(timelogForm.resource === 'workteam'){
-			selectedOpt['WorkTeam'] = true
+			selectedOpt={
+				workteamUser:true,
+				title:"Work Team"
+			}
 		}
 		if(timelogForm.resource === 'mycompany'){
-			selectedOpt['showCompanies'] = true
+			selectedOpt={
+				IQ9Accounts:true,
+				Contacts:true,
+				FilterByCompany:true,
+				companyUser:true,
+				title:"My Company"
+			}
 		}
 		// if(timelogForm.resource === 'Ad-hoc-users'){
 		// 	selectedOpt['Contacts'] = true

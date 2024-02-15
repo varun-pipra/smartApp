@@ -42,7 +42,7 @@ const SplitTimeSegmentDialog = (props: any) => {
       // isFullView={isFullView}
       disableEscapeKeyDown={true}
       PaperProps={{
-        sx: { height: "85%", width: "30%" },
+        sx: { height: "65%", width: "30%" },
       }}
       // onMaximize={handleWindowMaximize}
       // moduleColor='#0e5b0'
@@ -71,28 +71,28 @@ const SplitTimeSegmentDialog = (props: any) => {
       }
       withInModule={true}
     >
-      <div style={{ overflow: "auto", padding: "0px 10px" }}>
+      <div className="summary-wrap" style={{ overflow: "auto" }}>
         <div className="summary">
           <div className="summary_header-text">SUMMARY</div>
           <div className="summary_container">
             <div>
               <InputLabel className="summary_inputlabel">Start Time</InputLabel>
-              <div className="summary_header-text">9:00 AM</div>
+              <div className="summary_header-text time">9:00 AM</div>
             </div>
             <div>
               <InputLabel className="summary_inputlabel">End Time</InputLabel>
-              <div className="summary_header-text">6:00 PM</div>
+              <div className="summary_header-text time">6:00 PM</div>
             </div>
             <div>
               <InputLabel className="summary_inputlabel">Duration</InputLabel>
-              <div className="summary_header-text" style={{ color: "#ed7431" }}>
+              <div className="summary_header-text time" style={{ color: "#ed7431" }}>
                 9 Hrs 00 Mins
               </div>
             </div>
           </div>
         </div>
-        <div className="summary_header-text">Split Time Entry</div>
-        <div>
+        <div className="summary_header-text split-cls">Split Time Entry</div>
+        <div  className="summary-field-cls">
           <WorkerTimeLog
             name="time"
             onDurationChange={(duration: any) =>
@@ -102,15 +102,9 @@ const SplitTimeSegmentDialog = (props: any) => {
           />
         </div>
         <div className="reason-textfield-cls">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-            }}
-          >
+          <div className="label-cls">
             <span
-              className="common-icon-Budgetcalculator"
+              className="common-icon-Description"
               style={{ fontSize: "1.25rem" }}
             />
             <InputLabel className="inputlabel">

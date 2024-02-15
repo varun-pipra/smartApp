@@ -489,6 +489,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		return inlineFilter;
 	};
 
+	useEffect(()=> {
+		setDivisionDefaultFilters(getDefaultFilter());
+	}, [divisionCostCodeFilterData])
+
 	const handleProviderSourceChange = (type: string, key:string) => {
 		if (type == 'yes') {
 			console.log("yeeeee", formData)
@@ -646,7 +650,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							showFilterInSearch={true}
 							filteroptions={divisionCostCodeFilterData.length > 0 ? divisionCostCodeFilterData : []}
 							onFiltersUpdate={(filters: any) => setDivisionDefaultFilters(filters)}
-							defaultFilters={divisionDefaultFilters?.length ? divisionDefaultFilters : getDefaultFilter()}
+							defaultFilters={divisionDefaultFilters}
 						/>}
 					</div>
 				</span>
@@ -914,7 +918,6 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							>
 							<span className='common-icon-infoicon'></span>
 					</IQTooltip>
-
 				</div>
 				<span className="source-checkbox-cls">
 					<RadioGroup
@@ -934,8 +937,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				</span>
 				</div>
 				</div>
-				<span />
 				
+				
+				
+				<div className="budget-billable-cls Mark-Up-cls">
 				{formData?.costType == 'E - Equipment' && <div className="source-type-cls">
 					<div className="budget-info-subheader">
 						<span>Source Type</span>
@@ -984,7 +989,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</div>
 						<div className="budget-info-data-box">
 							<div className="budget-info-label">
-								Do you want to add Mark-up Fee?
+								Add Mark-up Fee?
 							</div>
 							<RadioGroup
 								row
@@ -1014,7 +1019,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 									<>
 										<span className="enter-value-cls">Enter Value</span>
 										<span>
-											<FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+											<FormControl sx={{ m: 1, minWidth: 100 }} size="small">
 												<Select
 													labelId="demo-select-small"
 													id="demo-select-small"
@@ -1097,8 +1102,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</div>
 					</span>
 				) : formData?.costType == 'E - Equipment' ? <span /> : null}
-				{formData?.costType == 'E - Equipment' ? <span /> : null}
-
+				
+				</div>
 				
 				<span className="budget-info-tile date-field">
 					<div className="budget-info-label">Estimated Start Date</div>

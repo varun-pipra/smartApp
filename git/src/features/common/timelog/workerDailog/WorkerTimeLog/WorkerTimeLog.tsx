@@ -176,7 +176,7 @@ const WorkerTimeLog = (props: any) => {
             onTimeSelection={(value: any) => {
               onDataChange("startTime", getTime(value), index);
             }}
-            disabled={logEntries.length - 1 !== index}
+            // disabled={logEntries.length - 1 !== index}
             defaultTime={rec?.startTime || ""}
             placeholder={"HH:MM"}
             // actions={[]}
@@ -198,7 +198,7 @@ const WorkerTimeLog = (props: any) => {
             onTimeSelection={(value: any) => {
               onDataChange("endTime", getTime(value), index);
             }}
-            disabled={logEntries.length - 1 !== index}
+            // disabled={logEntries.length - 1 !== index}
             defaultTime={rec?.endTime || ""}
             placeholder={"HH:MM"}
             // actions={[]}
@@ -218,7 +218,7 @@ const WorkerTimeLog = (props: any) => {
               Duration
             </InputLabel>
             <div style={{display:'flex', alignItems:'center', gap : '2px'}}>
-                <span className="common-icon-CurrentTime" />
+                <span className="common-icon-monthly" />
                 <div>{rec.durationFormat}</div>
             </div>
           </div>
@@ -237,7 +237,7 @@ const WorkerTimeLog = (props: any) => {
           </InputLabel>
           <TextField
             fullWidth
-            disabled={logEntries.length - 1 !== index}
+            // disabled={logEntries.length - 1 !== index}
             InputProps={{
               startAdornment: <span className="common-icon-Description"></span>,
             }}

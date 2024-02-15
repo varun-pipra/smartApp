@@ -201,7 +201,7 @@ const details = (props: any) => {
 									handleFieldChange(getTime(value), "startTime");
 								}}
 								disabled={(statusbasedDisable.includes(details?.status?.toString()))}
-								defaultTime={moment.utc(details?.startTime).format('h:mm A') || ""}
+								defaultTime={getTime(details?.startTime) || ""}
 								pickerDefaultTime={getPickerDefaultTime(details?.startTime, true)}
 								placeholder={"HH:MM"}
 								// actions={[]}
@@ -218,7 +218,7 @@ const details = (props: any) => {
 									handleFieldChange(getTime(value), "endTime");
 								}}
 								disabled={(statusbasedDisable.includes(details.status?.toString()))}
-								defaultTime={moment.utc(details.endTime).format('h:mm A') || ""}
+								defaultTime={getTime(details?.endTime) || ""}
 								pickerDefaultTime={getPickerDefaultTime(details?.endTime, true)}
 								placeholder={"HH:MM"}
 								// actions={[]}
