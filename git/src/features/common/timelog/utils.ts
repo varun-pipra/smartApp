@@ -128,3 +128,48 @@ export const getDuration = (data:any) => {
 		return '0 Hrs : 00 Mins'
 	}
 }
+
+export const GetUniqueList = (data: any, key?: any) => {
+  let unique: any = [];
+  data?.map((item: any) =>
+    unique?.filter((obj: any) => obj?.[key] === item?.[key])?.length > 0
+      ? null
+      : item?.value
+      ? unique.push(item)
+      : null
+  );
+  unique?.sort((a: any, b: any) =>
+    a?.[key]?.localeCompare(b?.[key], undefined, { numeric: true })
+  );
+  return unique;
+};
+export const findAndUpdateFiltersData = (
+  filterOptions: any,
+  data: any,
+  key: string,
+  nested?: boolean,
+  nestedKey?: any
+) => {
+  const formattedData = data?.map((rec: any) => {
+	 if (nested)
+      return {
+        text: rec?.[key]?.[nestedKey],
+        value: rec?.[key]?.[nestedKey],
+        id: rec?.[key]?.id,
+      };
+    else
+      return {
+        text: rec?.[key] ?? rec?.["name"],
+        value: rec?.[key] ?? rec?.["name"],
+        id: rec?.id,
+      };
+  });
+  const filtersCopy: any = [...filterOptions];
+  let currentItem: any = filtersCopy.find((rec: any) => rec?.keyValue === key);
+  currentItem.children.items = GetUniqueList(formattedData?.flat(), "text");
+  let mapData = [...filterOptions].map((item: any) => {
+    if (item.key === currentItem.key) return currentItem;
+    else return item;
+  });
+  return mapData;
+};

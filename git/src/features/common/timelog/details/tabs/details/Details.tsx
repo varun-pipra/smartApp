@@ -10,8 +10,9 @@ import SmartDropDown from 'components/smartDropdown';
 import Location from 'features/common/locationfield/LocationField';
 import { fetchLocationData } from 'features/common/locationfield/LocationStore';
 import { AppList, AppList_PostMessage, getPickerDefaultTime ,getDuration} from '../../../utils';
+import { postMessage } from "app/utils";
 import SUIClock from 'sui-components/Clock/Clock';
-import { getTime } from 'utilities/datetime/DateTimeUtils';
+import { getTime ,addTimeToDate} from 'utilities/datetime/DateTimeUtils';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import {setDetailsPayloadSave} from '../../../stores/TimeLogSlice';
 import _ from "lodash";
@@ -48,6 +49,7 @@ const details = (props: any) => {
 	}, [sbsGridData]);
 
 	useEffect(() => {
+		console.log('selectedTimeLogDetails',selectedTimeLogDetails)
 		const data = {
 			...selectedTimeLogDetails,
 			userimage: image,
@@ -76,10 +78,37 @@ const details = (props: any) => {
 	}, [locationType]);
 
 	const handleFieldChange = (value: any, name: any) => {
-		const data = { ...details, [name]: value };
+		let data;
+		const startDate_data = name == 'startDate' ? value : details.startDate;
+		const startTime_data = name == 'startTime' ? value : getTime(details.startTime); 
+		const enddate_data = name == 'endDate' ? value : details.endDate;
+		const endTime_data = name == 'endTime' ? value : getTime(details.endTime);
+
+		if(name == 'startTime' || name == 'startDate'){
+				const startTime = addTimeToDate(startDate_data,startTime_data);
+				data = { ...details, ['startTime']: startTime ,['startDate']: value};
+			}
+		else if(name == 'endTime' || name == 'endDate'){
+			const endTime = addTimeToDate(enddate_data,endTime_data);
+			data = { ...details, ['endTime']: endTime ,['endDate']: value};
+		}
+		else{
+			data = { ...details, [name]: value };
+		}
 		setDetails(data);
-		dispatch(setDetailsPayloadSave({...DetailspayloadSave,[name]: value}))
+		const payload:any = {
+			startTime:data?.startTime,
+			endTime : data?.endTime,
+			status : data?.status,
+			smartItemId : data?.smartItem?.id,
+			notes:data?.notes,
+			locationId:data?.locations,
+			sbsId:details?.sbs,
+			sbsPhaseId:details?.sbsPhase?.[0]['id'],
+		}
+		dispatch(setDetailsPayloadSave(payload))
 	}
+	
 
 	const handleLocationChange = (newValues: any) => {
 		const locations: any = [];
@@ -281,9 +310,9 @@ const details = (props: any) => {
 									handleChange={(e: any) => { handleMenu(e) }}
 								/>
 								:
-								<div className='timeaddedto'>
-									<img className='img' src={details?.smartItem?.iconUrl ? details?.smartItem?.iconUrl : ''} />
-									<span className='timeadded'>{details?.smartItem?.name}</span>
+								<div className='timeaddedto' onClick={()=>{postMessage({ event: 'openitem', body: { smartItemId: details?.smartItem?.smartAppId } });}}>
+									<img className='img' src={details?.smartItem?.smartAppIcon ? details?.smartItem?.smartAppIcon : ''} />
+									<span className='timeadded'>{details?.smartItem?.smartApp}</span>
 								</div>
 							}
 						</div>

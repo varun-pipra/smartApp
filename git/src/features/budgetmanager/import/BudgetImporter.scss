@@ -124,6 +124,14 @@
     }
     .MuiDialogActions-root {
         padding: 1.0em 2em 2em 2em !important;
+        .start-over-cls {
+            background-color: #e95a16;
+            margin-left: 20px;
+        }
+        .cancel-import-cls {
+            background-color: #666666;
+            margin-left: 20px;
+        }
     }
     &.warning {
         .MuiDialogContent-root {
@@ -186,5 +194,25 @@
                 margin-top: 14px;
             }
         }
+    }
+}
+
+.not-import-cls {
+    display: contents;
+    text-align: center;
+    .common-icon-not-import-warning:before {
+        color: #e95a16;
+        font-size: 60px;
+    }
+    .not-import-text {
+        color: #e95a16;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+    .import-file-text {
+        color: #e95a16;
+        font-size: 14px;
+        margin-bottom: 6px;
     }
 }

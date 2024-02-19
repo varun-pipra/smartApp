@@ -1139,7 +1139,7 @@ const TableGrid = (props: TableGridProps) => {
 				: (params?.data?.balance < 0 &&
 					<IQTooltip
 						title={
-							<Stack direction='column'>
+							<Stack direction='column' className='budget-balance-tooltip'>
 								<Stack direction='row' className='tooltipcontent'>
 									<WarningAmberIcon fontSize={primaryIconSize} style={{color: 'red'}} />
 									<p className='tooltiptext'>Your Remaining Balance is Negative</p>

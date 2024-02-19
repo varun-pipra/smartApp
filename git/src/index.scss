@@ -240,6 +240,31 @@ code {
                     }
                 }
             }
+            .common-icon-smartapp:before {
+                font-size: 19px;
+            }
+            .common-icon-filter-companies:before,
+            .common-icon-DateCalendar:before {
+                font-size: 21px;
+            }
+            .common-icon-filter-user:before {
+                font-size: 23px;
+                margin-left: 1px;
+            }
+            .common-icon-filter-locations:before {
+                font-size: 25px;
+                margin-left: 2px;
+            }
+            .common-icon-Workactivity:before {
+                font-size: 24px;
+                margin-left: -1px;
+            }
+            .common-icon-accept:before {
+                font-size: 24px;
+            }
+            .common-icon-filter-sbs:before {
+                font-size: 22px;
+            }
             .MuiListItemButton-root {
                 padding: 0;
                 background-color: unset;

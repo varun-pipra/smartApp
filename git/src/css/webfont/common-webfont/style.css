@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?u43e9o');
-  src:  url('fonts/common-webfont.eot?u43e9o#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?u43e9o') format('truetype'),
-    url('fonts/common-webfont.woff?u43e9o') format('woff'),
-    url('fonts/common-webfont.svg?u43e9o#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?moyt0k');
+  src:  url('fonts/common-webfont.eot?moyt0k#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?moyt0k') format('truetype'),
+    url('fonts/common-webfont.woff?moyt0k') format('woff'),
+    url('fonts/common-webfont.svg?moyt0k#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,36 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-filter-companies:before {
+  content: "\ec85";
+}
+.common-icon-filter-locations:before {
+  content: "\ec86";
+}
+.common-icon-filter-none:before {
+  content: "\ec87";
+}
+.common-icon-filter-rollup:before {
+  content: "\ec88";
+}
+.common-icon-filter-sbs:before {
+  content: "\ec89";
+}
+.common-icon-filter-skills:before {
+  content: "\ec8a";
+}
+.common-icon-filter-status:before {
+  content: "\ec8b";
+}
+.common-icon-filter-trades:before {
+  content: "\ec8c";
+}
+.common-icon-filter-user:before {
+  content: "\ec8d";
+}
+.common-icon-not-import-warning:before {
+  content: "\ec84";
+}
 .common-icon-timer-bg:before {
   content: "\ec83";
 }

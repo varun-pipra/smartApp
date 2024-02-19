@@ -41,7 +41,24 @@
             padding-left: 1em;
         }
         .summary-field-cls {
-            padding: 0em 1.4em 0em 1.2em;
+            padding: 0em 0em 0em 1.2em;
+            .worker-time-log-modal {
+                .time-log-modal_form {
+                    max-height: 14em;
+                    overflow-y: auto;
+                    .time-log-container {
+                        width: 100%;
+                        .time-field {
+                            width: 25%;
+                            margin-right: 10px;
+                        }   
+                        .duration-field {
+                            width: 35%;
+                            margin-right: 10px;
+                        }
+                    }
+                }
+            }
         }
         .reason-textfield-cls {
             padding: 1em 1.4em 0em 1.2em;

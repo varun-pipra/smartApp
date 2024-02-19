@@ -103,13 +103,16 @@ const BidLineItemForm = (props: any) => {
 			endDate: formData?.endDate !== '' ? new Date(EnddateTimeString)?.toISOString() : null,
 			budgetItems: [...getBudgetIds(formData?.budgetIds)],
 		};
+		setDisableAddButoon(true);
 		console.log('payload', payload)
 		createBidPackage(appInfo, payload).then((response: any) => {
 			dispatch(fetchGridData(appInfo));
-			setDisableAddButoon(true);
 			setFormData(defaultFormData);
 			dispatch(setToastMessage({ displayToast: true, message: 'New Bid Package Added Successfully' }));
 			dispatch(fetchBudgetLineItems(appInfo));
+		}).catch((error: any) => {
+			console.log("error", error);
+			setDisableAddButoon(false);
 		});
 	};
 

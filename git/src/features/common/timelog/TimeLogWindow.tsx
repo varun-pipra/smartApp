@@ -3,7 +3,7 @@ import { AgGridReact } from 'ag-grid-react';
 import './TimeLogWindow.scss';
 import { Stack } from '@mui/material';
 import IQTooltip, { IQGridTooltip } from 'components/iqtooltip/IQTooltip';
-import { setCurrencySymbol, setCustomDatesRange, setServer } from 'app/common/appInfoSlice';
+import { getServer, setCurrencySymbol, setCustomDatesRange, setServer } from 'app/common/appInfoSlice';
 import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
 import { currency, isLocalhost, postMessage } from 'app/utils';
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
@@ -21,7 +21,7 @@ import { TLLeftButtons, TLRightButtons } from './toolbar/TimeLogToolbar';
 import { timelogList } from 'data/timelog/TimeLogData';
 import TimeLogLID from './details/TimeLogLID';
 import { Avatar, Button } from '@mui/material';
-import { findAndUpdateFiltersData } from 'features/safety/sbsmanager/utils';
+import { findAndUpdateFiltersData } from 'features/common/timelog/utils';
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList, getSBSGridList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
@@ -34,7 +34,7 @@ import SplitTimeSegmentDialog from './timeSplitSegment/SplitTimeSegmentDialog';
 import { getPickerDefaultTime ,getDuration } from './utils';
 import ManageWorkers from './workerDailog/addManageWorkers/ManageWorkers';
 import {workTeamData} from "data/timelog/TimeLogData";
-
+import CompanyIcon from "resources/images/Comapany.svg";
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -46,7 +46,8 @@ const TimeLogWindow = (props: any) => {
 
 	const location = useLocation();
 	const { server } = useAppSelector((state) => state.appInfo);
-	const { toast, TimeLogGridList } = useAppSelector((state) => state.timeLogRequest);
+	const appInfo = useAppSelector(getServer);
+	const { toast, TimeLogGridList, selectedRowData } = useAppSelector((state) => state.timeLogRequest);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
@@ -80,27 +81,27 @@ const TimeLogWindow = (props: any) => {
 
 
 	const groupOptions = [{
-		text: 'Time Entry For', value: 'timeEntryFor'
+		text: 'Time Entry For', value: 'timeEntryFor', iconCls: 'common-icon-work-team'
 	}, {
-		text: 'Work Team', value: 'team'
+		text: 'Work Team', value: 'team', iconCls: 'common-icon-work-team'
 	}, {
-		text: 'Companies', value: 'company'
+		text: 'Companies', value: 'company', iconCls: 'common-icon-filter-companies'
 	}, {
-		text: 'Apps', value: 'smartItem'
+		text: 'Apps', value: 'smartItem', iconCls: 'common-icon-smartapp'
 	}, {
-		text: 'Status', value: 'status'
+		text: 'Status', value: 'status', iconCls: 'common-icon-accept'
 	}, {
-		text: 'Source', value: 'source'
+		text: 'Source', value: 'source', iconCls: 'common-icon-Workactivity'
 	}, {
-		text: 'Created By', value: 'createdBy'
+		text: 'Created By', value: 'createdBy', iconCls: 'common-icon-filter-user'
 	}, {
-		text: 'Timelog ID', value: 'timeLogId'
+		text: 'Timelog ID', value: 'timeLogId', iconCls: 'common-icon-work-team'
 	}, {
-		text: 'Date', value: 'startDate'
+		text: 'Date', value: 'startDate', iconCls: 'common-icon-DateCalendar'
 	}, {
-		text: 'System Breakdown Structure', value: 'sbs'
+		text: 'System Breakdown Structure', value: 'sbs', iconCls: 'common-icon-filter-sbs'
 	}, {
-		text: 'Location', value: 'location'
+		text: 'Location', value: 'location', iconCls: 'common-icon-filter-locations'
 	}];
 
 	const queryParams: any = new URLSearchParams(location.search);
@@ -133,6 +134,36 @@ const TimeLogWindow = (props: any) => {
 			dispatch(setToast(''));
 		}, 3000);
 	}, [toast]);
+
+	const userImageHandleOver = useCallback((e: any, params: any) => {
+        console.log(params , 'userImageHandleOver')
+        const { pageX, pageY } = e;
+        const { data } = params;
+        const str = data?.user?.globalId.toString();
+        let evtData = {
+            event: "launchcontactcard",
+            body: { iframeId: iFrameId, roomId: appInfo && appInfo.presenceRoomId, appType: appType },
+            data: {
+                pageX: pageX,
+                pageY: pageY,
+                openAction: 'hover',
+                userId: '',
+                userIntId: ''
+            }
+        };
+        if (data?.user?.globalId != '' && str?.substring(0, 8) != "00000000") {
+            evtData.data.userId = data?.user?.globalId;
+        } else if (data?.objectId && data?.objectId != '') {
+            evtData.data.userIntId = data?.objectId;
+        }
+        let target = e.target;
+        let timer = setTimeout(() => {
+            postMessage(evtData);
+        }, 500);
+        target.addEventListener('mouseleave', function () {
+            clearTimeout(timer);
+        })
+    }, [appInfo]);
 
 	/**
 	 * All initial APIs will be called here
@@ -225,38 +256,55 @@ const TimeLogWindow = (props: any) => {
 			setColumns(columnsCopy);
 		}
 	};
-
-	const GroupRowInnerRenderer = (props: any) => {
-		const node = props.node;
-		if (node.group) {
-			const colName = groupKeyValue?.current;
-			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if (colName === 'smartItem') return (
-				<div style={{ display: 'flex' }} className='status-column'>
-					{data?.smartItem?.iconUrl ?
+	const TimeLogGridGroupHeader = (props: any) => {
+		const {iconUrl, name, color, ...rest} = props;
+		return (
+			<div style={{ display: 'flex' }} className='status-column'>
+					{iconUrl ?
 						<img
-							src={data?.smartItem?.iconUrl}
+							src={iconUrl}
 							alt="Avatar"
 							style={{ width: "24px", height: "24px", padding: "1px" }}
 							className="base-custom-img"
 						/> : <Avatar
+							src={name}
 							sx={{
-								backgroundColor: `#${data?.color}` ?? '#fff',
+								backgroundColor: `#${color}` ?? '#fff',
 								width: "24px",
 								height: "24px",
 								padding: "1px",
 								marginRight: '10px',
 								fontSize: '13px'
-							}}>{data?.smartItem?.name?.toUpperCase()}</Avatar>
+							}} />
 					}
-					<span className="custom-group-header-label-cls">{data?.smartItem?.name || ""}</span>
+					<span className="custom-group-header-label-cls">{name || ""}</span>
 				</div>
+		)
+	};
+	const GroupRowInnerRenderer = (props: any) => {
+		const node = props?.node;
+		if (node?.group) {
+			const colName = groupKeyValue?.current;
+			const data = node?.childrenAfterGroup?.[0]?.data || {};
+			if(colName === "status") {
+				const stateObject: any = (timelogStatusMap || [])?.find((x:any) => x.value == data?.[colName]);
+				return (
+					<div style={{display: 'flex'}} className='status-column'>
+						<CustomGroupHeader iconCls={stateObject?.icon} baseCustomLine={false}
+							label={stateObject?.text} showStatus = {true}
+							color = {stateObject?.color} bgColor = {stateObject?.bgColor}
+						/>
+					</div>
+				);
+			}
+			else if (colName === 'smartItem') return (
+				<TimeLogGridGroupHeader iconUrl={data?.smartItem?.smartAppIcon} name={data?.smartItem?.smartApp} />
 			);
 			else if (colName === 'company') return (
-				
-				<div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-					<span className="custom-group-header-label-cls">{data?.company?.name || ""}</span>
-				</div>
+				<TimeLogGridGroupHeader iconUrl={data?.company?.url ?? CompanyIcon} name={data?.company?.name} />
+			);
+			else if(colName === 'createdBy') return (
+				<TimeLogGridGroupHeader iconUrl={data?.createdBy?.url} name={data?.createdBy?.firstName} />
 			);
 			else return (
 				<div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
@@ -372,7 +420,7 @@ const TimeLogWindow = (props: any) => {
 				filterValues.dateRange = dateRange;
 			};
 			const filterVal = (_.isEmpty(filterValues) || (!_.isEmpty(filterValues)
-				&& (_.isEmpty(filterValues?.apps) || filterValues?.apps?.length === 0 || filterValues?.apps?.indexOf(item.smartItem.name) > -1)
+				&& (_.isEmpty(filterValues?.apps) || filterValues?.apps?.length === 0 || filterValues?.apps?.indexOf(item.smartItem.smartApp) > -1)
 				&& (_.isEmpty(filterValues?.companies) || filterValues?.companies?.length === 0 || filterValues?.companies?.indexOf(item.company.name) > -1)
 				&& (_.isEmpty(filterValues?.conflicting) || filterValues?.conflicting?.length === 0 || filterValues?.conflicting?.indexOf(item?.conflicting)) > -1)
 				&& (_.isEmpty(filterValues?.createdBy) || filterValues?.createdBy?.length === 0 || filterValues?.createdBy?.indexOf(item.createdBy?.name) > -1)
@@ -392,7 +440,7 @@ const TimeLogWindow = (props: any) => {
 			));
 			const filterDates = moment(item.endDate).isBetween(moment(datesRef?.current?.startDate), moment(datesRef?.current?.endDate));
 			if (!_.values(datesRef.current).every(_.isEmpty)) return searchVal && isFromOrg ? (orgFilters && filterVal) : filterVal && filterDates;
-			else return searchVal && isFromOrg ? (orgFilters && filterVal) : filterVal;
+			else return searchVal && (isFromOrg ? (orgFilters && filterVal) : filterVal);
 		});
 	};
 
@@ -558,11 +606,29 @@ const TimeLogWindow = (props: any) => {
 			field: 'timeEntryFor',
 			width: 280,
 			pinned: 'left',
-			aggFunc: (params: any) => {
-				if (!params.rowNode?.key) {
-					return 'Summary';
-				} return `Sub Total - ${params.rowNode?.key}`;
-			}
+			// aggFunc: (params: any) => {
+			// 	if (!params.rowNode?.key) {
+			// 		return 'Summary';
+			// 	} return `Sub Total - ${params.rowNode?.key}`;
+			// },
+			cellRenderer: (params: any) => {
+				if (!!params?.node?.footer) {
+				  if (!params.node?.key) {
+					return "Summary";
+				  }
+				  return `Sub Total - ${params.node?.key}`;
+				} else {
+				  return (
+					<span
+					  onMouseOver={(e: any) => {
+						userImageHandleOver(e, params);
+					  }}
+					>
+					  {params.data?.timeEntryFor}
+					</span>
+				  );
+				}
+			  },
 		},
 		{
 			headerName: 'Project',
@@ -662,9 +728,14 @@ const TimeLogWindow = (props: any) => {
 		}, {
 			headerName: 'Smart Item',
 			field: 'smartItem',
-			cellStyle: {color: "#059cdf"},
-			valueGetter: (params: any) => params.data?.smartItem?.name,
-			keyCreator: (params: any) => params.data?.smartItem?.name || "None"
+			cellStyle: {color: "#059cdf",cursor:'pointer'},
+			onCellClicked: (event: any) => {
+				if (event.data?.smartItemId) {
+					postMessage({ event: 'openitem', body: { smartItemId: event.data?.smartItem?.smartItemId } });
+				}
+			},
+			valueGetter: (params: any) => params.data?.smartItem?.smartApp,
+			keyCreator: (params: any) => params.data?.smartItem?.smartApp || "None"
 		}, {
 			headerName: 'Work Team',
 			field: 'team',
@@ -848,132 +919,41 @@ const TimeLogWindow = (props: any) => {
 			keyValue: 'location',
 			children: { type: "checkbox", items: [] }
 		},
-		];
-		return filterMenu;
-	}, []);
-
-	const orgConsoleFilters = [
 		{
 			text: 'Projects',
 			value: 'project',
 			key: 'project',
 			keyValue: 'project',
-			children: { type: "checkbox", items: [
-				{
-					text: 'Capital Commercial Solutions',
-					key: 'Capital Commercial Solutions',
-					value: 'Capital Commercial Solutions'
-				},
-				{
-					text: 'Capital City',
-					key: 'Capital City',
-					value: 'Capital City'
-				},
-				{
-					text: 'Brownstone Business Park',
-					key: 'Brownstone Business Park',
-					value: 'Brownstone Business Park'
-				},
-			] }
+			hidden : !isFromOrg,
+			children: { type: "checkbox", items: [] }
 		},
 		{
 			text: 'Regions',
 			value: 'region',
 			key: 'region',
 			keyValue: 'region',
-			children: { type: "checkbox", items: [
-				{
-					text: 'Asia-India',
-					key: 'Asia-India',
-					value: 'Asia-India'
-				},
-				{
-					text: 'Europe',
-					key: 'Europe',
-					value: 'Europe'
-				},
-				{
-					text: 'North America',
-					key: 'North America',
-					value: 'North America'
-				},
-				{
-					text: 'Middle East',
-					key: 'Middle East',
-					value: 'Middle East'
-				},
-				{
-					text: 'Japan',
-					key: 'Asia-India',
-					value: 'Japan'
-				},
-
-				]
-			}
+			hidden : !isFromOrg,
+			children: { type: "checkbox", items: [] }
 		},
 		{
 			text: 'Org Locations',
 			value: 'orgLocation',
 			key: 'orgLocation',
 			keyValue: 'orgLocation',
-			children: {
-				type: "checkbox", items: [
-					{
-						text: 'India-Banglore',
-						key: 'India-Banglore',
-						value: 'India-Banglore'
-					},
-					{
-						text: 'Italy-Venice',
-						key: 'Italy-Venice',
-						value: 'Italy-Venice'
-					},
-					{
-						text: 'Canada-Quebec City',
-						key: 'Canada-Quebec City',
-						value: 'Canada-Quebec City'
-					},
-					{
-						text: 'Bahrain-Manama',
-						key: 'Bahrain-Manama',
-						value: 'Bahrain-Manama'
-					},
-					{
-						text: 'Japan-Tokyo',
-						key: 'Japan-Tokyo',
-						value: 'Japan-Tokyo'
-					},
-
-				]
-			}
+			hidden : !isFromOrg,
+			children: { type: "checkbox", items: [] }
 		},
 		{
 			text: 'Org Profiles',
 			value: 'orgProfile',
 			key: 'orgProfile',
 			keyValue: 'orgProfile',
-			children: {
-				type: "checkbox", items: [
-					{
-						text: 'My Org Profile',
-						key: 'My Org Profile',
-						value: 'My Org Profile'
-					},
-					{
-						text: 'Commercial Constructions',
-						key: 'Commercial Constructions',
-						value: 'Commercial Constructions'
-					},
-					{
-						text: 'Hospital Constructions',
-						key: 'Hospital Constructions',
-						value: 'Hospital Constructions'
-					},
-				]
-			}
+			hidden : !isFromOrg,
+			children: { type: "checkbox", items: [] }
 		}
-	]
-
+		];
+		return filterMenu;
+	}, []);
 	const handleClose = () => {
 		postMessage({
 			event: 'closeiframe',
@@ -1009,7 +989,12 @@ const TimeLogWindow = (props: any) => {
 		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "location"));
 		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "createdBy", true, "name"));
 		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "smartItem", true, "name"));
-
+		if(isFromOrg) {
+			setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "orgLocation"));
+			setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "orgProfile"));
+			setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "region"));
+			setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "project"));
+		};
 	};
 	const GetDateRangeFilterData = (data: any) => {
 		const todayDate = new Date();
@@ -1065,7 +1050,9 @@ const TimeLogWindow = (props: any) => {
 	}, [TimeLogGridList]);
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
-
+	const handleSplit = (data:any) => {
+		console.log("Split Time Log Data", data);
+	};
 	return (
 		server && <> <GridWindow
 			open={true}
@@ -1148,7 +1135,7 @@ const TimeLogWindow = (props: any) => {
 							type: 'regular',
 							defaultFilters: defaultFilters,
 							groupOptions: groupOptions,
-							filterOptions: isFromOrg ? [...filterOptions, ...orgConsoleFilters] : [...filterOptions],
+							filterOptions: filters,//isFromOrg ? [...filterOptions, ...orgConsoleFilters] : [...filterOptions],
 							onGroupChange: onGroupingChange,
 							onSearchChange: onGridSearch,
 							onFilterChange: onFilterChange,
@@ -1176,7 +1163,7 @@ const TimeLogWindow = (props: any) => {
 			}}
 		/>
 		{splitTimeSegmentBtn && (
-			<SplitTimeSegmentDialog onClose={() => dispatch(setSplitTimeSegmentBtn(false))} />
+			<SplitTimeSegmentDialog data={selectedRowData?.[0]} handleSubmit={(data:any) => handleSplit(data)}onClose={() => dispatch(setSplitTimeSegmentBtn(false))} />
 		)}
 		{openManageWorkers ? (
 			<ManageWorkers

@@ -15,7 +15,8 @@ import { stringToUSDateTime2 } from 'utilities/commonFunctions';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import { timelogStatusMap } from '../TimeLogConstants';
 import {getDuration} from '../utils';
-
+import {updateTimeLogDetails} from '../stores/TimeLogAPI';
+import {isCompanyManager,canManageTimeForCompany,canManageTimeForProject} from 'app/common/userLoginUtils';
 
 const TimeLogLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
@@ -40,9 +41,13 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	}, [data?.id]);
 
 	const onClickSave = () =>{
-			console.log('payloadSave',DetailspayloadSave)
+			console.log('payloadSave',DetailspayloadSave);
+			updateTimeLogDetails(selectedTimeLogDetails?.id, DetailspayloadSave, 
+				(response: any) => {
+					console.log('response',response)
+				 dispatch(setSelectedTimeLogDetails(response));
+			});
 	}
-
 
 	const tabConfig = [
 		{
@@ -90,15 +95,24 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 
 				getTimeLogStatus(selectedTimeLogDetails.status) == 'Reported' ? 
 						<>
-							<IQButton className='sendback-buttons' disabled={false} onClick={() => { console.log('sendback') }}>
-										SEND BACK
-									</IQButton>
-									<IQButton className='split-buttons' disabled={false} onClick={() => { console.log('split') }}>
+									{canManageTimeForCompany() ?
+										<>
+											<IQButton className='sendback-buttons' disabled={false} onClick={() => { console.log('sendback') }}>
+												SEND BACK
+											</IQButton>
+											<IQButton className='accept-buttons' disabled={false} onClick={() => { console.log('Accept') }}>
+												ACCEPT
+											</IQButton>
+										</>
+										:
+										<></>
+									}
+										<IQButton className='split-buttons' disabled={false} onClick={() => { console.log('split') }}>
 										Split
 									</IQButton>
-									<IQButton className='accept-buttons' disabled={false} onClick={() => { console.log('Accept') }}>
-										ACCEPT
-									</IQButton>
+									<IQButton className='save-buttons' disabled={false} onClick={() => { onClickSave() }}>
+										SAVE
+									</IQButton> 
 						</> :
 						getTimeLogStatus(selectedTimeLogDetails.status) == 'Sent Back' ?
 							<IQButton className='resubmit-buttons' disabled={false} onClick={() => { console.log('Resubmit') }}>

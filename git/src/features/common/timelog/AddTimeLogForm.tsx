@@ -23,6 +23,7 @@ interface TimeLogFormProps {
 	resource?: string;
 	date?: any;
 	time?: any;
+	workers?:any;
 	duration?: any;
 	smartItems?: any;
 }
@@ -47,7 +48,7 @@ const AddTimeLogForm = (props: any) => {
 	const defaultValues: TimeLogFormProps = useMemo(() => {
 		return {
 			resource: "",
-			date: "",
+			date: new Date()?.toISOString(),
 			time: [],
 			duration: "0 Hrs 00 Mins",
 			smartItems: "",
@@ -75,7 +76,7 @@ const AddTimeLogForm = (props: any) => {
 	const [isDescExists, setIsDescExists] = useState(false);
 	const [openWorkerDialog, setOpenWorkerDialog] = useState(false);
 	const [addLinksOptions, setAddLinksOptions] = React.useState<any>();
-	const [selectedSmartItem, setSelectedSmartItem] = React.useState("");
+	const [selectedSmartItem, setSelectedSmartItem] = React.useState<any>("");
 	const [selectedWorkers, setSelectedWorkers] = React.useState<Boolean>(false);
 
 	useMemo(() => {
@@ -98,13 +99,10 @@ const AddTimeLogForm = (props: any) => {
 	}, [access]);
 
 	const handleFieldChange = (event: any, name: any) => {
-		console.log("Date", event, name)
-		if((event === "workteam") || (event === "mycompany")){
-			setSelectedWorkers(true)
-		}else {
-			setSelectedWorkers(false)
+		if(name == 'resource'){
+			if((event === "workteam") || (event === "mycompany")) setSelectedWorkers(true) 
+			else setSelectedWorkers(false)
 		}
-		
 		setTimeLogForm((currentState) => {
 			const newState = { ...currentState, ...{ [name]: event } };
 			checkFormValidity(newState);
@@ -113,27 +111,28 @@ const AddTimeLogForm = (props: any) => {
 	};
 
 	const checkFormValidity = (record: TimeLogFormProps) => {
-		setAddDisabled(
-			_.isEmpty(record?.resource) ||
-			_.isEmpty(record?.date) ||
-			_.isEmpty(record?.time)
-		);
-	};
+	 	 timelogForm.resource == 'workteam' || timelogForm.resource == 'mycompany' ?
+			setAddDisabled(_.isEmpty(record?.resource) || _.isEmpty(record.workers))
+			: setAddDisabled( _.isEmpty(record?.resource) || _.isEmpty(record?.time));
+	}; 
 
 	const handleAdd = () => {
-		// const payload = { ...timelogForm, smartItems: selectedSmartItem };
-		console.log('timelogForm', timelogForm);
+		console.log('timelogForm',timelogForm);		
 		const timeEntries = timelogForm?.time?.map((obj:any) => {
 			return {
-				startTime: addTimeToDate(timelogForm?.date, obj?.startTime),
-				endTime: addTimeToDate(timelogForm?.date, obj?.endTime),
+				startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
+				endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
 				userId: timelogForm?.resource == 'Me' ? appInfo?.currentUserInfo?.userid : '',
+				notes : obj.notes
 			}
 		})
 		const payload = {
+			smartItemId : timelogForm?.smartItems?.id,
+			workTeamId : '',
+			source: 0,
 			segments: [...timeEntries]
 		};
-		console.log('timeEntries', timeEntries, payload);
+		console.log('payload',payload);
 		addTimeLog(payload, (resp:any) => {
 			dispatch(setToast('Time Logged Successfully.'));
 		});		
@@ -142,7 +141,12 @@ const AddTimeLogForm = (props: any) => {
 
 	const smartItemOnClick = (e: any) => {
 		AppList_PostMessage(e);
+		console.log('e',e)
 		setSelectedSmartItem(e?.displayField);
+		setTimeLogForm((currentState) => {
+			const newState = { ...currentState, ...{ ['smartItems']: e } };
+			return newState;
+		});
 	};
 
 	const openSelectResource = () => {
@@ -175,7 +179,7 @@ const AddTimeLogForm = (props: any) => {
 		}
 		console.log('resouce sendMsg', sendMsg);
 		postMessage(sendMsg);
-  	};
+  };
 
 	return (
 		<>
@@ -228,9 +232,7 @@ const AddTimeLogForm = (props: any) => {
 									className={"custom-input rmdp-input"}
 								/>
 							}
-							defaultValue={
-								timelogForm?.date ? convertDateToDisplayFormat(timelogForm?.date) : ""
-							}
+							defaultValue={timelogForm?.date && convertDateToDisplayFormat(timelogForm?.date)}
 							onChange={(val: any) => handleFieldChange(new Date(val)?.toISOString(), "date")}
 						/>
 					</div>
@@ -251,7 +253,7 @@ const AddTimeLogForm = (props: any) => {
 								}}
 								name="name"
 								variant="standard"
-								//   value={}
+								value={timelogForm?.workers}
 								onClick={openSelectResource}
 								placeholder='Select'
 							/>

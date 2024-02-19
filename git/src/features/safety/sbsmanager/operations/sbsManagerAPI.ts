@@ -58,7 +58,7 @@ export const fetchDataList = async () => {
 		const responseData = await response.json();
 		return responseData?.data || [];
 	}
-	return GridData;
+	else return GridData;
 };
 export const fetchCategoryList = async (name: any) => {
 	let response;

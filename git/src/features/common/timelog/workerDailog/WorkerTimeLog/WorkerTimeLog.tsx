@@ -148,7 +148,8 @@ const WorkerTimeLog = (props: any) => {
   }, [logEntries]);
 
   useEffect(() => {
-    props.onDurationChange(overallDuration);
+    props?.onDurationChange && props.onDurationChange(overallDuration);
+    props?.onTimeEntryChange && props?.onTimeEntryChange(logEntries);
   }, [overallDuration]);
 
   /**

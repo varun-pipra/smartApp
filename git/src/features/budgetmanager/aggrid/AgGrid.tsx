@@ -1411,8 +1411,7 @@ const customCellRendererClass = (params: any) => {
 			{[generatePresenceToolIds(params?.data)].map((presenceTool: any) => presenceTool)}
 			<span>{renderPresence(params?.data?.id)}</span>
 		</div>
-		{/* Pls don't remove this */}
-		{/* {isCostCodeInvalid ?
+		{isCostCodeInvalid ?
 			<IQTooltip
 				title={
 					<Stack direction='row' className='tooltipcontent'>
@@ -1427,7 +1426,7 @@ const customCellRendererClass = (params: any) => {
 			: (params?.data?.balance < 0 &&
 				<IQTooltip
 					title={
-						<Stack direction='column'>
+						<Stack direction='column' className='budget-balance-tooltip'>
 							<Stack direction='row' className='tooltipcontent'>
 								<WarningAmberIcon fontSize={primaryIconSize} style={{ color: 'red' }} />
 								<p className='tooltiptext'>Your Remaining Balance is Negative</p>
@@ -1442,7 +1441,7 @@ const customCellRendererClass = (params: any) => {
 				>
 					<WarningAmberIcon fontSize={primaryIconSize} style={{ color: 'red' }} />
 				</IQTooltip>)
-		} */}
+		}
 		{params?.data?.source === 1 &&
 			<IQTooltip
 				title={'Schedule Of Values of the Contract to be updated due to recent approval of the Change Event Request.'}

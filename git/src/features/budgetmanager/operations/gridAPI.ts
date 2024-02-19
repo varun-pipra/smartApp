@@ -1,6 +1,7 @@
 import {isLocalhost} from 'app/utils';
 import { connectorsData } from 'data/Budgetmanger/connectors';
 import {gridData} from 'data/Budgetmanger/griddata';
+import {laborSheet} from 'data/Budgetmanger/laborsheet';
 /**
  * This function fetches the list of Costcode dropdown optins
  */
@@ -149,4 +150,19 @@ export const fetchPostToConnector = async (appInfo: any) => {
 		}
 	}
 	else return connectorsData?.data;
+};
+
+export const fetchWorkPlannerCategories = async (appInfo: any) => {
+	if(!isLocalhost) {
+		if(appInfo) {			
+			let response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/Scheduling/WorkPlannerCategories.iapi/Categories?sessionId=${appInfo?.sessionId}`);
+			if(!response.ok) {
+				const message = `API Request Error (${moduleName}): ${response.status}`;
+				throw new Error(message);
+			}
+			const result = await response.json();
+			return result.values;
+		}
+	}
+	else return laborSheet?.values;
 };

@@ -190,6 +190,7 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 	const showFilterPopup = Boolean(filterPopupEl);
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [open, setOpen] = React.useState(false);
+	console.log("oprionsssss", options);
 
 
 	React.useEffect(() => {
@@ -629,7 +630,7 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 			case "text":
 				colHtml = (
 					<span style={{ float: currentOption[colRec.align] ?? 'right', marginRight: '20px' }}>
-						{amountFormatWithOutSymbol(currentOption[colRec.field])}
+						{["unitOfMeasure"]?.includes(colRec?.field) ? currentOption[colRec.field] : amountFormatWithOutSymbol(currentOption[colRec.field])}
 					</span>
 				);
 				;

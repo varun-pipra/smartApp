@@ -136,6 +136,10 @@ const BudgetManagerWindow = (props: any) => {
 								// console.log("updatechildparticipants", data)
 								dispatch(setPresenceData(data.data));
 								break;
+							case "frame-active":
+								console.log("frame-active", data);
+								data?.data?.name == "budgetmanager" && dispatch(fetchGridData(appInfo));
+							break;
 						}
 					}
 				};

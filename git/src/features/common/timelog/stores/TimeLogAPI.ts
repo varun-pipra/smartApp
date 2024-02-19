@@ -89,3 +89,30 @@ export const fetchWorkTeamGridData = async () => {
     return workTeamGridData;
   }
 };
+
+export const updateTimeLogDetails = async (timeLogId: any, payload: any, callback: any) => {
+	const server: any = getServerInfo();
+	console.log("updateTimelog", payload);
+	const options = {
+		method: 'PATCH',
+		headers: { 'content-type': 'application/json' },
+		body: JSON.stringify(payload),
+	};
+	if (!isLocalhost) {
+		const response = await TimeLogRequest(server, `/segments/${timeLogId}`, options);
+		callback && callback(response);
+	}
+};
+
+export const deleteTimeLogData = async (timeLogId: any, callback: any) =>{
+    const server: any = getServerInfo();
+    const options = {
+      method: 'DELETE',
+      headers: { 'content-type': 'application/json' },
+      // body: JSON.stringify(payload),
+    };
+    if (!isLocalhost) {
+      const response = await TimeLogRequest(server, `/segments/${timeLogId}`, options, true);
+      callback && callback(response);
+    }
+}

@@ -7,6 +7,7 @@ export const ConfirmationDialog = (props: any) => {
         open={true}
         title={props?.title ? props?.title : 'Confirmation'}
         className="bm-importer warning"
+        withInModule={true}
 		//minHeight='300px'
         tools={{
             closable: true

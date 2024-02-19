@@ -1,0 +1,12 @@
+.labor-sheet-dialog {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    .grid {
+        flex: 4;
+        margin: 10px 0;
+        height: 100%;
+    }
+}

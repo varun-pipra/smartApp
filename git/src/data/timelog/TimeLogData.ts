@@ -9,7 +9,14 @@ export const timelogList = {
 			"endTime": "2024-02-14T13:15:00Z",
 			"duration": 365,
 			"source": 0,
-			"smartItem": null,
+			smartItem: {
+				"id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+				"name": "F1 - 01125 ",
+				"smartApp": "Work Assignment",
+				"smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+				"stage": "In Progress",
+				"smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+			},
 			"status": 0,
 			"hasTimeOverlap": false,
 			"hasLocationConflict": false,
@@ -23,7 +30,14 @@ export const timelogList = {
     "endTime": "2024-02-14T18:15:00Z",
     "duration": 305,
     "source": 0,
-    "smartItem": null,
+    smartItem: {
+			"id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+			"name": "F1 - 01125 ",
+			"smartApp": "Work Assignment",
+			"smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+			"stage": "In Progress",
+			"smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+		},
     "status": 0,
     "hasTimeOverlap": false,
     "hasLocationConflict": false,
@@ -60,12 +74,13 @@ export const timelogList = {
         "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
-		"stage": 'Existing',		
-		"id": 532653,
-		"name": "RFI",
-		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/4ecf490f75ce4ba8856be8f640f9dfc3",
-		"description": "fdghdfgh",
-	},
+    "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+    "name": "F1 - 01125 ",
+    "smartApp": "Work Assignment",
+    "smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+    "stage": "In Progress",
+    "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+},
 	team: 'Carpenter Team',
 	location: 'Building3 - Floor3',
 	sbs: 'Structural - Walls & Finishes',
@@ -119,12 +134,13 @@ export const timelogList = {
         "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
-		"stage": 'NEW',				
-		"id": 2518274,
-		"name": "Room Mapping",
-		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
-		"description": ""
-	},
+    "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+    "name": "F1 - 01125 ",
+    "smartApp": "Work Assignment",
+    "smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+    "stage": "In Progress",
+    "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+},
 	team: 'Carpenter',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
@@ -175,12 +191,13 @@ export const timelogList = {
         "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
-		"stage": 'NEW',				
-		"id": 2518274,
-		"name": "Room Mapping",
-		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
-		"description": ""
-	},
+    "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+    "name": "F1 - 01125 ",
+    "smartApp": "Work Assignment",
+    "smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+    "stage": "In Progress",
+    "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+},
 	team: 'Others',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
@@ -230,12 +247,13 @@ export const timelogList = {
         "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
-		"stage": 'Existing',				
-		"id": 2518274,
-		"name": "Room Mapping",
-		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
-		"description": ""
-	},
+    "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+    "name": "F1 - 01125 ",
+    "smartApp": "Work Assignment",
+    "smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+    "stage": "In Progress",
+    "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+},
 	team: 'Others',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
@@ -285,12 +303,13 @@ export const timelogList = {
         "globalId": "00000000-0000-0000-0000-000000000000"
 	},
 	smartItem: {
-		"stage": 'NEW',				
-		"id": 2518274,
-		"name": "Room Mapping",
-		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
-		"description": ""
-	},
+    "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+    "name": "F1 - 01125 ",
+    "smartApp": "Work Assignment",
+    "smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+    "stage": "In Progress",
+    "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+},
 	team: 'Others',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
@@ -340,12 +359,13 @@ export const timelogList = {
 		
 	},
 	smartItem: {
-		"stage": 'NEW',
-		"id": 2518274,
-		"name": "Room Mapping",
-		"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
-		"description": ""
-	},
+    "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+    "name": "F1 - 01125 ",
+    "smartApp": "Work Assignment",
+    "smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+    "stage": "In Progress",
+    "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+},
 	team: 'Carpenter',
 	location: 'Conference Room',
 	sbs: 'Electrical - Fire Alarm',
@@ -393,12 +413,13 @@ export const timelogList = {
 			"name": 'Justin, Robert'
 		},
 		smartItem: {
-			"stage": 'NEW',
-			"id": 2518274,
-			"name": "Room Mapping",
-			"iconUrl": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/723cc1ae0d1f4ef5a11b2f2736beb69e",
-			"description": ""
-		},
+			"id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
+			"name": "F1 - 01125 ",
+			"smartApp": "Work Assignment",
+			"smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
+			"stage": "In Progress",
+			"smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
+	},
 		team: 'Carpenter',
 		location: 'Conference Room',
 		sbs: 'Electrical - Fire Alarm',

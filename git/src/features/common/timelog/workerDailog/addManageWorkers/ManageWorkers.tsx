@@ -71,6 +71,7 @@ const ManageWorkers = (props: any) => {
           if (props?.onClose) props?.onClose(false);
         }
       }}
+      withInModule={true}
       actions={
         <>
           <IQButton

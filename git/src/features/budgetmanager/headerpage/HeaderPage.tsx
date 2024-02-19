@@ -11,7 +11,7 @@ import CalculateIcon from "@mui/icons-material/Calculate";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { isLocalhost } from 'app/utils';
 import { getHostAppInfo, setLineItemDescription, setToastMessage } from '../operations/tableColumnsSlice';
-import { addBudgetLineItem } from '../operations/gridAPI';
+import { addBudgetLineItem,fetchWorkPlannerCategories  } from '../operations/gridAPI';
 import { fetchGridData } from '../operations/gridSlice';
 import { getServer, getCostTypeList, getCostUnitList, getCostCodeDivisionList, setCostUnitList } from 'app/common/appInfoSlice';
 import InputIcon from "react-multi-date-picker/components/input_icon";
@@ -82,7 +82,16 @@ const HeaderPage = (props: HeaderPageProps) => {
 	const [originalBudgetCatalogData, setOriginalBudgetCatalogData] = React.useState<any>({unitOfMeasure: '',quantity: '',cost: ''});
 	console.log("divisionCostCodeFilterData", divisionCostCodeFilterData)
 	const [showWorkersDialog, setShowWorkersDialog] = React.useState<any>(false);
-
+	const [laborSheetData, setLaborSheetData] = React.useState<any>([])
+	React.useEffect(() => {
+		if(appInfo) {
+			fetchWorkPlannerCategories(appInfo).then((res: any) => {
+				setLaborSheetData(res);
+      		}).catch((error: any) => {
+        		console.log("error", error);
+      		});
+		}
+	},[appInfo]);
 	React.useEffect(() => {
 		let costTypeTimeList: any = [];
 		let costTypeQuantityList: any = [];
@@ -208,6 +217,10 @@ const HeaderPage = (props: HeaderPageProps) => {
 			console.log("headerPageData", headerPageData?.costType)
 			headerPageData?.costType == 'L - Labor' && setShowWorkersDialog(true);
 		// }
+	};
+	const handleLaborSheet = (data:any) => {
+		setShowWorkersDialog(false);
+		setOriginalBudgetCatalogData({...originalBudgetCatalogData, ['cost'] : data?.defaultHourlyRate});
 	};
 	useEffect(() => {
     	window.addEventListener("message",(event: any) => {
@@ -386,7 +399,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 					+ Add
 				</Button>
 			</MuiGrid>
-			{showWorkersDialog && <LaborSheetModel onClose={() => setShowWorkersDialog(false)}/>}
+			{showWorkersDialog && <LaborSheetModel data={laborSheetData} handleSubmit={(values:any) => handleLaborSheet(values)} onClose={() => setShowWorkersDialog(false)}/>}
 		</MuiGrid >
 
 	)

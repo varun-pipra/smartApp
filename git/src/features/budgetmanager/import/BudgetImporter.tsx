@@ -110,7 +110,7 @@ const BudgetImporter = (props: any) => {
 	const handleAlertAction = (type:string, option:string) => {
 		if(type == 'yes' && option=='append') callImport();
 		if(type == 'yes' && option=='replace' && isReplaceAllowed) callImport();
-		if(type == 'yes' && option=='replace' && !isReplaceAllowed) props?.onClose(true);						
+		if(type == 'yes' && option=='replace' && !isReplaceAllowed) props?.onClose(true);
 		setShowAlert({show: false, msg: ''});
 	}
 
@@ -128,13 +128,13 @@ const BudgetImporter = (props: any) => {
 				{!showInProgress && !showSuccess && !showError && <IQButton color="orange" disabled={disableStartImport} onClick={() => onStartImport()}>
 					START IMPORT
 				</IQButton>}
-				{(showInProgress || showError) && <IQButton color="lightGrey" onClick={() => onCancelImport()}>
+				{(showInProgress || showError) && <IQButton color="lightGrey" className="cancel-import-cls" onClick={() => onCancelImport()}>
 					CANCEL IMPORT
 				</IQButton>}
 				{showSuccess && <IQButton color="lightGrey" onClick={() => onNotifyAfterImport()}>
 					NOTIFY ME AFTER COMPLETE
 				</IQButton>}
-				{showError && <IQButton color="lightGrey" onClick={() => onStartOver()}>
+				{showError && <IQButton color="lightGrey" className="start-over-cls" onClick={() => onStartOver()}>
 					START OVER
 				</IQButton>}
 			</div>

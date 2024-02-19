@@ -89,3 +89,28 @@ export const isChangeEventClient = () => {
 	if(permissions && Object?.values(permissions)?.includes('Client Change Event Manager')) return true;
 	return false;
 };
+
+export const isCompanyManager = () => {
+	const server = getServerInfo(),
+		permissions = server?.gblConfig?.user?.projectZonePermissions,
+		isSuperAdmin = server?.gblConfig?.isAdmin
+
+	if(isSuperAdmin || (permissions && Object?.values(permissions)?.includes('Company Manager'))) return true;
+	return false;
+};
+
+export const canManageTimeForCompany = () => {
+	const server = getServerInfo(),
+		permissions = server?.gblConfig?.user?.projectZonePermissions;
+
+	if(permissions && Object?.values(permissions)?.includes('Can Manage Time for My Company')) return true;
+	return false;
+};
+
+export const canManageTimeForProject = () => {
+	const server = getServerInfo(),
+		permissions = server?.gblConfig?.user?.projectZonePermissions;
+
+	if(permissions && Object?.values(permissions)?.includes('Can Manage Time for this Project')) return true;
+	return false;
+};

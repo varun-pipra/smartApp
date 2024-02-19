@@ -73,10 +73,14 @@ const IQGridWindow = ({ className, content = {}, companyInfo = false, lidConditi
 			let rowIndex = node?.rowIndex || 0;
 			const totalCount = grid?.api?.getDisplayedRowCount() || 0;
 			const grouped = grid?.api?.getDisplayedRowAtIndex(rowIndex - node?.uiLevel)?.group;
+			const firstRow = (grid?.api?.getRenderedNodes() || [])?.find((rec:any) => rec?.level === 0);
+			const lastRow = (grid?.api?.getRenderedNodes() || [])?.findLast((rec:any) => !!rec?.field);
 			if (grouped && rowIndex !== (totalCount - 1)) {
 				rowIndex -= node?.uiLevel;
 			};
-			if (rowIndex === 0) setNavFlag(-1);
+			if(node?.rowIndex + 1 === lastRow?.rowIndex) setNavFlag(1);
+			else if(firstRow === firstRow?.rowIndex - 1) setNavFlag(-1);
+			else if (rowIndex === 0) setNavFlag(-1);
 			else if (rowIndex === (totalCount - 1)) setNavFlag(1);
 			else setNavFlag(0);
 		}

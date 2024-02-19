@@ -450,7 +450,7 @@ const BudgetManagerToolbar = (props: any) => {
 					<IQTooltip title="Delete" placement={"bottom"}>
 						<IconButton
 							aria-label="Delete budgetmanager"
-							disabled={disableDelete}
+							disabled={disableDelete || isBudgetLocked}
 							onClick={handleDelete}
 						>
 							<span className="common-icon-delete"></span>
@@ -459,7 +459,7 @@ const BudgetManagerToolbar = (props: any) => {
 					<IQTooltip title="Import" placement={"bottom"}>
 						<IconButton
 							aria-label="Import Budget Items"
-							// disabled={disableDelete}
+							disabled={isBudgetLocked}
 							onClick={() => setImportVisible(true)}
 						>
 							<span className="common-icon-budget-import"></span>

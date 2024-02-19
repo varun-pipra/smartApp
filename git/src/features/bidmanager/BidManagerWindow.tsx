@@ -31,6 +31,7 @@ import {setUploadQueue} from './stores/FilesSlice';
 import SUIAlert from 'sui-components/Alert/Alert';
 import {isBidManager} from 'app/common/userLoginUtils';
 import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
+import { fetchGridData } from './stores/gridSlice';
 
 const BidManagerWindow = () => {
 	const dispatch = useAppDispatch();
@@ -131,6 +132,10 @@ const BidManagerWindow = () => {
 								dispatch(fetchCompanyList(appInfoReference.current));
 								dispatch(setNewCompany(data.companyInfo));
 								break;
+							case "frame-active":
+								console.log("frame-active", data);
+								data?.data?.name == "bidmanager" && dispatch(fetchGridData(appInfo));
+							break;
 						}
 					}
 				};
