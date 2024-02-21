@@ -169,7 +169,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
     }
   }, [searchText]);
 
-  const handelSearchChange = (search:any,pageId:any) => {
+  const handelSearchChange = (search:any,pageId:any, updatedMData?:any) => {
     if (
       (pageId && sepcSelectedRecord?.specBook.id) ||
       sepcSelectedRecord?.specBookId
@@ -180,7 +180,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
       getTextOccurences(params).then((resp: any) => {
         let updatedRes = [
           ...modifyMarkupData(resp.data),
-          ...markupsByPageForBid.extractionAreas,
+          ...updatedMData?.extractionAreas || markupsByPageForBid.extractionAreas || [],
         ];
         let data = {
           extractionAreas: updatedRes,
@@ -209,7 +209,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
         setBidRefernceagePUId(res[0]?.data?.pageUId);
         console.log('pageId',res[0]?.data?.pageUId)
         if (searchText.length) {
-          handelSearchChange(searchText, res[0]?.data?.pageUId);
+          handelSearchChange(searchText, res[0]?.data?.pageUId , data);
         } else {
           sketchPageinfo.callback(data);
         }
