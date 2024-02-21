@@ -90,12 +90,11 @@ export const isChangeEventClient = () => {
 	return false;
 };
 
-export const isCompanyManager = () => {
+export const isWorker = () => {
 	const server = getServerInfo(),
-		permissions = server?.gblConfig?.user?.projectZonePermissions,
-		isSuperAdmin = server?.gblConfig?.isAdmin
+		permissions = server?.gblConfig?.user?.projectZonePermissions;
 
-	if(isSuperAdmin || (permissions && Object?.values(permissions)?.includes('Company Manager'))) return true;
+	if(permissions && !Object?.values(permissions)?.includes('Can Manage Time for My Company') && !Object?.values(permissions)?.includes('Can Manage Time for this Project') && !Object?.values(permissions)?.includes('Can Manage Time for Work Team')) return true;
 	return false;
 };
 
@@ -109,8 +108,17 @@ export const canManageTimeForCompany = () => {
 
 export const canManageTimeForProject = () => {
 	const server = getServerInfo(),
+		permissions = server?.gblConfig?.user?.projectZonePermissions,
+		isSuperAdmin = server?.gblConfig?.isAdmin
+
+	if(isSuperAdmin || (permissions && Object?.values(permissions)?.includes('Can Manage Time for this Project'))) return true;
+	return false;
+};
+
+export const canManageTimeForWorkTeam = () => {
+	const server = getServerInfo(),
 		permissions = server?.gblConfig?.user?.projectZonePermissions;
 
-	if(permissions && Object?.values(permissions)?.includes('Can Manage Time for this Project')) return true;
+	if(permissions && Object?.values(permissions)?.includes('Can Manage Time for Work Team')) return true;
 	return false;
 };

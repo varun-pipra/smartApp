@@ -41,21 +41,29 @@ const SSBrenalRightPanel = () => {
     setSpecBookPagesData(specBookpages);
   }, [specBookpages]);
 
+  useEffect(() => {
+    if (search.length) {
+      handelSearchChange(search, smRefPUId);
+    } else {
+      console.log(brenaMarkups, "markupsByPageForBidResp");
+      sketchPageinfo?.callback(brenaMarkups || {});
+    }
+  }, [search]);
+
   const debounceOnSearch = useCallback(
-    _.debounce((search, pageId) => {
-      setSearch(search);
-      if (search.length) {
-        handelSearchChange(search,pageId);
-      } else {
-        console.log(brenaMarkups, "markupsByPageForBidResp");
-        sketchPageinfo?.callback(brenaMarkups || {});
-      }
+    _.debounce((search) => {
+      setSearch(search);      
     }, 2000),
-    [search]
+    []
   );
 
   useEffect(() => {
     if (sketchPageinfo) {
+      dispatch(
+        setBrenaMarkups({
+          extractionAreas: [],
+        })
+      );
       getMarkupsPerpage();
     }
   }, [sketchPageinfo]);
@@ -64,7 +72,7 @@ const SSBrenalRightPanel = () => {
     let payload = {
       specbookId: selectedRecord?.specBook?.id,
       pageNo: sketchPageinfo?.currentPage?.page,
-    };
+    };   
     getMarkupsByPageForSubmittals(payload)
       .then((res: any) => {
         setSmRefPUId(res[0]?.data?.pageUId);
@@ -76,7 +84,7 @@ const SSBrenalRightPanel = () => {
         };
         dispatch(setBrenaMarkups(data));
         if (search.length) {
-          handelSearchChange(search,res[0]?.data?.pageUId);
+          handelSearchChange(search,res[0]?.data?.pageUId, data);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -86,8 +94,8 @@ const SSBrenalRightPanel = () => {
       });
   };
 
-  const handelSearchChange = (searchText:any,pageId:any) => {
-    if (smRefPUId && selectedRecord?.specBook?.id) {
+  const handelSearchChange = (searchText:any,pageId:any, updatedMData?:any) => {
+    if (pageId && selectedRecord?.specBook?.id) {
       let params = `searchText=${searchText}&pageId=${pageId}&contentId=${selectedRecord?.specBook?.id}`;
       getTextOccurences(params).then((resp: any) => {
         console.log(
@@ -97,12 +105,12 @@ const SSBrenalRightPanel = () => {
         );
         let updatedRes = [
           ...modifyMarkupData(resp.data),
-          ...brenaMarkups.extractionAreas || [],
+          ...updatedMData?.extractionAreas || brenaMarkups.extractionAreas || [],
         ];
         let data = {
           extractionAreas: updatedRes,
         };
-        console.log("udated markup data", data, sketchPageinfo);
+        console.log("udated markup data", data, sketchPageinfo , smRefPUId);
         sketchPageinfo?.callback(data);
       });
     }
@@ -117,7 +125,7 @@ const SSBrenalRightPanel = () => {
             showGroups={false}
             showFilter={false}
             filterHeader=""
-            onSearchChange={(searchText: any) => debounceOnSearch(searchText, smRefPUId)}
+            onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
           />
         </div>
         <IQBrenaDocViewer

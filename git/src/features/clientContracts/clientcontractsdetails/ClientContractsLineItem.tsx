@@ -45,6 +45,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 	const presenceId = 'clientcontract-lineitem-presence';
 	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 	const appInfo = useAppSelector(getServer);
+	const { connectors } = useAppSelector((state) => state.gridData);
 	const contractLineItem: any = useAppSelector(getSelectedRecord);
 	const {contractId, tab} = useAppSelector((state) => state.clientContracts);
 	const forecastsCount = useAppSelector(getForecastsCount);
@@ -330,7 +331,17 @@ const ClientContractsLineItem = (props: headerprops) => {
 					:
 					<div className='kpi-vertical-container'>
 						<div className='lid-details-container'>
-							<span className='budgetid-label grey-font'>Contract ID:</span><span className='grey-fontt'>{contractLineItem?.code}</span>
+							{/* <span className='budgetid-label grey-font'>Contract ID:</span><span className='grey-fontt'>{contractLineItem?.code}</span> */}
+							<span className='budgetid-label grey-font'>Contract ID:</span>
+								<span className='client-content'>
+									<span className='grey-fontt'>{contractLineItem?.code}</span>
+									{connectors?.length ? <img
+										className="sapnumber"
+										src={connectors?.[0]?.primaryIconUrl}
+										alt="connector Image"
+									/> : ''}
+									{connectors?.length ? <span className='sapnumber'>{contractLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+								</span>
 							<span className='budgetid-label grey-font'>Status:</span>
 							<Button
 								disabled

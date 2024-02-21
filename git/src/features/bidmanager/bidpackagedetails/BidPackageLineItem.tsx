@@ -39,6 +39,7 @@ const BidPackageLineItem = (props: any) => {
 	const presenceRef = React.useRef(false);
 	const presenceId = 'bid-manager-lineitem-presence';
 	const presenceTools = <div id={presenceId} className='bid-manager-presence'></div>;
+	const { connectors } = useAppSelector((state) => state.gridData);
 
 	const [pinned, setPinned] = useState(true);
 	const [collapsed, setCollapsed] = useState(false);
@@ -327,7 +328,17 @@ const BidPackageLineItem = (props: any) => {
 				<div className='collapsible-section'>
 					<span className='left-box'>
 						<p className='head-info-box'>
-							<span className='bid-id-label'>Bid ID:</span><span className='bid-id'>{bidLineItem?.displayId}</span>
+							{/* <span className='bid-id-label'>Bid ID:</span><span className='bid-id'>{bidLineItem?.displayId}</span> */}
+							<span className='bid-id-label'>Bid ID:</span>
+								<span className='bid-content'>
+									<span className='bid-id'>{bidLineItem?.displayId}</span>
+									{connectors?.length ? <img
+										className="sapnumber"
+										src={connectors?.[0]?.primaryIconUrl}
+										alt="connector Image"
+									/> : ''}
+									{connectors?.length ? <span className='sapnumber'>{bidLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+							</span>
 						</p>
 						{collapsed === false ? <p className='head-info-box'>
 							<span className='status-label'>Status:</span>

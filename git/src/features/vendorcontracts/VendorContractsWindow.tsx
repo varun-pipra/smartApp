@@ -29,6 +29,7 @@ import {setAdditionalFiles, setContractFilesCount, getStandardFiles} from './sto
 import VendorContractsContent from './vendorcontractscontent/VendorContractsContent';
 import {addContractFiles} from './stores/tabs/contractfiles/VCContractFilesTabAPI';
 import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
+import { getVendorContractsList } from './stores/gridSlice';
 
 const VendorContractsWindow = () => {
 	const dispatch = useAppDispatch();
@@ -147,6 +148,10 @@ const VendorContractsWindow = () => {
 							case 'updatechildparticipants':
 								// console.log('updatechildparticipants', data)
 								dispatch(setPresenceData(data.data));
+								break;
+							case "frame-active":
+								console.log("frame-active", data);
+								data?.data?.name == "vendorcontracts" && dispatch(getVendorContractsList(appInfo));
 								break;
 						}
 					}

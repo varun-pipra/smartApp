@@ -64,6 +64,7 @@ const VendorContractsLineItem = (props: headerprops) => {
 	const {changeEventsCount} = useAppSelector((state) => state.changeEvents);
 	const filesCount = useAppSelector(getContractFilesCount);
 	const tabid = useRef('contract-details');
+	const { connectors } = useAppSelector((state) => state.gridData);
 	useEffect(() => {setTitle(vendorLineItem?.title);}, [vendorLineItem?.title]);
 
 	const presenceTools = <Fragment>{
@@ -335,7 +336,17 @@ const VendorContractsLineItem = (props: headerprops) => {
 					:
 					<div className='kpi-vertical-container'>
 						<div className='lid-details-container'>
-							<span className='budgetid-label grey-font'>Contract ID:</span><span className='grey-fontt'>{vendorLineItem?.code}</span>
+							{/* <span className='budgetid-label grey-font'>Contract ID:</span><span className='grey-fontt'>{vendorLineItem?.code}</span> */}
+							<span className='budgetid-label grey-font'>Contract ID:</span>
+								<span className='vendor-content'>
+									<span className='grey-fontt'>{vendorLineItem?.code}</span>
+									{connectors?.length ? <img
+										className="sapnumber"
+										src={connectors?.[0]?.primaryIconUrl}
+										alt="connector Image"
+									/> : ''}
+									{connectors?.length ? <span className='sapnumber'>{vendorLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+								</span>
 							<span className='budgetid-label grey-font'>Status:</span>
 
 							{/* <span className='status-pill' style={{ backgroundColor: `${vendorContractsStatusColors[vendorLineItem?.status]}`, color: tinycolor(StatusColors[vendorLineItem?.status]).isDark() ? 'white' : 'black', }}>

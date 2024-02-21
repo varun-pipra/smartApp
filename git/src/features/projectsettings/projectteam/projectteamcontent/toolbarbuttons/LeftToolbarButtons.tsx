@@ -13,6 +13,8 @@ import ProbationCard from '../../projectteamapplicationsdetails/SafetyProbationC
 import './toolbar.scss';
 // Component definition
 const LeftToolbarButtons = (props: any) => {
+	const{isReadOnly = false, ...rest} =props;
+	const isFromOrgStaff = window.location.href?.includes('staff');
 	const getAllowedCompanyManager = function (rec: any, gblConfig: any) {
 		let isAllowed = false;
 		if (gblConfig) {
@@ -115,7 +117,9 @@ const LeftToolbarButtons = (props: any) => {
 						} else {
 							const { enum: role, msg: msg } = rMap[ permissions[ key ] ];
 							if (role !== userPermissionTypeMap[ selectedMembers[ 0 ]?.userPermissionType ]?.enum) {
-								updateGeneralPermissions(appInfo, { role: role, userIds: selectedMembers.map((o: any) => o.objectId) }, function () {
+								let workerIds = selectedMembers.map((item: any) => item.objectId);
+								workerIds =Array.from(new Set(workerIds));
+								updateGeneralPermissions(appInfo, { role: role, userIds: workerIds }, function () {
 									setToastMessage(msg);
 									setShowToastMessage(true);
 									refreshGrid();
@@ -136,7 +140,9 @@ const LeftToolbarButtons = (props: any) => {
 				let zonePermission = selectedMembers[ 0 ] && selectedMembers[ 0 ][ 'projectZonePermissions' ] && selectedMembers[ 0 ][ 'projectZonePermissions' ].map((o: any) => o.name) || [],
 					currentPermissions = checkedVendorPermissions.filter((o: any) => !o.isDeleted && o.name).map((o: any) => o.name);
 				if (JSON.stringify(zonePermission.sort()) !== JSON.stringify(currentPermissions.sort())) {
-					updateVendorPermissions(appInfo, { roles: onlyCheckedPermissions, userIds: selectedMembers.map((o: any) => o.objectId) }, function () {
+					let workerIds = selectedMembers.map((item: any) => item.objectId);
+					workerIds =Array.from(new Set(workerIds));
+					updateVendorPermissions(appInfo, { roles: onlyCheckedPermissions, userIds: workerIds }, function () {
 						if(showFinanceMsg) {
 							setToastMessage('Permission updated successfully.');
 							setShowToastMessage(true);
@@ -288,9 +294,9 @@ const LeftToolbarButtons = (props: any) => {
 	}
 	isActiveInactivAllEqual = (activeInactiveArr.length > 0) && (arr => arr.every(v => v === arr[ 0 ]))(activeInactiveArr);
 	disableVerify = (selectedMembers.length === 0) || disableVerify;
-	const disableEdit = !(isSingle && isAllowedCompanyManager && !hasInactive);
-	const disableDelete = !(selectedMembers.length > 0 && !hasOwner);
-	const disableActivate = !(isActiveInactivAllEqual) || isDeactivedForViolation;
+	const disableEdit = isReadOnly ? isReadOnly : !(isSingle && isAllowedCompanyManager && !hasInactive);
+	const disableDelete = isReadOnly ? isReadOnly :  !(selectedMembers.length > 0 && !hasOwner);
+	const disableActivate = isReadOnly ? isReadOnly :  !(isActiveInactivAllEqual) || isDeactivedForViolation;
 	const activeToolTip = !(activeInactiveArr && activeInactiveArr[ 0 ]) ? 'Activate' : 'De-Activate';
 	const activeBtnCls = !(activeInactiveArr && activeInactiveArr[ 0 ]) ? 'appzone-itemactivated usractivate' : 'appzone-itemactivated usrdeactivate';
 	let hasCompanyManagerPermission = selectedMembers.length > 0;
@@ -304,10 +310,13 @@ const LeftToolbarButtons = (props: any) => {
 	const disableLiveLink = !(selectedMembers.length > 0 && !hasInactive && isRegistered);
 	const disableLiveChat = !(isAnyUserSelected);
 	const disableSendEmail = !(isMulti && !hasInactive);
-	const disablePrint = !(isMulti && !hasInactive);
+	const disablePrint = isReadOnly ? isReadOnly :  !(isMulti && !hasInactive);
 	const disableReInvite = selectedMembers.length === 0 || isRolesNotAvailable;
 	const disableWorkerAttestMent = (selectedMembers.length === 0) || isCMAConfirmed;
 
+	const disableAdd = isReadOnly;
+	const disableOrgConsole = isReadOnly;
+	const disableRefresh = isReadOnly;
 	const printerMenuOptions = [
 		{ text: "CustomBadge", value: "customBadge", iconCls: 'common-icon-badge icon-size', disabled: disablePrint },
 		{ text: "Safety Digest Notification", value: "safetyDigestNotification", iconCls: 'common-icon-safety-digest-notification icon-size', disabled: disablePrint },
@@ -320,6 +329,7 @@ const LeftToolbarButtons = (props: any) => {
 	const printerDatRef = React.useRef(false);
 	const onPrintMenuClick = (menuType: any, menuData: any) => {
 		let userIds = selectedMembers.map((r: any) => r?.objectId);
+			userIds =Array.from(new Set(userIds));
 		if (menuData && menuData.value && menuData.value == 'printWorkerBadge') {
 			// batchPrint();
 			postMessage({ event: 'projectteam', body: { evt: 'batchprint', userIds: userIds } });
@@ -353,17 +363,17 @@ const LeftToolbarButtons = (props: any) => {
 	}, [ disablePrint ]);
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
-			<IconButton aria-label='Refresh Project Team List' data-action='refresh' onClick={ clickHandler }>
+			<IconButton aria-label='Refresh Project Team List' data-action='refresh' onClick={ clickHandler } disabled={ disableRefresh }>
 				<span className='common-icon-refresh icon-size' />
 			</IconButton>
 		</IQTooltip>
 		{ activeTab === 'rtls' || (!isManager) || restrictAddUser ? '' : <IQTooltip title='Add' placement='bottom'>
-			<IconButton data-action='add' onClick={ clickHandler }>
+			<IconButton data-action='add' onClick={ clickHandler } disabled={ disableAdd }>
 				<span className='common-icon-add icon-size' />
 			</IconButton>
 		</IQTooltip> }
 		{activeTab === 'rtls' ||  (!isManager) || (!isOrgSubscribed) ? '' : <IQTooltip title={ isMTA ? 'Pick from Org Console' : 'Pick from Global' } placement='bottom'>
-			<IconButton data-action='pick-org' onClick={ clickHandler }>
+			<IconButton data-action='pick-org' onClick={ clickHandler } disabled={ disableOrgConsole }>
 				<span className='common-icon-pick-company-org icon-size' />
 			</IconButton>
 		</IQTooltip> }
@@ -386,7 +396,7 @@ const LeftToolbarButtons = (props: any) => {
                 )}
 			</IconButton>
 		</IQTooltip> }
-		{ activeTab !== 'member' || (!isManager) ? '' : <IQTooltip title='Assign/Unassign to Security Group' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'member' || (!isManager) ? '' : <IQTooltip title='Assign/Unassign to Security Group' placement='bottom'>
 			{/* <IconButton disabled={disableUserPrivilege}>
 				<span className='common-icon-none icon-size' />
 			</IconButton> */}
@@ -402,7 +412,7 @@ const LeftToolbarButtons = (props: any) => {
 				MenuOptionsClick={ (data: any, isDirty: any) => { assignOrUnassignUserPermission(data, isDirty); } }
 			/>
 		</IQTooltip> }
-		{ activeTab !== 'member' ? '' : <><IQTooltip title='LiveLink' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'member' ? '' : <><IQTooltip title='LiveLink' placement='bottom'>
 			<IconButton disabled={ disableLiveLink } data-action='livelink' onClick={ clickHandler }>
 				<span className='common-icon-livelink icon-size' />
 			</IconButton>
@@ -412,7 +422,7 @@ const LeftToolbarButtons = (props: any) => {
 					<span className='common-icon-chatting icon-size' />
 				</IconButton>
 			</IQTooltip></> }
-		{ activeTab !== 'member' || (!localhost && !gblConfig?.isUserManager && !gblConfig?.isSafetyManager && !gblConfig?.isProjectTeamManager) ? '' : <IQTooltip title='Email' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'member' || (!localhost && !gblConfig?.isUserManager && !gblConfig?.isSafetyManager && !gblConfig?.isProjectTeamManager) ? '' : <IQTooltip title='Email' placement='bottom'>
 			<IconButton disabled={ disableSendEmail } data-action='email' onClick={ clickHandler }>
 				<span className='common-icon-email-message icon-size' />
 			</IconButton>
@@ -463,55 +473,72 @@ const LeftToolbarButtons = (props: any) => {
 							});
 						} }
 						ToggleDisable={ false }
+						disable={isReadOnly}
 					/> :
-					<IconButton onClick={ () => { console.log('Worker In/Out Alert Settings'); postMessage({ event: 'projectteam', body: { evt: 'rtlssettings' } }); } }>
+					<IconButton disabled={isReadOnly} onClick={ () => { console.log('Worker In/Out Alert Settings'); postMessage({ event: 'projectteam', body: { evt: 'rtlssettings' } }); } }>
 						<span className='common-icon-new-gear icon-size' />
 					</IconButton>
 				}
 			</IQTooltip> }
-		{ activeTab !== 'member' || (!isProjectAdmin) || (isOpenedFromProjCtrl) ? '' : <IQTooltip title='Supplemental Info' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'member' || (!isProjectAdmin) || (isOpenedFromProjCtrl) ? '' : <IQTooltip title='Supplemental Info' placement='bottom'>
 			<IconButton data-action='supplemental' onClick={ clickHandler }>
 				<span className='common-icon-settings-icon icon-size' />
 			</IconButton>
 		</IQTooltip> }
-		{ activeTab !== 'member' || (!localhost && !gblConfig?.isUserManager && !gblConfig?.isSafetyManager && !gblConfig?.isProjectTeamManager) || !(isLocalhost ? true : appInfo?.isProcore) ? '' : <IQTooltip title='Sync to Procore' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'member' || (!localhost && !gblConfig?.isUserManager && !gblConfig?.isSafetyManager && !gblConfig?.isProjectTeamManager) || !(isLocalhost ? true : appInfo?.isProcore) ? '' : <IQTooltip title='Sync to Procore' placement='bottom'>
 			<IconButton data-action='procore' onClick={ clickHandler }>
 				<span className='common-icon-procor-icon icon-size' />
 			</IconButton>
 		</IQTooltip> }
-		{ (activeTab === 'rtls' || activeTab === 'usergroups') || (!isProjectAdmin) ? '' : <IQTooltip title='Re-invite Users' placement='bottom'>
+		{isFromOrgStaff ? null : (activeTab === 'rtls' || activeTab === 'usergroups') || (!isProjectAdmin) ? '' : <IQTooltip title='Re-invite Users' placement='bottom'>
 			<IconButton disabled={ disableReInvite } data-action='reinvite' onClick={ clickHandler }>
 				<span className='common-icon-reinvite icon-size' />
 			</IconButton>
 		</IQTooltip> }
-		{ activeTab !== 'member' || !(isLocalhost ? true : appInfo?.isSAP) ? '' : <IQTooltip title='Sync Team Members to SAP' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'member' || !(isLocalhost ? true : appInfo?.isSAP) ? '' : <IQTooltip title='Sync Team Members to SAP' placement='bottom'>
 			<IconButton data-action='sap' onClick={ clickHandler }>
 				<span className='common-icon-sap-setting icon-size' />
 			</IconButton>
 		</IQTooltip> }
-		{ activeTab !== 'safety' || !(isSafetyManager) ? '' : <IQTooltip title='' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'safety' || !(isSafetyManager) ? '' : <IQTooltip title='' placement='bottom'>
 			<IconButton data-action='probation' onClick={ clickHandler }>
 				<ProbationCard />
 			</IconButton>
 		</IQTooltip> }
-		{ activeTab !== 'safety' || !(isCompanyManager) || !(isLocalhost ? true : gblConfig?.currentProjectInfo?.isWorkerAttestmentOn) ? '' : <IQTooltip title='Attest Worker' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'safety' || !(isCompanyManager) || !(isLocalhost ? true : gblConfig?.currentProjectInfo?.isWorkerAttestmentOn) ? '' : <IQTooltip title='Attest Worker' placement='bottom'>
 			<IconButton className='iq-border-button' disabled={ disableWorkerAttestMent } data-action='attestment' onClick={ clickHandler }>
 				<span className='common-icon-worker-attestment icon-size' />
 				Attest Worker
 			</IconButton>
 		</IQTooltip> }
-		{ activeTab !== 'safety' || !(isCompanyManager) ? '' : <IQTooltip title='Manage Company' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'safety' || !(isCompanyManager) ? '' : <IQTooltip title='Manage Company' placement='bottom'>
 			<IconButton className='iq-border-button' data-action='managecompany' onClick={ clickHandler }>
 				<span className='common-icon-company icon-size' />
 				Manage Company
 			</IconButton>
 		</IQTooltip> }
-		{ activeTab !== 'safety' || !(isSafetyManager) ? '' : <IQTooltip title='' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'safety' || !(isSafetyManager) ? '' : <IQTooltip title='' placement='bottom'>
 			<IconButton aria-label='Verify' disabled={ disableVerify } className='iq-border-button iq-verify-button' data-action='verify' onClick={ clickHandler }>
 				<span className='common-icon-Verify icon-size' />
 				Verify
 			</IconButton>
 		</IQTooltip> }
+		{isFromOrgStaff && 
+		<IQTooltip title='Calendar' placement='bottom'>
+			<IconButton aria-label='dates' disabled={ isReadOnly } data-action='dates' onClick={ clickHandler }>
+			<span className='common-icon-DateCalendar' />
+			</IconButton>
+		</IQTooltip> }
+		{!isReadOnly && isFromOrgStaff && 
+			<IconButton aria-label='reservestaff' className='iq-border-button iq-reverse-button' data-action='reservestaff' onClick={ clickHandler }>
+				Reserve Staff
+			</IconButton>
+		}
+		{!isReadOnly && isFromOrgStaff && 
+			<IconButton aria-label='managergroups' className='iq-border-button iq-manager-button' data-action='managergroups' onClick={ clickHandler }>
+				Manage Groups
+			</IconButton>
+		}
 		{
 			showToastMessage &&
 			<Alert severity="success" className='floating-toast-cls in-lefttoolbar' onClose={ () => { setShowToastMessage(false); } }>
@@ -524,6 +551,7 @@ const LeftToolbarButtons = (props: any) => {
 	</>;
 };
 const Settings = (props: any) => {
+	const {disable = false,...rest} =props;
 	const [ anchorEl, setAnchorEl ] = React.useState<null | HTMLElement>(null);
 	const [ toggleChecked, setToggleChecked ] = React.useState<any>();
 	const open = Boolean(anchorEl);
@@ -546,7 +574,7 @@ const Settings = (props: any) => {
 
 	return (
 		<>
-			<IconButton onClick={ handleClick }><span className='common-icon-new-gear icon-size' /></IconButton>
+			<IconButton disabled={disable} onClick={ handleClick }><span className='common-icon-new-gear icon-size' /></IconButton>
 			<Menu
 				id="demo-positioned-menu"
 				aria-labelledby="demo-positioned-button"

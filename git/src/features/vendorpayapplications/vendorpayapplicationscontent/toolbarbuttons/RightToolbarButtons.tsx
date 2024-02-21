@@ -14,7 +14,7 @@ import IQToggle from 'components/iqtoggle/IQToggle';
 import {getServer, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/appInfoSlice';
 import {doBlockchainAction, moduleType} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
-
+import SapButton from 'sui-components/SAPButton/SAPButton';
 
 // Component definition
 const VendorPayAppToolbarRightButtons = () => {
@@ -25,6 +25,8 @@ const VendorPayAppToolbarRightButtons = () => {
 	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const {blockchainEnabled} = useAppSelector((state: any) => state.blockchain);
 	const appInfo = useAppSelector(getServer);
+	const { connectors } = useAppSelector((state) => state.gridData);
+
 
 	useEffect(() => {
 		setToggleChecked(blockchainEnabled);
@@ -70,6 +72,7 @@ const VendorPayAppToolbarRightButtons = () => {
 				>
 					{'Lock Contract'}
 				</Button> */}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
 			<IQTooltip title="Settings" placement={"bottom"}>
 				<IconButton
 					className='settings-button'

@@ -99,6 +99,9 @@ import { RowHeightParams } from "ag-grid-community";
 import { addCookie, getCookie } from "./utils";
 import CustomTooltip from "features/budgetmanager/aggrid/customtooltip/CustomToolTip";
 import { amountFormatWithSymbol } from "app/common/userLoginUtils";
+import IQBaseWindow from "components/iqbasewindow/IQBaseWindow";
+import IQButton from "components/iqbutton/IQButton";
+import ReserveStaffContent from "./projectteamcontent/ReserveStaff/ReserveStaff";
 
 const useStyles2: any = makeStyles((theme: any) =>
 	createStyles({
@@ -134,6 +137,9 @@ const ProjectTeamWindow = (props: any) => {
 	});
 	const [showToastMessage, setShowToastMessage] = React.useState<any>('');
 	const [localToastMessage, setLocalToastMessage] = React.useState<any>('');
+	const isFromOrgStaff = window.location.href?.includes('staff');
+	const [reserveStaff, setReserveStaff] = useState(false);
+	const isReadOnly = false;
 	useEffect(() => { setTimeout(() => { setShowToastMessage('') }, 3000) }, [showToastMessage]) // clearing the last value from the usestate
 	useEffect(() => { setTimeout(() => { setLocalToastMessage('') }, 3000) }, [localToastMessage]) // clearing the last value from the usestate
 	const {
@@ -1348,6 +1354,10 @@ const ProjectTeamWindow = (props: any) => {
 								console.log('**** RECEIVED switchtomemberstab', data.data, new Date());
 								setActiveToggle('member');
 								break;
+							case "frame-active":
+								console.log("frame-active", data);
+								// data?.data?.name == "projectteam" && dispatch(getChangeEventList());
+								break;
 							default:
 								// Sending to individual widgets
 								if (iframeEvent === 'refreshskills') {
@@ -1637,6 +1647,7 @@ const ProjectTeamWindow = (props: any) => {
 	const reInviteMembers = () => {
 		setLoadMask(true, 'project-team-gridcls');
 		let workerIds = selectedMembers.map((item: any) => item.objectId);
+		workerIds =Array.from(new Set(workerIds));
 		memberInviteApi(appInfo, workerIds, ((res: any) => {
 			if (res.success) {
 				setLoadMask(false, 'project-team-gridcls');
@@ -1647,6 +1658,7 @@ const ProjectTeamWindow = (props: any) => {
 	const verifyMembers = () => {
 		setLoadMask(true, 'project-team-gridcls');
 		let workerIds = selectedMembers.map((item: any) => item.objectId);
+		workerIds =Array.from(new Set(workerIds));
 		approveWorkersApi(appInfo, { workerIds }, ((res: any) => {
 			setLoadMask(false, 'project-team-gridcls');
 			if (res.success) {
@@ -1660,6 +1672,7 @@ const ProjectTeamWindow = (props: any) => {
 		setLoadMask(true, 'project-team-gridcls');
 		let workerIds = selectedMembers.map((item: any) => item.objectId),
 			msg = selectedMembers[0].status === "Active" ? 'User(s) successfully deactivated' : 'User(s) successfully activated';
+			workerIds =Array.from(new Set(workerIds));
 		memberPrivilegeApi(appInfo, workerIds, selectedMembers[0].status, ((res: any) => {
 			setLoadMask(false, 'project-team-gridcls');
 			if (!res.success) {
@@ -1673,6 +1686,8 @@ const ProjectTeamWindow = (props: any) => {
 	const leftToolBarHandler = useCallback((e: any) => {
 		//e.preventDefault();
 		const action = e.currentTarget.getAttribute('data-action');
+		let unique: any = [];
+    	([...selectedMembers] || [])?.map((x: any) => unique?.filter((a: any) => a?.objectId === x?.objectId)?.length > 0 ? null : unique.push(x));
 		let evtData = {
 			event: 'projectteam',
 			body: {
@@ -1680,7 +1695,7 @@ const ProjectTeamWindow = (props: any) => {
 				iframeId: iframeID,
 				roomId: appInfo && appInfo.presenceRoomId,
 				appType: appType,
-				selectedRecords: selectedMembers,
+				selectedRecords: unique,
 				membersList: localRowData
 			}
 		};
@@ -1740,6 +1755,7 @@ const ProjectTeamWindow = (props: any) => {
 			}
 			case 'email': {
 				let emailList = selectedMembers.map((item: any) => item.email);
+				emailList = Array.from(new Set(emailList));
 				window.open('mailto:' + emailList.join(',') + '?subject=&body=');
 				break;
 			}
@@ -1798,6 +1814,14 @@ const ProjectTeamWindow = (props: any) => {
 			case 'probation': {
 				dispatch(setSafetyProbationPopOver(true));
 				//postMessage(evtData);
+				break;
+			}
+			case 'reservestaff': {
+				setReserveStaff(true);
+				break;
+			}
+			case 'managergroups': {
+				
 				break;
 			}
 			default: {
@@ -2111,38 +2135,52 @@ const ProjectTeamWindow = (props: any) => {
 			sortable: false,
 			cellRenderer: (params: any) => {
 				return (
-					<Box
-						component="img"
-						sx={{
-							height: 35,
-							width: 35,
-							// maxHeight: { xs: 233, md: 167 },
-							// maxWidth: { xs: 350, md: 250 },
-							display: "flex",
-						}}
-						className="thumbnail_image"
-						alt={params?.data?.firstName}
-						src={params?.data?.thumbnailUrl}
-						onMouseOver={(e: any) => {
-							userImageHandleOver(e, params);
-						}}
-						onClick={(event: any) => {
-							if (event?.detail == 2) {
-								const currentRec = params?.data,
-									canEdit = canEditProjectTeamRec(currentRec, appInfo?.gblConfig, true);
-								if (canEdit) {
-									dispatch(setCurrentSelection(params?.data));
-									setDefaultTabId("userDetails");
-									setOpenRightPanel(true);
-								} else {
-									setOpenRightPanel(false);
-									dispatch(setCurrentSelection(null));
-									appInfo?.gblConfig?.isCompanyManager && setLocalToastMessage('This worker is not part of your company.You can view/update workers records that belong to your company.');
-								}
-							}
-						}}
-					/>
-				);
+          <>
+		  {params?.data?.isReserved && (
+			<div className="reserved-staff-cls">
+				<span>R</span>
+			</div>
+		  )}     
+            <Box
+              component="img"
+              sx={{
+                height: 35,
+                width: 35,
+                // maxHeight: { xs: 233, md: 167 },
+                // maxWidth: { xs: 350, md: 250 },
+                display: "flex",
+              }}
+              className="thumbnail_image"
+              alt={params?.data?.firstName}
+              src={params?.data?.thumbnailUrl}
+              onMouseOver={(e: any) => {
+                userImageHandleOver(e, params);
+              }}
+              onClick={(event: any) => {
+                if (event?.detail == 2) {
+                  const currentRec = params?.data,
+                    canEdit = canEditProjectTeamRec(
+                      currentRec,
+                      appInfo?.gblConfig,
+                      true
+                    );
+                  if (canEdit) {
+                    dispatch(setCurrentSelection(params?.data));
+                    setDefaultTabId("userDetails");
+                    setOpenRightPanel(true);
+                  } else {
+                    setOpenRightPanel(false);
+                    dispatch(setCurrentSelection(null));
+                    appInfo?.gblConfig?.isCompanyManager &&
+                      setLocalToastMessage(
+                        "This worker is not part of your company.You can view/update workers records that belong to your company."
+                      );
+                  }
+                }
+              }}
+            />
+          </>
+        );
 			},
 		},
 		{
@@ -2327,6 +2365,80 @@ const ProjectTeamWindow = (props: any) => {
 					</span>
 				);
 			},
+		},
+		{
+			headerName: "Current Project(s)",
+			field: "currentProjects",
+			minWidth: 280,
+			pinned: "left",
+			lockPosition: "left",
+			// headerComponent: CustomHeader,
+			sortable: true,
+			headerComponentParams: {
+				options: SafetyStatusOptions,
+				columnName: 'Current Project(s)',
+				filterUpdated: (values: any) => onSafetyStatusFilterUpdated(values),
+				showSorting: true,
+				handleSorting: (e: any) => handleSorting(e),
+				defaultFilters: gridSafetyStatusFilters
+			},
+			cellRenderer: (params:any) => {
+				return (
+				<div style={{display: "flex",alignContent: "center",alignItems: "center"}}>
+            {params?.data?.currentProjects?.[0]?.thumbnailUrl && (
+              <img
+                src={params?.data?.currentProjects?.[0]?.thumbnailUrl}
+                alt="Avatar"
+                style={{ width: "24px", height: "24px", padding: "1px" }}
+                className="base-custom-img"
+              />
+            )}
+            <span>{params?.data?.currentProjects?.[0]?.name}</span>
+            {params?.data?.currentProjects?.length > 1 && (
+              <AutoWidthTooltip
+                className={"pt-RolesTooltip-main"}
+                title={
+					<div style={{display: "grid",alignContent: "center",alignItems: "center", padding : '6px', gap : '10px'}}>
+					{params?.data?.currentProjects.map((item:any, index:any) => {
+						// if(index === 0) return;
+						// else
+						 return (
+							<div key={index}>
+								{item.thumbnailUrl && (
+									<img
+									src={item?.thumbnailUrl}
+									alt="Avatar"
+									style={{ width: "24px", height: "24px", padding: "1px" }}
+									className="base-custom-img"
+								  />
+								)}
+								<span>{item?.name}</span>
+							</div>
+
+						)
+					})}	
+			</div>
+                }
+                placement={"bottom"}
+                arrow
+                sx={{
+                  ".MuiTooltip-tooltip ": {
+                    padding: "0px",
+                  },
+                }}
+                enterDelay={1500}
+                disableFocusListener
+                disableTouchListener
+              >
+                <span
+                  className="smart-dropdown-multi-select-count-cls"
+                  style={{ marginLeft: "8px" }}
+                >{`+${params?.data?.currentProjects?.length - 1}`}</span>
+              </AutoWidthTooltip>
+            )}
+          </div>
+        ); 
+			}
 		},
 		{
 			headerName: "Company",
@@ -2869,6 +2981,49 @@ const ProjectTeamWindow = (props: any) => {
 			},
 		},
 		{
+			headerName: "OnBoarding Status",
+			minWidth: 300,
+			field: "onboardingStatus",
+			pinned: "left",
+			lockPosition: "left",
+			headerComponent: CustomHeader,
+			sortable: true,
+			valueGetter: (params: any) => getSafteyStatus(params?.data?.safetyStatus),
+			keyCreator: (params: any) => {
+				return getSafteyStatus(params?.data?.safetyStatus) ? getSafteyStatus(params?.data?.safetyStatus) : 'None'
+			},
+			headerComponentParams: {
+				options: SafetyStatusOptions,
+				columnName: 'OnBoarding Status',
+				filterUpdated: (values: any) => onSafetyStatusFilterUpdated(values),
+				showSorting: true,
+				handleSorting: (e: any) => handleSorting(e),
+				defaultFilters: gridSafetyStatusFilters
+			},
+			cellRenderer: (params: any) => {
+				return (
+					<span
+						className={"pt-safetyStatus " + getSafteyStatusCls(params?.data?.safetyStatus)}
+						style={{ backgroundColor: getSafteyStatusColor(params?.data?.safetyStatus) }}
+						onClick={(event: any) => {
+							if (event.detail == 2) {
+								const currentRec = params?.data,
+									canEdit = canEditProjectTeamRec(currentRec, appInfo?.gblConfig, true);
+								if (canEdit) {
+									dispatch(setCurrentSelection(params?.data));
+									setDefaultTabId("userDetails");
+									setOpenRightPanel(true);
+								}
+							}
+						}}
+					>
+						{" "}
+						{getSafteyStatus(params?.data?.safetyStatus)}{" "}
+					</span>
+				);
+			},
+		},
+		{
 			headerName: "Policy Status",
 			minWidth: 200,
 			field: "policyStatus",
@@ -3261,6 +3416,12 @@ const ProjectTeamWindow = (props: any) => {
 				 }
 			},
 		},
+		{
+			headerName: "Org Location",
+			field: "orgLocation",
+			minWidth: 160,
+			valueGetter: (params: any) => params?.data?.orgLocation ? `${params?.data?.orgLocation}` : '',
+		},
 		supplimentCol,
 	];
 	allColumns.forEach((item: any) => {
@@ -3315,6 +3476,35 @@ const ProjectTeamWindow = (props: any) => {
 		}
 	}
 	);
+	const StaffColOrder = [
+		"thumbnailUrl",
+		"firstName",
+		"lastName",
+		"currentProjects",
+		"onboardingStatus",
+		"email",
+		"regions",
+		"orgLocation",
+		"company",
+		"rtlsId",
+		"gpsTagId",
+		"projectZonePermissions",
+		"roles",
+		"tradeName",
+		"skills",
+		"workCategoryName",
+		"hourlyRate",
+		// "safetyStatus",
+		"policyStatus",
+		"certificateStatus",
+		"safetyVerifiedOn",
+		"isRegistered",
+		"phone",
+		"createdDate",
+		"modifiedDate",
+		"lastSeen",
+		"workTeams"
+	];
 	const memberColOrder = [
 		"thumbnailUrl",
 		"firstName",
@@ -3396,8 +3586,9 @@ const ProjectTeamWindow = (props: any) => {
 	const getColumnsBasedOnOrder = () => {
 		let orderedCols: any = [];
 		let orderToFollow: any = [];
-
-		if (activeToggle === "member" || activeToggle === "usergroups") {
+		if(isFromOrgStaff) {
+			orderToFollow = StaffColOrder;
+		} else if (activeToggle === "member" || activeToggle === "usergroups") {
 			orderToFollow = memberColOrder;
 			if (appInfo?.isFromORG) {
 				orderToFollow.splice(6, 0, 'regions');
@@ -4108,6 +4299,54 @@ const ProjectTeamWindow = (props: any) => {
 		};
 	};
 	console.log("appInfo Obj", appInfo);
+	const ReserveData = [
+		{name : 'Kelvin', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 0},
+		{name : 'Morgan', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 1},
+		{name : 'Bing', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 2},
+		{name : 'Chandler', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 3},
+		{name : 'Handler', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 4}
+	];
+	const ProjectsData = [
+		{
+			"uniqueId": "0bc9c7e9-1ee9-4ad8-8b08-9c9efc39a020",
+			"id": 548829,
+			"value": 548829,
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "Captial Common Projects"
+		},
+		{
+			"uniqueId": "641ccf57-79eb-4542-b9e2-7d43a07df215",
+			"id": 532018,
+			"value": 532018,
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "Captial Gateway Renovation"
+		},
+		{
+			"uniqueId": "9a8d9eea-d8a6-4b16-8023-3cb9c0c5302d",
+			"id": 2866620,
+			"value": 2866620,
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "Captial Commercial Solutions"
+		},
+		{
+			"uniqueId": "849dd451-c6a1-412c-8000-fdb0e1ffc823",
+			"id": 605844,
+			"value": 605844,
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "Captial City Bussiness Park"
+		},
+		{
+			"uniqueId": "1761be78-b2f5-4ede-b774-372fb7565a51",
+			"id": 3346359,
+			"value": 3346359,
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "East Side Enterprise Building"
+		}
+	];
+	console.log("reserve staff", reserveStaff)
+	const handleReserveStaffChange = (values:any, key:any) => {
+
+	};
 	return (
 		<>
 			<GridWindow
@@ -4123,6 +4362,9 @@ const ProjectTeamWindow = (props: any) => {
 				setIframeEventData={setIframeEventData}
 				zIndex={100}
 				onClose={handleClose}
+				centerPiece={
+					(isReadOnly && <>{`This is a Read-only Preview.`}</>)
+				}
 				//isFullView={fullScreen}
 				// presenceProps={{
 				// 	presenceId: 'ProjectTeam-presence',
@@ -4212,6 +4454,7 @@ const ProjectTeamWindow = (props: any) => {
 										clickHandler: leftToolBarHandler,
 										refreshGrid: refreshGrid,
 									}}
+									isReadOnly= {isReadOnly}
 								/>
 							),
 							rightItems: (
@@ -4320,6 +4563,41 @@ const ProjectTeamWindow = (props: any) => {
 					<span className="toast-text-cls">{localToastMessage}</span>
 				</Alert>
 			)}
+			{reserveStaff && (
+				<IQBaseWindow
+					open={true}
+					title="Reserve Staff"
+					className="reserve-Staff-dialog"
+					PaperProps={{
+						sx: { minHeight: "15%", minWidth: "20%" },
+					}}
+					tools={{
+						closable: true,
+					}}
+					 onClose={(event, reason) => {
+        				if (reason && reason == "closeButtonClick") {
+          					setReserveStaff(false)
+        				}
+      				}}
+					actions={
+						<div>
+						<IQButton
+							disabled={true}
+							// onClick={() => handleSelect()}
+						>
+							RESERVE STAFF
+						</IQButton>
+						</div>
+					}
+					withInModule={true}
+					{...props}
+				>
+				<div>		
+					<ReserveStaffContent data={selectedMembers} projectData={ProjectsData} handleChange={(key:any, values:any) => handleReserveStaffChange(key, values)} />
+				</div>
+				</IQBaseWindow>
+			)}
+			
 		</>
 	);
 };

@@ -41,6 +41,7 @@ const SMBrenaWindow = (props: any) => {
       rightPanel={<CustomDrawer resizePanel={resizePanel}/>}
       titleMessage={isLocalhost ? 'Highlighted are New and Updated Spec Sections.' : null}
       // isBrenaOpen={SSBrenaOpen}
+      withInModule={true}
     ></IQBrenaWindow>
   );
 };

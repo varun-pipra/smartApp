@@ -36,7 +36,7 @@ import { AddDescription } from './AddDescription';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import BMSettings from '../settings/BMSettings';
 import { useTranslation } from 'react-i18next';
-import { fetchViewBuilderList } from '../operations/viewBuilderSlice';
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { settingcostcodetypeData } from 'data/SettingsCosttypeData';
 import { getPhaseDropdownValues, getSBSGridList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
 

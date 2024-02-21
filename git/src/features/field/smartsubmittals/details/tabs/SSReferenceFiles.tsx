@@ -38,18 +38,20 @@ const SSReferenceFiles = (props: any) => {
     setOpen(false);
   };
 
+  useEffect(() => {
+    if (search.length) {
+      handelSearchChange(search, smRefPUId);
+    } else {
+      console.log(ssRefMarkups, "markupsByPageForBidResp");
+      sketchPageinfo?.callback(ssRefMarkups || {});
+    }
+  }, [search]);
+
   const debounceOnSearch = useCallback(
-    _.debounce((search , pageId) => {
-      setSearch(search)
-      console.log(ssRefMarkups , 'markupsByPageForBidResp')
-      if(search.length){
-        handelSearchChange(search , pageId)
-      }else{
-        console.log(ssRefMarkups , 'markupsByPageForBidResp')
-        sketchPageinfo?.callback(ssRefMarkups || {})
-      }
+    _.debounce((search) => {
+      setSearch(search);      
     }, 2000),
-    [search]
+    []
   );
 
   useEffect(() => {
@@ -98,7 +100,8 @@ const SSReferenceFiles = (props: any) => {
   };
 
   const handelSearchChange =(searchText:any , pageId:any) =>{
-    if(smRefPUId && ssRightPanelData?.specBook?.id) {
+    console.log('udated markup data', sketchPageinfo);
+    if(pageId && ssRightPanelData?.specBook?.id) {
       let params = `searchText=${searchText}&pageId=${pageId}&contentId=${ssRightPanelData?.specBook?.id}`
       getTextOccurences(params).then((resp:any)=>{
         console.log(modifyMarkupData(resp.data),ssRefMarkups , 'markupsByPageForBidResp')
@@ -169,7 +172,7 @@ const SSReferenceFiles = (props: any) => {
           showGroups={false}
           showFilter={false}
           filterHeader=""
-          onSearchChange={(searchText: any) => debounceOnSearch(searchText , smRefPUId)}
+          onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
         />
       </div>
       <IQBrenaDocViewer

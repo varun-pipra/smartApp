@@ -550,6 +550,13 @@ const viewBuilderDataExample = [
 
 const ViewBuilderExample = (props: any) => {
 
+	useEffect(() => {
+		const loader = document.getElementById('smartapp-react-loader');
+		if (loader) {
+			loader.style.display = 'none';
+		}
+	}, []);
+
 	const [viewBuilderDailog, setViewBuilderDailog] = useState<boolean>(false);
 	const [modeStatus, setModeStatus] = React.useState<boolean>(false); //for edit mode false , for new view true 
 	const [tableHeadersData, setTableHeadersData] = useState<any>(GridData);
@@ -891,7 +898,7 @@ const ViewBuilderExample = (props: any) => {
 				// onSearchChange={searchHandler}
 				// onFilterChange={filterHandler}
 			/>
-			<ViewBuilder
+			{/* <ViewBuilder
 				dropDownList={dropDownList}
 				dropDownOnChange={(value) => { handleDropDown(value) }}
 				dailogOpen={viewBuilderDailog}
@@ -905,7 +912,7 @@ const ViewBuilderExample = (props: any) => {
 				saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
 				viewList={viewBuilderDataExample}
 				viewListOnChange={(obj) => { handleViewList(obj) }}
-			/>
+			/> */}
 		</>
 	);
 };

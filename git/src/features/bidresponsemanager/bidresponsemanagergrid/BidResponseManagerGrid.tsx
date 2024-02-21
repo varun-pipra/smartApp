@@ -1,24 +1,24 @@
 import './BidResponseManagerGrid.scss';
 
-import {getCostCodeDivisionList, getServer} from 'app/common/appInfoSlice';
-import {useAppDispatch, useAppSelector} from 'app/hooks';
+import { getCostCodeDivisionList, getServer } from 'app/common/appInfoSlice';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import CustomHeader from 'features/bidmanager/bidmanagercontent/bidmanagergrid/CustomHeader';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import SUIAwardedBidderTooltip from 'sui-components/AwardedBidderTooltip/AwardedBidderTooltip';
 import SUIGrid from 'sui-components/Grid/Grid';
-import {getBidProcessType, getBidStatus, getIntendToBid} from 'utilities/bid/enums';
+import { getBidProcessType, getBidStatus, getIntendToBid } from 'utilities/bid/enums';
 import {
 	getPackageStatus, getPackageStatusColor, getResponseStatus, getResponseStatusColor,
 	getResponseStatusIcons, ResponseStatusOptions
 } from 'utilities/bidResponse/enums';
-import {formatDate} from 'utilities/datetime/DateTimeUtils';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
 import Button from '@mui/material/Button';
 import {
 	fetchBidResponseDetailsData, setSelectedNode, setSelectedRecord, setShowLineItemDetails,
 } from '../stores/BidResponseManagerSlice';
-import {setActiveMainGridFilters, setActiveMainGridDefaultFilters, setSelectedRows} from '../stores/gridSlice';
-import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
+import { setActiveMainGridFilters, setActiveMainGridGroupKey, setActiveMainGridDefaultFilters, setSelectedRows } from '../stores/gridSlice';
+import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 
 var tinycolor = require('tinycolor2');
@@ -27,12 +27,12 @@ let defaultBRMStatusFilter: any = [];
 const BidResponseManagerGrid = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
-	const {bidResponseData, originalBidResponseData, liveData, activeMainGridGroupKey,
-		activeMainGridFilters, mainGridSearchText} = useAppSelector((state) => state.bidResponseManagerGrid);
-	const containerStyle = useMemo(() => ({width: '100%', height: '100%'}), []);
-	const gridStyle = useMemo(() => ({height: '100%', width: '100%'}), []);
+	const { bidResponseData, originalBidResponseData, liveData, activeMainGridGroupKey,
+		activeMainGridFilters, mainGridSearchText } = useAppSelector((state) => state.bidResponseManagerGrid);
+	const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
+	const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
 	const [rowData, setRowData] = useState<any>([]);
-	const [respStatusFilter, setRespStatusFilters] = useState<any>({ids: [], names: []});
+	const [respStatusFilter, setRespStatusFilters] = useState<any>({ ids: [], names: [] });
 	const gridRT = useRef<boolean>(false);
 	const [gridRef, setGridRef] = React.useState<any>();
 	const groupKeyValue = useRef<any>(null);
@@ -41,17 +41,20 @@ const BidResponseManagerGrid = (props: any) => {
 	const showLineItemDetails = useAppSelector((state) => state.bidResponseManager.showLineItemDetails);
 	const selectedRecord = useAppSelector((state) => state.bidResponseManager.selectedRecord);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
+	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
 
-	if(statusFilter) defaultBRMStatusFilter = activeMainGridFilters.responseStatus;
+	const [viewBuilderColumns, setViewBuilderColumns] = React.useState<any>([]);
+
+	if (statusFilter) defaultBRMStatusFilter = activeMainGridFilters.responseStatus;
 
 	useEffect(() => {
 		gridRef?.current?.api?.applyTransaction(liveData);
 	}, [liveData]);
 
-	useEffect(() => {setRowData(bidResponseData); setFilteredRecords(bidResponseData);}, [bidResponseData]);
+	useEffect(() => { setRowData(bidResponseData); setFilteredRecords(bidResponseData); }, [bidResponseData]);
 
 	useEffect(() => {
-		if(originalBidResponseData?.length) {
+		if (originalBidResponseData?.length) {
 			let updatedGridData = originalBidResponseData?.map((obj: any) => ({
 				...obj,
 				aliasStatus: getResponseStatus(obj?.responseStatus) || '',
@@ -64,34 +67,12 @@ const BidResponseManagerGrid = (props: any) => {
 		}
 	}, [originalBidResponseData]);
 
-	useEffect(() => {
-		// const columnsCopy = [...columns];
-		if(((activeMainGridGroupKey ?? false) && activeMainGridGroupKey !== "")) {
-			// setGroupKey(activeMainGridGroupKey);
-			groupKeyValue.current = activeMainGridGroupKey;
-			// columnsCopy.forEach((col: any) => {
-			// 	if(col.rowGroup = activeMainGridGroupKey === col.field) {
-			// 		col.rowGroup = activeMainGridGroupKey === col.field;
-			// 	};
-			// 	setColumns(columnsCopy);
-			// });
-		} else if(activeMainGridGroupKey ?? true) {
-			// setGroupKey('');
-			groupKeyValue.current = null;
-			// columnsCopy.forEach((col: any) => {
-			// 	if(col.rowGroup) {
-			// 		col.rowGroup = false;
-			// 	};
-			// });
-			// setColumns(columnsCopy);
-		};
-	}, [activeMainGridGroupKey]);
 
 	const FilterBy = (gridData: any) => {
 		const gridDataCopy = [...bidResponseData];
 		let filteredData = gridDataCopy;
-		if(!activeMainGridFilters?.responseStatus) setRespStatusFilters({ids: [], names: []});
-		if(activeMainGridFilters?.responseStatus?.length > 0) {
+		if (!activeMainGridFilters?.responseStatus) setRespStatusFilters({ ids: [], names: [] });
+		if (activeMainGridFilters?.responseStatus?.length > 0) {
 			filteredData = gridDataCopy.filter((rec: any) => {
 				return activeMainGridFilters?.responseStatus?.includes(rec?.responseStatus?.toString());
 			});
@@ -105,17 +86,17 @@ const BidResponseManagerGrid = (props: any) => {
 			// } else if(Object.keys(activeMainGridFilters).length === 0 || (activeMainGridFilters?.status?.length === 0 ?? false)) {
 			// setRespStatusFilters({ids: [], names: []});
 		}
-		if(activeMainGridFilters?.bidpackageStatus?.length > 0) {
+		if (activeMainGridFilters?.bidpackageStatus?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return activeMainGridFilters?.bidpackageStatus?.includes(rec?.packageStatus?.toString());
 			});
 		}
-		if(activeMainGridFilters?.intendToBid?.length > 0) {
+		if (activeMainGridFilters?.intendToBid?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return activeMainGridFilters?.intendToBid?.includes(rec?.intendToBid?.toString());
 			});
 		}
-		if(activeMainGridFilters?.processType?.length > 0) {
+		if (activeMainGridFilters?.processType?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return activeMainGridFilters?.processType?.includes(rec?.processType?.toString());
 			});
@@ -134,9 +115,9 @@ const BidResponseManagerGrid = (props: any) => {
 	useEffect(() => {
 		const gridDataCopy = [...bidResponseData];
 		let data: any;
-		if(activeMainGridFilters && Object.keys(activeMainGridFilters)?.length > 0) {
+		if (activeMainGridFilters && Object.keys(activeMainGridFilters)?.length > 0) {
 			data = FilterBy(gridDataCopy);
-			if(mainGridSearchText !== "") {
+			if (mainGridSearchText !== "") {
 				let SearchGridData = SearchBy(data);
 				setRowData(SearchGridData);
 				setFilteredRecords(SearchGridData);
@@ -144,38 +125,24 @@ const BidResponseManagerGrid = (props: any) => {
 				setRowData(data);
 				setFilteredRecords(data);
 			};
-		} else if(mainGridSearchText !== "") {
+		} else if (mainGridSearchText !== "") {
 			let SearchGridData = SearchBy(gridDataCopy);
 			setRowData(SearchGridData);
 			setFilteredRecords(SearchGridData);
-			setRespStatusFilters({ids: [], names: []});
+			setRespStatusFilters({ ids: [], names: [] });
 		} else {
 			setRowData([...gridDataCopy]);
 			setFilteredRecords([...gridDataCopy]);
-			setRespStatusFilters({ids: [], names: []});
+			setRespStatusFilters({ ids: [], names: [] });
 		};
 	}, [activeMainGridFilters, mainGridSearchText, bidResponseData]);
 
-	// useEffect(() => {
-	// 	if (gridRT.current) return;
-	// 	else {
-	// 		gridRT.current = true;
-	// 		const documentId = `${appInfo.urlAppZoneID}_${appInfo.uniqueId}`;
-
-	// 		setTimeout(() => {
-	// 			initRTDocument(appInfo, `bidResponseManager@${appInfo?.uniqueId}`, documentId, mainGridRTListener);
-	// 			initRTDocument(appInfo, `bidQuery@${appInfo?.uniqueId}`, documentId, bidQueryRTListener);
-	// 		}, 3000);
-	// 	}
-	// }, []);
-
 
 	const onClick = (values: any) => {
-		console.log("values", values);
-		dispatch(setActiveMainGridDefaultFilters({...activeMainGridFilters, responseStatus: values?.ids?.map(String)}));
-		if(values?.ids?.length) {
+		dispatch(setActiveMainGridDefaultFilters({ ...activeMainGridFilters, responseStatus: values?.ids?.map(String) }));
+		if (values?.ids?.length) {
 			let data = originalBidResponseData.map((row: any) => {
-				if(values?.ids?.includes(row.responseStatus)) return row;
+				if (values?.ids?.includes(row.responseStatus)) return row;
 				return;
 			});
 			data = data.filter(function (element: any) {
@@ -183,18 +150,16 @@ const BidResponseManagerGrid = (props: any) => {
 			});
 			setRowData(data);
 		} else {
-			setRespStatusFilters({ids: [], names: []});
+			setRespStatusFilters({ ids: [], names: [] });
 			setRowData(originalBidResponseData);
 		}
 	};
 
 	const handleStatusFilter = (statusFilters: any) => {
-		const consolidatedFilter = {...activeMainGridFilters, ...{responseStatus: statusFilters}};
+		const consolidatedFilter = { ...activeMainGridFilters, ...{ responseStatus: statusFilters } };
 		dispatch(setActiveMainGridFilters(consolidatedFilter));
 		dispatch(setActiveMainGridDefaultFilters(consolidatedFilter));
 	};
-
-	// useEffect(() => {setColumns(headers);}, [originalBidResponseData, respStatusFilter]);
 
 	const biddersContent = (event: any) => {
 		const array = event?.map((value: any) => {
@@ -222,7 +187,7 @@ const BidResponseManagerGrid = (props: any) => {
 			width: 350,
 			valueGetter: (params: any) => params.data?.name,
 			cellRenderer: (params: any) => {
-				return <span className='ag-costcodegroup' style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#059cdf'}}>{params.data?.name} </span>;
+				return <span className='ag-costcodegroup' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#059cdf' }}>{params.data?.name} </span>;
 			}
 		}, {
 			headerName: 'Response Status',
@@ -325,10 +290,10 @@ const BidResponseManagerGrid = (props: any) => {
 			type: 'showCount',
 			minWidth: 300,
 			valueGetter: (params: any) => {
-				if(params.data?.budgetItems?.length) {
+				if (params.data?.budgetItems?.length) {
 					const values: any = [];
 					params?.data?.budgetItems?.map((obj: any) => {
-						if(obj?.name && obj?.costCode) values.push(`${obj?.name} - ${obj?.costCode}`);
+						if (obj?.name && obj?.costCode) values.push(`${obj?.name} - ${obj?.costCode}`);
 					});
 					return values;
 				}
@@ -348,10 +313,66 @@ const BidResponseManagerGrid = (props: any) => {
 			field: 'queryCount',
 			type: 'rightAligned',
 			cellRenderer: (params: any) => {
-				return <span style={{color: '#059CDF'}}>{params.data?.queryCount} </span>;
+				return <span style={{ color: '#059CDF' }}>{params.data?.queryCount} </span>;
 			}
 		}
-	], [defaultBRMStatusFilter, activeMainGridGroupKey]);
+	], []);
+
+	const [colDef, setColDef] = useState<any>([...headers]);
+	useEffect(() => {
+		if (viewBuilderData.length && viewData?.columnsForLayout?.length) {
+			let updatedColumndDefList: any = [];
+			const gridApi = gridRef.current;
+			if (gridApi) {
+				let updatedColumndDefList: any = [];
+
+				const columns = gridRef?.current?.columnApi?.columnModel?.columnDefs;
+				viewData?.columnsForLayout.forEach((viewItem: any) => {
+					columns.forEach((cDef: any) => {
+						if (viewItem.field == cDef.field) {
+							let newColumnDef = {
+								...cDef,
+								...viewItem,
+								hide: viewItem?.hide
+							};
+							updatedColumndDefList.push(newColumnDef);
+						}
+					});
+				});
+				setViewBuilderColumns(updatedColumndDefList);
+				// setColDef([...updatedColumndDefList])
+				// gridApi?.api?.setColumnDefs(updatedColumndDefList);
+			}
+		}
+	}, [viewData]);
+
+	useMemo(() => {
+		// set the filters and grouping data
+		if (viewData) {
+			console.log('viewData', viewData)
+			viewData?.groups && dispatch(setActiveMainGridGroupKey(viewData?.groups?.[0]));
+			viewData?.filters && dispatch(setActiveMainGridFilters(JSON.parse(viewData?.filters)));
+			viewData?.filters && dispatch(setActiveMainGridDefaultFilters(JSON.parse(viewData?.filters)));
+		}
+	}, [viewData])
+
+	useEffect(() => {
+		const columnsCopy = viewBuilderColumns && viewBuilderColumns.length > 0 ? [...viewBuilderColumns] : [...colDef];
+		if (((activeMainGridGroupKey ?? false) && activeMainGridGroupKey !== "")) {
+			groupKeyValue.current = activeMainGridGroupKey;
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = activeMainGridGroupKey ? activeMainGridGroupKey === col.field : false;
+			});
+			setColDef(columnsCopy);
+		} else if (activeMainGridGroupKey ?? true) {
+			groupKeyValue.current = null;
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = false;
+			});
+			dispatch(setActiveMainGridGroupKey(null));
+			setColDef(columnsCopy);
+		};
+	}, [activeMainGridGroupKey, viewBuilderColumns]);
 
 	const defaultColDef = useMemo(() => {
 		return {
@@ -359,14 +380,12 @@ const BidResponseManagerGrid = (props: any) => {
 		};
 	}, []);
 
-	// const [columns, setColumns] = useState<any>(headers);
-
 	const onBidGridRowDoubleClick = (row: any, tableRef: any) => {
-		if(row && row.data) {
-			if(props?.onRefChange) props?.onRefChange(tableRef);
+		if (row && row.data) {
+			if (props?.onRefChange) props?.onRefChange(tableRef);
 			dispatch(setShowLineItemDetails(true));
 			dispatch(setSelectedRecord(row?.data));
-			dispatch(fetchBidResponseDetailsData({appInfo: appInfo, responseId: row?.data?.id}));
+			dispatch(fetchBidResponseDetailsData({ appInfo: appInfo, responseId: row?.data?.id }));
 			dispatch(setSelectedNode(row?.node));
 		}
 	};
@@ -376,11 +395,11 @@ const BidResponseManagerGrid = (props: any) => {
 	};
 
 	const CustomGroupHeader = React.memo((props: any) => {
-		const {iconCls, color, baseCustomLine = false, label, colName = '', ...rest} = props;
+		const { iconCls, color, baseCustomLine = false, label, colName = '', ...rest } = props;
 		return (
-			<div className="custom-group-header-cls" style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
+			<div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
 				{baseCustomLine && (
-					<div className={"base-custom-line pt-group"} style={{backgroundColor: color, width: '4px', height: '36px'}}></div>
+					<div className={"base-custom-line pt-group"} style={{ backgroundColor: color, width: '4px', height: '36px' }}></div>
 				)}
 				<span className="custom-group-header-label-cls">{label}</span>
 			</div>
@@ -389,37 +408,37 @@ const BidResponseManagerGrid = (props: any) => {
 
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props.node;
-		if(node.group) {
+		if (node.group) {
 			const colName = groupKeyValue?.current || activeMainGridGroupKey;
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if(colName === "responseStatus") {
+			if (colName === "responseStatus") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={getResponseStatus(data?.responseStatus)} colName={colName}
 						/>
 					</div>
 				);
-			} else if(colName === "packageStatus") {
+			} else if (colName === "packageStatus") {
 				console.log("daaaa", colName, data);
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={getPackageStatus(data?.packageStatus)} colName={colName}
 						/>
 					</div>
 				);
-			} else if(colName === "intendToBid") {
+			} else if (colName === "intendToBid") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={getIntendToBid(data?.intendToBid)} colName={colName}
 						/>
 					</div>
 				);
-			} else if(colName === "processType") {
+			} else if (colName === "processType") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={getBidProcessType(data?.processType)} colName={colName}
 						/>
@@ -439,47 +458,15 @@ const BidResponseManagerGrid = (props: any) => {
 		};
 	}, []);
 
-	// const searchAndFilter = (list: any) => {
-	// 	return list.filter((item: any) => {
-	// 		const regex = new RegExp(searchText, 'gi');
-	// 		const bidProcessType = getBidProcessType(item.processType);
-	// 		const packageStatus = getPackageStatus(item.packageStatus);
-	// 		const responseStatus = getResponseStatus(item.responseStatus);
-	// 		const intend = getIntendToBid(item.intendToBid);
-	// 		const companies = item.bidders?.map((bidder: any) => bidder.company?.id);
-	// 		let divisions = [], costCodes = [], costTypes = [];
-	// 		item.budgetItems?.map((budget: any) => {
-	// 			divisions.push(budget.division);
-	// 			costCodes.push(budget.costCode);
-	// 			costTypes.push(budget.costType);
-	// 		});
-
-	// 		return (!searchText || (searchText && (item.name?.match(regex) || intend?.match(regex) ||
-	// 			item.description?.match(regex) || responseStatus?.match(regex) ||
-	// 			bidProcessType?.match(regex) || packageStatus?.match(regex) ||
-	// 			item.description?.match(regex) || item.instructions?.match(regex) ||
-	// 			item.divisions?.join(',').match(regex) || item.costCodes?.join(',').match(regex) ||
-	// 			item.costTypes?.join(',')?.match(regex)
-	// 		)))
-	// 			&& (_.isEmpty(selectedFilters) || (!_.isEmpty(selectedFilters)
-	// 				&& (_.isEmpty(selectedFilters.status) || selectedFilters.status?.length === 0 || selectedFilters.status?.indexOf(item.status.toString()) > -1)
-	// 				&& (_.isEmpty(selectedFilters.processType) || selectedFilters.processType?.length === 0 || selectedFilters.processType?.indexOf(item.processType.toString()) > -1)
-	// 				&& (_.isEmpty(selectedFilters.company) || selectedFilters.company?.length === 0 || selectedFilters.company?.indexOf(item.company?.id) > -1)
-	// 				&& (_.isEmpty(selectedFilters.intendToBid) || selectedFilters.intendToBid?.length === 0 || selectedFilters.intendToBid?.indexOf(item.company?.id) > -1)
-	// 			));
-	// 	});
-	// };
-
-	// const modifiedData = searchAndFilter(bidResponseData);
 
 	return (
 		<div className='NestedGrid' style={containerStyle}>
 			<div style={gridStyle} className='ag-theme-alpine gridCt'>
 				<SUIGrid
-					grouped={true}
-					// headers={columns}
-					headers={headers}
+					headers={colDef}
+					//headers={headers}
 					data={rowData}
+					grouped={true}
 					animateRows={true}
 					getRowId={(params: any) => params.data?.id}
 					groupIncludeTotalFooter={false}
@@ -488,7 +475,7 @@ const BidResponseManagerGrid = (props: any) => {
 					onRowDoubleClicked={onBidGridRowDoubleClick}
 					rowSelection='single'
 					rowSelected={(e: any) => rowSelected(e)}
-					getReference={(value: any) => {setGridRef(value);}}
+					getReference={(value: any) => { setGridRef(value); }}
 					groupDisplayType={'groupRows'}
 					groupRowRendererParams={groupRowRendererParams}
 					isMainGrid={true}

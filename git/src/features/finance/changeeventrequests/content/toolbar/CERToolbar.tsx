@@ -15,6 +15,7 @@ import {
 } from '../../stores/ChangeEventSlice';
 import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 import { postMessage } from 'app/utils';
+import SapButton from 'sui-components/SAPButton/SAPButton';
 
 // Component definition
 export const CERLeftButtons = memo(() => {
@@ -100,6 +101,7 @@ export const CERLeftButtons = memo(() => {
 // Component definition
 export const CERRightButtons = memo(() => {
 	const dispatch = useAppDispatch();
+	const { connectors } = useAppSelector((state) => state.gridData);
 
 	const handleView = (event: React.MouseEvent<HTMLElement>, value: string) => {
 		if (value !== null) {
@@ -110,7 +112,8 @@ export const CERRightButtons = memo(() => {
 	return <>
 		<div key='spacer' className='toolbar-item-wrapper toolbar-group-button-wrapper' >
 			{<ReportAndAnalyticsToggle/>}
-			<ToggleButtonGroup
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
+			{/* <ToggleButtonGroup
 				exclusive
 				value={'List'}
 				size='small'
@@ -123,7 +126,7 @@ export const CERRightButtons = memo(() => {
 				<ToggleButton value={'Chart'} aria-label='Change Events Analytics Tab'>
 					<AssessmentOutlinedIcon />
 				</ToggleButton>
-			</ToggleButtonGroup>
+			</ToggleButtonGroup> */}
 			<IQTooltip title='Settings' placement={'bottom'}>
 				<IconButton
 					className='settings-button'

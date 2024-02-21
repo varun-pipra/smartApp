@@ -1,7 +1,7 @@
 import React from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import './TimeLogWindow.scss';
-import { Stack } from '@mui/material';
+import { Stack ,Radio,RadioGroup,FormControlLabel} from '@mui/material';
 import IQTooltip, { IQGridTooltip } from 'components/iqtooltip/IQTooltip';
 import { getServer, setCurrencySymbol, setCustomDatesRange, setServer } from 'app/common/appInfoSlice';
 import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
@@ -21,11 +21,11 @@ import { TLLeftButtons, TLRightButtons } from './toolbar/TimeLogToolbar';
 import { timelogList } from 'data/timelog/TimeLogData';
 import TimeLogLID from './details/TimeLogLID';
 import { Avatar, Button } from '@mui/material';
-import { findAndUpdateFiltersData } from 'features/common/timelog/utils';
+import { GetUniqueList } from 'features/common/timelog/utils';
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import { getAppsList, getSBSGridList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
-import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList} from './stores/TimeLogSlice';
+import { getAppsList,getSBSGridList} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
+import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected} from './stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
@@ -35,19 +35,24 @@ import { getPickerDefaultTime ,getDuration } from './utils';
 import ManageWorkers from './workerDailog/addManageWorkers/ManageWorkers';
 import {workTeamData} from "data/timelog/TimeLogData";
 import CompanyIcon from "resources/images/Comapany.svg";
+import  {fetchWorkTeamsData,fetchCompaniesData} from 'features/projectsettings/projectteam/operations/ptDataSlice';
+import {fetchLocationswithOutIdData} from '../locationfield/LocationStore';
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
 	const iFrameId = 'timelogIframe', appType = 'TimeLog';
-
+	
 	// Local mock
 	const [localhost] = useState(isLocalhost);
 	const [appData] = useState(appInfoData);
 
 	const location = useLocation();
 	const { server } = useAppSelector((state) => state.appInfo);
+	const { sbsGridData, appsList } = useAppSelector((state) => state.sbsManager);
+	const {companiesData,workTeams} = useAppSelector((state)=>state.projectTeamData);
+
 	const appInfo = useAppSelector(getServer);
-	const { toast, TimeLogGridList, selectedRowData } = useAppSelector((state) => state.timeLogRequest);
+	const { toast, TimeLogGridList ,selectedRowData} = useAppSelector((state) => state.timeLogRequest);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
@@ -55,6 +60,7 @@ const TimeLogWindow = (props: any) => {
 	const [toastMessage, setToastMessage] = useState<string>('');
 	const [filters, setFilters] = useState<any>({});
 	const [selectedFilters, setSelectedFilters] = useState<any>();
+	const [selectedFilters2, setSelectedFilters2] = useState<any>();
 	const [search, setSearch] = useState<string>('');
 	const [defaultFilters, setDefaultFilters] = useState<any>({});
 	const groupKeyValue = useRef<any>(null);
@@ -66,6 +72,7 @@ const TimeLogWindow = (props: any) => {
 	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
 	const dateTimeFields = ['startDate', 'endDate'];
 	const [isFullView, setFullView] = useState(false);	
+	const [smartItemLink, setSmartItemLink] = useState<any>({});
 	let gridRef = useRef<AgGridReact>();
 	const datesRef = useRef<any>({
 		startDate: '',
@@ -78,31 +85,32 @@ const TimeLogWindow = (props: any) => {
 	const isFromFinance = window.location.href?.includes('finance');
 	const isFromSafety = window.location.href?.includes('safety');
 	const isFromField = window.location.href?.includes('field');
-
+	const { locationsdata = [] } = useAppSelector(state => state.location);
 
 	const groupOptions = [{
-		text: 'Time Entry For', value: 'timeEntryFor', iconCls: 'common-icon-work-team'
-	}, {
-		text: 'Work Team', value: 'team', iconCls: 'common-icon-work-team'
-	}, {
-		text: 'Companies', value: 'company', iconCls: 'common-icon-filter-companies'
-	}, {
-		text: 'Apps', value: 'smartItem', iconCls: 'common-icon-smartapp'
-	}, {
-		text: 'Status', value: 'status', iconCls: 'common-icon-accept'
-	}, {
-		text: 'Source', value: 'source', iconCls: 'common-icon-Workactivity'
-	}, {
-		text: 'Created By', value: 'createdBy', iconCls: 'common-icon-filter-user'
-	}, {
-		text: 'Timelog ID', value: 'timeLogId', iconCls: 'common-icon-work-team'
-	}, {
-		text: 'Date', value: 'startDate', iconCls: 'common-icon-DateCalendar'
-	}, {
-		text: 'System Breakdown Structure', value: 'sbs', iconCls: 'common-icon-filter-sbs'
-	}, {
-		text: 'Location', value: 'location', iconCls: 'common-icon-filter-locations'
-	}];
+			text: 'Time Entry For', value: 'timeEntryFor', iconCls: 'common-icon-work-team'
+		}, {
+			text: 'Work Team', value: 'team', iconCls: 'common-icon-work-team'
+		}, {
+			text: 'Companies', value: 'company', iconCls: 'common-icon-filter-companies'
+		}, {
+			text: 'Apps', value: 'smartItem', iconCls: 'common-icon-smartapp'
+		}, {
+			text: 'Status', value: 'status', iconCls: 'common-icon-accept'
+		}, {
+			text: 'Source', value: 'source', iconCls: 'common-icon-Workactivity'
+		}, {
+			text: 'Created By', value: 'createdBy', iconCls: 'common-icon-filter-user'
+		}, {
+			text: 'Timelog ID', value: 'timeLogId', iconCls: 'common-icon-work-team'
+		}, {
+			text: 'Date', value: 'startDate', iconCls: 'common-icon-DateCalendar'
+		}, {
+			text: 'System Breakdown Structure', value: 'sbs', iconCls: 'common-icon-filter-sbs'
+		}, {
+			text: 'Location', value: 'location', iconCls: 'common-icon-filter-locations'
+		}
+	];
 
 	const queryParams: any = new URLSearchParams(location.search);
 
@@ -173,15 +181,14 @@ const TimeLogWindow = (props: any) => {
 	useEffect(() => {
 		if (server) {
 			dispatch(getAppsList());
-			dispatch(getTimeLogList());
+			dispatch(getTimeLogList({}));
 			dispatch(getSBSGridList());
+			dispatch(fetchWorkTeamsData(server));
+			dispatch(fetchCompaniesData(server));
+			dispatch(fetchLocationswithOutIdData());
 		}
 	}, [server]);
 
-	React.useEffect(() => {
-		dispatch(getSBSGridList());
-		return () => { };
-	}, []);
 
 	useEffect(() => {
 		if (localhost) {
@@ -226,7 +233,11 @@ const TimeLogWindow = (props: any) => {
 								break;
 							case 'resourcepicker':
 								setWorkTeamDataFromExt(data.response)
-								setOpenManageWorkers(true);
+								// setOpenManageWorkers(true);
+								break;
+							case "smartitemlink":
+								console.log("smartitemlink data", data);
+								setSmartItemLink(data);
 								break;
 						}
 					}
@@ -256,6 +267,7 @@ const TimeLogWindow = (props: any) => {
 			setColumns(columnsCopy);
 		}
 	};
+
 	const TimeLogGridGroupHeader = (props: any) => {
 		const {iconUrl, name, color, ...rest} = props;
 		return (
@@ -281,6 +293,7 @@ const TimeLogWindow = (props: any) => {
 				</div>
 		)
 	};
+
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props?.node;
 		if (node?.group) {
@@ -352,43 +365,65 @@ const TimeLogWindow = (props: any) => {
 	}, []);
 
 	const onFilterChange = (filterValues: any, type?: string) => {
-		if (Object.keys(filterValues).length !== 0) {
-			let filterObj = filterValues;
-			if (selectedFilters?.dateRange?.includes('custom') && !filterValues?.dateRange?.includes('custom')) {
-				defaultDateRangeState();
-			};
-			Object.keys(filterObj).filter((item) => {
-				if (filterObj[item]?.length === 0) {
-					delete filterObj[item]
-				};
-				if (filterObj[item] === "" || filterObj[item] === undefined || filterObj[item] === null) {
-					delete filterObj[item];
-				};
-			});
-			if (!_.isEqual(selectedFilters, filterObj) && Object.keys(filterObj).length > 0) {
-				setSelectedFilters(filterObj);
-				if (filterObj?.hasOwnProperty('status')) {
-					updateCustomHeaderParams(filterObj.status);
-				};
-			} else {
-				if (!_.isEqual(selectedFilters, filterObj)
-					&& Object.keys(filterValues).length === 0) {
-					setSelectedFilters(filterObj);
+		console.log('filterValues',filterValues)
+		if(!_.isEqual(selectedFilters2,filterValues)){
+			if (Object.keys(filterValues).length !== 0) {
+				let filterObj = filterValues;
+				if (selectedFilters2?.dateRange?.includes('custom') && !filterValues?.dateRange?.includes('custom')) {
 					defaultDateRangeState();
-					if (selectedFilters?.hasOwnProperty('status') && !filterObj?.hasOwnProperty('status')) {
+				};
+				Object.keys(filterObj).filter((item) => {
+					if (filterObj[item]?.length === 0) {
+						delete filterObj[item]
+					};
+					if (filterObj[item] === "" || filterObj[item] === undefined || filterObj[item] === null) {
+						delete filterObj[item];
+					};
+				});
+				if (!_.isEqual(selectedFilters2, filterObj) && Object.keys(filterObj).length > 0) {
+					setSelectedFilters2(filterObj);
+					dispatch(getTimeLogList(filterObj));
+					if (filterObj?.hasOwnProperty('status')) {
+						updateCustomHeaderParams(filterObj.status);
+					};
+				} else {
+					if (!_.isEqual(selectedFilters2, filterObj)&& Object.keys(filterValues).length === 0) {
+						setSelectedFilters2(filterObj);
+						dispatch(getTimeLogList(filterObj));
+						defaultDateRangeState();
+						if (selectedFilters2?.hasOwnProperty('status') && !filterObj?.hasOwnProperty('status')) {
+							updateCustomHeaderParams([]);
+						};
+					};
+				}
+				if(!_.isEqual(selectedFilters2, filterObj) && filterObj?.hasOwnProperty('conflicting')){
+						if(filterObj['conflicting'].includes('conflictingTime')) filterObj.conflictingTime = [true];
+						if(filterObj['conflicting'].includes('conflictingLocations')) filterObj.conflictingLocations = [true];
+						if(!filterObj['conflicting'].includes('conflictingTime')) filterObj.conflictingTime = [false];
+						if(!filterObj['conflicting'].includes('conflictingLocations')) filterObj.conflictingLocations = [false];
+						setSelectedFilters2(filterObj);
+						dispatch(getTimeLogList(filterObj));
+				}
+				if(!filterObj?.hasOwnProperty('conflicting') && (filterObj?.hasOwnProperty('conflictingTime') || filterObj?.hasOwnProperty('conflictingLocations'))){
+					filterObj.conflictingTime = [false];
+					filterObj.conflictingLocations = [false];
+					setSelectedFilters2(filterObj);
+					dispatch(getTimeLogList(filterObj));
+				}
+				if(!_.isEqual(selectedFilters2, filterObj) && filterObj?.hasOwnProperty('dateRange')){
+						console.log('dateRange',filterObj.dateRange )
+				}
+			} else {
+				if (Object.keys(filterValues).length === 0) {
+					setSelectedFilters2(filterValues);
+					dispatch(getTimeLogList(filterValues));
+					defaultDateRangeState();
+					if (selectedFilters?.hasOwnProperty('status') && !filterValues?.hasOwnProperty('status')) {
 						updateCustomHeaderParams([]);
 					};
 				};
-			}
-		} else {
-			if (Object.keys(filterValues).length === 0) {
-				setSelectedFilters(filterValues);
-				defaultDateRangeState();
-				if (selectedFilters?.hasOwnProperty('status') && !filterValues?.hasOwnProperty('status')) {
-					updateCustomHeaderParams([]);
-				};
 			};
-		};
+		}
 	};
 
 	const onGridSearch = (searchText: any) => {
@@ -445,11 +480,11 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	useEffect(() => {
-		if (search || selectedFilters) {
+		if (search) {
 			const data = searchAndFilter([...modifiedList]);
 			setRowData(data);
 		}
-	}, [search, selectedFilters]);
+	}, [search]);
 
 	const handleStatusFilter = (statusFilters: any) => {
 		setSelectedFilters((prevFilters: any) => {
@@ -482,6 +517,7 @@ const TimeLogWindow = (props: any) => {
 		defaultDateRangeState();
 		dispatch(setCustomDatesRange(datesRef.current));
 	};
+
 	const onDataChange = (fieldName: string, time: any, rowIndex?: any) => {
 
 	};
@@ -548,6 +584,7 @@ const TimeLogWindow = (props: any) => {
 			</>
 		)
 	};
+
 	const CustomDateSorting = (valueA: any, valueB: any, nodeA: any, nodeB: any, order: any) => {
 		const a = valueA && new Date(valueA).getTime();
 		const b = valueB && new Date(valueB).getTime();
@@ -559,7 +596,14 @@ const TimeLogWindow = (props: any) => {
 
 		return a - b;
 	};
+
 	const headers: any = useMemo(() => [
+		{
+			headerName: 'Date Range',
+			field: 'dateRange',
+			hide : true	,
+			keyCreator : (params:any) => getTimeLogDateRange(params.data.dateRange)
+		},
 		{
 			headerName: 'Time Segment ID',
 			field: 'timeSegmentId',
@@ -661,7 +705,8 @@ const TimeLogWindow = (props: any) => {
 			comparator : CustomDateSorting,
 			valueGetter: (params: any) => params.data ? formatDate(params.data?.startDate) : '',		
 			keyCreator: (params: any) => {
-				return moment.utc(params?.data?.endDate).format('MM/DD/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
+				return moment.utc(params?.data?.startDate).format('MM/DD/YYYY')  + " " + (params?.data.dateRange ? (`(${getTimeLogDateRange(params.data.dateRange)})`) : '') || "None" ;
+				// return moment.utc(params?.data?.endDate).format('MM/DD/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
 			}
 		}, {
 			headerName: 'End Date',
@@ -739,24 +784,26 @@ const TimeLogWindow = (props: any) => {
 		}, {
 			headerName: 'Work Team',
 			field: 'team',
-			valueGetter: (params: any) => params.data?.team,
-			keyCreator: (params: any) => params.data?.team || "None"
+			valueGetter: (params: any) => params.data?.team?.name,
+			keyCreator: (params: any) => params.data?.team?.name || "None"
 		}, {
 			headerName: 'Location',
 			field: 'location',
-			keyCreator: (params: any) => params.data?.location || "None"
+			valueGetter: (params: any) => params.data?.location?.name,
+			keyCreator: (params: any) => params.data?.location?.name || "None"
 		}, {
 			headerName: 'System Breakdown Structure',
 			field: 'sbs',
+			valueGetter: (params: any) => params.data?.sbs?.name,
 		}, {
 			headerName: 'Phase',
 			field: 'sbsPhase',
-			keyCreator: (params: any) => params.data?.sbsPhase?.[0]?.name || "None",
+			keyCreator: (params: any) => params.data?.sbsPhase?.name || "None",
 			minWidth: 260,
 			cellRenderer: (params: any) => {
-				const phase = params.data?.sbsPhase?.[0]?.name;
+				const phase = params.data?.sbsPhase?.name;
 				const buttonStyle = {
-					backgroundColor: params.data?.sbsPhase?.[0]?.color ?? "red",
+					backgroundColor: "blue",
 					color: "#fff",
 					alignItems: "center",
 				};
@@ -792,26 +839,26 @@ const TimeLogWindow = (props: any) => {
 	let filterOptions = useMemo(() => {
 		var filterMenu = [{
 			text: 'Time Entry For',
-			value: 'timeEntryFor',
-			key: 'timeEntryFor',
-			keyValue: 'timeEntryFor',
+			value: 'user',
+			key: 'user',
+			keyValue: 'user',
 			children: { type: "checkbox", items: [] }
 		}, {
 			text: 'Work Team',
-			value: 'team',
-			key: 'team',
-			keyValue: 'team',
+			value: 'workTeams',
+			key: 'workTeams',
+			keyValue: 'workTeams',
 			children: { type: "checkbox", items: [] }
 		}, {
 			text: 'Companies',
 			value: 'companies',
 			key: 'companies',
-			keyValue: 'company',
+			keyValue: 'companies',
 			children: { type: "checkbox", items: [] }
 		}, {
 			text: 'Apps',
-			value: 'apps',
-			key: 'apps',
+			value: 'smartItem',
+			key: 'smartItem',
 			keyValue: 'smartItem',
 			children: { type: "checkbox", items: [] }
 		}, {
@@ -835,7 +882,15 @@ const TimeLogWindow = (props: any) => {
 			key: 'createdBy',
 			keyValue: 'createdBy',
 			children: { type: "checkbox", items: [] }
-		}, {
+		},
+		// {
+		// 	text: 'Users',
+		// 	value: 'user',
+		// 	key: 'user',
+		// 	keyValue: 'user',
+		// 	children: { type: "checkbox", items: [] }
+		// },
+		 {
 			text: 'Conflicting Time Entries',
 			value: 'conflicting',
 			key: 'conflicting',
@@ -847,12 +902,12 @@ const TimeLogWindow = (props: any) => {
 					key: 'conflictingTime',
 					value: 'conflictingTime'
 				}, {
-					text: 'Conflicting Location',
-					key: 'conflictingLocation',
-					value: 'conflictingLocation'
+					text: 'Conflicting Locations',
+					key: 'conflictingLocations',
+					value: 'conflictingLocations'
 				}]
 			}
-		}, {
+		},  {
 			text: 'Date Range',
 			value: 'dateRange',
 			key: 'dateRange',
@@ -954,6 +1009,8 @@ const TimeLogWindow = (props: any) => {
 		];
 		return filterMenu;
 	}, []);
+
+
 	const handleClose = () => {
 		postMessage({
 			event: 'closeiframe',
@@ -981,14 +1038,70 @@ const TimeLogWindow = (props: any) => {
 		}
 	}, [search, filters]);
 
+	const findAndUpdateFiltersData = (filterOptions: any,data: any,key: string, keyValue?:any ,nested?: boolean,nestedKeyFirstText?: any,nestedKeySecondText?:any,nestedkeyValue?:any) => {
+		const formattedData = data?.map((rec: any) => {
+		 if (nested)
+				return {
+					text: nestedKeySecondText != "" ? rec?.[key]?.[nestedKeyFirstText] + ' ' + rec?.[key]?.[nestedKeySecondText] : rec?.[key]?.[nestedKeyFirstText],
+					value: rec?.[key]?.[nestedkeyValue],
+					id: rec?.[key]?.id,
+				};
+			else
+				return {
+					text: rec?.[key] ?? rec?.["name"],
+					value: rec?.[keyValue] ?? rec?.["name"],
+					id: rec?.id,
+				};
+		});
+		const filtersCopy: any = [...filterOptions];
+		let currentItem: any = filtersCopy.find((rec: any) => rec?.keyValue === key);
+		currentItem.children.items = GetUniqueList(formattedData?.flat(), "text");
+		let mapData = [...filterOptions].map((item: any) => {
+			if (item.key === currentItem.key) return currentItem;
+			else return item;
+		});
+		return mapData;
+	};
+
+	useMemo(()=>{
+		if (appsList?.length > 0 && filterOptions) {
+			const updatedarray = sbsGridData.map((res:any) => { return{ ...res , ['sbs'] : res.name }});
+			setFilters(findAndUpdateFiltersData(filterOptions, updatedarray,"sbs","uniqueid"));
+		}
+	},[sbsGridData]);
+
+	useMemo(() => {
+		if (appsList?.length > 0 && filterOptions) {
+			const updatedarray = appsList.map((res:any) => { return{ ...res , ['smartItem'] : res.displayField }});
+			setFilters(findAndUpdateFiltersData(filterOptions, updatedarray,"smartItem","objectId"));
+		}
+	}, [appsList]);
+
+	useMemo(() => {
+		if (workTeams?.length > 0 && filterOptions) {
+			const updatedarray = workTeams.map((res:any) => { return{ ...res , ['workTeams'] : res.name }});
+		  setFilters(findAndUpdateFiltersData(filterOptions,updatedarray, 'workTeams', "id"))
+		}
+	}, [workTeams]);
+
+	useMemo(() => {
+		if (companiesData?.length > 0 && filterOptions) {
+			const updatedarray = companiesData.map((res:any) => { return{ ...res , ['companies'] : res.name }});
+			setFilters(findAndUpdateFiltersData(filterOptions,updatedarray, 'companies', "uniqueId"))
+		}
+	}, [companiesData]);
+
+	useMemo(() => {
+		if (locationsdata?.length > 0 && filterOptions) {
+			const updatedarray = locationsdata.map((res:any) => { return{ ...res , ['location'] : res.text }});
+			setFilters(findAndUpdateFiltersData(filterOptions,updatedarray, 'location', "uniqueId"))
+		}
+	}, [locationsdata]);
+
 	const GenerateFilters = () => {
-		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "team"));
-		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "company",true,"name"));
-		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "sbs"));
-		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "timeEntryFor"));
-		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "location"));
-		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "createdBy", true, "name"));
-		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "smartItem", true, "name"));
+
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "user","",true,"firstName" ,'lastName',"ID"));
+		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "createdBy", "", true, "firstName" ,'lastName',"ID"));
 		if(isFromOrg) {
 			setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "orgLocation"));
 			setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "orgProfile"));
@@ -996,20 +1109,21 @@ const TimeLogWindow = (props: any) => {
 			setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "project"));
 		};
 	};
+
 	const GetDateRangeFilterData = (data: any) => {
 		const todayDate = new Date();
 
-		const startDayOfThisWeek = moment.utc(todayDate).startOf('week');
-		const lastDayOfThisWeek = moment.utc(todayDate).endOf('week');
+		// const startDayOfThisWeek = moment.utc(todayDate).startOf('week');
+		// const lastDayOfThisWeek = moment.utc(todayDate).endOf('week');
 
-		const startDayOfPrevWeek = moment.utc(startDayOfThisWeek).subtract(1, 'week').startOf('week');
-		const lastDayOfPrevWeek = moment.utc(lastDayOfThisWeek).subtract(1, 'week').endOf('week');
+		// const startDayOfPrevWeek = moment.utc(startDayOfThisWeek).subtract(1, 'week').startOf('week');
+		// const lastDayOfPrevWeek = moment.utc(lastDayOfThisWeek).subtract(1, 'week').endOf('week');
 
-		const startDayOfPrevMonth = moment.utc(todayDate).subtract(1, 'month').startOf('month');
-		const lastDayOfPrevMonth = moment.utc(todayDate).subtract(1, 'month').endOf('month');
+		// const startDayOfPrevMonth = moment.utc(todayDate).subtract(1, 'month').startOf('month');
+		// const lastDayOfPrevMonth = moment.utc(todayDate).subtract(1, 'month').endOf('month');
 
-		const startDayOfThisMonth = moment.utc(todayDate).startOf('month');
-		const lastDayOfThisMonth = moment.utc(todayDate).endOf('month');
+		// const startDayOfThisMonth = moment.utc(todayDate).startOf('month');
+		// const lastDayOfThisMonth = moment.utc(todayDate).endOf('month');
 
 		const todayStart = moment.utc().startOf('day');
 		const todayEnd = moment.utc().endOf('day');
@@ -1017,18 +1131,19 @@ const TimeLogWindow = (props: any) => {
 		const yesterdayEnd = moment.utc().subtract(1, 'days').endOf('day');
 		const actualDate = moment.utc(data?.endDate);
 
-		if(moment.utc(actualDate).isAfter(todayEnd)) return 'future';
+		// if(moment.utc(actualDate).isAfter(todayEnd)) return 'future';
 
-		else if (moment.utc(actualDate).isBetween(todayStart, todayEnd)) return 'today';
+		if (moment.utc(actualDate).isBetween(todayStart, todayEnd)) return 'today';
 		else if (moment.utc(actualDate).isBetween(yesterdayStart, yesterdayEnd)) return 'yesterday';
+		else return null
 
-		else if (moment.utc(actualDate).isBetween(startDayOfPrevWeek, lastDayOfPrevWeek)) return 'lastWeek';
-		else if (moment.utc(actualDate).isBetween(startDayOfThisWeek, lastDayOfThisWeek)) return 'thisWeek';
+		// else if (moment.utc(actualDate).isBetween(startDayOfPrevWeek, lastDayOfPrevWeek)) return 'lastWeek';
+		// else if (moment.utc(actualDate).isBetween(startDayOfThisWeek, lastDayOfThisWeek)) return 'thisWeek';
 
-		else if (moment.utc(actualDate).isBetween(startDayOfThisMonth, lastDayOfThisMonth)) return 'thisMonth';
-		else if (moment.utc(actualDate).isBetween(startDayOfPrevMonth, lastDayOfPrevMonth)) return 'lastMonth';
+		// else if (moment.utc(actualDate).isBetween(startDayOfThisMonth, lastDayOfThisMonth)) return 'thisMonth';
+		// else if (moment.utc(actualDate).isBetween(startDayOfPrevMonth, lastDayOfPrevMonth)) return 'lastMonth';
 
-		else return 'past';
+		// else return 'past';
 	};
 
 
@@ -1050,9 +1165,30 @@ const TimeLogWindow = (props: any) => {
 	}, [TimeLogGridList]);
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
+
 	const handleSplit = (data:any) => {
 		console.log("Split Time Log Data", data);
 	};
+
+	const saveSmartItemLink = (smartData: any) => {
+			let details = {
+				id: smartData?.smartItemId,	
+				value: smartData?.smartItemId,	
+				name: smartData?.smartItemName,
+			}
+			dispatch(setSmartItemOptionSelected(details));
+		// saveLinksData(payload, (response: any) => {
+		// 	dispatch(getSBSDetailsById(detailsData?.uniqueid));
+		// 	setSmartItemLink({});
+		// });
+	};
+	
+	useEffect(() => {
+		if (Object.keys(smartItemLink).length) {
+			saveSmartItemLink(smartItemLink);
+		}
+	}, [smartItemLink]);
+
 	return (
 		server && <> <GridWindow
 			open={true}

@@ -70,13 +70,13 @@ const NewViewBuilderDailog = (props: NewViewBuilderDailogProps) => {
 			}}
 			// background='#F2F2F2'
 			// padding='0.3em'
-			minWidth='33% !important'
+			minWidth='30% !important'
 			height='50px'
 			borderRadius='3px !important'
 			padding='4 !important'
 
 		>
-			<Stack style={{ margin: "25px", marginTop: '18px' }}>
+			<Stack style={{ margin: "5px", marginTop: '18px' }}>
 				<TextField
 					required
 					style={{ width: '100%' }}
@@ -98,11 +98,12 @@ const NewViewBuilderDailog = (props: NewViewBuilderDailogProps) => {
 							</InputAdornment>
 						),
 					}}
-					InputLabelProps={{ style: { fontSize: "21px", marginTop: '-7px' } }}
+					InputLabelProps={{ style: { fontSize: "20px", marginTop: '-7px' } }}
 				/>
 				<FormControl style={{ marginTop: "18px", fontSize: "15px" }}>
 					<FormLabel id="demo-row-radio-buttons-group-label" style={{ marginBottom: "6px" }}>View Type :</FormLabel>
 					<RadioGroup
+					style={{ marginLeft: "6px" }}
 						row
 						aria-labelledby="demo-row-radio-buttons-group-label"
 						name="row-radio-buttons-group"

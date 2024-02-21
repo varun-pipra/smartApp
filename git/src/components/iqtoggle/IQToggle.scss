@@ -24,9 +24,11 @@
         }
         .MuiSwitch-thumb {
             color: #fff !important;
-            width: 1.0em;
-            height: 1.0em;
+            width: 1.1em;
+            height: 1.1em;
             box-shadow: unset;
+            margin-top: 1pt;
+            margin-left: -1px;
         }
     }
     .MuiSwitch-switchBase.Mui-disabled+.MuiSwitch-track {
@@ -46,13 +48,15 @@
         }
         &:before {
             display: none;
-            padding-left: 0.9em;
+            padding-left: 0.8em;
+            line-height: 1;
         }
         &:after {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding-right: 0.6em;
+            padding-right: 0.5em;
+            line-height: 1;
         }
     }
 }

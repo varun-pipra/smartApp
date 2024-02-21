@@ -35,6 +35,7 @@ import {initRTDocument} from 'utilities/realtime/Realtime';
 import {mainGridRTListener} from '../VendorContractsRT';
 import {SUIToast} from 'sui-components/Toast/Suitoast';
 import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
+import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
 
 const VendorContractsContent = ({gridRef, ...props}: any) => {
 	const dispatch = useAppDispatch();
@@ -82,6 +83,7 @@ const VendorContractsContent = ({gridRef, ...props}: any) => {
 		// dispatch(getBidLookup(appInfo));
 		dispatch(fetchCompanyList(appInfo));
 		dispatch(getVendorContractsList(appInfo));
+		dispatch(fetchConnectors(appInfo));
 		// dispatch(fetchTeammembersByProject(appInfo));
 
 		// Real time

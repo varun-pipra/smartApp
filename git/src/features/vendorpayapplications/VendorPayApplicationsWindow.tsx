@@ -36,7 +36,12 @@ import VendorPayApplicationsLID from './vendorpayapplicationsdetails/VendorPayAp
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 import { AgGridReact } from 'ag-grid-react';
-import { blockchainStates, checkBlockchainStatus } from 'app/common/blockchain/BlockchainSlice';
+import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
+import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
+import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
+import { blockchainStates,checkBlockchainStatus } from 'app/common/blockchain/BlockchainSlice';
+import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVPAStatusFilter: any = [];
@@ -44,7 +49,7 @@ let vpaBlockchain = false;
 
 const VendorPayApplicationsWindow = (props: any) => {
 	const dispatch = useAppDispatch();
-
+	const modName = 'vendorpayapp';
 	const location = useLocation();
 	const [localhost] = useState(isLocalhost);
 	const [appData] = useState(appInfoData);
@@ -66,7 +71,10 @@ const VendorPayApplicationsWindow = (props: any) => {
 	const [filteredRecords, setFilteredRecords] = React.useState<any>([]);
 	const [aliasOriginalGridData, setAliasOriginalGridData] = useState(gridOriginalData);
 	const [gridSearchText, setGridSearchText] = useState<any>('');
-	const [selectedGroup, setSelectedGroup] = useState<string>('');
+	const [selectedGroup, setSelectedGroup] = useState<string>('None');
+	const [viewBuilderData, setViewBuilderData] = useState<any>({ viewName: "", viewId: "" });
+	const [colDef, setColDef] = useState<any>([]);
+
 	let gridRef = useRef<AgGridReact>();
 	if (statusFilter) defaultVPAStatusFilter = mainGridFilters.status;
 	const { blockchainEnabled } = useAppSelector((state) => state.blockchain);
@@ -189,6 +197,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 			dispatch(checkBlockchainStatus('VendorPayApplication'));
 			dispatch(fetchCompanyList(appInfo));
 			dispatch(getVendorPayAppsLst(appInfo));
+			dispatch(fetchConnectors(appInfo));
 		}
 	}, [appInfo]);
 
@@ -235,6 +244,10 @@ const VendorPayApplicationsWindow = (props: any) => {
 								// console.log('updatechildparticipants', data)
 								// dispatch(setPresenceData(data.data));
 								break;
+							case "frame-active":
+								console.log("frame-active", data);
+								data?.data?.name == "vendorpayapp" && dispatch(getVendorPayAppsLst(appInfo));
+								break;
 						}
 					}
 				};
@@ -246,25 +259,24 @@ const VendorPayApplicationsWindow = (props: any) => {
 		}
 	}, [localhost, appData]);
 
-	const onClick = (values: any) => {
-		console.log("valuesss", values, gridOriginalData, gridData);
-		setActiveMainGridDefaultFilters({ ...mainGridFilters, status: [...values?.ids] });
-		if (values?.ids?.length) {
-			let data = gridOriginalData.map((row: any) => {
-				if (values?.ids?.includes(row?.status)) return row;
-				return;
-			});
-			data = data.filter(function (element: any) {
-				return element !== undefined;
-			});
-			// setStatusFilter(false);
-			setRowData(data);
-			// } else {
-			// 	setStatusFilter({ids: [], names: []});
-			// 	// setStatusFilter(true);
-			// 	setRowData(gridOriginalData);
-		}
-	};
+	// const onClick = (values: any) => {
+	// 	setActiveMainGridDefaultFilters({ ...mainGridFilters, status: [...values?.ids] });
+	// 	if (values?.ids?.length) {
+	// 		let data = gridOriginalData.map((row: any) => {
+	// 			if (values?.ids?.includes(row?.status)) return row;
+	// 			return;
+	// 		});
+	// 		data = data.filter(function (element: any) {
+	// 			return element !== undefined;
+	// 		});
+	// 		// setStatusFilter(false);
+	// 		setRowData(data);
+	// 		// } else {
+	// 		// 	setStatusFilter({ids: [], names: []});
+	// 		// 	// setStatusFilter(true);
+	// 		// 	setRowData(gridOriginalData);
+	// 	}
+	// };
 
 	useEffect(() => {
 		setRowData(gridData);
@@ -300,13 +312,6 @@ const VendorPayApplicationsWindow = (props: any) => {
 			filteredData = gridDataCopy.filter((rec: any) => {
 				return mainGridFilters?.status?.includes(rec.status);
 			});
-			// let statusIds: any = [];
-			// let statusNames: any = [];
-			// const filters = mainGridFilters?.status?.map((ele: any) => {
-			// 	statusIds.push(ele);
-			// 	statusNames.push(vendorPayAppsPaymentStatus[ele]);
-			// });
-			// setStatusFilter({ids: [...statusIds], names: [...statusNames]});
 		} else if (Object.keys(mainGridFilters).length === 0 || (mainGridFilters?.status?.length === 0 ?? false)) {
 			// setStatusFilter({ids: [], names: []});
 		};
@@ -324,17 +329,13 @@ const VendorPayApplicationsWindow = (props: any) => {
 	};
 
 	const onGroupingChange = (groupKey: any) => {
-		const columnsCopy = [...columns];
-		if (((groupKey ?? false) && groupKey !== "")) {
-			// setGroupKey(activeMainGridGroupKey);
-			groupKeyValue.current = groupKey;
-
-		} else if (groupKey ?? true) {
+		const data = groupKey == null || groupKey == 'undefined' ? 'None' : groupKey;
+		if (((data ?? false) && data !== "")) {
+			groupKeyValue.current = data;
+		} else if (data ?? true) {
 			groupKeyValue.current = null;
-
-			setColumns(columnsCopy);
 		};
-		setSelectedGroup(groupKey);
+		setSelectedGroup(data);
 	};
 
 	const onFilterChange = (activeFilters: any) => {
@@ -355,6 +356,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 		const gridDataCopy = [...gridData];
 		let data: any;
 		if (mainGridFilters && Object.keys(mainGridFilters)?.length > 0) {
+			console.log('mainGridFilters', mainGridFilters);
 			data = FilterBy(gridDataCopy);
 			if (gridSearchText !== "") {
 				let SearchGridData = onGridSearch(data);
@@ -369,7 +371,6 @@ const VendorPayApplicationsWindow = (props: any) => {
 			setRowData([...gridDataCopy]);
 		};
 	}, [mainGridFilters, gridSearchText, gridData]);
-
 
 	const handleStatusFilter = (statusFilters: any) => {
 		setMainGridFilters((prevFilters: any) => {
@@ -610,6 +611,93 @@ const VendorPayApplicationsWindow = (props: any) => {
 		if (isInline) useHomeNavigation('vendorPayAppIframe', 'VendorPayApps');
 	};
 
+	const handleDropDown = (value: any, data: any) => {
+		if (value === "save") {
+			saveViewHandler(data);
+			setShowToastMessage(`${viewBuilderData?.viewName} Saved Successfully`);
+		}
+		else if (value === "delete") {
+			DeleteViewHandler();
+			setShowToastMessage(`${viewBuilderData?.viewName} Deleted Successfully`);
+		}
+	}
+
+	const saveNewViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(mainGridFilters);
+		const payload = { ...value, viewFor: modName, filters: FilterValue ? FilterValue : '{}', groups: selectedGroup ? [selectedGroup] : ['None'] };
+		console.log('payload', payload);
+		addNewView(appInfo, payload, modName, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'VendorPayApp' }));
+			dispatch(getVendorPayAppsLst(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+		});
+	}
+	const saveViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(mainGridFilters);
+		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: selectedGroup ? [selectedGroup] : ['None'] };
+		console.log('payload', payload);
+		updateViewItem(appInfo, viewBuilderData?.viewId, payload, (response: any) => {
+			dispatch(getVendorPayAppsLst(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+		});
+	}
+	const DeleteViewHandler = () => {
+		deleteView(appInfo, viewBuilderData?.viewId, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'VendorPayApp' }));
+		});
+	}
+	useEffect(() => {
+		//Appending viewbuilder data to grid 
+		if (viewBuilderData?.columnsForLayout?.length) {
+			let updatedColumndDefList: any = [];
+			const gridApi = gridRef.current;
+			if (gridApi) {
+				let updatedColumndDefList: any = [];
+				console.log('viewBuilderData?.columnsForLayout', viewBuilderData?.columnsForLayout);
+				viewBuilderData?.columnsForLayout.forEach((viewItem: any) => {
+					headers.forEach((cDef: any) => {
+						if (viewItem.field == cDef.field) {
+							let newColumnDef = { ...cDef, ...viewItem, hide: viewItem?.hide };
+							updatedColumndDefList.push(newColumnDef);
+						}
+					});
+				});
+				setColDef([...updatedColumndDefList])
+				console.log('updatedColumndDefList', updatedColumndDefList)
+				gridApi?.api?.setColumnDefs(updatedColumndDefList);
+			}
+		}
+	}, [viewBuilderData]);
+
+	useMemo(() => {
+		if (viewBuilderData?.viewId != '') {
+			viewBuilderData?.groups && setSelectedGroup(viewBuilderData?.groups[0] == 'None' ? 'undefined' : viewBuilderData?.groups[0]);
+			viewBuilderData?.filters && setActiveMainGridDefaultFilters(JSON.parse(viewBuilderData?.filters));
+			viewBuilderData?.filters && setMainGridFilters(JSON.parse(viewBuilderData?.filters));
+		}
+	}, [viewBuilderData?.viewId])
+
+	useMemo(() => {
+		// if grouping value is changed and colDef array as a data.
+		// modifing the coldef array, object value rowGroup true or false based on activeMainGridGroupKey
+		if (selectedGroup && colDef) {
+			const data = colDef?.length > 0 && colDef?.map((item: any) => {
+				if (item.field === selectedGroup) {
+					return { ...item, rowGroup: true };
+				} else if (item.rowGroup) {
+					return { ...item, rowGroup: false };
+				}
+				return item;
+			});
+			setColDef(data);
+		}
+	}, [selectedGroup])
+
+	const viewListOnChange = (data: any) => {
+		setViewBuilderData(data);
+		dispatch(getVendorPayAppsLst(appInfo));
+	}
+
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
 	return (
@@ -684,11 +772,25 @@ const VendorPayApplicationsWindow = (props: any) => {
 							onGroupChange: onGroupingChange,
 							onFilterChange: onFilterChange,
 							defaultFilters: activeMainGridDefaultFilters,
-							// defaultGroups: refreshed ? undefined : groupKeyValue?.current,
-						}
+							defaultGroups: selectedGroup,
+							placeholder: viewBuilderData?.viewName,
+							viewBuilderapplied:true,
+						},
+						viewBuilder: <ViewBuilder
+							moduleName={modName}
+							appInfo={appInfo}
+							dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
+							saveView={(data: any) => { saveViewHandler(data) }}
+							deleteView={() => { DeleteViewHandler() }}
+							saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
+							dataList={(data: any) => { setViewBuilderData(data) }}
+							viewListOnChange={(data: any) => { viewListOnChange(data) }}
+							requiredColumns={['code', 'status']}
+						/>
 					},
 					grid: {
-						headers: headers,
+						// headers: headers,
+						headers: colDef && colDef.length > 0 ? colDef : headers,
 						data: rowData,
 						getRowId: (params: any) => params.data?.id,
 						grouped: true,

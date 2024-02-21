@@ -22,10 +22,10 @@ import convertDateToDisplayFormat, {
 } from 'utilities/commonFunctions';
 import 'utilities/presence/PresenceManager.css';
 import PresenceManager from 'utilities/presence/PresenceManager.js';
-import {primaryIconSize} from '../BudgetManagerGlobalStyles';
-import {curveList} from '../headerpage/HeaderPage';
-import {setBidPackagesList, setClientContractsList, setSelectedRows, setVendorContractsList} from '../operations/gridSlice';
-import {setSelectedRowData, setSelectedRowIndex, getRollupsData} from '../operations/rightPanelSlice';
+import { primaryIconSize } from '../BudgetManagerGlobalStyles';
+import { curveList } from '../headerpage/HeaderPage';
+import { setBidPackagesList, setClientContractsList, setSelectedRows, setVendorContractsList, setLiveData, setSelectedFilters, setSelectedGroupKey } from '../operations/gridSlice';
+import { setSelectedRowData, setSelectedRowIndex,getRollupsData } from '../operations/rightPanelSlice';
 import {
 	getGridColumnHide,
 	setColumnDefsHeaders,
@@ -104,7 +104,7 @@ const TableGrid = (props: TableGridProps) => {
 	const [gridRef, setGridRef] = React.useState<any>();
 	const [multiLevelDefaultFilters, setMultiLevelDefaultFilters] = React.useState<any>([]);
 	const [isReadOnly, setIsReadOnly] = useState<Boolean>(false);
-
+	const [viewBuilderColumns, setViewBuilderColumns] = React.useState<any>([]);
 	const selectedRecord = useAppSelector((state) => state.rightPanel.selectedRow);
 	const scrollToNewRowId = useAppSelector((state)=> state.gridData?.scrollToNewRowId);
 	const RemoveDuplicates = (array: any, key: any) => {
@@ -214,18 +214,6 @@ const TableGrid = (props: TableGridProps) => {
 		handleOnChange(vendor, params);
 	};
 
-	useEffect(() => {
-		let updatedColumns: any = [...columnDefs].map((rec: any) => {
-			if (selectedGroupKey) {
-				return { ...rec, rowGroup: rec.field === selectedGroupKey, sort: rec.field === selectedGroupKey ? 'asc' : null };
-			} else {
-				return { ...rec, rowGroup: false, sort: null };
-			}
-		});
-
-		setColumnDefs(updatedColumns);
-
-	}, [selectedGroupKey]);
 
 	const isCostCodeExists = (options: any, costCodeVal: any) => {
 		let isExists: any = false;
@@ -625,7 +613,7 @@ const TableGrid = (props: TableGridProps) => {
 		},
 		{ headerName: 'Billable in Client Contract', field: 'isBillable', 
 			hide: false, suppressMenu: true,
-			keyCreator: (params: any) => params.data.isBillable || 'None',
+			keyCreator: (params: any) => billableInCCObj?.[params.data?.isBillable] || 'None',
 			valueGetter: (params: any) => billableInCCObj?.[params.data?.isBillable],						
 		},		
 		{
@@ -1216,9 +1204,10 @@ const TableGrid = (props: TableGridProps) => {
 	const [columnDefs, setColumnDefs] = useState<any>(columns);
 	const [columnDefsDuplicate, setColumnDefsDuplicate] = useState<any>(columns);
 
+
 	useEffect(() => {
 		if (viewBuilderData.length && viewData?.columnsForLayout?.length) {
-
+			console.log('columnsForLayout', viewData)
 			let updatedColumndDefList: any = [];
 			updatedColumndDefList[0] = columnDefs[0];
 			viewData?.columnsForLayout.forEach((viewItem: any) => {
@@ -1227,42 +1216,68 @@ const TableGrid = (props: TableGridProps) => {
 						let newColumnDef = {
 							...cDef,
 							...viewItem,
+							editable: !isReadOnly,
 							hide: viewItem.field == 'markupFee' ? !settingsData?.allowMarkupFee : viewItem?.hide
 						};
 						updatedColumndDefList.push(newColumnDef);
 					}
 				});
 			});
-			setColumnDefs(updatedColumndDefList);
+			console.log('updatedColumndDefList',updatedColumndDefList)
+			setViewBuilderColumns(updatedColumndDefList);
 		}
 	}, [viewData, settingsData, isReadOnly]);
 
 	useMemo(() => {
-		console.log('isBudgetLocked', isBudgetLocked);
-		setIsReadOnly(isBudgetLocked);
-		if (isBudgetLocked) {
-			console.log('columnDefs', columnDefs)
-			const array = ['costCode', 'costType', 'curve', 'estimatedStart', 'estimatedEnd'];
-			let updatedColumndDefList: any = columnDefs.map((cDef: any) => {
-				if (cDef.hasOwnProperty('editable') && isBudgetLocked) {
-					return { ...cDef, editable: !isBudgetLocked };
-				}
-				if (array?.includes(cDef.field) && isBudgetLocked) {
-					return { ...cDef, cellRenderer: (params: any) => { return params.value } };
-				}
-				if (cDef.field == 'Vendors' && isBudgetLocked) {
-					console.log('Vendors')
-					return { ...cDef, cellRenderer: (params: any) => { 
-						return params?.data?.Vendors?.length > 0 ? params?.data?.Vendors?.map((rec: any) => rec.name) : 'None'; 
-					} };
-				}
-				return cDef;
-			});
-				console.log('updatedColumndDefList', updatedColumndDefList)
-				setColumnDefs(updatedColumndDefList);
+		// set the filters and grouping data
+		if (viewData?.viewId) {
+			viewData?.filters && dispatch(setSelectedFilters(JSON.parse(viewData?.filters)));
+			viewData?.groups && dispatch(setSelectedGroupKey(viewData?.groups?.[0] ?? 'divisions'));
+
 		}
-		else {
-			setColumnDefs(columnDefsDuplicate)
+	}, [viewData?.viewId])
+
+	useEffect(() => {
+		const columnsCopy = viewBuilderColumns && viewBuilderColumns.length > 0 ? [...viewBuilderColumns] : [...columnDefs];
+		let updatedColumns: any = [...columnsCopy].map((rec: any) => {
+			if (selectedGroupKey) {
+				return { ...rec, rowGroup: rec.field === selectedGroupKey, sort: rec.field === selectedGroupKey ? 'asc' : null };
+			} else {
+				return { ...rec, rowGroup: false, sort: null };
+			}
+		});
+		setColumnDefs(updatedColumns);
+	}, [selectedGroupKey, viewBuilderColumns]);
+
+	useEffect(() => {
+		if (columnDefs.length > 0) {
+				dispatch(setColumnDefsHeaders(columnDefs));
+				console.log('isBudgetLocked', isBudgetLocked);
+			setIsReadOnly(isBudgetLocked);
+			if (isBudgetLocked) {
+				console.log('columnDefs', columnDefs)
+				const array = ['costCode', 'costType', 'curve', 'estimatedStart', 'estimatedEnd'];
+				let updatedColumndDefList: any = columnDefs.map((cDef: any) => {
+					if (cDef.hasOwnProperty('editable') && isBudgetLocked) {
+						return { ...cDef, editable: !isBudgetLocked };
+					}
+					if (array?.includes(cDef.field) && isBudgetLocked) {
+						return { ...cDef, cellRenderer: (params: any) => { return params.value } };
+					}
+					if (cDef.field == 'Vendors' && isBudgetLocked) {
+						console.log('Vendors')
+						return { ...cDef, cellRenderer: (params: any) => { 
+							return params?.data?.Vendors?.length > 0 ? params?.data?.Vendors?.map((rec: any) => rec.name) : 'None'; 
+						} };
+					}
+					return cDef;
+				});
+					console.log('updatedColumndDefList', updatedColumndDefList)
+					setColumnDefs(updatedColumndDefList);
+			}
+			else {
+				setColumnDefs(columnDefsDuplicate)
+			}
 		}
 
 	}, [isBudgetLocked]);
@@ -1292,7 +1307,7 @@ const getDivisionOptions = () => {
 	};
 
 	useEffect(() => {
-		if(hideShowGridColumn.length > 0) {
+		if (hideShowGridColumn.length > 0) {
 			dispatch(setColumnDefsHeaders(hideShowGridColumn));
 		}
 	}, [hideShowGridColumn]);

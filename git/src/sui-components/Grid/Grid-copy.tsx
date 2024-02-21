@@ -677,7 +677,6 @@ const SUIGrid = (props: TableGridProps) => {
 		}
 	};
 
-	console.log('SUIGrid rendered');
 	return (
 		<div style={gridStyle} className="ag-theme-alpine sui-grid grid-copy">
 			{/* {getToolbar(props.toolbar)} */}

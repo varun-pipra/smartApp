@@ -69,6 +69,27 @@
                     .bid-id {
                         font-weight: bold;
                     }
+                    .bid-content{
+                        display: flex;
+					    gap:10px;
+                        .bid-id {
+                            font-weight: bold;
+                        }
+                        img.sapnumber {
+                            height: 1.5rem;
+                            object-fit: contain;
+                            margin-top: -3px;
+                        }
+                        .sapnumber{
+                            color:#059cdf;
+                            &.common-icon-sap-logo:before {
+                                color: #3198f2 !important;
+                                background: -webkit-linear-gradient(#00AEEF, #0097DC, #007CC5, #006CB8, #0066B3);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                            }
+                        }
+                    }
                     .status-pill {
                         padding: 0.25em 0.5em;
                         border-radius: 0.2em;

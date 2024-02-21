@@ -15,8 +15,8 @@ import { stringToUSDateTime2 } from 'utilities/commonFunctions';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import { timelogStatusMap } from '../TimeLogConstants';
 import {getDuration} from '../utils';
-import {updateTimeLogDetails} from '../stores/TimeLogAPI';
-import {isCompanyManager,canManageTimeForCompany,canManageTimeForProject} from 'app/common/userLoginUtils';
+import {updateTimeLogDetails, addTimeLog, acceptTimeLog, sendBackTimeLog} from '../stores/TimeLogAPI';
+import {canManageTimeForCompany,canManageTimeForProject} from 'app/common/userLoginUtils';
 
 const TimeLogLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
@@ -47,6 +47,19 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 					console.log('response',response)
 				 dispatch(setSelectedTimeLogDetails(response));
 			});
+	}
+	const handleAccept = () => {
+		acceptTimeLog([selectedTimeLogDetails?.id], (response:any) => {})
+	}
+	const handleSendback = () => {
+		sendBackTimeLog([selectedTimeLogDetails?.id], (response:any) => {})
+	}
+	const handleSplit = () => {
+		const payload = {
+			splitFromSegmentId: selectedTimeLogDetails?.id,
+			segments: []
+		}
+		addTimeLog(payload, (response:any) => {})
 	}
 
 	const tabConfig = [
@@ -97,17 +110,17 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 						<>
 									{canManageTimeForCompany() ?
 										<>
-											<IQButton className='sendback-buttons' disabled={false} onClick={() => { console.log('sendback') }}>
+											<IQButton className='sendback-buttons' disabled={false} onClick={() => {handleSendback()}}>
 												SEND BACK
 											</IQButton>
-											<IQButton className='accept-buttons' disabled={false} onClick={() => { console.log('Accept') }}>
+											<IQButton className='accept-buttons' disabled={false} onClick={() => {handleAccept()}}>
 												ACCEPT
 											</IQButton>
 										</>
 										:
 										<></>
 									}
-										<IQButton className='split-buttons' disabled={false} onClick={() => { console.log('split') }}>
+										<IQButton className='split-buttons' disabled={false} onClick={() => { handleSplit() }}>
 										Split
 									</IQButton>
 									<IQButton className='save-buttons' disabled={false} onClick={() => { onClickSave() }}>

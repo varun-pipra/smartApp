@@ -1,6 +1,6 @@
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "app/store";
-import {fetchBidPackageList} from "./gridAPI";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "app/store";
+import { fetchBidPackageList } from "./gridAPI";
 
 export interface BidManagerGridProps {
 	loading: boolean;
@@ -23,12 +23,12 @@ const initialState: BidManagerGridProps = {
 	loading: false,
 	gridData: [],
 	originalGridData: [],
-	showToastMessage: {display: false, message: ''},
+	showToastMessage: { display: false, message: '' },
 	selectedRows: [],
 	refreshed: false,
 	liveData: {},
 	activeMainGridFilters: {},
-	activeMainGridGroupKey: null,
+	activeMainGridGroupKey: 'None',
 	activeMainGridDefaultFilters: {},
 	mainGridSearchText: '',
 	activeCompaniesList: [],
@@ -61,7 +61,6 @@ export const bidManagerGridSlice = createSlice({
 			state.activeMainGridFilters = action.payload;
 		},
 		setActiveMainGridGroupKey: (state, action: PayloadAction<any>) => {
-			console.log("group key ", action.payload);
 			state.activeMainGridGroupKey = action.payload;
 		},
 		setActiveMainGridDefaultFilters: (state, action: PayloadAction<any>) => {
@@ -73,23 +72,23 @@ export const bidManagerGridSlice = createSlice({
 		setActiveCompaniesList: (state, action: PayloadAction<any>) => {
 			state.activeCompaniesList = action.payload;
 		},
-		setToastMessage: (state, action: PayloadAction<any>) => {state.showToastMessage = action.payload;},
+		setToastMessage: (state, action: PayloadAction<any>) => { state.showToastMessage = action.payload; },
 		setSelectedRows: (state, action: PayloadAction<any>) => {
 			const selectedRowData = action.payload?.data;
-			if(selectedRowData !== undefined) {
+			if (selectedRowData !== undefined) {
 				const selected: boolean = action.payload.node?.selected;
-				if(selected === true) {
+				if (selected === true) {
 					state.selectedRows = [...state.selectedRows, selectedRowData];
 				}
 				else {
 					state.selectedRows.map((row: any, index: number) => {
-						if(row.id === selectedRowData.id) {
+						if (row.id === selectedRowData.id) {
 							state.selectedRows.splice(index, 1);
 						}
 					});
 				}
 			}
-			if(action.payload?.length === 0) {
+			if (action.payload?.length === 0) {
 				state.selectedRows = action.payload;
 			}
 
@@ -115,8 +114,8 @@ export const bidManagerGridSlice = createSlice({
 });
 
 export const getBidGridData = (state: RootState) => state.bidManagerGrid.gridData;
-export const {setToastMessage, setSelectedRows, setGridData, setLiveData, setRefreshed, setActiveMainGridFilters,
+export const { setToastMessage, setSelectedRows, setGridData, setLiveData, setRefreshed, setActiveMainGridFilters,
 	setActiveMainGridGroupKey, setActiveMainGridDefaultFilters, setMainGridSearchText,
-	setActiveCompaniesList, setSelectedFilters, setSearchText} = bidManagerGridSlice.actions;
+	setActiveCompaniesList, setSelectedFilters, setSearchText } = bidManagerGridSlice.actions;
 
 export default bidManagerGridSlice.reducer;

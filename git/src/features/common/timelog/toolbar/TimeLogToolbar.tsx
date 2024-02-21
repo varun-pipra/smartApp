@@ -58,12 +58,11 @@ export const TLLeftButtons = memo(() => {
 	}, [selectedRowData]);
 
 	const deleteTimeLog = async () =>{
-		console.log('delete',selectedRowData);
 		try{
 			await Promise.all(selectedRowData.map((record:any) => {
 					deleteTimeLogData(record?.id, (response:any) => {
 						if(response) {
-							dispatch(getTimeLogList());
+							dispatch(getTimeLogList({}));
 							dispatch(setToast('Deleted TimeLog Successfully.'));
 						}
 					});
@@ -74,14 +73,18 @@ export const TLLeftButtons = memo(() => {
 		}	
 	
 	}
+	const refresh = () =>{
+		dispatch(getTimeLogList({}));
+	}
+
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
-			<IconButton aria-label='Refresh Time Log List' onClick={() => { dispatch(getTimeLogList())}}>
+			<IconButton aria-label='Refresh Time Log List' onClick={() => { refresh()}}>
 				<span className='common-icon-refresh'></span>
 			</IconButton>
 		</IQTooltip>
 		<IQTooltip title='Delete' placement='bottom'>
-			<IconButton aria-label='Delete Time Log Item' disabled={selectedRowData.length > 0 ? false : true} onClick={()=>{deleteTimeLog()}}>
+			<IconButton aria-label='Delete Time Log Item' disabled={selectedRowData.length > 0 ? false : true} onClick={()=>{	deleteTimeLog()}}>
 				<span className='common-icon-delete'></span>
 			</IconButton>
 		</IQTooltip>

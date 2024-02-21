@@ -6,11 +6,11 @@ export interface ClientContractsGridDataState {
 	loading: boolean;
 	gridData: any;
 	gridOriginalData: any;
-	selectedRows:any;
+	selectedRows: any;
 	activeMainGridFilters: any;
 	activeMainGridGroupKey: any;
 	clientsList: any;
-	activeMainGridDefaultFilters:any;
+	activeMainGridDefaultFilters: any;
 	mainGridSearchText: any;
 }
 
@@ -20,9 +20,9 @@ const initialState: ClientContractsGridDataState = {
 	gridOriginalData: [],
 	selectedRows: [],
 	activeMainGridFilters: {},
-	activeMainGridGroupKey: null,
+	activeMainGridGroupKey: 'None',
 	clientsList: [],
-	activeMainGridDefaultFilters:{},
+	activeMainGridDefaultFilters: {},
 	mainGridSearchText: '',
 };
 
@@ -42,6 +42,7 @@ export const CCGridSlice = createSlice({
 			state.gridData = action.payload;
 		},
 		setActiveMainGridFilters: (state, action: PayloadAction<any>) => {
+			console.log('action', action.payload)
 			state.activeMainGridFilters = action.payload;
 		},
 		setActiveMainGridGroupKey: (state, action: PayloadAction<any>) => {
@@ -71,6 +72,7 @@ export const CCGridSlice = createSlice({
 			state.clientsList = action.payload;
 		},
 		setActiveMainGridDefaultFilters: (state, action: PayloadAction<any>) => {
+			console.log('DefaultFilters', action.payload)
 			state.activeMainGridDefaultFilters = action.payload;
 		},
 		setMainGridSearchText: (state, action: PayloadAction<any>) => {
@@ -79,16 +81,16 @@ export const CCGridSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-		.addCase(getClientContractsList.pending, (state) => {
-			state.loading = true;
-		})
-		.addCase(getClientContractsList.fulfilled, (state, action) => {
-			state.gridData = action.payload;
-			state.gridOriginalData = action.payload;
-		})
-		.addCase(getClientContractsList.rejected, (state) => {
-			state.loading = false;
-		})
+			.addCase(getClientContractsList.pending, (state) => {
+				state.loading = true;
+			})
+			.addCase(getClientContractsList.fulfilled, (state, action) => {
+				state.gridData = action.payload;
+				state.gridOriginalData = action.payload;
+			})
+			.addCase(getClientContractsList.rejected, (state) => {
+				state.loading = false;
+			})
 		// .addCase(getClientContractDetails.pending, (state) => {
 		// 	state.loading = true;
 		// })

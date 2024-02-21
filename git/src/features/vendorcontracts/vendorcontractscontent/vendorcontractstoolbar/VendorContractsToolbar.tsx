@@ -1,58 +1,68 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
 	Box, Stack, IconButton, ToggleButton,
 	ToggleButtonGroup,
 	Button
 } from '@mui/material';
-import {GridOn, TableRows, Lock} from '@mui/icons-material';
-import {useAppSelector, useAppDispatch} from 'app/hooks';
+import { GridOn, TableRows, Lock } from '@mui/icons-material';
+import { useAppSelector, useAppDispatch } from 'app/hooks';
 
 import './VendorContractsToolbar.scss';
 import { postMessage } from 'app/utils';
 
-import {getServer, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/appInfoSlice';
+import { getServer, getShowSettingsPanel, setShowSettingsPanel } from 'app/common/appInfoSlice';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import IQSearch from "components/iqsearchfield/IQSearchField";
 //import Deletedisabled from 'resources/images/bidManager/Delete.svg';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import SUIAlert from 'sui-components/Alert/Alert';
-import {getVendorContractsList, setGridData, setActiveMainGridGroupKey, setActiveMainGridFilters, setSelectedRows, setMainGridSearchText} from "../../stores/gridSlice";
-import {errorMsg, errorStatus, isUserGC} from 'utilities/commonutills';
-import {setShowTableViewType, getTableViewType} from 'features/budgetmanager/operations/tableColumnsSlice';
-import {deleteContract} from 'features/vendorcontracts/stores/gridAPI';
-import {vendorContractsResponseStatusFilterOptions, vendorContractsStatusFilterOptions} from 'utilities/vendorContracts/enums';
-import {activateContract} from '../../stores/VCButtonActionsAPI';
-import {fetchCompanyList, getBidLookup, setToastMessage, setSelectedRecord} from 'features/vendorcontracts/stores/VendorContractsSlice';
+import { getVendorContractsList, setGridData, setActiveMainGridGroupKey, setActiveMainGridFilters, setSelectedRows, setMainGridSearchText } from "../../stores/gridSlice";
+import { errorMsg, errorStatus, isUserGC } from 'utilities/commonutills';
+import { setShowTableViewType, getTableViewType } from 'features/budgetmanager/operations/tableColumnsSlice';
+import { deleteContract } from 'features/vendorcontracts/stores/gridAPI';
+import { vendorContractsResponseStatusFilterOptions, vendorContractsStatusFilterOptions } from 'utilities/vendorContracts/enums';
+import { activateContract } from '../../stores/VCButtonActionsAPI';
+import { fetchCompanyList, getBidLookup, setToastMessage, setSelectedRecord } from 'features/vendorcontracts/stores/VendorContractsSlice';
 import _ from "lodash";
-import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
+import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
+import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
+import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
+import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 
-import {List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/material';
+import { List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
 import {moduleType, blockchainStates, setShowBlockchainDialog, doBlockchainAction} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
+import SapButton from 'sui-components/SAPButton/SAPButton';
 
 const VendorContractsToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
+	const modName = 'vendorcontract';
 	const tableViewType = useAppSelector(getTableViewType);
-	const {selectedRows, gridData} = useAppSelector((state) => state.vendorContractsGrid);
-	const {loginUserData} = useAppSelector((state) => state.vendorContracts);
+	const { selectedRows, gridData } = useAppSelector((state) => state.vendorContractsGrid);
+	const { loginUserData } = useAppSelector((state) => state.vendorContracts);
 	const appInfo = useAppSelector(getServer);
+	const { connectors } = useAppSelector((state) => state.gridData);
 	const [disablePrint, setDisablePrint] = useState<boolean>(true);
 	const [disableDelete, setDisableDelete] = React.useState<boolean>(true);
 	const [disablePostContract, setDisablePostContract] = React.useState<boolean>(true);
-	const [alert, setAlert] = React.useState<any>({show: false, message: '', type: ''});
-	const {gridOriginalData, vendorsList, activeMainGridDefaultFilters, activeMainGridFilters} = useAppSelector((state) => state.vendorContractsGrid);
-	const {selectedNode, selectedRecord, selectedTabName, selectedVendorInCreateForm} = useAppSelector((state) => state.vendorContracts);
-	const [showAlertForPendingCompliance, setShowAlertForPendingCompliance] = React.useState<any>({show: false, message: '', type: ''});
+	const [alert, setAlert] = React.useState<any>({ show: false, message: '', type: '' })
+	const { gridOriginalData, vendorsList, activeMainGridDefaultFilters, activeMainGridFilters, activeMainGridGroupKey } = useAppSelector((state) => state.vendorContractsGrid);
+	const { selectedNode, selectedRecord, selectedTabName, selectedVendorInCreateForm } = useAppSelector((state) => state.vendorContracts);
+
+	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
+
+	const [showAlertForPendingCompliance, setShowAlertForPendingCompliance] = React.useState<any>({ show: false, message: '', type: '' })
 
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
-	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+	const { blockchainEnabled } = useAppSelector((state) => state.blockchain);
 
 	const groupOptions = [
-		{text: "Vendors", value: "vendor.name"},
-		{text: appInfo && isUserGC(appInfo) ? "Status" : 'Response Status', value: "status"},
+		{ text: "Vendors", value: "vendor.name" },
+		{ text: appInfo && isUserGC(appInfo) ? "Status" : 'Response Status', value: "status" },
 	];
 
 	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);	
@@ -86,10 +96,10 @@ const VendorContractsToolbar = (props: any) => {
 			children: {
 				type: "checkbox",
 				items: [
-					{text: 'Percent Complete', id: 'PercentComplete', key: 'PercentComplete', value: 'PercentComplete', },
-					{text: 'Unit Of Measure', id: 'UnitOfMeasure', key: 'UnitOfMeasure', value: 'UnitOfMeasure', },
-					{text: 'Dollar Amount', id: 'DollarAmount', key: 'DollarAmount', value: 'DollarAmount', },
-					{text: 'Through Date', id: 'ThroughDate', key: 'ThroughDate', value: 'ThroughDate', },
+					{ text: 'Percent Complete', id: 'PercentComplete', key: 'PercentComplete', value: 'PercentComplete', },
+					{ text: 'Unit Of Measure', id: 'UnitOfMeasure', key: 'UnitOfMeasure', value: 'UnitOfMeasure', },
+					{ text: 'Dollar Amount', id: 'DollarAmount', key: 'DollarAmount', value: 'DollarAmount', },
+					{ text: 'Through Date', id: 'ThroughDate', key: 'ThroughDate', value: 'ThroughDate', },
 				],
 			},
 		},
@@ -104,6 +114,7 @@ const VendorContractsToolbar = (props: any) => {
 			},
 		},
 	];
+
 	const [filters, setFilters] = useState<any>(filterOptions);
 
 	const handleDelete = () => {
@@ -117,8 +128,8 @@ const VendorContractsToolbar = (props: any) => {
 	const getAdhocBids = (contractsList: any) => {
 		let adhocBidsList: any = [];
 		contractsList?.map((item: any) => {
-			if(item?.contractFor == 2) adhocBidsList.push(
-				{text: item?.bidPackage?.name, id: item?.bidPackage?.name, key: item?.bidPackage?.name, value: item?.bidPackage?.name, },
+			if (item?.contractFor == 2) adhocBidsList.push(
+				{ text: item?.bidPackage?.name, id: item?.bidPackage?.name, key: item?.bidPackage?.name, value: item?.bidPackage?.name, },
 			);
 		});
 		return adhocBidsList;
@@ -140,14 +151,14 @@ const VendorContractsToolbar = (props: any) => {
 	}, [vendorsList, gridData]);
 
 	const handleListChanges = (val: string) => {
-		if(val == 'yes') {
+		if (val == 'yes') {
 			const selectedRowIds = selectedRows.map((row: any) => row.id);
-			if(alert.type == 'Delete') {
+			if (alert.type == 'Delete') {
 				deleteContract(appInfo, selectedRowIds[0]).then((resp: any) => {
-					if(errorStatus?.includes(resp?.status)) dispatch(setToastMessage({displayToast: true, message: errorMsg}));
+					if (errorStatus?.includes(resp?.status)) dispatch(setToastMessage({ displayToast: true, message: errorMsg }));
 					else {
 						// dispatch(getVendorContractsList(appInfo));
-						dispatch(setToastMessage({displayToast: true, message: `Selected Record Deleted Successfully`}));
+						dispatch(setToastMessage({ displayToast: true, message: `Selected Record Deleted Successfully` }));
 						setDisableDelete(true);
 					}
 
@@ -165,15 +176,15 @@ const VendorContractsToolbar = (props: any) => {
 				});
 			}
 
-			setAlert({show: false, type: '', message: ''});
+			setAlert({ show: false, type: '', message: '' });
 		}
 		else {
-			setAlert({show: false, type: '', message: ''});
+			setAlert({ show: false, type: '', message: '' });
 		}
 	};
 
 	const handleOnSearchChange = (searchText: string) => {
-		if(gridOriginalData !== undefined && searchText !== ' ') {
+		if (gridOriginalData !== undefined && searchText !== ' ') {
 			const firstResult = gridOriginalData.filter((obj: any) => {
 				return JSON.stringify(obj).toLowerCase().includes(searchText);
 			});
@@ -184,13 +195,13 @@ const VendorContractsToolbar = (props: any) => {
 	};
 
 	const handleView = (event: React.MouseEvent<HTMLElement>, value: string) => {
-		if(value !== null) {
+		if (value !== null) {
 			dispatch(setShowTableViewType(value));
 		}
 	};
 
 	const handlePostContract = (lock: boolean) => {
-		if(selectedRows?.[0]?.vendor?.pendingCompliances?.length && !lock) {
+		if (selectedRows?.[0]?.vendor?.pendingCompliances?.length && !lock) {
 			setShowAlertForPendingCompliance({
 				show: true,
 				type: 'pendingCompliance',
@@ -205,8 +216,8 @@ const VendorContractsToolbar = (props: any) => {
 					<span>Are you sure you want to Lock & Post the Contract?</span> <br /><br /><br />
 					<span>By doing so, the contract will become Active immediately and the other party will be able to see the contract Active.</span>
 				</div>
-			});
-			setShowAlertForPendingCompliance({show: false, message: ''});
+			})
+			setShowAlertForPendingCompliance({ show: false, message: '' })
 		}
 		// setShowAlertForPendingCompliance({ show: false, message: '' })
 		// {
@@ -222,6 +233,50 @@ const VendorContractsToolbar = (props: any) => {
 	useEffect(() => {
 		setToggleChecked(blockchainEnabled);
 	}, [blockchainEnabled]);
+
+
+	const handleDropDown = (value: any, data: any) => {
+		if (value === "save") {
+			saveViewHandler(data);
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Saved Successfully` }));
+		}
+		else if (value === "delete") {
+			DeleteViewHandler();
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Deleted Successfully` }));
+		}
+	}
+
+	const saveNewViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(activeMainGridFilters);
+		const payload = { ...value, viewFor: modName, filters: FilterValue ? FilterValue : '{}', groups: activeMainGridGroupKey ? [activeMainGridGroupKey] : ['None'] };
+		console.log('payload', payload);
+		addNewView(appInfo, payload, modName, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'VendorContract' }));
+			dispatch(getVendorContractsList(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+
+	const saveViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(activeMainGridFilters);
+		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: activeMainGridGroupKey ? [activeMainGridGroupKey] : ['None'] };
+		console.log('payload', payload);
+		updateViewItem(appInfo, viewData.viewId, payload, (response: any) => {
+			dispatch(getVendorContractsList(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+
+	const DeleteViewHandler = () => {
+		deleteView(appInfo, viewData.viewId, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'VendorContract' }));
+		});
+	}
+
+	const viewListOnChange = (data: any) => {
+		console.log('get')
+		dispatch(getVendorContractsList(appInfo));
+	}
 
 	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setToggleChecked(event.target.checked);
@@ -240,6 +295,7 @@ const VendorContractsToolbar = (props: any) => {
 			}
 		});
 	};
+
 	return <Stack direction='row' className='toolbar-root-container-vendor-contracts'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -254,7 +310,7 @@ const VendorContractsToolbar = (props: any) => {
 							// dispatch(setActiveMainGridFilters({}))
 							// dispatch(setActiveMainGridDefaultFilters({}))
 							isUserGC(appInfo) && dispatch(fetchCompanyList(appInfo));
-							dispatch(getBidLookup({appInfo: appInfo, objectId: selectedVendorInCreateForm}));
+							dispatch(getBidLookup({ appInfo: appInfo, objectId: selectedVendorInCreateForm }));
 						}}
 					>
 						<span className="common-icon-refresh"></span>
@@ -316,28 +372,40 @@ const VendorContractsToolbar = (props: any) => {
 		<div key="toolbar-search" className="toolbar-item-wrapper search-wrapper">
 			<IQSearch
 				groups={isUserGC(appInfo) ? groupOptions : [groupOptions[1]]}
-				placeholder={'Search'}
+				placeholder={viewData && viewData?.viewName}
 				filters={isUserGC(appInfo) ? filters : [filters[1]]}
 				onSearchChange={(text: string) => dispatch(setMainGridSearchText(text))}
 				filterHeader=''
 				defaultFilters={activeMainGridDefaultFilters}
-				// onSettingsChange={handleSettings}
-				// onViewFilterChange={handleViewFilter}
-				onGroupChange={(selectedVal: any) => {dispatch(setActiveMainGridGroupKey(selectedVal));}}
-				// onSearchChange={searchHandler}
+				defaultGroups={activeMainGridGroupKey == 'None' ? 'undefined' : activeMainGridGroupKey}
+				onGroupChange={(selectedVal: any) => { dispatch(setActiveMainGridGroupKey(selectedVal)) }}
 				onFilterChange={(filters: any) => {
-					if(filters) {
+					if (filters) {
 						let filterObj = filters;
 						Object.keys(filterObj).filter((item) => {
-							if(filterObj[item]?.length === 0) {
+							if (filterObj[item]?.length === 0) {
 								delete filterObj[item];
 							};
 						});
-						if(!_.isEqual(activeMainGridFilters, filterObj)) {
+						if (!_.isEqual(activeMainGridFilters, filterObj)) {
 							dispatch(setActiveMainGridFilters(filterObj));
 						};
 					};
 				}}
+				viewBuilderapplied={true}
+			/>
+			<ViewBuilder
+				moduleName={modName}
+				appInfo={appInfo}
+				dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
+				griddata={viewData?.columnsForLayout}
+				viewData={viewData}
+				saveView={(data: any) => { saveViewHandler(data) }}
+				deleteView={() => { DeleteViewHandler() }}
+				saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
+				viewList={viewBuilderData}
+				requiredColumns={['title', 'status']}
+				viewListOnChange={(data: any) => { viewListOnChange(data) }}
 			/>
 			{/* <Stack direction={'row'} >
 				<IconMenu
@@ -394,6 +462,7 @@ const VendorContractsToolbar = (props: any) => {
 		</div>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 			{<ReportAndAnalyticsToggle />}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}
@@ -450,7 +519,7 @@ const VendorContractsToolbar = (props: any) => {
 				open={false}
 			>
 				<Box>
-					<Stack direction="row" sx={{justifyContent: "end", height: "5em"}}>
+					<Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
 						<IconButton className="Close-btn" aria-label="Close Right Pane"
 							onClick={() => dispatch(setShowSettingsPanel(false))}
 						>
@@ -478,7 +547,7 @@ const VendorContractsToolbar = (props: any) => {
 										<IQToggle
 											checked={toggleChecked}
 											switchLabels={['ON', 'OFF']}
-											onChange={(e) => {handleToggleChange(e);}}
+											onChange={(e) => { handleToggleChange(e); }}
 											edge={'end'}
 										/>
 									</ListItemIcon>
@@ -501,7 +570,7 @@ const VendorContractsToolbar = (props: any) => {
 				open={showAlertForPendingCompliance?.show}
 				DailogClose={true}
 				onClose={() => {
-					setShowAlertForPendingCompliance({show: false, message: ''});
+					setShowAlertForPendingCompliance({ show: false, message: '' });
 				}}
 				contentText={
 					showAlertForPendingCompliance?.message
@@ -509,7 +578,7 @@ const VendorContractsToolbar = (props: any) => {
 				title={'Confirmation'}
 				onAction={(e: any, type: string) => {
 					type == 'yes' ? handlePostContract(true) :
-						setShowAlertForPendingCompliance({show: false, message: ''});
+						setShowAlertForPendingCompliance({ show: false, message: '' });
 				}}
 				showActions={true}
 				modelWidth={'610px'}

@@ -81,21 +81,26 @@ export const timelogList = {
     "stage": "In Progress",
     "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 },
-	team: 'Carpenter Team',
-	location: 'Building3 - Floor3',
-	sbs: 'Structural - Walls & Finishes',
-	sbsPhase: [
-		{
-			"id": 1,
-			"name": "Pre Construction",
-			"color": "#81c3dc",
-			"uniqueId": null,
-			"sequenceNo": null
-		}
-	],
+
+	location: {
+		id:1,
+		name : 'Building3 - Floor3'
+	},
+	sbs: {
+		"id": "da2250b4-0095-44a1-83a0-4fbf6b32c56a",
+		"name": "test 29 "
+	},
+	sbsPhase:{
+		id:1,
+		name: "In Construction"
+	},
+	team: {
+		id : 1,
+		name : 'Carpenter Team'
+	},
 	timeLogId: 'TL0001',
 	"user": {
-        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ed",
         "firstName": "Juntin",
         "lastName": "inson",
 				"email": "juntin@smartapp.com",
@@ -127,12 +132,12 @@ export const timelogList = {
 	createdDate: "2024-02-10T14:41:29.29",	
 	"hasTimeOverlap": false,	
 	"createdBy": {
-		"id": 534917,
-        "firstName": 'Morgan',
-        "lastName": 'Carr',
-        "email": null,
-        "globalId": "00000000-0000-0000-0000-000000000000"
-	},
+		"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a23",
+		"firstName": "Swathi",
+		"lastName": "Kolli",
+		"email": "swathi@smartapp.com",
+		"globalId": "9715c84f-adff-4bd4-80b5-e5c2d1a62a23"
+},
 	smartItem: {
     "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
     "name": "F1 - 01125 ",
@@ -141,21 +146,26 @@ export const timelogList = {
     "stage": "In Progress",
     "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 },
-	team: 'Carpenter',
-	location: 'Conference Room',
-	sbs: 'Electrical - Fire Alarm',
-	sbsPhase: [
-		{
-			"id": 2,
-			"name": "In Construction",
-			"color": "#d6a827",
-			"uniqueId": null,
-			"sequenceNo": null
-		}
-	],
+	
+location: {
+	id:1,
+	name : 'Building3 - Floor3'
+},
+	sbs: {
+		"id": "da2250b4-0095-44a1-83a0-4fbf6b32c56a",
+		"name": "test 29 "
+	},
+	sbsPhase:{
+		id:1,
+		name: "In Construction"
+	},
+	team: {
+		id : 1,
+		name : 'Carpenter Team'
+	},
 	timeLogId: "TL0002",
 	"user": {
-        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868eh",
         "firstName": "Kevin",
         "lastName": "Morgan",
 				"email": "jcarr@smartapp.com",
@@ -184,12 +194,12 @@ export const timelogList = {
 	orgProfile: 'Commercial Constructions',
 	conflicting: 'Conflicting Time',
 	"createdBy": {
-		"id": 534915,
-		"firstName": 'Justin',
-        "lastName": 'Robinson',
-        "email": null,
-        "globalId": "00000000-0000-0000-0000-000000000000"
-	},
+		"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a28",
+		"firstName": "Raghavendra",
+		"lastName": "Lg",
+		"email": "swathi@smartapp.com",
+		"globalId": "9715c84f-adff-4bd4-80b5-e5c2d1a62a23"
+},
 	smartItem: {
     "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
     "name": "F1 - 01125 ",
@@ -198,21 +208,26 @@ export const timelogList = {
     "stage": "In Progress",
     "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 },
-	team: 'Others',
-	location: 'Conference Room',
-	sbs: 'Electrical - Fire Alarm',
-	sbsPhase: [
-		{
-			"id": 2,
-			"name": "In Construction",
-			"color": "#d6a827",
-			"uniqueId": null,
-			"sequenceNo": null
-		}
-	],
+	
+location: {
+	id:1,
+	name : 'Building3 - Floor3'
+},
+	sbs: {
+		"id": "da2250b4-0095-44a1-83a0-4fbf6b32c56a",
+		"name": "test 29 "
+	},
+	sbsPhase:{
+		id:1,
+		name: "In Construction"
+	},
+	team: {
+		id : 1,
+		name : 'Carpenter Team'
+	},
 	timeLogId: "TL0003",
 	"user": {
-        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ep",
         "firstName": "Robert",
         "lastName": "Kelly",
         "email": "kelly@smartapp.com",
@@ -240,12 +255,12 @@ export const timelogList = {
 	source: 3,
 	conflicting: 'Conflicting Time',
 	"createdBy": {
-		"id": 534917,
-		"firstName": 'Justin',
-        "lastName": 'Robinson',
-        "email": null,
-        "globalId": "00000000-0000-0000-0000-000000000000"
-	},
+		"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a26",
+		"firstName": "Swathi",
+		"lastName": "Kolli",
+		"email": "swathi@smartapp.com",
+		"globalId": "9715c84f-adff-4bd4-80b5-e5c2d1a62a23"
+},
 	smartItem: {
     "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
     "name": "F1 - 01125 ",
@@ -254,21 +269,23 @@ export const timelogList = {
     "stage": "In Progress",
     "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 },
-	team: 'Others',
-	location: 'Conference Room',
-	sbs: 'Electrical - Fire Alarm',
-	sbsPhase: [
-		{
-			"id": 2,
-			"name": "In Construction",
-			"color": "#d6a827",
-			"uniqueId": null,
-			"sequenceNo": null
-		}
-	],
+	
+location: {
+	id:1,
+	name : 'Building3 - Floor3'
+},
+	sbs:null,
+	sbsPhase:{
+		id:1,
+		name: "In Construction"
+	},
+	team: {
+		id : 1,
+		name : 'Carpenter Team'
+	},
 	timeLogId: "TL0004",
 	"user": {
-        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868el",
         "firstName": "Anna",
         "lastName": "Peterson",
         "email": "anna@smartapp.com",
@@ -296,12 +313,12 @@ export const timelogList = {
 	source: 0,
 	conflicting: 'Conflicting Time',
 	"createdBy": {
-		"id": 534911,
-		"firstName": 'Justin',
-        "lastName": 'Robinson',
-        "email": null,
-        "globalId": "00000000-0000-0000-0000-000000000000"
-	},
+		"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a21",
+		"firstName": "Swathi",
+		"lastName": "Kolli",
+		"email": "swathi@smartapp.com",
+		"globalId": "9715c84f-adff-4bd4-80b5-e5c2d1a62a23"
+},
 	smartItem: {
     "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
     "name": "F1 - 01125 ",
@@ -310,21 +327,23 @@ export const timelogList = {
     "stage": "In Progress",
     "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 },
-	team: 'Others',
-	location: 'Conference Room',
-	sbs: 'Electrical - Fire Alarm',
-	sbsPhase: [
-		{
-			"id": 2,
-			"name": "In Construction",
-			"color": "#d6a827",
-			"uniqueId": null,
-			"sequenceNo": null
-		}
-	],
+	
+location: {
+	id:1,
+	name : 'Building3 - Floor3'
+},
+	sbs: null,
+	sbsPhase:{
+		id:1,
+		name: "In Construction"
+	},
+	team: {
+		id : 1,
+		name : 'Carpenter Team'
+	},
 	timeLogId: "TL0005",
 	"user": {
-        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868es",
         "firstName": "Justin",
         "lastName": "Robinson",
         "email": "jcarr1@smartapp.com",
@@ -353,11 +372,12 @@ export const timelogList = {
 	orgProfile: 'Commercial Constructions',
 	createdDate: "2024-01-10T12:31:29.29",		
 	"createdBy": {
-		"id": 534912,
-		"firstName": 'Justin',
-		"lastName": "Robert"
-		
-	},
+		"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a20",
+		"firstName": "Sathish",
+		"lastName": "",
+		"email": "swathi@smartapp.com",
+		"globalId": "9715c84f-adff-4bd4-80b5-e5c2d1a62a23"
+},
 	smartItem: {
     "id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
     "name": "F1 - 01125 ",
@@ -366,21 +386,26 @@ export const timelogList = {
     "stage": "In Progress",
     "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 },
-	team: 'Carpenter',
-	location: 'Conference Room',
-	sbs: 'Electrical - Fire Alarm',
-	sbsPhase: [
-		{
-			"id": 2,
-			"name": "In Construction",
-			"color": "#d6a827",
-			"uniqueId": null,
-			"sequenceNo": null
-		}
-	],
+sbsPhase:{
+	id:1,
+	name: "In Construction"
+},
+team: {
+	id : 1,
+	name : 'Carpenter Team'
+},
+location: {
+	id:1,
+	name : 'Building3 - Floor3'
+},
+	sbs: {
+		"id": "a052103f-e66e-4ad7-95d1-6c06717e9f93",
+		"name": "Contract Amount"
+	},
+	
 	timeLogId: "TL0006",
 	"user": {
-        "ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+        "ID": "3822aaa9-09d3-47bf-be27-670a2af868eq",
         "firstName": "Jeremy",
         "lastName": "Carr",
         "email": "jcarr@smartapp.com",
@@ -409,9 +434,12 @@ export const timelogList = {
 		orgLocation: 'India-Banglore',
 		orgProfile: 'Commercial Constructions',
 		"createdBy": {
-			"id": 534917,
-			"name": 'Justin, Robert'
-		},
+			"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a25",
+			"firstName": "Swathi",
+			"lastName": "Kolli",
+			"email": "swathi@smartapp.com",
+			"globalId": "9715c84f-adff-4bd4-80b5-e5c2d1a62a23"
+	},
 		smartItem: {
 			"id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
 			"name": "F1 - 01125 ",
@@ -420,21 +448,26 @@ export const timelogList = {
 			"stage": "In Progress",
 			"smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 	},
-		team: 'Carpenter',
-		location: 'Conference Room',
-		sbs: 'Electrical - Fire Alarm',
-		sbsPhase: [
-			{
-				"id": 2,
-				"name": "In Construction",
-				"color": "#d6a827",
-				"uniqueId": null,
-				"sequenceNo": null
-			}
-		],
+
+	location: {
+		id:1,
+		name : 'Building3 - Floor3'
+	},
+		sbs: {
+			"id": "da2250b4-0095-44a1-83a0-4fbf6b32c56a",
+			"name": "test 29 "
+		},
+		sbsPhase:{
+			id:1,
+			name: "In Construction"
+		},
+		team: {
+			id : 1,
+			name : 'Carpenter Team'
+		},
 		timeLogId: "TL0009",
 		"user": {
-			"ID": "3822aaa9-09d3-47bf-be27-670a2af868ea",
+			"ID": "3822aaa9-09d3-47bf-be27-670a2af868ex",
 			"firstName": "Justin",
 			"lastName": "Robert",
 			"email": "jcarr@smartapp.com",

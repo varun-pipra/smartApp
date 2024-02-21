@@ -1,20 +1,20 @@
-import React, {useMemo, useRef, useCallback, useEffect, useState} from 'react';
-import {useAppSelector, useAppDispatch} from 'app/hooks';
+import React, { useMemo, useRef, useCallback, useEffect, useState } from 'react';
+import { useAppSelector, useAppDispatch } from 'app/hooks';
 import SUIGrid from 'sui-components/Grid/Grid';
-import {getServer} from 'app/common/appInfoSlice';
+import { getServer } from 'app/common/appInfoSlice';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import Button from '@mui/material/Button';
-import {formatDate} from 'utilities/datetime/DateTimeUtils';
-import {setShowLineItemDetails, setSelectedNode, setSelectedRecord, getContractDetailsById} from 'features/vendorcontracts/stores/VendorContractsSlice';
-import {fetchTransactions} from 'features/vendorcontracts/stores/tabs/transactions/TransactionTabSlice';
-import {vendorContractsStatusOptions, vendorContractsResponseStatusOptions, vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons, vendorContractsResponseStatus, vendorContractsResponseStatusIcons, vendorContractsResponseStatusColors} from 'utilities/vendorContracts/enums';
-import {isUserGC} from 'utilities/commonutills';
-import {setActiveMainGridFilters, setActiveMainGridDefaultFilters, setActiveMainGridGroupKey, setSelectedRows, setVendorsList} from 'features/vendorcontracts/stores/gridSlice';
-import {updateContractDetails} from 'features/vendorcontracts/stores/gridAPI';
-import {CustomGroupHeader} from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import {amountFormatWithSymbol} from 'app/common/userLoginUtils';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import { setShowLineItemDetails, setSelectedNode, setSelectedRecord, getContractDetailsById } from 'features/vendorcontracts/stores/VendorContractsSlice';
+import { fetchTransactions } from 'features/vendorcontracts/stores/tabs/transactions/TransactionTabSlice';
+import { vendorContractsStatusOptions, vendorContractsResponseStatusOptions, vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons, vendorContractsResponseStatus, vendorContractsResponseStatusIcons, vendorContractsResponseStatusColors } from 'utilities/vendorContracts/enums';
+import { isUserGC } from 'utilities/commonutills';
+import { setActiveMainGridFilters, setActiveMainGridDefaultFilters, setActiveMainGridGroupKey, setSelectedRows, setVendorsList } from 'features/vendorcontracts/stores/gridSlice';
+import { updateContractDetails } from 'features/vendorcontracts/stores/gridAPI';
+import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
+import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
-import {blockchainStates} from 'app/common/blockchain/BlockchainSlice';
+import { blockchainStates } from 'app/common/blockchain/BlockchainSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVCStatusFilter: any = [];
@@ -22,11 +22,11 @@ let defaultVCStatusFilter: any = [];
 const VendorContractsGrid = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
-	const containerStyle = useMemo(() => ({width: '100%', height: '100%'}), []);
-	const gridStyle = useMemo(() => ({height: '100%', width: '100%'}), []);
-	const {selectedRecord} = useAppSelector((state) => state.vendorContracts);
+	const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
+	const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
+	const { selectedRecord } = useAppSelector((state) => state.vendorContracts);
 
-	const {gridData, liveData, activeMainGridGroupKey, activeMainGridFilters, gridOriginalData, mainGridSearchText} = useAppSelector((state) => state.vendorContractsGrid);
+	const { gridData, liveData, activeMainGridGroupKey, activeMainGridFilters, gridOriginalData, mainGridSearchText } = useAppSelector((state) => state.vendorContractsGrid);
 
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	// const [statusFilter, setStatusFilters] = useState<any>({ids: [], names: []});
@@ -34,6 +34,7 @@ const VendorContractsGrid = (props: any) => {
 	const [gridRef, setGridRef] = React.useState<any>();
 	const groupKeyValue = useRef<any>(null);
 	const [filteredRecords, setFilteredRecords] = React.useState<any>([]);
+	const [viewBuilderColumns, setViewBuilderColumns] = React.useState<any>([]);
 	const [aliasOriginalGridData, setAliasOriginalGridData] = useState(gridOriginalData);
 	const showLineItemDetails = useAppSelector((state) => state.vendorContracts.showLineItemDetails);
 	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
@@ -51,18 +52,20 @@ const VendorContractsGrid = (props: any) => {
 		}
 	}, [blockchainEnabled])
 
-	if(statusFilter) defaultVCStatusFilter = activeMainGridFilters.status;
+	if (statusFilter) defaultVCStatusFilter = activeMainGridFilters.status;
+
+	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
 
 	useEffect(() => {
 		setRowData(gridData);
 		setFilteredRecords(gridData);
 		const uniqueVendors: any = Array.from(new Map((gridData || []).map((item: any) =>
-			[item.vendor.id, {text: item?.vendor?.name, key: item?.vendor?.id, value: item?.vendor?.id}])).values());
+			[item.vendor.id, { text: item?.vendor?.name, key: item?.vendor?.id, value: item?.vendor?.id }])).values());
 		dispatch(setVendorsList(uniqueVendors));
 	}, [gridData]);
 
 	useEffect(() => {
-		if(gridOriginalData?.length) {
+		if (gridOriginalData?.length) {
 			let updatedGridData = gridOriginalData?.map((obj: any) => ({
 				...obj,
 				aliasStatus: vendorContractsStatus[obj['status']] || '',
@@ -80,39 +83,21 @@ const VendorContractsGrid = (props: any) => {
 		gridRef?.current?.api?.applyTransaction(liveData);
 	}, [liveData]);
 
-	useEffect(() => {
-		const columnsCopy = [...columns];
-		console.log("activeMainGridGroupKey", activeMainGridGroupKey, columnsCopy);
-		if(((activeMainGridGroupKey ?? false) && activeMainGridGroupKey !== "")) {
-			groupKeyValue.current = activeMainGridGroupKey;
-			columnsCopy.forEach((col: any) => {
-				col.rowGroup = activeMainGridGroupKey ? activeMainGridGroupKey === col.field : false;
-				setColumns(columnsCopy);
-			});
-		} else if(activeMainGridGroupKey ?? true) {
-			groupKeyValue.current = null;
-			columnsCopy.forEach((col: any) => {
-				console.log("status", col?.rowGroup);
-				col.rowGroup = false;
-			});
-			console.log("else group key", columnsCopy);
-			dispatch(setActiveMainGridGroupKey(null));
-			setColumns(columnsCopy);
-		};
-	}, [activeMainGridGroupKey]);
+
 
 	const isFound = (rec: any, key: string, filters: any) => {
 		let isFound = false;
 		rec?.scheduleOfValues?.map((item: any) => {
-			if(filters?.includes(item[key]) && !isFound) isFound = true;
+			if (filters?.includes(item[key]) && !isFound) isFound = true;
 		});
 		return isFound;
 	};
+
 	const FilterBy = (gridData: any) => {
 		const gridDataCopy = [...gridData];
 		let filteredData = gridDataCopy;
 		// if(!activeMainGridFilters?.status) setStatusFilters({ids: [], names: []});
-		if(activeMainGridFilters?.status?.length > 0) {
+		if (activeMainGridFilters?.status?.length > 0) {
 			filteredData = gridDataCopy.filter((rec: any) => {
 				return activeMainGridFilters?.status?.includes(rec.status);
 			});
@@ -123,26 +108,27 @@ const VendorContractsGrid = (props: any) => {
 				isUserGC(appInfo) ? statusNames.push(vendorContractsStatus[ele]) : statusNames.push(vendorContractsResponseStatus[ele]);
 			});
 			// setStatusFilters({ids: [...statusIds], names: [...statusNames]});
-		} else if(Object.keys(activeMainGridFilters).length === 0 || (activeMainGridFilters?.status?.length === 0 ?? false)) {
+		} else if (Object.keys(activeMainGridFilters).length === 0 || (activeMainGridFilters?.status?.length === 0 ?? false)) {
 			// setStatusFilters({ids: [], names: []});
 		};
-		if(activeMainGridFilters?.vendor?.length > 0) {
+		if (activeMainGridFilters?.vendor?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return activeMainGridFilters?.vendor?.includes(rec?.vendor?.id);
 			});
 		}
-		if(activeMainGridFilters?.sovType?.length > 0) {
+		if (activeMainGridFilters?.sovType?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return isFound(rec, 'type', activeMainGridFilters?.sovType);
 			});
 		}
-		if(activeMainGridFilters?.bidPackage?.length > 0) {
+		if (activeMainGridFilters?.bidPackage?.length > 0) {
 			filteredData = filteredData.filter((rec: any) => {
 				return activeMainGridFilters?.bidPackage?.includes(rec?.bidPackage?.name);
 			});
 		}
 		return filteredData;
 	};
+
 	const SearchBy = (gridData: any) => {
 		const filteredIds = gridData?.map((obj: any) => obj?.id);
 		const firstResult = aliasOriginalGridData.filter((obj: any) => {
@@ -150,12 +136,13 @@ const VendorContractsGrid = (props: any) => {
 		});
 		return firstResult;
 	};
+
 	useEffect(() => {
 		const gridDataCopy = [...gridData];
 		let data: any;
-		if(activeMainGridFilters && Object.keys(activeMainGridFilters)?.length > 0) {
+		if (activeMainGridFilters && Object.keys(activeMainGridFilters)?.length > 0) {
 			data = FilterBy(gridDataCopy);
-			if(mainGridSearchText !== "") {
+			if (mainGridSearchText !== "") {
 				let SearchGridData = SearchBy(data);
 				setRowData(SearchGridData);
 				setFilteredRecords(SearchGridData);
@@ -163,7 +150,7 @@ const VendorContractsGrid = (props: any) => {
 				setRowData(data);
 				setFilteredRecords(data);
 			};
-		} else if(mainGridSearchText !== "") {
+		} else if (mainGridSearchText !== "") {
 			let SearchGridData = SearchBy(gridDataCopy);
 			setRowData(SearchGridData);
 			setFilteredRecords(SearchGridData);
@@ -176,26 +163,23 @@ const VendorContractsGrid = (props: any) => {
 	}, [activeMainGridFilters, mainGridSearchText, gridData]);
 
 	const onClick = (values: any) => {
-		console.log("values", values);
-		dispatch(setActiveMainGridDefaultFilters({...activeMainGridFilters, status: [...values?.ids]}));
-		if(values?.ids?.length) {
+		dispatch(setActiveMainGridDefaultFilters({ ...activeMainGridFilters, status: [...values?.ids] }));
+		if (values?.ids?.length) {
 			let data = gridOriginalData.map((row: any) => {
-				if(values?.ids?.includes(row.status)) return row;
+				if (values?.ids?.includes(row.status)) return row;
 				return;
 			});
 			data = data.filter(function (element: any) {
 				return element !== undefined;
 			});
 			setRowData(data);
-			// } else {
-			// 	setStatusFilters({ids: [], names: []});
-			// 	setRowData(gridOriginalData);
 		}
 	};
-	useEffect(() => {setColumns(headers);}, [gridOriginalData, statusFilter]);
+
+	useEffect(() => { setColumns([...columns]); }, [gridOriginalData, statusFilter]);
 
 	useEffect(() => {
-		if(isUserGC(appInfo)) setColumns([...headers]);
+		if (isUserGC(appInfo)) setColumns([...headers]);
 		else {
 			headers.splice(5, 1);
 			headers.splice(5, 1);
@@ -205,15 +189,15 @@ const VendorContractsGrid = (props: any) => {
 	}, [appInfo]);
 
 	const handleStatusFilter = (statusFilters: any) => {
-		const consolidatedFilter = {...activeMainGridFilters, ...{status: statusFilters}};
+		const consolidatedFilter = { ...activeMainGridFilters, ...{ status: statusFilters } };
 		dispatch(setActiveMainGridFilters(consolidatedFilter));
 		dispatch(setActiveMainGridDefaultFilters(consolidatedFilter));
 	};
 
 	const handleStatusColumnSort = (direction: any) => {
 		gridRef?.current?.columnApi?.applyColumnState({
-			state: [{colId: 'status', sort: direction}],
-			defaultState: {sort: null}
+			state: [{ colId: 'status', sort: direction }],
+			defaultState: { sort: null }
 		});
 	};
 
@@ -243,7 +227,7 @@ const VendorContractsGrid = (props: any) => {
 						>
 							<span className='common-icon-c-mark' style={{color: '#26d8b1', position: 'absolute', left: '-0.2%', marginTop: '8px', fontSize: '24px', cursor: 'pointer'}} />
 						</IQTooltip>}
-						<span className='ag-costcodegroup' style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#059CDF'}}>{params.data?.title} </span>
+						<span className='ag-costcodegroup' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#059CDF' }}>{params.data?.title} </span>
 					</>;
 				}
 			}
@@ -252,13 +236,6 @@ const VendorContractsGrid = (props: any) => {
 			pinned: 'left',
 			field: 'status',
 			width: 300,
-			// headerComponent: CustomHeader,
-			// headerComponentParams: {
-			// 	options: isUserGC(appInfo) ? vendorContractsStatusOptions : vendorContractsResponseStatusOptions,
-			// 	columnName: isUserGC(appInfo) ? 'Status' : 'Response Status',
-			// 	defaultFilters: statusFilter,
-			// 	filterUpdated: (values: any) => onClick(values)
-			// },
 			headerComponent: CustomFilterHeader,
 			headerComponentParams: {
 				columnName: isUserGC(appInfo) ? 'Status' : 'Response Status',
@@ -270,14 +247,14 @@ const VendorContractsGrid = (props: any) => {
 				onFilter: handleStatusFilter
 			},
 			cellRenderer: (params: any) => {
-				if(params?.node?.rowPinned == 'bottom') return 'Total Contract Value';
-				if(isUserGC(appInfo)) {
+				if (params?.node?.rowPinned == 'bottom') return 'Total Contract Value';
+				if (isUserGC(appInfo)) {
 					return vendorContractsStatus[params?.data?.status] ?
 						vendorContractsStatus[params?.data?.status] === 'Summary' ?
 							params?.value : <IQTooltip title={vendorContractsStatus[params?.data?.status]?.length > 11 ? vendorContractsStatus[params?.data?.status] : ''}>
 								<Button disabled
 									variant='contained'
-									startIcon={<span className={vendorContractsStatusIcons[params?.data?.status]} style={{color: 'white'}} />}
+									startIcon={<span className={vendorContractsStatusIcons[params?.data?.status]} style={{ color: 'white' }} />}
 									style={{
 										backgroundColor: `${vendorContractsStatusColors[params.data?.status]}`,
 										color: tinycolor(vendorContractsStatusColors[params.data?.status]).isDark() ? 'white' : 'black',
@@ -298,7 +275,7 @@ const VendorContractsGrid = (props: any) => {
 							params?.value : <IQTooltip title={vendorContractsResponseStatus[params?.data?.status]?.length > 11 ? vendorContractsResponseStatus[params?.data?.status] : ''}>
 								<Button disabled
 									variant='contained'
-									startIcon={<span className={vendorContractsResponseStatusIcons[params?.data?.status]} style={{color: 'white'}} />}
+									startIcon={<span className={vendorContractsResponseStatusIcons[params?.data?.status]} style={{ color: 'white' }} />}
 									// startIcon={<Box component='img' src={StatusIcons[params?.data?.status]} style={{ height: '16px', width: '16px' }} />}
 									style={{
 										backgroundColor: `${vendorContractsResponseStatusColors[params.data?.status]}`,
@@ -360,18 +337,68 @@ const VendorContractsGrid = (props: any) => {
 	const [columns, setColumns] = useState<any>(isUserGC(appInfo) ? [...headers] : [...headers]);
 
 	const onCellEditingStopped = useCallback((event: any) => {
-		console.log('eventtt', event, event?.newValue, selectedRecord, appInfo, appInfo?.GBL?.Config?.user, appInfo?.GBL, appInfo?.gbl);
-		updateContractDetails(appInfo, {poNumber: event?.newValue}, event?.data?.id);
+		updateContractDetails(appInfo, { poNumber: event?.newValue }, event?.data?.id);
 	}, [selectedRecord]);
 
+	useEffect(() => {
+		if (viewBuilderData.length && viewData?.columnsForLayout?.length) {
+			let updatedColumndDefList: any = [];
+			viewData?.columnsForLayout.forEach((viewItem: any) => {
+				columns.forEach((cDef: any) => {
+					if (viewItem.field === cDef.field) {
+						let newColumnDef = {
+							...cDef,
+							...viewItem,
+							hide: viewItem?.hide,
+							headerName: viewItem.field == 'Status' ?
+								isUserGC(appInfo) ? 'Status' : 'Response Status'
+								: cDef.headerName,
+						};
+
+						updatedColumndDefList.push(newColumnDef);
+					}
+				});
+			});
+			setViewBuilderColumns(updatedColumndDefList);
+		}
+	}, [viewData]);
+
+	useMemo(() => {
+		// set the filters and grouping data
+		if (viewData) {
+			console.log('viewData', viewData)
+			viewData?.groups && dispatch(setActiveMainGridGroupKey(viewData?.groups?.[0]));
+			viewData?.filters && dispatch(setActiveMainGridFilters(JSON.parse(viewData?.filters)));
+			viewData?.filters && dispatch(setActiveMainGridDefaultFilters(JSON.parse(viewData?.filters)));
+		}
+	}, [viewData])
+
+	useEffect(() => {
+		const columnsCopy = viewBuilderColumns && viewBuilderColumns.length > 0 ? [...viewBuilderColumns] : [...columns];
+		if (((activeMainGridGroupKey ?? false) && activeMainGridGroupKey !== "")) {
+			groupKeyValue.current = activeMainGridGroupKey;
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = activeMainGridGroupKey ? activeMainGridGroupKey === col.field : false;
+			});
+			setColumns(columnsCopy);
+		} else if (activeMainGridGroupKey ?? true) {
+			groupKeyValue.current = null;
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = false;
+			});
+			dispatch(setActiveMainGridGroupKey(null));
+			setColumns(columnsCopy);
+		};
+	}, [activeMainGridGroupKey, viewBuilderColumns]);
+
 	const onGridRowDoubleClick = (row: any, tableRef: any) => {
-		if(row && row?.data && row?.rowPinned != 'bottom') {
-			if(props?.onRefChange) props?.onRefChange(tableRef);
+		if (row && row?.data && row?.rowPinned != 'bottom') {
+			if (props?.onRefChange) props?.onRefChange(tableRef);
 			dispatch(setShowLineItemDetails(true));
 			dispatch(setSelectedNode(row?.node));
 			dispatch(setSelectedRecord(row?.data));
-			dispatch(getContractDetailsById({appInfo: appInfo, id: row?.data?.id}));
-			dispatch(fetchTransactions({appInfo: appInfo, contractId: row?.data?.id}));
+			dispatch(getContractDetailsById({ appInfo: appInfo, id: row?.data?.id }));
+			dispatch(fetchTransactions({ appInfo: appInfo, contractId: row?.data?.id }));
 			// dispatch(setSelectedNode(row?.node));
 		}
 	};
@@ -383,28 +410,27 @@ const VendorContractsGrid = (props: any) => {
 	 */
 	const onFirstDataRendered = () => {
 		const params = new URLSearchParams(window.location.search);
-		console.log("paramsparams", params);
-		if(params.has("id")) {
+		if (params.has("id")) {
 			const selectedRecId = params.get('id');
 			const selectedRec = gridData.find((rec: any) => rec.id === selectedRecId);
 			dispatch(setShowLineItemDetails(true));
 			dispatch(setSelectedRecord(selectedRec));
-			dispatch(getContractDetailsById({appInfo: appInfo, id: selectedRecId}));
-			dispatch(fetchTransactions({appInfo: appInfo, contractId: selectedRecId}));
+			dispatch(getContractDetailsById({ appInfo: appInfo, id: selectedRecId }));
+			dispatch(fetchTransactions({ appInfo: appInfo, contractId: selectedRecId }));
 		}
 	};
 
 	const rowSelected = (sltdRows: any) => {
 		dispatch(setSelectedRows(sltdRows));
-		if(sltdRows?.node?.selected) {
+		if (sltdRows?.node?.selected) {
 			postMessage({
 				event: 'joinroom',
-				body: {iframeId: 'vendorContractsIframe', roomId: sltdRows?.data?.id, appType: 'VendorContractsLineItem_' + sltdRows?.data?.id, roomTitle: sltdRows?.title}
+				body: { iframeId: 'vendorContractsIframe', roomId: sltdRows?.data?.id, appType: 'VendorContractsLineItem_' + sltdRows?.data?.id, roomTitle: sltdRows?.title }
 			});
 		} else {
 			postMessage({
 				event: 'exitroom',
-				body: {iframeId: 'vendorContractsIframe', roomId: sltdRows?.data?.id, appType: 'VendorContractsLineItem_' + sltdRows?.data?.id}
+				body: { iframeId: 'vendorContractsIframe', roomId: sltdRows?.data?.id, appType: 'VendorContractsLineItem_' + sltdRows?.data?.id }
 			});
 		}
 	};
@@ -414,12 +440,12 @@ const VendorContractsGrid = (props: any) => {
 		cellRendererParams: {
 			suppressCount: false,
 			innerRenderer: (params: any) => {
-				if(params.node.group) {
+				if (params.node.group) {
 					const colName = params?.node?.field;
 					const data = params?.node?.childrenAfterGroup?.[0]?.data || {};
-					if(colName === "vendor.name") {
+					if (colName === "vendor.name") {
 						return data?.vendor?.name;
-					} else if(colName === "status") {
+					} else if (colName === "status") {
 						return data?.status || "";
 					}
 					return data?.[colName] || "";
@@ -430,21 +456,20 @@ const VendorContractsGrid = (props: any) => {
 
 	const GroupRowInnerRenderer = (props: any) => {
 		const node = props.node;
-		if(node.group) {
+		if (node.group) {
 			const colName = groupKeyValue?.current || activeMainGridGroupKey;
-			console.log("cellerender", colName, node?.group);
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
-			if(colName === "status") {
+			if (colName === "status") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={isUserGC(appInfo) ? vendorContractsStatus[data?.status] : vendorContractsResponseStatus[data?.status]} colName={colName}
 						/>
 					</div>
 				);
-			} else if(colName === "vendor.name") {
+			} else if (colName === "vendor.name") {
 				return (
-					<div style={{display: 'flex'}}>
+					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
 							label={data?.vendor?.name} colName={colName}
 						/>
@@ -481,7 +506,7 @@ const VendorContractsGrid = (props: any) => {
 					onCellEditingStopped={onCellEditingStopped}
 					onFirstDataRendered={onFirstDataRendered}
 					autoGroupColumnDef={autoGroupColumnDef}
-					getReference={(value: any) => {setGridRef(value);}}
+					getReference={(value: any) => { setGridRef(value); }}
 					pinnedBottomRowConfig={{
 						displayFields: {
 							status: 'Total Contract Value',

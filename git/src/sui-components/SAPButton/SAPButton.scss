@@ -1,0 +1,37 @@
+.sap-button {
+    gap: 5px;
+    height: 2.15rem;
+    padding: 5px 7px;
+    margin-right: 10px;
+    color: #059cdf !important;
+    border: 1px solid #059cdf !important;
+    min-width: 144px;
+    background-color: transparent;
+    .common-icon-sap-logo:before {
+        font-size: 25px !important;
+        color: #3198f2 !important;
+        background: -webkit-linear-gradient(#00AEEF, #0097DC, #007CC5, #006CB8, #0066B3);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .common-icon-share-new:before {
+        font-size: 24px;
+        color: #059cdf;
+    }
+    .MuiButton-startIcon {
+        margin-right: 0px;
+        .common-icon-redo:before {
+            content: "\ec6f";
+            font-size: 24px;
+            color: #059cdf;
+        }
+    }
+    .postto {
+        font-size: 15px;
+        color: #059cdf;
+    }
+    img {
+        height: 1.8rem;
+        object-fit: contain;
+    }
+  } 

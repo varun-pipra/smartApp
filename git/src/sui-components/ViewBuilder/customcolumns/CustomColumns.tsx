@@ -109,7 +109,7 @@ const CustomColumns = ({ listdata, close, submit }: addnewprops) => {
 			elevation={8}
 			open={false}
 		>
-			<Box sx={{ width: "30vw", height: "100%" }} p={3} role="presentation">
+			<Box sx={{ width: "30vw", height: "100%" }} className="custom-calculated-window" p={3} role="presentation">
 				<Stack
 					direction="row"
 					justifyContent={"space-between"}
@@ -152,7 +152,7 @@ const CustomColumns = ({ listdata, close, submit }: addnewprops) => {
 						}}
 					/>
 					<Box mt={4}>
-						<Typography fontWeight={600}>Define Your Column Calculated Equation</Typography>
+						<Typography className="head-title">Define Your Column Calculated Equation</Typography>
 						<Stack direction={"column"} mt={1} className='columnCalculated'>
 							<Stack direction={"row"} mt={1} className='buttontab-section'>
 								<IconMenu
@@ -222,7 +222,7 @@ const CustomColumns = ({ listdata, close, submit }: addnewprops) => {
 					<Box mt={4} textAlign="right">
 						<MuiButton
 							variant="contained"
-							sx={{ height: "40px", background: "#0590cd !important", color: "#fff !important" }}
+							className='add-btn'							
 							disabled={isDisabledAddColumnBtn}
 							onClick={() => addCustomColumnData()}
 						>

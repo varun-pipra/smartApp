@@ -84,7 +84,9 @@ const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
         else if (a.text > b.text) return 1;
         else return 0;
       })
-    : [];
+	  : [];
+	
+	// let optionList = props?.options ? props?.options : []
 
 	if(props.showNone)
 		optionList = _.concat([{
@@ -106,7 +108,7 @@ const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
 				className={_.isEmpty(selection) ? '' : 'menu-selected'}
 				onClick={handleClick}
 			/>
-			{open ? <Popper open={open} anchorEl={anchor} className="search-group-filter-menu" sx={popperSx} {..._.omit(props.menuProps, ['sx', 'open'])}>
+			{open ? <Popper open={open} anchorEl={anchor} className="search-group-filter-menu view-dropdown" sx={popperSx} {..._.omit(props.menuProps, ['sx', 'open'])}>
 				<Paper elevation={3}>
 					{props.extraMenuItemShow &&
 						<>

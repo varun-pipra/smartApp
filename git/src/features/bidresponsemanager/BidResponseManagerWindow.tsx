@@ -28,6 +28,7 @@ import {getUploadQueue, setUploadQueue} from './stores/FilesSlice';
 import IQWindow from 'components/iqbasewindow/IQBaseWindow';
 import SUIAlert from 'sui-components/Alert/Alert';
 import {isBidResponseManager} from 'app/common/userLoginUtils';
+import { fetchBidResponseGridData } from './stores/gridSlice';
 
 const BidResponseManagerWindow = () => {
 	const dispatch = useAppDispatch();
@@ -121,6 +122,10 @@ const BidResponseManagerWindow = () => {
 								triggerEvent('updatecommentbadge', {data: data.data, appType: data.appType});
 								break;
 							case 'updatechildparticipants':
+								break;
+							case "frame-active":
+								console.log("frame-active", data);
+								data?.data?.name == "bidresponses" && dispatch(fetchBidResponseGridData(appInfo));
 								break;
 						}
 					}

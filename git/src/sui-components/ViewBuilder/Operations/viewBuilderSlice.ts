@@ -4,13 +4,13 @@ import { fetchViewBuilderData, fetchView } from './viewBuilderAPI';
 export interface ViewbuilderState {
 	loading: boolean;
 	viewBuilderData: any;
-	viewData:any;
+	viewData: any;
 }
 
 const initialState: ViewbuilderState = {
 	loading: false,
 	viewBuilderData: [],
-	viewData: {	},
+	viewData: {},
 };
 
 // The function below is called a thunk and allows us to perform async logic. It
@@ -18,27 +18,23 @@ const initialState: ViewbuilderState = {
 // will call the thunk with the `dispatch` function as the first argument. Async
 // code can then be executed and other actions can be dispatched. Thunks are
 // typically used to make async requests.
+
 export const fetchViewBuilderList = createAsyncThunk<any, any>(
 	'viewBuilder',
-	async (appInfo) => {
-		const response = await fetchViewBuilderData(appInfo);
-		// The value we return becomes the `fulfilled` action payload
-        const newOptions = response.data.map((type: any) => {
-            return { text: type.viewName, value: type };
-        });
-        return newOptions;
-	}
-   
-);
-export const fetchViewData = createAsyncThunk<any, any>(
-	'view',
 	async (data) => {
-		const response = await fetchView(data.appInfo, data.viewId);
-		// The value we return becomes the `fulfilled` action payload
-        const newOptions = {...response, text: response.viewName, value: 'type' }
-        return newOptions;
-	}   
+		const response = await fetchViewBuilderData(data?.appInfo, data?.modulename);
+		const newOptions = response.data.map((type: any) => {
+			return { text: type.viewName, value: type };
+		});
+		return newOptions;
+	}
+
 );
+export const fetchViewData = createAsyncThunk<any, any>('view', async (data) => {
+	const response = await fetchView(data.appInfo, data.viewId);
+	const newOptions = { ...response, text: response.viewName, value: 'type' }
+	return newOptions;
+});
 
 export const viewBuilderSlice = createSlice({
 	name: 'viewbuilder',
@@ -49,7 +45,6 @@ export const viewBuilderSlice = createSlice({
 			state.viewBuilderData = action.payload;
 		},
 		setViewData: (state, action: PayloadAction<any>) => {
-			
 			state.viewData = action.payload;
 		},
 	},
@@ -62,16 +57,14 @@ export const viewBuilderSlice = createSlice({
 			})
 			.addCase(fetchViewBuilderList.fulfilled, (state, action) => {
 				state.loading = false;
-				
 				state.viewBuilderData = action.payload;
-				action.payload.map((view:any) => {
-
-					if(view.value.defaultView) state.viewData = view.value;
+				action.payload.map((view: any) => {
+					if (view.value.defaultView) state.viewData = view.value;
 				})
 			})
 			.addCase(fetchViewBuilderList.rejected, (state) => {
 				state.loading = false;
-			})			
+			})
 			.addCase(fetchViewData.pending, (state) => {
 				state.loading = true;
 			})

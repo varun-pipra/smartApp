@@ -44,19 +44,23 @@ const SMBrenaRightPanel = (props: any) => {
   }, [specBookpages]);
 
   const debounceOnSearch = useCallback(
-    _.debounce((search, pageId) => {
+    _.debounce((search) => {
       setSearch(search);
-      if (search.length) {
-        handelSearchChange(search,pageId);
-        docViewerins?.rerenderCanvas();
-        dispatch(setResizeBrenaPanel(true));
-      } else {
-        dispatch(setResizeBrenaPanel(false));
-        sketchPageinfo?.callback(smBrenaRaightPanelMarkups || {});
-      }
     }, 2000),
-    [search]
+    []
   );
+
+  useEffect(() => {
+    if (search.length) {
+      docViewerins?.rerenderCanvas();
+      dispatch(setResizeBrenaPanel(true));
+      handelSearchChange(search, smRefPUId);
+    } else {
+      dispatch(setResizeBrenaPanel(false));
+      console.log(smBrenaRaightPanelMarkups, "markupsByPageForBidResp");
+      sketchPageinfo?.callback(smBrenaRaightPanelMarkups || {});
+    }
+  }, [search]);
 
   useEffect(() => {
     console.log("fileQueue smw rightpanel", uploadQueue);
@@ -133,7 +137,7 @@ const SMBrenaRightPanel = (props: any) => {
             showGroups={false}
             showFilter={false}
             filterHeader=""
-            onSearchChange={(searchText: any) => debounceOnSearch(searchText, smRefPUId)}
+            onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
           />
         </div>
         <IQBrenaDocViewer

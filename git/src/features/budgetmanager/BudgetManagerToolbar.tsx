@@ -48,12 +48,21 @@ import SUIAlert from "sui-components/Alert/Alert";
 import { getBidStatusIdFromText, statusFilterOptions } from "utilities/bid/enums";
 import { vendorContractsStatusFilterOptions } from "utilities/vendorContracts/enums";
 import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
+import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
+import IconMenu from 'components/iqsearchfield/iqiconbuttonmenu/IQIconButtonMenu';
+import GridIcon from "resources/images/common/Grid.svg"
+import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
+import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
+import _ from 'lodash';
 import BudgetImporter from "./import/BudgetImporter";
 import ShortcutSharpIcon from '@mui/icons-material/ShortcutSharp';
 
 const BudgetManagerToolbar = (props: any) => {
+	const modName = 'budgetmanager';
 	const dispatch = useAppDispatch();
-	const { selectedRows, bidPackagesList, vendorContractsList, clientContractsList } = useAppSelector(state => state.gridData);
+	const { viewBuilderData } = useAppSelector(state => state.viewBuilder);
+	const { selectedRows, bidPackagesList, vendorContractsList, clientContractsList, selectedGroupKey, selectedFilters } = useAppSelector(state => state.gridData);
 	const { selectedRow } = useAppSelector(state => state.rightPanel);
 	const { isBudgetLocked, budgetTemplate } = useAppSelector(state => state.tableColumns);
 	const { costCodeDropdownData, divisionCostCodeFilterData } = useAppSelector(state => state.settings);	
@@ -70,13 +79,12 @@ const BudgetManagerToolbar = (props: any) => {
 	const [showNewAddLineItemBtn, setShowNewAddLineItemBtn] = useState<boolean>(false);
 	const { viewData } = useAppSelector(state => state.viewBuilder);
 	const [alert, setAlert] = useState<boolean>(false);
-	// const [filteredRecords, setFilteredRecords] = useState<any>([]);
-	// const [activeFilters, setActiveFilters] = useState<any>({});
-	// const [searchText, setSearchText] = useState<string>('');
-	// const [searchResults, setSearchResults] = useState<any>([]);
 	const [locations, setLocations] = useState<any>([]);
 	const [gridRefreshed, setGridRefreshed] = useState<any>(false);
 	const [vendors, setVendors] = useState<any>([]);
+	const [ViewBuilder_options, setViewBuilder_options] = useState<any>([]);
+	const itemsToUpdate: any = [];
+
 	const [isImportVisible, setImportVisible] = useState<boolean>(false);
 	const [divisions, setDivisions] = useState<any>([]);
 	const [costCodeList, setCostCodeList] = useState<any>([]);
@@ -132,7 +140,7 @@ const BudgetManagerToolbar = (props: any) => {
 
 
 	useEffect(() => {
-		dispatch(fetchBudgetLock(appInfo));
+		setViewBuilder_options(fetchBudgetLock(appInfo));
 	}, []);
 
 	const filterOptions = [
@@ -401,7 +409,9 @@ const BudgetManagerToolbar = (props: any) => {
 	};
 
 	const handleFilterChange = (filters: any, text: any = null) => {
-		dispatch(setSelectedFilters(filters));
+		if (!_.isEqual(filters, selectedFilters)) {
+			dispatch(setSelectedFilters(filters));
+		}
 	};
 
 	const handleLockBudget = () => {
@@ -412,9 +422,62 @@ const BudgetManagerToolbar = (props: any) => {
 	};
 
 	const onGridGroupingChange = (selectedVal: any) => {
-		dispatch(setSelectedGroupKey(selectedVal));
+		console.log('selectedVal', selectedVal);
+		if (selectedVal == undefined || selectedVal == 'undefined') {
+			console.log('if', selectedVal);
+			dispatch(setSelectedGroupKey(" "))
+		}
+		else {
+			console.log('else', selectedVal);
+			dispatch(setSelectedGroupKey(selectedVal));
+		}
 	};
 
+	const handleDropDown = (value: any, data: any) => {
+		if (value === "save") {
+			saveViewHandler(data);
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Saved Successfully` }));
+		}
+		else if (value === "delete") {
+			DeleteViewHandler();
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Deleted Successfully` }));
+		}
+	}
+
+	// const handleViewList = (viewObj: any) => {
+	// 	dispatch(fetchViewData({ appInfo: appInfo, viewId: viewObj.viewId }))
+	// }
+
+	const saveNewViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(selectedFilters);
+		const payload = { ...value, viewFor: modName, filters: FilterValue ? FilterValue : '{}', groups: selectedGroupKey ? [selectedGroupKey] : ['None'] };
+		console.log('payload', payload);
+		addNewView(appInfo, payload, modName, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'BudgetManager' }));
+			dispatch(fetchGridData(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+
+	const saveViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(selectedFilters);
+		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: selectedGroupKey ? [selectedGroupKey] : ['None'] };
+		console.log('payload', payload);
+		updateViewItem(appInfo, viewData.viewId, payload, (response: any) => {
+			dispatch(fetchGridData(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+
+	const DeleteViewHandler = () => {
+		deleteView(appInfo, viewData.viewId, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'BudgetManager' }));
+		});
+	}
+	const viewListOnChange = (data: any) => {
+		console.log('get')
+		dispatch(fetchGridData(appInfo));
+	}
 	const PrintOnclick = (event: any) => {
 		postMessage({
 			event: 'openitemlevelreport',
@@ -473,11 +536,28 @@ const BudgetManagerToolbar = (props: any) => {
 					filters={filters}
 					filterHeader=''
 					placeholder={viewData && viewData?.viewName}
-					defaultGroups='division'
-					onGroupChange={onGridGroupingChange}
+					defaultGroups={selectedGroupKey}
+					defaultFilters={selectedFilters}
+					onGroupChange={(group: any) => onGridGroupingChange(group)}
 					onSearchChange={(text: string) => handleOnSearchChange(text)}
 					onFilterChange={(filters: any) => handleFilterChange(filters)}
+					viewBuilderapplied={true}
 				/>
+				<ViewBuilder
+					moduleName={modName}
+					appInfo={appInfo}
+					dropDownList={ViewBuilder_options && ViewBuilder_options?.length > 0 ? ViewBuilder_options : []}
+					dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
+					griddata={viewData?.columnsForLayout}
+					viewData={viewData}
+					saveView={(data: any) => { saveViewHandler(data) }}
+					deleteView={() => { DeleteViewHandler() }}
+					saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
+					viewList={viewBuilderData}
+					requiredColumns={['costCode', 'costType', 'division', 'originalAmount']}
+					viewListOnChange={(data: any) => { viewListOnChange(data) }}
+				/>
+
 			</div>
 			<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 				{<ReportAndAnalyticsToggle />}
@@ -585,15 +665,6 @@ const BudgetManagerToolbar = (props: any) => {
 				</SUIDrawer>
 			)}
 
-			{viewBuilderPopup && (
-				<ViewBuilderGrid
-					open={true}
-					newAddLineItemBtn={showNewAddLineItemBtn}
-					onClose={(value: any) => {
-						dispatch(setShowSettingPopup3(false));
-					}}
-				/>
-			)}
 			<SUIAlert
 				open={alert}
 				contentText={<span>Are you sure want to continue?</span>}
@@ -601,64 +672,6 @@ const BudgetManagerToolbar = (props: any) => {
 				title={'Confirmation'}
 				onAction={(e: any, type: string) => handleListChanges(type)}
 			/>
-			{/* {openViewPopup && 
-				
-					
-				} */}
-			{/* {openViewFilter && (
-				<Box sx={{ width: "18vw", height: "50%" }} role="presentation"
-				>
-					hiii
-			</Box>
-			)} */}
-			{/* {openSettingPopup2 && (
-				<SUIDrawer
-					PaperProps={{
-						style: {
-							position: "absolute",
-							width: "calc(100vw - 72vw)",
-							height: budgetManagerMaximized ? 'calc(100% - 0px)' : 'calc(100% - 0px)',
-							overflow: 'auto',
-						}
-
-					}}
-
-					sx={{
-						'& .MuiPaper-root': {
-							border: "1px solid rgba(0, 0, 0, 0.12) !important"
-						}
-					}}
-					anchor="right"
-					variant="permanent"
-					elevation={2}
-				// open={false}
-				>
-					<>
-						<Stack direction="row" sx={{ justifyContent: "end" }}>
-							<IconButton
-								color='default'
-								size='small'
-								aria-label="Close Right Pane"
-								onClick={() => dispatch(setShowSettingPopup2(false))}
-								sx={{
-									background: "gray",
-									borderRadius: '50px',
-									padding: '2px !important',
-									color: 'white',
-									margin: '10px 5px 0px 0px',
-									':hover': {
-										background: 'transparent',
-										color: 'gray'
-									}
-								}}
-							>
-								<Close sx={{ fontSize: '1rem !important' }} />
-							</IconButton>
-						</Stack>
-						<BudgetSettings />
-					</>
-				</SUIDrawer>
-			)} */}
 		</Stack>
 	);
 };
@@ -668,7 +681,7 @@ export default BudgetManagerToolbar;
 const getGroupMenuOptions = () => {
 	return [{
 		text: 'Division',
-		value: 'costCode',
+		value: 'division',
 		iconCls: ''
 	}, {
 		text: 'Cost Type',
@@ -676,7 +689,7 @@ const getGroupMenuOptions = () => {
 		iconCls: ''
 	}, {
 		text: 'Cost Code',
-		value: 'division',
+		value: 'costCode',
 		iconCls: ''
 	},
 	{

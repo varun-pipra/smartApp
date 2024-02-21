@@ -22,7 +22,7 @@ import SSRGrouping from 'examples/Grid/SSRGrouping';
 // import DocUploaderExample from 'examples/DocUploader/DocUploaderExample';
 // import CompanyCardExample from 'examples/CompanyCard/CompanyCardExample';
 // import GridWindowExample from 'examples/GridWindow/GridWindowExample';
-// import ViewBuilderExample from 'examples/Viewbuilder/ViewBuilderExample';
+import ViewBuilderExample from 'examples/Viewbuilder/ViewBuilderExample';
 // import SUIBudgetLineItemSelectExample from 'examples/BudgetLineItemSelect/BudgetLineItemSelectExample';
 // import SUICountDownTimerExample from 'examples/CountDownTimerExample/CountDownTimerExample';
 // import SUIAwardedBidderTooltipExample from './examples/AwardedBidderTooltip/AwardedBidderTooltip';
@@ -122,6 +122,10 @@ const AppRoutes = () => {
 			</Route>
 			<Route path='projectSettings'>
 				<Route path='projectTeam' element={<ProjectTeamWindow />} >
+					<Route path='fullView' element={<ProjectTeamWindow />} />
+					<Route path='teamOrientation' element={<ProjectTeamWindow />} />
+				</Route>
+				<Route path='projectTeam/staff' element={<ProjectTeamWindow />} >
 					<Route path='fullView' element={<ProjectTeamWindow />} />
 					<Route path='teamOrientation' element={<ProjectTeamWindow />} />
 				</Route>
@@ -226,6 +230,8 @@ const AppRoutes = () => {
 				<Route path='phases-grid-list' element={<PhasesGridListExample />} />
 				<Route path='tree-view' element={<MultiSelectTreeView />} />
 			</Route>
+			<Route path='ViewBuilderExample' element={<ViewBuilderExample />} />
+			
 			{/* <Route path='examples'>
 				<Route path='costCodeSelect' element={<Costcodeselect />} />
 				<Route path='TimePicker' element={<TimePicker />} />

@@ -1,0 +1,78 @@
+.viewbuilder-window {
+    .SuiDialog .MuiDialog-container .MuiDialogContent-root {
+        padding: 30px !important;
+    }
+}
+
+.hideshow {
+    color: #333 !important;
+    font-weight: 500 !important;
+    font-family: "Roboto-Regular";
+    font-size: 11pt;
+}
+
+.viewBuilder-button-Section {
+    .saveViewAs_button {
+        border: 1px solid #0590cd;
+        color: #0590cd;
+    }
+    .saveView_button {
+        background-color: #0590cd;
+        border: 1px solid #0590cd;
+        color: #fff;
+        font-weight: bold;
+    }
+    .saveView_button_vb {
+        height: 38px;
+    }
+    .saveViewAs_button_vb {
+        border: 1px solid #059cdf !important;
+        background-color: #f2f2f2 !important;
+        height: 38px;
+        color: #0590cd;
+    }
+    .deleteView_button_vb {
+        border: 1px solid #da0000 !important;
+        background-color: #f2f2f2 !important;
+        height: 38px;
+        color: #da0000 !important;
+    }
+    .Mui-disabled {
+        opacity: 0.5;
+    }
+    &.ag-header-cell-label {
+        left: 28px
+    }
+    &.ag-root-wrapper {
+        border: var(solid 2px) var(#0590cd)
+    }
+}
+
+.SuiDialog {
+    .MuiDialog-container {
+        .MuiDialogContent-root {
+            .add-new-calculated-btn {
+                margin: 6px 6px 12px 0px;
+                padding: 2px 6px;
+                height: 34px;
+                border-color: #059cdf;
+                color: #059cdf;
+                background-color: transparent;
+            }
+        }
+    }
+    .ag-row {
+        .ag-row-drag {
+            .ag-icon-grip {
+                transform: rotate(90deg);
+                &:before {
+                    content: "\eb3a";
+                    font-family: "common-webfont";
+                    font-size: 20px;
+                    color: #999;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+}

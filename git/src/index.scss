@@ -280,6 +280,20 @@ code {
     .MuiRadio-root {
         padding: 8px 6px 10px 12px;
     }
+    &.view-dropdown {
+        .common-icon-Newgridview:before,
+        .common-icon-Save:before,
+        .common-icon-Saveas:before {
+            font-size: 24px;
+            color: #333;
+        }
+        .common-icon-edit:before,
+        .common-icon-delete:before {
+            font-size: 22px;
+            color: #333;
+            margin-left: 2px;
+        }
+    }
 }
 
 .MuiCheckbox-root {

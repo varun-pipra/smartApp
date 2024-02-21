@@ -69,6 +69,9 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import { AddFiles, saveLinksData } from "./operations/sbsManagerAPI";
 import { findAndUpdateFiltersData } from "./utils";
+import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
+import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 
 const SBSManagerWindow = (props: any) => {
 	let filterOptions = useMemo(() => {
@@ -97,20 +100,16 @@ const SBSManagerWindow = (props: any) => {
 		];
 		return filterMenu;
 	}, []);
+	const modName = 'sbsmanger';
 	const dispatch = useAppDispatch();
 	const [localhost] = React.useState(isLocalhost);
 	const [appData] = React.useState(appInfoData);
 	const appInfo = useAppSelector(getServer);
 	const { detailsData } = useAppSelector((state) => state.sbsManager);
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
-	const {
-		sbsGridData,
-		showSbsPanel,
-		showPhaseModel,
-		toast,
-		sbsSettings,
-		settingsCategoryList,
-	} = useAppSelector((state) => state.sbsManager);
+	const { sbsGridData, showSbsPanel, showPhaseModel, toast, sbsSettings, settingsCategoryList } = useAppSelector(
+		(state) => state.sbsManager
+	);
 	const [gridSearchText, setGridSearchText] = useState("");
 	const [selectedFilters, setSelectedFilters] = useState<any>();
 	const [rowData, setRowData] = useState([]);
@@ -132,32 +131,23 @@ const SBSManagerWindow = (props: any) => {
 	const isAppMaximized = useAppSelector(
 		(state) => state.appInfo.isAppMaximized
 	);
+	const [viewBuilderData, setViewBuilderData] = useState<any>({ viewName: "", viewId: "" });
 	const gridApi = useRef<any>();
 	const [gridApiRef, setGridApiRef] = useState<any>();
+	const [defaultFilters, setDefaultFilters] = useState<any>({});
+	const groupKeyValue = useRef<any>(null);
+	const [activeGroupKey, setActiveGroupKey] = useState<String>("");
+
 	useEffect(() => {
 		setShowManagePhasesModal(showPhaseModel);
 	}, [showPhaseModel]);
 	useEffect(() => {
-		if (
-			sbsSettings &&
-			sbsSettings?.categoryId &&
-			settingsCategoryList?.length > 0
-		) {
-			let value = [...settingsCategoryList].find(
-				(rec: any) => rec.id === sbsSettings.categoryId
-			)?.name;
-			dispatch(
-				getCategoryDropDownOptions(
-					value ?? "System Breakdown Structure Categories (SBS)"
-				)
-			);
+		if (sbsSettings && sbsSettings?.categoryId && settingsCategoryList?.length > 0) {
+			let value = [...settingsCategoryList].find((rec: any) => rec.id === sbsSettings.categoryId)?.name;
+			dispatch(getCategoryDropDownOptions(value ?? "System Breakdown Structure Categories (SBS)"));
 		} else if (sbsSettings?.length === 0) {
-			dispatch(
-				getCategoryDropDownOptions(
-					"System Breakdown Structure Categories (SBS)"
-				)
-			);
-		}
+			dispatch(getCategoryDropDownOptions("System Breakdown Structure Categories (SBS)"));
+		};
 	}, [sbsSettings, settingsCategoryList]);
 	useEffect(() => {
 		if (appInfo) {
@@ -179,66 +169,17 @@ const SBSManagerWindow = (props: any) => {
 				console.log('refreshCells test');
 				gridApiRef.refreshCells({ force: true });
 			}, 500);
-			setFilters(
-				findAndUpdateFiltersData(
-					filterOptions,
-					sbsGridData,
-					"phase",
-					true,
-					"name"
-				)
-			);
-			setFilters(
-				findAndUpdateFiltersData(
-					filterOptions,
-					sbsGridData,
-					"category",
-					true,
-					"name"
-				)
-			);
-			setFilters(
-				findAndUpdateFiltersData(
-					filterOptions,
-					sbsGridData,
-					"trades",
-					true,
-					"name"
-				)
-			);
+			setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "phase", true, "name"));
+			setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "category", true, "name"));
+			setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "trades", true, "name"));
 		} else if (sbsGridData.length === 0) {
 			setModifiedList([]);
 			setRowData([]);
-			setFilters(
-				findAndUpdateFiltersData(
-					filterOptions,
-					sbsGridData,
-					"phase",
-					true,
-					"name"
-				)
-			);
-			setFilters(
-				findAndUpdateFiltersData(
-					filterOptions,
-					sbsGridData,
-					"category",
-					true,
-					"name"
-				)
-			);
-			setFilters(
-				findAndUpdateFiltersData(
-					filterOptions,
-					sbsGridData,
-					"trades",
-					true,
-					"name"
-				)
-			);
+			setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "phase", true, "name"));
+			setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "category", true, "name"));
+			setFilters(findAndUpdateFiltersData(filterOptions, sbsGridData, "trades", true, "name"));
 		}
 	}, [sbsGridData]);
-
 	useEffect(() => {
 		if (localhost) {
 			dispatch(setServer(_.omit(appData, ["DivisionCost"])));
@@ -329,13 +270,7 @@ const SBSManagerWindow = (props: any) => {
 	};
 
 	const saveSmartItemLink = (smartData: any) => {
-		let payload = {
-			details: {
-				sbsId: detailsData?.id,
-				LinkType: 0,
-				Link: smartData?.smartItemId,
-			},
-		};
+		let payload = { "details": { "sbsId": detailsData?.id, "LinkType": 0, "Link": smartData?.smartItemId } }
 		saveLinksData(payload, (response: any) => {
 			dispatch(getSBSDetailsById(detailsData?.uniqueid));
 			setSmartItemLink({});
@@ -499,14 +434,27 @@ const SBSManagerWindow = (props: any) => {
 	};
 
 	const onGroupingChange = useCallback((groupValue: any) => {
+		groupFunction(groupValue);
+	}, []);
+
+
+	const groupFunction = (groupValue: any) => {
+		console.log('groupValue', groupValue)
 		if (groupValue !== "") {
 			let updatedColumns: any = [...colDefs].map((rec: any) => {
 				if (groupValue) return { ...rec, rowGroup: rec.field === groupValue };
 				else return { ...rec, rowGroup: false, sort: null };
 			});
+			console.log('updatedColumns', updatedColumns)
 			setColDefs(updatedColumns);
+			setActiveGroupKey(groupValue);
 		}
-	}, []);
+	}
+
+	useEffect(() => {
+		console.log('activeGroupKey', activeGroupKey)
+		groupFunction(activeGroupKey)
+	}, [activeGroupKey])
 
 	const groupRowRendererParams = useMemo(() => {
 		return {
@@ -562,7 +510,7 @@ const SBSManagerWindow = (props: any) => {
 		const SelectionService = e.api.getSelectedRows();
 		dispatch(setSelectedNodes(SelectionService));
 	};
-
+	
 	const searchAndFilter = (list: any) => {
 		return list.filter((item: any) => {
 			const tradeNames = item.trades?.map((x: any) => x?.name?.toString());
@@ -598,13 +546,14 @@ const SBSManagerWindow = (props: any) => {
 			return searchVal && filterVal;
 		});
 	};
-
+	
 	useEffect(() => {
 		if (gridSearchText || selectedFilters) {
 			const data = searchAndFilter([...modifiedList]);
 			setRowData(data);
 		}
 	}, [gridSearchText, selectedFilters]);
+	
 	useEffect(() => {
 		setToastMessage(toast);
 		setTimeout(() => {
@@ -633,6 +582,75 @@ const SBSManagerWindow = (props: any) => {
 			}
 		}
 	};
+
+	const handleDropDown = (value: any, data: any) => {
+		if (value === "save") {
+			saveViewHandler(data);
+			setToastMessage(`${viewBuilderData?.viewName} Saved Successfully`);
+		}
+		else if (value === "delete") {
+			DeleteViewHandler();
+			setToastMessage(`${viewBuilderData?.viewName} Deleted Successfully`);
+		}
+	}
+
+	const saveNewViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(defaultFilters);
+		const payload = { ...value, viewFor: modName, filters: FilterValue, groups: [activeGroupKey] };
+		console.log('payload', payload);
+		addNewView(appInfo, payload, modName, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'ChangeEvent' }));
+			dispatch(getSBSGridList());
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+		});
+	}
+	const saveViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(defaultFilters);
+		const payload = { ...value, filters: FilterValue, groups: [activeGroupKey] };
+		console.log('payload', payload);
+		updateViewItem(appInfo, viewBuilderData?.viewId, payload, (response: any) => {
+			dispatch(getSBSGridList());
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+		});
+	}
+	const DeleteViewHandler = () => {
+		deleteView(appInfo, viewBuilderData?.viewId, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'ChangeEvent' }));
+		});
+	}
+	useMemo(() => {
+		//Appending viewbuilder data to grid 
+		if (viewBuilderData?.columnsForLayout?.length) {
+			let updatedColumndDefList: any = [];
+			const gridApii = gridApi?.current;
+			if (gridApii) {
+				let updatedColumndDefList: any = [];
+				viewBuilderData?.columnsForLayout.forEach((viewItem: any) => {
+					columns?.forEach((cDef: any) => {
+						if (viewItem.field == cDef.field) {
+							let newColumnDef = {
+								...cDef,
+								...viewItem,
+								hide: viewItem?.hide
+							};
+							updatedColumndDefList.push(newColumnDef);
+						}
+					});
+				});
+				setColDefs([...updatedColumndDefList])
+				gridApii?.api?.setColumnDefs(updatedColumndDefList);
+			}
+		}
+	}, [viewBuilderData]);
+
+	useMemo(() => {
+		if (viewBuilderData?.viewId != '') {
+			viewBuilderData?.groups && setActiveGroupKey(viewBuilderData?.groups[0]);
+			viewBuilderData?.filters && setFilters(JSON.parse(viewBuilderData?.filters));
+			viewBuilderData?.filters && setDefaultFilters(JSON.parse(viewBuilderData?.filters));
+		}
+	}, [viewBuilderData?.viewId])
+
 	const onClickRefresh = () => {
 		const node = gridApi?.current?.api;
 		node.forEachNode((node:any) => {if (node.rowIndex) {node.setSelected(false);}});
@@ -710,9 +728,22 @@ const SBSManagerWindow = (props: any) => {
 								onGroupChange: onGroupingChange,
 								onFilterChange: onFilterChange,
 								onSearchChange: onGridSearch,
-								defaultGroups: "category",
+								defaultGroups: activeGroupKey,
+								defaultFilters: defaultFilters,
+								placeholder: viewBuilderData?.viewName,
 								showNone: false,
 							},
+							viewBuilder: <ViewBuilder
+								moduleName={modName}
+								appInfo={appInfo}
+								dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
+								saveView={(data: any) => { saveViewHandler(data) }}
+								deleteView={() => { DeleteViewHandler() }}
+								saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
+								dataList={(data: any) => { setViewBuilderData(data) }}
+								viewListOnChange={(data: any) => { setViewBuilderData(data) }}
+								requiredColumns={['name', 'status']}
+							/>
 						},
 						grid: {
 							headers: colDefs,

@@ -18,11 +18,11 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { setColumnDefsHeaders, setGridColumnHide, getColumnDefsHeaders } from "../operations/tableColumnsSlice";
 import SUIDialog from "sui-components/Dialog/Dialog";
 import globalStyles from "../BudgetManagerGlobalStyles";
-import { addNewView, updateViewItem } from "../operations/viewBuilderAPI";
+import { addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
 import { getServer } from "app/common/appInfoSlice";
 import IQButton from "components/iqbutton/IQButton";
 import IQToggle from "components/iqtoggle/IQToggle";
-import { fetchViewBuilderList } from "../operations/viewBuilderSlice";
+import { fetchViewBuilderList } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { fetchGridData } from "../operations/gridSlice";
 import { string } from "prop-types";
 import { Params } from "react-router-dom";
@@ -33,13 +33,14 @@ const displayWidth: string = "12rem";
 const actionWidth: string = "10rem";
 
 interface ViewBuilderGridProps {
+	moduleName? : any;
 	open: boolean;
 	onClose?: (value: boolean) => void;
 	newAddLineItemBtn: boolean;
 }
 
 const ViewBuilderGrid = (props: ViewBuilderGridProps) => {
-
+	console.log('moduleName ViewBuilderGrid', props.moduleName)
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const [showAddColumnPane, setShowAddColumnPane] = React.useState<boolean>(false);
@@ -202,7 +203,7 @@ const ViewBuilderGrid = (props: ViewBuilderGridProps) => {
 	const save = () => {
 		customColumn.columnsForLayout = [...tableHeadersData]
 		addNewView(appInfo, customColumn, (response: any) => {
-			dispatch(fetchViewBuilderList(appInfo));
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: props?.moduleName }));
 		});
 		setOpenSave(false)
 		setShowToast({ displayToast: true, message: ` ${customColumn.viewName} view is created ` })
@@ -367,7 +368,7 @@ const ViewBuilderGrid = (props: ViewBuilderGridProps) => {
 						<Add />Add NewCalculated Column
 					</Button> :
 					<Grid container>
-						<Grid item xs={5} style={{ margin: '10px', border: '1px solid #babfc7', borderRadius: '4px', padding: '5px' }}>
+						<Grid item xs={5} style={{ margin: '10px 0px', border: '1px solid #babfc7', borderRadius: '4px', padding: '5px 10px' }}>
 							{viewData ? viewData?.viewName : 'Basic View'}
 						</Grid>
 					</Grid>

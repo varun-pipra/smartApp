@@ -26,6 +26,7 @@ import BidDetailsRO from '../../bidmanager/bidpackagedetails/tabs/biddetails/Bid
 import { setSelectedTabName } from '../stores/BidResponseManagerSlice';
 import BidResponse from './tabs/bidResponse/BidResponse';
 import BidQueries from './tabs/bidqueries/BidQueries';
+import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
 
 var tinycolor = require('tinycolor2');
 
@@ -34,7 +35,7 @@ const BidResponsePackageLineItem = (props: any) => {
 	const ref = React.useRef<HTMLDivElement | null>(null);
 	const presenceId = 'bid-manager-lineitem-presence';
 	const presenceTools = <div id={presenceId} className='bid-manager-presence'></div>;
-
+	const { connectors } = useAppSelector((state) => state.gridData);
 	const [pinned, setPinned] = useState(true);
 	const [collapsed, setCollapsed] = useState(false);
 	const [tabSelected, setTabSelected] = useState('bid-details');
@@ -54,7 +55,8 @@ const BidResponsePackageLineItem = (props: any) => {
 			const callList: Array<any> = [
 				dispatch(fetchBidResponseDetailsData({ appInfo: appInfo, responseId: bidId })),
 				dispatch(fetchBidResponsedata({ appInfo: appInfo, bidderId: bidderId })),
-				dispatch(loadBidQueriesByPackageAndBidder({ appInfo: appInfo, packageId: bidId, bidderId: bidderId }))
+				dispatch(loadBidQueriesByPackageAndBidder({ appInfo: appInfo, packageId: bidId, bidderId: bidderId })),
+				dispatch(fetchConnectors(appInfo))
 			];
 
 			Promise.all(callList).then(() => {
@@ -309,6 +311,12 @@ const BidResponsePackageLineItem = (props: any) => {
 							<span className={getResponseStatusIcons(selectedRecord?.responseStatus)} />
 							{BidResponseStatus[selectedRecord?.responseStatus]}
 						</span>
+						{/* {connectors?.length ? <img
+										className="sapnumber"
+										src={connectors?.[0]?.primaryIconUrl}
+										alt="connector Image"
+									/> : ''}
+						{connectors?.length ? <span className='sapnumber'>{selectedRecord?.id?.substring(0, 10)?.toUpperCase()}</span> : ''} */}
 					</div> : ''}
 				</span>
 				<span className='right-box'>

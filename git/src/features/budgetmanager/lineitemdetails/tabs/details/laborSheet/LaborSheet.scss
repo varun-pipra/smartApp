@@ -9,4 +9,7 @@
         margin: 10px 0;
         height: 100%;
     }
+    .MuiDialog-container .MuiPaper-root .MuiDialogTitle-root {
+        grid-template-columns: 3fr 0fr 1fr !important;
+    }
 }

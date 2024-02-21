@@ -485,6 +485,7 @@ const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 const HeaderContent = memo((props: any) => {
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const { changeRequestDetails } = useAppSelector(state => state.changeEventRequest);
+	const { connectors } = useAppSelector((state) => state.gridData);
 
 	const [stateObject, setStateObject] = useState<any>({});
 
@@ -496,8 +497,18 @@ const HeaderContent = memo((props: any) => {
 	return <div className='kpi-section'>
 		<div className='kpi-vertical-container'>
 			<div className='lid-details-container'>
-				<span className='budgetid-label grey-font'>Change Order ID:</span>
-				<span className='grey-fontt'>{changeRequestDetails?.code || ''}</span>
+				{/* <span className='budgetid-label grey-font'>Change Order ID:</span>
+				<span className='grey-fontt'>{changeRequestDetails?.code || ''}</span> */}
+				<span className='budgetid-label grey-font'>Change Order ID:</span>		
+					<span className='changevent-content'>
+						<span className='grey-fontt'>{changeRequestDetails?.code || ''}</span>
+							{connectors?.length ? <img
+								className="sapnumber"
+								src={connectors?.[0]?.primaryIconUrl}
+								alt="connector Image"
+							/> : ''}
+							{connectors?.length ? <span className='sapnumber'>{changeRequestDetails?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+				</span>
 				<span className='budgetid-label grey-font'>Status:</span>
 				<span className='status-pill' style={{ backgroundColor: stateObject?.lightColor, color: stateObject?.bgColor }}>
 					<span className={`status ${stateObject?.icon}`}></span>{stateObject?.text}

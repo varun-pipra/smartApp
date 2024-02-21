@@ -6,7 +6,6 @@ import {
   workTeamGridData,
 } from "data/timelog/TimeLogData";
 import { TimeLogRequest } from "../utils";
-
 const moduleName = "Time Log Requests:";
 
 // Grid Apis
@@ -25,15 +24,14 @@ export const addTimeLog = async (payload: any, callback: any) => {
 	}
 };
 
-export const fetchTimeLog = async () => {
+export const fetchTimeLog = async (payload:any) => {
   const server: any = getServerInfo();
+  const body = {"offset": 0,"rows": 10000 ,...payload};
+  console.log('body',body);
   const options = {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      "offset": 0,
-      "rows": 10000,
-    }),
+    body: JSON.stringify(body),
   };
   const isMock = window.location.href?.includes('t=1');
   const isMReal = window.location.href?.includes('t=2');
@@ -59,7 +57,7 @@ export const fetchTimeLogDetails = async (timeLogId: any) => {
     else {
       const response = await TimeLogRequest(server, `/segments/${timeLogId}`, {});
       if(isMReal) {
-        const mockRecord = timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
+        const mockRecord:any = timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
         console.log("mockRecord", mockRecord)
         return mockRecord ? mockRecord : response;
       }
@@ -115,4 +113,30 @@ export const deleteTimeLogData = async (timeLogId: any, callback: any) =>{
       const response = await TimeLogRequest(server, `/segments/${timeLogId}`, options, true);
       callback && callback(response);
     }
+}
+
+export const acceptTimeLog = async (payload:any, callback:any) => {
+  const server:any = getServerInfo();
+  const options = {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload),
+  };
+  if(!isLocalhost) {
+      const response = await TimeLogRequest(server, '/segments/accept', options);
+      callback && callback(response);
+    }
+}
+
+export const sendBackTimeLog = async (payload:any, callback: any) =>{
+  const server: any = getServerInfo();
+  const options = {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(payload),
+  };
+  if (!isLocalhost) {
+    const response = await TimeLogRequest(server, `/segments/sendback`, options, true);
+    callback && callback(response);
+  }
 }

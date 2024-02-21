@@ -62,6 +62,6 @@ export const blockchain = createSlice({
 	}
 });
 
-export const {setShowBlockchainDialog} = blockchain.actions;
+export const { setShowBlockchainDialog } = blockchain.actions;
 
 export default blockchain.reducer;

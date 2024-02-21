@@ -1,0 +1,45 @@
+.reserve-staff-container {
+    padding: 10px;
+    width: 100%;
+    &_text {
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    &_content {
+        margin: 14px 0px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        div {
+            display:flex;
+            align-items:center;
+            justify-items:center; 
+            align-content:center; 
+            width : 50%;
+            margin-bottom: 8px;
+        }
+        img {
+            width: 24px; 
+            height: 24px; 
+            padding: 1px;
+        }
+        span {
+            font-size: 14px;
+            color: #059cdf;
+        }
+    }
+    &_projects {
+        margin: 14px 0px;
+    }
+    &_dates {
+        display: flex;
+        gap : 1em;
+        justify-content: space-between;
+        align-items: center;
+        margin: 14px 0px;
+
+    }
+}

@@ -13,7 +13,7 @@ export interface VendorContractsGridProps {
 	activeMainGridGroupKey: any;
 	activeMainGridFilters: any;
 	vendorsList: any;
-	activeMainGridDefaultFilters:any;
+	activeMainGridDefaultFilters: any;
 	mainGridSearchText: any;
 };
 
@@ -24,10 +24,10 @@ const initialState: VendorContractsGridProps = {
 	budgetItems: [],
 	selectedRows: [],
 	liveData: {},
-	activeMainGridGroupKey: null,
+	activeMainGridGroupKey: 'None',
 	activeMainGridFilters: {},
 	vendorsList: [],
-	activeMainGridDefaultFilters:{},
+	activeMainGridDefaultFilters: {},
 	mainGridSearchText: '',
 };
 

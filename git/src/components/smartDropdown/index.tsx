@@ -190,8 +190,6 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 	const showFilterPopup = Boolean(filterPopupEl);
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [open, setOpen] = React.useState(false);
-	console.log("oprionsssss", options);
-
 
 	React.useEffect(() => {
 		if (!useNestedOptions && options && Array.isArray(options) && options?.length > 0 && !ignoreSorting) {
@@ -1222,6 +1220,17 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 											/>
 										)
 									}
+									{option?.img ? (
+										<img
+											src={option.img ? option.img : ""}
+											style={{
+												width: "24px",
+												height: "24px",
+												borderRadius: "50%",
+												marginRight: "10px",
+											}}
+										/>
+									) : null}
 									<span className="sd-label-cell-cls">
 										{option.label}
 									</span>

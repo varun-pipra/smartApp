@@ -12,27 +12,34 @@ import {
 import {
 	getTableViewType, setShowTableViewType
 } from 'features/budgetmanager/operations/tableColumnsSlice';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import SUIAlert from 'sui-components/Alert/Alert';
 import { statusFilterOptions } from 'utilities/bid/enums';
+import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { postMessage } from 'app/utils';
 import { AssessmentOutlined, Gavel, GridOn, TableRows } from '@mui/icons-material';
 import { Box, Button, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 import React from 'react';
+import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
+import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
 import _ from "lodash";
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
 import { blockchainAction } from 'app/common/blockchain/BlockchainAPI';
 import { doBlockchainAction, moduleType, setShowBlockchainDialog, blockchainStates } from 'app/common/blockchain/BlockchainSlice';
+import SapButton from 'sui-components/SAPButton/SAPButton';
 
 const BidManagerToolbar = (props: any) => {
+	const modName = 'bidmanager';
 	const dispatch = useAppDispatch();
 	const tableViewType = useAppSelector(getTableViewType);
 	const {
 		gridData, selectedRows, activeMainGridFilters,
-		activeMainGridDefaultFilters, activeCompaniesList
+		activeMainGridDefaultFilters, activeCompaniesList, activeMainGridGroupKey
 	} = useAppSelector((state) => state.bidManagerGrid);
+	const { connectors } = useAppSelector((state) => state.gridData);
 	const { selectedRecord } = useAppSelector((state) => state.bidManager);
 	const { blockchainEnabled } = useAppSelector((state) => state.blockchain);
 
@@ -42,6 +49,10 @@ const BidManagerToolbar = (props: any) => {
 	const [disablePause, setDisablePause] = useState<boolean>(true);
 	const [disableCancel, setDisableCancel] = useState<boolean>(true);
 	const [disablePostBid, setDisablePostBid] = useState<boolean>(true);
+	const [groupValue, setGroupValue] = useState<any>();
+
+	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
+
 	const [alert, setAlert] = useState<any>({
 		open: false,
 		contentText: '',
@@ -139,6 +150,7 @@ const BidManagerToolbar = (props: any) => {
 			},
 		},
 	];
+
 	const [filters, setFilters] = React.useState<any>(filterOptions);
 
 	useEffect(() => {
@@ -160,6 +172,11 @@ const BidManagerToolbar = (props: any) => {
 	useEffect(() => {
 		setToggleChecked(blockchainEnabled);
 	}, [blockchainEnabled]);
+
+	useMemo(() => {
+		if (activeMainGridGroupKey == 'None') { setGroupValue('undefined'); }
+		else { setGroupValue(activeMainGridGroupKey) }
+	}, [activeMainGridGroupKey]);
 
 	const handleDelete = () => {
 		setAlert({
@@ -227,11 +244,50 @@ const BidManagerToolbar = (props: any) => {
 			dispatch(setShowTableViewType(value));
 		}
 	};
+
+	const handleDropDown = (value: any, data: any) => {
+		if (value === "save") {
+			saveViewHandler(data);
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Saved Successfully` }));
+		}
+		else if (value === "delete") {
+			DeleteViewHandler();
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Deleted Successfully` }));
+		}
+	}
+	const saveNewViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(activeMainGridFilters);
+		const payload = { ...value, viewFor: modName, filters: FilterValue ? FilterValue : '{}', groups: activeMainGridGroupKey ? [activeMainGridGroupKey] : ['None'] };
+		console.log('payload', payload);
+		addNewView(appInfo, payload, modName, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'BidManager' }));
+			dispatch(fetchGridData(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+	const saveViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(activeMainGridFilters);
+		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: activeMainGridGroupKey ? [activeMainGridGroupKey] : ['None'] };
+		console.log('payload', payload);
+		updateViewItem(appInfo, viewData.viewId, payload, (response: any) => {
+			dispatch(fetchGridData(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+	const DeleteViewHandler = () => {
+		deleteView(appInfo, viewData.viewId, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'BidManager' }));
+		});
+	}
+
 	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setToggleChecked(event.target.checked);
 		dispatch(doBlockchainAction({ enable: event.target.checked, typeString: 'BidManager' }));
 	};
 
+	const viewListOnChange = (data: any) => {
+		dispatch(fetchGridData(appInfo));
+	}
 	const PrintOnclick = (event: any) => {
 		postMessage({
 			event: 'openitemlevelreport',
@@ -305,12 +361,17 @@ const BidManagerToolbar = (props: any) => {
 		</div>
 		<div key="toolbar-search" className="toolbar-item-wrapper search-wrapper">
 			<IQSearch
-				placeholder={'Search'}
+				placeholder={viewData && viewData?.viewName}
 				groups={groupOptions}
 				filters={filters}
 				filterHeader=''
+				defaultGroups={groupValue}
 				defaultFilters={activeMainGridDefaultFilters}
-				onGroupChange={(selectedVal: any) => dispatch(setActiveMainGridGroupKey(selectedVal))}
+				onGroupChange={(selectedVal: any) => {
+					const data = selectedVal == null || selectedVal == 'undefined' ? 'None' : selectedVal;
+					dispatch(setActiveMainGridGroupKey(data));
+				}
+				}
 				onSearchChange={(text: string) => dispatch(setMainGridSearchText(text))}
 				onFilterChange={(filters: any) => {
 					if (filters) {
@@ -325,7 +386,22 @@ const BidManagerToolbar = (props: any) => {
 						};
 					};
 				}}
+				viewBuilderapplied={true}
 			/>
+			<ViewBuilder
+				moduleName={modName}
+				appInfo={appInfo}
+				dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
+				griddata={viewData?.columnsForLayout}
+				viewData={viewData}
+				saveView={(data: any) => { saveViewHandler(data) }}
+				deleteView={() => { DeleteViewHandler() }}
+				saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
+				viewList={viewBuilderData}
+				requiredColumns={['name', 'status']}
+				viewListOnChange={(data: any) => { viewListOnChange(data) }}
+			/>
+
 			{/* <Stack direction={'row'} >
 				<IconMenu
 					menuProps={{
@@ -370,6 +446,7 @@ const BidManagerToolbar = (props: any) => {
 		</div>
 		<div key='spacer' className='toolbar-item-wrapper toolbar-group-button-wrapper'>
 			{<ReportAndAnalyticsToggle />}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}

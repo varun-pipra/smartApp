@@ -23,7 +23,7 @@ const initialState: BidResponseManagerGridProps = {
 	selectedRows: [],
 	liveData: {},
 	activeMainGridFilters: {},
-	activeMainGridGroupKey: null,
+	activeMainGridGroupKey: 'None',
 	activeMainGridDefaultFilters: {},
 	mainGridSearchText: '',
 	searchText: undefined,

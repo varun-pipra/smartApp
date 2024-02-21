@@ -27,6 +27,7 @@ import {
 import {setAdditionalFiles, setStandardFiles, setContractFilesCount, getStandardFiles} from './stores/tabs/contractfiles/CCContractFilesTabSlice';
 import {isUserGCForCC} from './utils';
 import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
+import { getClientContractsList } from './stores/gridSlice';
 
 const ClientContractsWindow = () => {
 	const dispatch = useAppDispatch();
@@ -133,6 +134,10 @@ const ClientContractsWindow = () => {
 							case 'updatechildparticipants':
 								// console.log('updatechildparticipants', data)
 								dispatch(setPresenceData(data.data));
+								break;
+							case "frame-active":
+								console.log("frame-active", data);
+								data?.data?.name == "clientcontracts" && dispatch(getClientContractsList(appInfo));
 								break;
 						}
 					}

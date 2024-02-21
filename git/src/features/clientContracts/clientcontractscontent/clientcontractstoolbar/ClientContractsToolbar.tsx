@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
 	Box, Stack, IconButton, ToggleButton,
 	ToggleButtonGroup,
@@ -13,7 +13,7 @@ import { postMessage } from 'app/utils';
 import './ClientContractsToolbar.scss';
 import DeleteIcon from 'resources/images/common/Delete.svg';
 
-import {getServer, getAppWindowMaximize, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/appInfoSlice';
+import { getServer, getAppWindowMaximize, getShowSettingsPanel, setShowSettingsPanel } from 'app/common/appInfoSlice';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import IconMenu from 'components/iqsearchfield/iqiconbuttonmenu/IQIconButtonMenu';
 import IQSearch from "components/iqsearchfield/IQSearchField";
@@ -26,45 +26,55 @@ import Block from 'resources/images/bidManager/Block.svg';
 import EyeIcon from "resources/images/common/Eye.svg";
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import ExportIcon from "resources/images/common/Export.svg";
-import {deleteBidPackages} from 'features/bidmanager/stores/gridAPI';
+import { deleteBidPackages } from 'features/bidmanager/stores/gridAPI';
 import SUIAlert from 'sui-components/Alert/Alert';
 import GridIcon from "resources/images/common/Grid.svg";
-import {getClientContractsList, setActiveMainGridDefaultFilters, setActiveMainGridFilters, setActiveMainGridGroupKey, setGridData, setMainGridSearchText} from "../../stores/gridSlice";
-import {isUserGC} from 'utilities/commonutills';
-import {setShowTableViewType, getTableViewType} from 'features/budgetmanager/operations/tableColumnsSlice';
-import {deleteClientContract} from 'features/clientContracts/stores/gridAPI';
-import {getClientCompanies, setToastMessage, setSelectedRecord} from 'features/clientContracts/stores/ClientContractsSlice';
-import {vendorContractsResponseStatusFilterOptions, vendorContractsStatusFilterOptions} from 'utilities/vendorContracts/enums';
-import {isUserGCForCC} from 'features/clientContracts/utils';
-import {activateClientContract, lockAndPostContract} from '../../stores/CCButtonActionsAPI';
+import { getClientContractsList, setActiveMainGridDefaultFilters, setActiveMainGridFilters, setActiveMainGridGroupKey, setGridData, setMainGridSearchText } from "../../stores/gridSlice";
+import { isUserGC } from 'utilities/commonutills';
+import { setShowTableViewType, getTableViewType } from 'features/budgetmanager/operations/tableColumnsSlice';
+import { deleteClientContract } from 'features/clientContracts/stores/gridAPI';
+import { getClientCompanies, setToastMessage, setSelectedRecord } from 'features/clientContracts/stores/ClientContractsSlice';
+import { vendorContractsResponseStatusFilterOptions, vendorContractsStatusFilterOptions } from 'utilities/vendorContracts/enums';
+import { isUserGCForCC } from 'features/clientContracts/utils';
+import { activateClientContract, lockAndPostContract } from '../../stores/CCButtonActionsAPI';
 import _ from "lodash";
-import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
-import {List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/material';
+import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
+import { List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import IQToggle from 'components/iqtoggle/IQToggle';
 import {moduleType, blockchainStates, setShowBlockchainDialog, doBlockchainAction} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
+import SapButton from 'sui-components/SAPButton/SAPButton';
 
+
+import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
+import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
+import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 
 const ClientContractsToolbar = (props: any) => {
+	const modName = 'clientcontract';
 	const dispatch = useAppDispatch();
 	const tableViewType = useAppSelector(getTableViewType);
 	// const { selectedRows } = useAppSelector((state) => state.cCGrid);
-	const {loginUserData, selectedRecord, companiesData} = useAppSelector((state) => state.clientContracts);
-	const {gridData, gridOriginalData, selectedRows, clientsList, activeMainGridDefaultFilters, activeMainGridFilters} = useAppSelector((state) => state.cCGrid);
+	const { loginUserData, selectedRecord, companiesData } = useAppSelector((state) => state.clientContracts)
+	const { gridData, gridOriginalData, selectedRows, clientsList, activeMainGridDefaultFilters, activeMainGridGroupKey, activeMainGridFilters } = useAppSelector((state) => state.cCGrid);
 	const appInfo = useAppSelector(getServer);
+	const { connectors } = useAppSelector((state) => state.gridData);
 	const [disableDelete, setDisableDelete] = React.useState<boolean>(true);
 	const [disablePrint, setDisablePrint] = React.useState<boolean>(true);
 	const [disableSubmitContract, setDisableSubmitContract] = React.useState<boolean>(true);
-	const [alert, setAlert] = React.useState<any>({show: false, message: '', type: ''});
+	const [alert, setAlert] = React.useState<any>({ show: false, message: '', type: '' });
 	const [disablePostContract, setDisablePostContract] = React.useState<boolean>(true);
+	const [groupValue, setGroupValue] = useState<any>();
+	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
 
-	const {blockchainEnabled} = useAppSelector((state) => state.blockchain);
+	const { blockchainEnabled } = useAppSelector((state) => state.blockchain);
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const groupOptions = [
-		{text: "Client Company", value: "client.name"},
-		{text: appInfo && isUserGCForCC(appInfo) ? "Status" : 'Response Status', value: "status"},
+		{ text: "Client Company", value: "client.name" },
+		{ text: appInfo && isUserGCForCC(appInfo) ? "Status" : 'Response Status', value: "status" },
 	];
 
 	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);	
@@ -99,9 +109,9 @@ const ClientContractsToolbar = (props: any) => {
 			children: {
 				type: "checkbox",
 				items: [
-					{text: 'Percent Complete', id: 'PercentComplete', key: 'PercentComplete', value: 'PercentComplete', },
-					{text: 'Dollar Amount', id: 'DollarAmount', key: 'DollarAmount', value: 'DollarAmount', },
-					{text: 'Pay When Paid', id: 'ThroughDate', key: 'ThroughDate', value: 'ThroughDate', },
+					{ text: 'Percent Complete', id: 'PercentComplete', key: 'PercentComplete', value: 'PercentComplete', },
+					{ text: 'Dollar Amount', id: 'DollarAmount', key: 'DollarAmount', value: 'DollarAmount', },
+					{ text: 'Pay When Paid', id: 'ThroughDate', key: 'ThroughDate', value: 'ThroughDate', },
 				],
 			},
 		},
@@ -133,13 +143,18 @@ const ClientContractsToolbar = (props: any) => {
 		setToggleChecked(blockchainEnabled);
 	}, [blockchainEnabled]);
 
+	useMemo(() => {
+		if (activeMainGridGroupKey == 'None') { setGroupValue('undefined'); }
+		else { setGroupValue(activeMainGridGroupKey) }
+	}, [activeMainGridGroupKey]);
+
 	const handleListChanges = (val: string) => {
-		if(val == 'yes') {
+		if (val == 'yes') {
 			const selectedRowIds = selectedRows.map((row: any) => row.id);
-			if(alert.type == 'Delete') {
+			if (alert.type == 'Delete') {
 				deleteClientContract(appInfo, selectedRowIds[0], (response: any) => {
 					dispatch(getClientContractsList(appInfo));
-					dispatch(setToastMessage({displayToast: true, message: `The Selected Record Deleted Successfully`}));
+					dispatch(setToastMessage({ displayToast: true, message: `The Selected Record Deleted Successfully` }));
 					setDisableDelete(true);
 				});
 			}
@@ -154,15 +169,15 @@ const ClientContractsToolbar = (props: any) => {
 					else dispatch(setToastMessage({displayToast: true, message: `The Selected Contract became Active Successfully.`}));
 				});
 			}
-			setAlert({show: false, type: '', message: ''});
+			setAlert({ show: false, type: '', message: '' });
 		}
 		else {
-			setAlert({show: false, type: '', message: ''});
+			setAlert({ show: false, type: '', message: '' });
 		}
 	};
 
 	const handleOnSearchChange = (searchText: string) => {
-		if(gridOriginalData !== undefined && searchText !== ' ') {
+		if (gridOriginalData !== undefined && searchText !== ' ') {
 			const firstResult = gridOriginalData.filter((obj: any) => {
 				return JSON.stringify(obj).toLowerCase().includes(searchText);
 			});
@@ -173,7 +188,7 @@ const ClientContractsToolbar = (props: any) => {
 		}
 	};
 	const handleView = (event: React.MouseEvent<HTMLElement>, value: string) => {
-		if(value !== null) {
+		if (value !== null) {
 			dispatch(setShowTableViewType(value));
 		}
 	};
@@ -185,8 +200,45 @@ const ClientContractsToolbar = (props: any) => {
 				<span>Are you sure you want to Lock & Post the Contract?</span> <br /><br /><br />
 				<span>By doing so, the contract will become Active immediately and the Client will be able to see the contract Active.</span>
 			</div>
+		})
+	}
+
+
+	const handleDropDown = (value: any, data: any) => {
+		if (value === "save") {
+			saveViewHandler(data);
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Saved Successfully` }));
+		}
+		else if (value === "delete") {
+			DeleteViewHandler();
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Deleted Successfully` }));
+		}
+	}
+	const saveNewViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(activeMainGridFilters);
+		const payload = { ...value, viewFor: modName, filters: FilterValue ? FilterValue : '{}', groups: activeMainGridGroupKey ? [activeMainGridGroupKey] : ['None'] };
+		console.log('payload', payload);
+		addNewView(appInfo, payload, modName, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'ClientContract' }));
+			dispatch(getClientContractsList(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
 		});
-	};
+	}
+	const saveViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(activeMainGridFilters);
+		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: activeMainGridGroupKey ? [activeMainGridGroupKey] : ['None'] };
+		console.log('payload', payload);
+		updateViewItem(appInfo, viewData.viewId, payload, (response: any) => {
+			dispatch(getClientContractsList(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+	const DeleteViewHandler = () => {
+		deleteView(appInfo, viewData.viewId, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'ClientContract' }));
+		});
+	}
+
 
 	const handleToggleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setToggleChecked(event.target.checked);
@@ -205,6 +257,12 @@ const ClientContractsToolbar = (props: any) => {
 			}
 		});
 	};
+
+	const viewListOnChange = (data: any) => {
+		console.log('get')
+		dispatch(getClientContractsList(appInfo));
+	}
+
 	return <Stack direction='row' className='toolbar-root-container-client-contracts'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -251,7 +309,7 @@ const ClientContractsToolbar = (props: any) => {
 					<IconButton
 						aria-label='Delete Vendor Contract Item'
 						disabled={disableDelete}
-						onClick={() => {handleDelete();}}
+						onClick={() => { handleDelete(); }}
 					>
 						<span className="common-icon-delete"></span>
 					</IconButton>
@@ -274,83 +332,47 @@ const ClientContractsToolbar = (props: any) => {
 		<div key="toolbar-search" className="toolbar-item-wrapper search-wrapper">
 			<IQSearch
 				groups={isUserGCForCC(appInfo) ? groupOptions : [groupOptions[1]]}
-				placeholder={'Search'}
+				placeholder={viewData && viewData?.viewName}
 				filters={isUserGCForCC(appInfo) ? filters : [filterOptions[1]]}
 				onSearchChange={(text: string) => dispatch(setMainGridSearchText(text))}
 				filterHeader=''
 				defaultFilters={activeMainGridDefaultFilters}
-				// onViewFilterChange={handleViewFilter}
-				onGroupChange={(selectedVal: any) => {dispatch(setActiveMainGridGroupKey(selectedVal));}}
-				// onSearchChange={searchHandler}
+				defaultGroups={groupValue}
+				viewBuilderapplied={true}
+				onGroupChange={(selectedVal: any) => { dispatch(setActiveMainGridGroupKey(selectedVal)); }}
 				onFilterChange={(filters: any) => {
-					if(filters) {
+					console.log('onchange', activeMainGridFilters)
+					if (filters) {
 						let filterObj = filters;
+						console.log('filterObj', filterObj)
 						Object.keys(filterObj).filter((item) => {
-							if(filterObj[item]?.length === 0) {
+							if (filterObj[item]?.length === 0) {
 								delete filterObj[item];
 							};
 						});
-						if(!_.isEqual(activeMainGridFilters, filterObj)) {
+						if (!_.isEqual(activeMainGridFilters, filterObj)) {
 							dispatch(setActiveMainGridFilters(filterObj));
 						};
 					};
 				}}
 			/>
-			{/* <Stack direction={'row'} >
-				<IconMenu
-					// options={getViewFilters()}
-					// defaultValue={group.name ? { [group.name]: true } : {}}
-					// onChange={handleSettings}
-					menuProps={{
-						open: true,
-						// header: (props.groupHeader || 'Group By'),
-						placement: 'bottom-start',
-						sx: {
-							width: '170px', lineheight: '1.5', fontSize: '18px !important',
-							'& .css-1jxx3va-MuiTypography-root': {
-								fontSize: '0.96rem !important',
-								color: '#333 !important'
-							}
-						}
-					}}
-					buttonProps={{
-						className: 'preview-button',
-						startIcon: <Stack component='img' alt='Views' src={EyeIcon} className='preview-button' sx={{ color: 'rgb(108 108 108)', marginLeft: '10px' }} />,
-						// endIcon: <KeyboardArrowDown className="group-menu-icon" />,
-						"aria-label": "Group menu",
-						disableRipple: true
-					}}
-				/>
-			</Stack>
-			<Stack direction={'row'} >
-				<IconMenu
-					// options={viewBuilderData}
-					// defaultValue={group.name ? { [group.name]: true } : {}}
-					// onChange={handleViewClick}
-					menuProps={{
-						open: true,
-						// header: (props.groupHeader || 'Group By'),
-						placement: 'bottom-start',
-						sx: {
-							width: '220px', lineheight: '1.5', fontSize: '18px !important',
-							'& .css-1jxx3va-MuiTypography-root': {
-								fontSize: '0.96rem !important',
-								color: '#333 !important'
-							}
-						}
-					}}
-					buttonProps={{
-						className: 'preview-button',
-						startIcon: <Stack component='img' alt='Views' src={GridIcon} className='preview-button' sx={{ color: 'rgb(108 108 108)', marginLeft: '10px' }} />,
-						// endIcon: <KeyboardArrowDown className="group-menu-icon" />,
-						"aria-label": "Group menu",
-						disableRipple: true
-					}}
-				/></Stack> */}
-			{/* <Box component='img' alt='New View' src={GridIcon} className='preview-button' sx={{ color: 'rgb(108 108 108)', marginLeft: '10px' }}/> */}
+			<ViewBuilder
+				moduleName={modName}
+				appInfo={appInfo}
+				dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
+				griddata={viewData?.columnsForLayout}
+				viewData={viewData}
+				saveView={(data: any) => { saveViewHandler(data) }}
+				deleteView={() => { DeleteViewHandler() }}
+				saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
+				viewList={viewBuilderData}
+				requiredColumns={['title', 'status']}
+				viewListOnChange={(data: any) => { viewListOnChange(data) }}
+			/>
 		</div>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 			{<ReportAndAnalyticsToggle />}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}
@@ -407,7 +429,7 @@ const ClientContractsToolbar = (props: any) => {
 				open={false}
 			>
 				<Box>
-					<Stack direction="row" sx={{justifyContent: "end", height: "5em"}}>
+					<Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
 						<IconButton className="Close-btn" aria-label="Close Right Pane"
 							onClick={() => dispatch(setShowSettingsPanel(false))}
 						>
@@ -435,24 +457,26 @@ const ClientContractsToolbar = (props: any) => {
 										<IQToggle
 											checked={toggleChecked}
 											switchLabels={['ON', 'OFF']}
-											onChange={(e) => {handleToggleChange(e);}}
+											onChange={(e) => { handleToggleChange(e); }}
 											edge={'end'}
 										/>
 									</ListItemIcon>
-								</ListItem>}
-							</List>
-						</Stack>
-					</Stack>
-				</Box>
-			</SUIDrawer>
+								</ListItem >}
+							</List >
+						</Stack >
+					</Stack >
+				</Box >
+			</SUIDrawer >
 			: null}
-		{alert?.show && <SUIAlert
-			open={alert?.show}
-			contentText={<span>{alert?.message}</span>}
-			title={'Confirmation'}
-			onAction={(e: any, type: string) => handleListChanges(type)}
-		/>}
-	</Stack>;
+		{
+			alert?.show && <SUIAlert
+				open={alert?.show}
+				contentText={<span>{alert?.message}</span>}
+				title={'Confirmation'}
+				onAction={(e: any, type: string) => handleListChanges(type)}
+			/>
+		}
+	</Stack >;
 };
 
 export default ClientContractsToolbar;

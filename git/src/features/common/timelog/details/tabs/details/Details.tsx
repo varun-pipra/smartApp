@@ -25,7 +25,7 @@ const details = (props: any) => {
 	const thumbnail = "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/a1ec16cd64194fb8a28a3c58e4f9d8de";
 
 	const [details, setDetails] = useState<any>({})
-	const { selectedTimeLogDetails,DetailspayloadSave } = useAppSelector(state => state.timeLogRequest);
+	const { selectedTimeLogDetails,DetailspayloadSave,smartItemOptionSelected } = useAppSelector(state => state.timeLogRequest);
 	const { sbsGridData, appsList } = useAppSelector((state) => state.sbsManager);
 	const { levels = [], locations = [] } = useAppSelector(state => state.location);
 	var tinycolor = require('tinycolor2');
@@ -36,14 +36,16 @@ const details = (props: any) => {
 	const [locationValue, setlocationValue] = useState<any>('');
 	const [timeadded, setTimeAdded] = useState<any>('');
 	let statusbasedDisable = ['0','2'];
+
 	useMemo(() => {
 		const addLinksOptionsCopy = AppList(appsList);
 		setTimeAddedOptions(addLinksOptionsCopy);
 	}, [appsList]);
 
 	useEffect(() => {
+		console.log('getSBSGridList',sbsGridData)
 		const options = sbsGridData?.map((item: any) => {
-			return { ...item, label: item?.name, value: item?.id }
+			return { id : item?.uniqueid, label: item?.name, value: item?.uniqueid }
 		})
 		setSbsOptions([...options]);
 	}, [sbsGridData]);
@@ -56,19 +58,9 @@ const details = (props: any) => {
 			stage: selectedTimeLogDetails?.smartItem?.stage ?  selectedTimeLogDetails?.smartItem?.stage  : 'N/A',
 		}
 		setDetails({ ...details, ...data })
+		selectedTimeLogDetails?.locations ? setdefaultlocation([selectedTimeLogDetails?.locations]) : null;
 	}, [selectedTimeLogDetails])
 
-	useEffect(() => {
-		const levelVal =
-			locationType ??
-			(selectedTimeLogDetails.locations && selectedTimeLogDetails.locations.length > 0
-				? (selectedTimeLogDetails.locations[0].levelId || selectedTimeLogDetails.locations[0].id)
-				: levels.length > 0
-					? levels[levels.length - 1]?.levelId
-					: undefined);
-		setlocationValue(levelVal);
-		dispatch(setDetailsPayloadSave({...DetailspayloadSave,['locationType'] : levelVal}))
-	}, [selectedTimeLogDetails?.locations, levels, locationType]);
 
 
 	useEffect(() => {
@@ -78,6 +70,9 @@ const details = (props: any) => {
 	}, [locationType]);
 
 	const handleFieldChange = (value: any, name: any) => {
+		console.log('value',value);
+		console.log('name',name);
+
 		let data;
 		const startDate_data = name == 'startDate' ? value : details.startDate;
 		const startTime_data = name == 'startTime' ? value : getTime(details.startTime); 
@@ -92,23 +87,37 @@ const details = (props: any) => {
 			const endTime = addTimeToDate(enddate_data,endTime_data);
 			data = { ...details, ['endTime']: endTime ,['endDate']: value};
 		}
+		else if(name == 'sbs'){
+			data = { ...details, [name] : {id : value}}
+		}
 		else{
 			data = { ...details, [name]: value };
 		}
+		console.log('data',data)
 		setDetails(data);
 		const payload:any = {
 			startTime:data?.startTime,
 			endTime : data?.endTime,
 			status : data?.status,
-			smartItemId : data?.smartItem?.id,
-			notes:data?.notes,
-			locationId:data?.locations,
-			sbsId:details?.sbs,
-			sbsPhaseId:details?.sbsPhase?.[0]['id'],
+			smartItemId : data?.smartItem?.smartAppId,
+			notes: data?.notes,
+			sbsId: data?.sbs?.id,
+			sbsPhaseId:details?.sbsPhase ? details?.sbsPhase?.id : '',
 		}
 		dispatch(setDetailsPayloadSave(payload))
 	}
 	
+	useEffect(() => {
+		const levelVal =
+			locationType ??
+			(selectedTimeLogDetails.locations && selectedTimeLogDetails.locations.length > 0
+				? (selectedTimeLogDetails.locations[0].levelId || selectedTimeLogDetails.locations[0].id)
+				: levels.length > 0
+					? levels[levels.length - 1]?.levelId
+					: undefined);
+		setlocationValue(levelVal);
+		dispatch(setDetailsPayloadSave({...DetailspayloadSave,['locationId'] : levelVal}))
+	}, [selectedTimeLogDetails?.locations, levels, locationType]);
 
 	const handleLocationChange = (newValues: any) => {
 		const locations: any = [];
@@ -116,13 +125,25 @@ const details = (props: any) => {
 			!locations?.map((a: any) => a?.id)?.includes(obj?.id) && locations.push(obj);
 		});
 		setdefaultlocation(locations);
-		dispatch(setDetailsPayloadSave({...DetailspayloadSave,['defaultLocation'] : locations}))
+		
+		dispatch(setDetailsPayloadSave({...DetailspayloadSave,['location'] : locations}))
 	};
+
+	useMemo(() => {
+	
+		if(!_.isEmpty(smartItemOptionSelected) ){
+			console.log('smartItemOptionSelected',smartItemOptionSelected)
+			console.log('AppList',AppList)
+			const duplicate = [{...smartItemOptionSelected}]
+			const addLinksOptionsCopy = AppList([...appsList,...duplicate]);
+			setTimeAddedOptions(addLinksOptionsCopy);
+			setTimeAdded(smartItemOptionSelected?.name);
+			dispatch(setDetailsPayloadSave({...DetailspayloadSave,['smartItemId'] : smartItemOptionSelected?.id}))
+		}
+	}, [smartItemOptionSelected]);
 
 	const handleMenu = (e: any) => {
 		AppList_PostMessage(e)
-		setTimeAdded(e?.displayField);
-		//setDetails({ ...details, 'timeadded': e?.displayField ,'thumbnail' :e?.icon})
 	};
 
 	return (
@@ -354,9 +375,9 @@ const details = (props: any) => {
 								isSearchField={false}
 								isFullWidth
 								Placeholder={'Select'}
-								selectedValue={details?.sbs}
+								selectedValue={[details?.sbs?.id]}
 								isMultiple={false}
-								handleChange={(value: any) => handleFieldChange(value, 'sbs')}
+								handleChange={(value: any) => handleFieldChange(value[0], 'sbs')}
 							/>
 						</div>
 					</span>
@@ -387,7 +408,7 @@ const details = (props: any) => {
 								placeholder='Enter Phase'
 								name='name'
 								variant="standard"
-								value={details?.sbsPhase !== null && details?.sbsPhase?.[0]['name']}
+								value={details?.sbsPhase !== null && details?.sbsPhase?.name}
 								onChange={(e: any) => handleFieldChange(e.target?.value, 'sbsPhase')}
 								disabled={true}
 							//onBlur={(e: any) => handleOnBlur('name')}
@@ -409,7 +430,7 @@ const details = (props: any) => {
 							<SmartDropDown
 								options={
 									levels?.map((level: any) => {
-										return { label: level.name, value: level.levelId };
+										return { label: level?.name, value: level?.levelId };
 									}) || []
 								}
 								required={false}

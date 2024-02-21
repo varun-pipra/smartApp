@@ -35,7 +35,7 @@ export const appInfoData: any = {
 			globalId: "2de492c1-cf1f-49a5-8c1f-bfad6b16234c",
 			id: 533587,
 			lastName: "MK",
-			projectZonePermissions: {19234786: 'Bid Response Manager', 192347861: 'Bid Manager', 192347862: 'Budget Manager', 19234789: 'Vendor Contract Manager', 19234790: 'Vendor Pay Manager', 0: 'Vendor Change Event Manager'},
+			projectZonePermissions: {19234786: 'Bid Response Manager', 192347861: 'Bid Manager', 192347862: 'Budget Manager', 19234789: 'Vendor Contract Manager', 19234790: 'Vendor Pay Manager', 0: 'Vendor Change Event Manager', 123: 'Can Manage Time for this Project'},
 			// Sub Contract Pay Manager
 			role: {id: 531948, value: 'Consultant'},
 			roles: {531948: 'Consultant', 531950: 'GC/CM/PCM', 531970: 'Supervisor'},

@@ -68,6 +68,7 @@ const SSBrenaWindow = (props: any) => {
           onClose={() => handleClose(refData?.current)}
           brenaLogo={BrenaSubmittals}
           isBrenaOpen={SSBrenaOpen}
+          withInModule={true}
         ></IQBrenaWindow>
 
         <SmartSubmitalDailog

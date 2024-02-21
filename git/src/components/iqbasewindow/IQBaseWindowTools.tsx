@@ -39,8 +39,6 @@ export const WindowTools = ({ maximized, appType, appInfo, iFrameId, setOpen, se
 			});
 		}
 	};
-	console.log("withInModule", tools)
-
 	return <>
 		{customTools || null}
 		{tools?.openInNewTab && <IQTooltip title='Open in new Tab' placement={'bottom'}>

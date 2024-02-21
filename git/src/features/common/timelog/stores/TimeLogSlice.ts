@@ -14,7 +14,8 @@ export interface TimeLogRequestState {
 	workTeamGridData: any;
 	splitTimeSegmentBtn: boolean;
 	TimeLogGridList:any;
-	DetailspayloadSave:any
+	DetailspayloadSave:any;
+	smartItemOptionSelected:any;
 };
 const initialState: TimeLogRequestState = {
 	loading: false,
@@ -28,6 +29,7 @@ const initialState: TimeLogRequestState = {
 	splitTimeSegmentBtn : false,
 	TimeLogGridList: [],
 	DetailspayloadSave:{},
+	smartItemOptionSelected:{}
 }
 
 
@@ -49,9 +51,9 @@ export const getWorkTeamGridData = createAsyncThunk<any>(
 	}
 );
 
-export const getTimeLogList = createAsyncThunk<any>('TimeLogList',
-	async () => {
-		const response = await fetchTimeLog();
+export const getTimeLogList = createAsyncThunk<any,any>('TimeLogList',
+	async (payload = {}) => {
+		const response = await fetchTimeLog(payload);
 		const modifiedResp = response?.map((obj:any) => {
 			return {
 				...obj,
@@ -116,6 +118,10 @@ export const timeLogRequest = createSlice({
 		setDetailsPayloadSave: (state, action: PayloadAction<boolean>) => {
 			state.DetailspayloadSave = action.payload;
 		},
+		setSmartItemOptionSelected:(state,action:PayloadAction<any>)=>{
+			console.log('action',action)
+			state.smartItemOptionSelected = action.payload;
+		}
 	},
 	extraReducers: (builder) => {
 		builder
@@ -164,5 +170,5 @@ export const timeLogRequest = createSlice({
 	},
 });
 
-export const { setSelectedTimeLogDetails,setSelectedRowData,setSourceList, setToast, setAccess, setSplitTimeSegmentBtn,setDetailsPayloadSave } = timeLogRequest.actions;
+export const { setSelectedTimeLogDetails,setSelectedRowData,setSourceList, setToast, setAccess, setSplitTimeSegmentBtn,setDetailsPayloadSave,setSmartItemOptionSelected } = timeLogRequest.actions;
 export default timeLogRequest.reducer;

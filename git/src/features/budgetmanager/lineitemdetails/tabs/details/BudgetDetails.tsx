@@ -243,10 +243,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 			setFormData({ ...formData, 'division': costCodeTuple[0], 'costCode': costCodeTuple[1] });
 		}
 		else if (name === 'providerSource') {
-			setAlert({ show: true, key: 'providerSource', type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner?'}` });
+			setAlert({ show: true, key: 'providerSource', type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner'}?` });
 
 		} else if (name === 'isBillable') {
-			setAlert({ show: true, key: 'isBillable', type: 'Confirmation', msg: `Are you sure you want to update the Billable in Client Contract from ${formData?.isBillable  ? 'Billable' : 'Non-Billable'} to ${value ? 'Billable' : 'Non-Billable?'}` });
+			setAlert({ show: true, key: 'isBillable', type: 'Confirmation', msg: `Are you sure you want to update the Billable in Client Contract from ${formData?.isBillable  ? 'Billable' : 'Non-Billable'} to ${value ? 'Billable' : 'Non-Billable'}?` });
 
 		} else if (name === 'sbsPhaseId') {
 			setFormData({ ...formData, [name]: value?.id, sbsPhaseName: value?.name });

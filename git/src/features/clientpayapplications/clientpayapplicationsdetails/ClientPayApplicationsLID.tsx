@@ -21,17 +21,35 @@ var tinycolor = require('tinycolor2');
 
 const HeaderContent = (props: any) => {
 	const {currencySymbol} = useAppSelector((state) => state.appInfo);
+	const { connectors } = useAppSelector((state) => state.gridData);
+	const clientPayAppLineItem: any = useAppSelector(getSelectedRecord);
 	return (
 		<>
 			<div className='kpi-section'>
 				<div className='kpi-vertical-container'>
 					<div className='lid-details-container'>
-						<span className='budgetid-label grey-font'>Status:</span>
+						{/* <span className='budgetid-label grey-font'>Status:</span>
 						<span className='status-pill' style={{backgroundColor: vendorPayAppsPaymentStatusColors[props?.headerData?.status], color: tinycolor(vendorPayAppsPaymentStatusColors[props?.headerData?.status]).isDark() ? 'white' : 'black', }}>
 							<span className={vendorPayAppsPaymentStatusIcons[props?.headerData?.status]} />
 							{vendorPayAppsPaymentStatus[props?.headerData?.status]}
 						</span>
-						<span className='last-modified-label grey-font'>Last Modified:</span>{props?.headerData?.modifiedOn ? stringToUSDateTime2(props?.headerData?.modifiedOn) : ''} by {props?.headerData?.modifiedBy?.displayName}<span className='grey-fontt'> </span>
+						<span className='last-modified-label grey-font'>Last Modified:</span>{props?.headerData?.modifiedOn ? stringToUSDateTime2(props?.headerData?.modifiedOn) : ''} by {props?.headerData?.modifiedBy?.displayName}<span className='grey-fontt'> </span> */}
+						<span className='budgetid-label grey-font'>Status:</span>
+							<span className='bid-content'>
+								<span className='status-pill' style={{backgroundColor: vendorPayAppsPaymentStatusColors[props?.headerData?.status], color: tinycolor(vendorPayAppsPaymentStatusColors[props?.headerData?.status]).isDark() ? 'white' : 'black', }}>
+									<span className={vendorPayAppsPaymentStatusIcons[props?.headerData?.status]} />
+									{vendorPayAppsPaymentStatus[props?.headerData?.status]}
+								</span> 
+								<span className='sap'>
+									{connectors?.length ? <img
+											className="sapnumber"
+											src={connectors?.[0]?.primaryIconUrl}
+											alt="connector Image"
+										/> : ''}
+										{connectors?.length ? <span className='sapnumber'>{clientPayAppLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+								</span>
+							</span>
+							<span className='last-modified-label grey-font'>Last Modified:</span>{props?.headerData?.modifiedOn ? stringToUSDateTime2(props?.headerData?.modifiedOn) : ''} by {props?.headerData?.modifiedBy?.displayName}<span className='grey-fontt'> </span>
 					</div>
 					<span className='kpi-right-container'>
 						<span className='kpi-name' >Total Payout Amount  <span className='bold'>{currencySymbol}</span></span>

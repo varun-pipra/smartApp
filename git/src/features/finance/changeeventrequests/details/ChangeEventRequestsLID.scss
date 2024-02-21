@@ -122,6 +122,24 @@
                     font-family: Roboto-Regular !important;
                 }
             }
+            .changevent-content{
+                display: flex;
+                gap:10px;
+                img.sapnumber {
+                    height: 1.5rem;
+                    object-fit: contain;
+                    margin-top: -3px;
+                }
+                .sapnumber{
+                    color:#059cdf;
+                    &.common-icon-sap-logo:before {
+                        color: #3198f2 !important;
+                        background: -webkit-linear-gradient(#00AEEF, #0097DC, #007CC5, #006CB8, #0066B3);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                    }
+                }
+            }
             .kpi-right-container {
                 display: grid;
                 gap: 0.5em;

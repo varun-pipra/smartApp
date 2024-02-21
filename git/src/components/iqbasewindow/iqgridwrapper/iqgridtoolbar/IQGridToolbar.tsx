@@ -1,7 +1,7 @@
-import {Stack, StackProps} from '@mui/material';
+import { Stack, StackProps } from '@mui/material';
 import isEmpty from 'lodash/isEmpty';
 import merge from 'lodash/merge';
-import React, {memo, useEffect, useState} from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import './IQGridToolbar.scss';
 
@@ -22,17 +22,20 @@ interface IQSearchComponentProps {
 	defaultSearchText?: any;
 	defaultGroups?: any;
 	headerStatusFilters?: any;
+	placeholder?:any;
 	showNone?:boolean;
+	viewBuilderapplied?:boolean;
 };
 
 export type IQGridToolbarProps = StackProps & {
 	searchComponent?: IQSearchComponentProps;
+	viewBuilder?: React.ReactNode;
 	leftItems?: React.ReactNode;
 	rightItems?: React.ReactNode;
 };
 
 // Component definition
-const IQGridToolbar = ({className, leftItems, rightItems, searchComponent, ...stackProps}: IQGridToolbarProps) => {
+const IQGridToolbar = ({ className, leftItems, rightItems, searchComponent, viewBuilder, ...stackProps }: IQGridToolbarProps) => {
 	// Local variable declaration
 
 
@@ -57,6 +60,7 @@ const IQGridToolbar = ({className, leftItems, rightItems, searchComponent, ...st
 			{leftItems}
 		</div>
 		{searchComponent?.show ? <div className='toolbar-item-wrapper search-wrapper'>
+		<>
 			{searchComponent?.type === 'regular' ? <IQSearch
 				searchText={searchComponent?.searchText}
 				groups={searchComponent?.groupOptions}
@@ -69,7 +73,9 @@ const IQGridToolbar = ({className, leftItems, rightItems, searchComponent, ...st
 				defaultGroups={searchComponent?.defaultGroups}
 				defaultSearchText={searchComponent?.defaultSearchText}
 				headerStatusFilters={searchComponent?.headerStatusFilters}
+				placeholder={searchComponent?.placeholder}
 				showNone={searchComponent?.showNone}
+				viewBuilderapplied={searchComponent?.viewBuilderapplied}
 			/> : undefined}
 			{searchComponent?.type === 'viewBuilder' ? <IQSearch
 				groups={searchComponent?.groupOptions}
@@ -81,7 +87,11 @@ const IQGridToolbar = ({className, leftItems, rightItems, searchComponent, ...st
 				defaultFilters={searchComponent?.defaultFilters}
 				defaultGroups={searchComponent?.defaultGroups}
 				defaultSearchText={searchComponent?.defaultSearchText}
+				placeholder={searchComponent?.placeholder}
+				viewBuilderapplied={searchComponent?.viewBuilderapplied}
 			/> : undefined}
+			{viewBuilder}
+		</>	
 		</div> : ''}
 		<div className='toolbar-item-wrapper toolbar-group-button-wrapper'>
 			{rightItems}

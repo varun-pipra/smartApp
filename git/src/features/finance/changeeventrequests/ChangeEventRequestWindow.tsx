@@ -1,6 +1,6 @@
 import './ChangeEventRequestWindow.scss';
 
-import { setCurrencySymbol, setServer } from 'app/common/appInfoSlice';
+import { setCurrencySymbol, setServer, getServer } from 'app/common/appInfoSlice';
 import { isChangeEventClient, isChangeEventGC, isChangeEventSC } from 'app/common/userLoginUtils';
 import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
 import { currency, isLocalhost, postMessage } from 'app/utils';
@@ -23,16 +23,21 @@ import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmana
 import { AgGridReact } from 'ag-grid-react';
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import SUIAlert from 'sui-components/Alert/Alert';
+import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
+import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
+import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
+import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
 
 let defaultCERStatusFilter: any = [];
 
 const ChangeEventRequestsWindow = (props: any) => {
 	const dispatch = useAppDispatch();
-
+	const modName = 'changeevent';
 	// Local mock
 	const [localhost] = useState(isLocalhost);
 	const [appData] = useState(appInfoData);
-
+	const appInfo = useAppSelector(getServer);
 	const location = useLocation();
 	const { toast, sourceList } = useAppSelector((state) => state.changeEventRequest);
 	const { server, currencySymbol } = useAppSelector((state) => state.appInfo);
@@ -46,11 +51,13 @@ const ChangeEventRequestsWindow = (props: any) => {
 	const [search, setSearch] = useState<string>('');
 	const [defaultFilters, setDefaultFilters] = useState<any>({});
 	const groupKeyValue = useRef<any>(null);
-	const [activeGroupKey, setActiveGroupKey] = useState<String>('');
+	const [activeGroupKey, setActiveGroupKey] = useState<String>('None');
 
 	let gridRef = useRef<AgGridReact>();
 	let contractFilter: any = {};
 	sourceList.map((el: any) => contractFilter[el.clientContract?.id] = el.clientContract?.title);
+	const [viewBuilderData, setViewBuilderData] = useState<any>({ viewName: "", viewId: "" });
+	const [colDef, setColDef] = useState<any>([]);
 
 	if (statusFilter) defaultCERStatusFilter = filters.status;
 
@@ -111,6 +118,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 	useEffect(() => {
 		if (server) {
 			dispatch(getChangeEventList());
+			dispatch(fetchConnectors(server));
 		}
 	}, [server]);
 
@@ -154,6 +162,10 @@ const ChangeEventRequestsWindow = (props: any) => {
 								// console.log('updatechildparticipants', data)
 								// dispatch(setPresenceData(data.data));
 								break;
+							case "frame-active":
+								console.log("frame-active", data);
+								data?.data?.name == "changeevents" && dispatch(getChangeEventList());
+								break;
 						}
 					}
 				};
@@ -167,24 +179,14 @@ const ChangeEventRequestsWindow = (props: any) => {
 	}, [localhost, appData]);
 
 	const onGroupingChange = (groupKey: any) => {
-		// const columnsCopy = [...columns];
-		setActiveGroupKey(groupKey);
-		// console.log("activeMainGridGroupKey", groupKey, columnsCopy);
-		if (((groupKey ?? false) && groupKey !== "")) {
-			groupKeyValue.current = groupKey;
-			// columnsCopy.forEach((col: any) => {
-			// 	col.rowGroup = groupKey ? groupKey === col.field : false;
-			// 	setColumns(columnsCopy);
-			// });
-		} else if (groupKey ?? true) {
+		const data = groupKey == null || groupKey == 'undefined' ? 'None' : groupKey;
+		if (((data ?? false) && data !== "")) {
+			groupKeyValue.current = data;
+		} else if (data ?? true) {
 			groupKeyValue.current = null;
-			// columnsCopy.forEach((col: any) => {
-			// 	// console.log("status", col?.rowGroup);
-			// 	col.rowGroup = false;
-			// });
-			// console.log("else group key", columnsCopy);
-			// setColumns(columnsCopy);
 		}
+		console.log('groupKey', data)
+		setActiveGroupKey(data);
 	};
 
 	const GroupRowInnerRenderer = (props: any) => {
@@ -230,7 +232,9 @@ const ChangeEventRequestsWindow = (props: any) => {
 		};
 	}, []);
 
+
 	const onFilterChange = (activeFilters: any, type?: string) => {
+		console.log('onFilterChange', activeFilters)
 		setFilters(activeFilters);
 	};
 
@@ -239,6 +243,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 	};
 
 	const searchAndFilter = (list: any) => {
+		console.log('filters', filters)
 		return list.filter((item: any) => {
 			const regex = new RegExp(search, 'gi');
 			return (!search || (search && (item.name?.match(regex) || (fundingSourceMap[item.fundingSource]).match(regex) ||
@@ -299,127 +304,129 @@ const ChangeEventRequestsWindow = (props: any) => {
 	 */
 	const modifiedList = searchAndFilter(sourceList);
 
-	const columns = useMemo(() => [{
-		headerName: 'Name',
-		pinned: 'left',
-		field: 'name',
-		sort: 'asc',
-		checkboxSelection: true,
-		headerCheckboxSelection: true,
-		width: 100,
-		comparator: (valueA: any, valueB: any) => valueA?.toLowerCase().localeCompare(valueB?.toLowerCase()),
-		cellRenderer: (params: any) => {
-			return <div className='blue-color ellipsis mouse-pointer'>
-				{params?.data?.name}
-			</div>;
-		}
-	}, {
-		headerName: 'Status',
-		pinned: 'left',
-		field: 'status',
-		minWidth: 270,
-		rowGroup: activeGroupKey === 'status',
-		cellClass: 'status-column',
-		sortable: true,
-		headerClass: 'custom-filter-header',
-		headerComponent: CustomFilterHeader,
-		headerComponentParams: {
-			columnName: 'Status',
-			options: statusFilterOptions,
-			defaultFilters: defaultCERStatusFilter,
-			onSort: handleStatusColumnSort,
-			onOpen: () => setStatusFilter(false),
-			onClose: () => setStatusFilter(true),
-			onFilter: handleStatusFilter
-		},
-		cellRenderer: (params: any) => {
-			const stateObject: any = stateMap[params?.value];
-			return <div
-				className='status'
-				style={{
-					color: stateObject?.color,
-					backgroundColor: stateObject?.bgColor
-				}}
-			>
-				<span className={`status-icon ${stateObject?.icon}`}></span> {stateObject?.text}{' '}
-			</div>;
-		}
-	}, {
-		headerName: 'Change Event ID',
-		field: 'code',
-		minWidth: 150,
-		suppressMenu: true
-	},
-	{
-		headerName: 'Change Event Quote Amount',
-		field: 'quoteAmount',
-		minWidth: 230,
-		suppressMenu: true,
-		hide: !isChangeEventSC(),
-		cellRenderer: (params: any) => {
-			const estimatedQuoteAmount = params.value && amountFormatWithSymbol(params.value);
-			return <div className='right-align'>{estimatedQuoteAmount}</div>;
-		}
-	},
-	{
-		headerName: 'Funding Resource',
-		field: 'fundingSource',
-		minWidth: 160,
-		rowGroup: activeGroupKey === 'fundingSource',
-		hide: isChangeEventSC(),
-		suppressMenu: true,
-		cellRenderer: (context: any) => {
-			return fundingSourceMap[context.value];
-		}
-	}, {
-		headerName: 'Est. Change Event Amount',
-		field: 'estimatedAmount',
-		minWidth: 210,
-		hide: isChangeEventSC(),
-		suppressMenu: true,
-		cellRenderer: (params: any) => {
-			const estimatedCEAmount = params.value && amountFormatWithSymbol(params.value);
-			return <div className='right-align'>{estimatedCEAmount}</div>;
-		}
-	}, {
-		headerName: 'Client Company',
-		field: 'clientContract.client.name',
-		minWidth: 160,
-		hide: isChangeEventSC(),
-		suppressMenu: true
-	}, {
-		headerName: 'Contract',
-		field: isChangeEventSC() ? 'vendorContracts' : 'clientContract.title',
-		minWidth: 220,
-		suppressMenu: true,
-		rowGroup: activeGroupKey === (isChangeEventSC() ? 'vendorContract.title' : 'clientContract.title'),
-		cellRenderer: (params: any) => {
-			const contract = !isChangeEventSC() ? params.value
-				: getVendorContractName(params.value);
-			return <div>{contract}</div>;
-		}
-	}, {
-		headerName: 'Work Items',
-		field: 'budgetItems',
-		type: 'showCount',
-		minWidth: 300,
-		suppressMenu: true,
-		valueGetter: (params: any) => {
-			if (params.data?.budgetItems?.length) {
-				const values: any = [];
-				params?.data?.budgetItems?.map((obj: any) => {
-					if (obj?.name && obj?.costCode) values.push(`${obj?.name} - ${obj?.costCode}`);
-				});
-				return values;
+	const columns = useMemo(() => [
+		{
+			headerName: 'Name',
+			pinned: 'left',
+			field: 'name',
+			sort: 'asc',
+			checkboxSelection: true,
+			headerCheckboxSelection: true,
+			width: 100,
+			comparator: (valueA: any, valueB: any) => valueA?.toLowerCase().localeCompare(valueB?.toLowerCase()),
+			cellRenderer: (params: any) => {
+				return <div className='blue-color ellipsis mouse-pointer'>
+					{params?.data?.name}
+				</div>;
 			}
-			return '';
+		}, {
+			headerName: 'Status',
+			pinned: 'left',
+			field: 'status',
+			minWidth: 270,
+			rowGroup: activeGroupKey === 'status',
+			cellClass: 'status-column',
+			sortable: true,
+			headerClass: 'custom-filter-header',
+			headerComponent: CustomFilterHeader,
+			headerComponentParams: {
+				columnName: 'Status',
+				options: statusFilterOptions,
+				defaultFilters: defaultCERStatusFilter,
+				onSort: handleStatusColumnSort,
+				onOpen: () => setStatusFilter(false),
+				onClose: () => setStatusFilter(true),
+				onFilter: handleStatusFilter
+			},
+			cellRenderer: (params: any) => {
+				const stateObject: any = stateMap[params?.value];
+				return <div
+					className='status'
+					style={{
+						color: stateObject?.color,
+						backgroundColor: stateObject?.bgColor
+					}}
+				>
+					<span className={`status-icon ${stateObject?.icon}`}></span> {stateObject?.text}{' '}
+				</div>;
+			}
+		}, {
+			headerName: 'Change Event ID',
+			field: 'code',
+			minWidth: 150,
+			suppressMenu: true
+		},
+		{
+			headerName: 'Change Event Quote Amount',
+			field: 'quoteAmount',
+			minWidth: 230,
+			suppressMenu: true,
+			hide: !isChangeEventSC(),
+			cellRenderer: (params: any) => {
+				const estimatedQuoteAmount = params.value && amountFormatWithSymbol(params.value);
+				return <div className='right-align'>{estimatedQuoteAmount}</div>;
+			}
+		},
+		{
+			headerName: 'Funding Resource',
+			field: 'fundingSource',
+			minWidth: 160,
+			rowGroup: activeGroupKey === 'fundingSource',
+			hide: isChangeEventSC(),
+			suppressMenu: true,
+			cellRenderer: (context: any) => {
+				return fundingSourceMap[context.value];
+			}
+		}, {
+			headerName: 'Est. Change Event Amount',
+			field: 'estimatedAmount',
+			minWidth: 210,
+			hide: isChangeEventSC(),
+			suppressMenu: true,
+			cellRenderer: (params: any) => {
+				const estimatedCEAmount = params.value && amountFormatWithSymbol(params.value);
+				return <div className='right-align'>{estimatedCEAmount}</div>;
+			}
+		}, {
+			headerName: 'Client Company',
+			field: 'clientContract.client.name',
+			minWidth: 160,
+			hide: isChangeEventSC(),
+			suppressMenu: true
+		}, {
+			headerName: 'Contract',
+			field: isChangeEventSC() ? 'vendorContracts' : 'clientContract.title',
+			minWidth: 220,
+			suppressMenu: true,
+			rowGroup: activeGroupKey === (isChangeEventSC() ? 'vendorContract.title' : 'clientContract.title'),
+			cellRenderer: (params: any) => {
+				const contract = !isChangeEventSC() ? params.value
+					: getVendorContractName(params.value);
+				return <div>{contract}</div>;
+			}
+		}, {
+			headerName: 'Work Items',
+			field: 'budgetItems',
+			type: 'showCount',
+			minWidth: 300,
+			suppressMenu: true,
+			valueGetter: (params: any) => {
+				if (params.data?.budgetItems?.length) {
+					const values: any = [];
+					params?.data?.budgetItems?.map((obj: any) => {
+						if (obj?.name && obj?.costCode) values.push(`${obj?.name} - ${obj?.costCode}`);
+					});
+					return values;
+				}
+				return '';
+			}
+		}, {
+			headerName: 'Submitted Date',
+			field: 'submitted.on',
+			suppressMenu: true,
+			valueGetter: (params: any) => params.data?.submitted ? formatDate(params.data?.submitted?.on) : ''
 		}
-	}, {
-		headerName: 'Submitted Date',
-		field: 'submitted.on',
-		suppressMenu: true,
-		valueGetter: (params: any) => params.data?.submitted ? formatDate(params.data?.submitted?.on) : ''
-	}], [defaultCERStatusFilter, server, groupKeyValue.current]);
+	], [defaultCERStatusFilter, server, activeGroupKey]);
 
 	const filterOptions = useMemo(() => [
 		{
@@ -479,6 +486,98 @@ const ChangeEventRequestsWindow = (props: any) => {
 	const handleIconClick = () => {
 		if (isInline) useHomeNavigation('changeEventRequestIframe', 'ChangeEventRequests');
 	};
+
+	const handleDropDown = (value: any, data: any) => {
+		if (value === "save") {
+			saveViewHandler(data);
+			setToastMessage(`${viewBuilderData?.viewName} Saved Successfully`);
+		}
+		else if (value === "delete") {
+			DeleteViewHandler();
+			setToastMessage(`${viewBuilderData?.viewName} Deleted Successfully`);
+		}
+	}
+
+	const saveNewViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(filters);
+		const payload = { ...value, viewFor: modName, filters: filters ? FilterValue : '{}', groups: activeGroupKey ? [activeGroupKey] : ['None'] };
+		console.log('payload', payload);
+		addNewView(appInfo, payload, modName, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'ChangeEvent' }));
+			dispatch(getChangeEventList());
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+		});
+	}
+	const saveViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(filters);
+		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: activeGroupKey ? [activeGroupKey] : ['None'] };
+		console.log('payload', payload);
+		updateViewItem(appInfo, viewBuilderData?.viewId, payload, (response: any) => {
+			dispatch(getChangeEventList());
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+		});
+	}
+	const DeleteViewHandler = () => {
+		deleteView(appInfo, viewBuilderData?.viewId, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'ChangeEvent' }));
+		});
+	}
+	useEffect(() => {
+		//Appending viewbuilder data to grid 
+		if (viewBuilderData?.columnsForLayout?.length) {
+			let updatedColumndDefList: any = [];
+			const gridApi = gridRef.current;
+			if (gridApi) {
+				let updatedColumndDefList: any = [];
+				console.log('viewBuilderData?.columnsForLayout', viewBuilderData?.columnsForLayout);
+				viewBuilderData?.columnsForLayout.forEach((viewItem: any) => {
+					columns?.forEach((cDef: any) => {
+						if (viewItem.field == cDef.field) {
+							let newColumnDef = {
+								...cDef,
+								...viewItem,
+								hide: viewItem?.hide
+							};
+							updatedColumndDefList.push(newColumnDef);
+						}
+					});
+				});
+				setColDef([...updatedColumndDefList])
+				gridApi?.api?.setColumnDefs(updatedColumndDefList);
+			}
+		}
+	}, [viewBuilderData]);
+
+	useMemo(() => {
+		if (viewBuilderData != '') {
+			console.log('viewBuilderData', viewBuilderData)
+			viewBuilderData?.groups && setActiveGroupKey(viewBuilderData?.groups[0] == 'None' ? 'undefined' : viewBuilderData?.groups[0]);
+			viewBuilderData?.filters && setFilters(JSON.parse(viewBuilderData?.filters));
+			viewBuilderData?.filters && setDefaultFilters(JSON.parse(viewBuilderData?.filters));
+		}
+	}, [viewBuilderData?.viewId])
+
+	useMemo(() => {
+		// if grouping value is changed and colDef array as a data.
+		// modifing the coldef array, object value rowGroup true or false based on activeMainGridGroupKey
+		if (activeGroupKey && colDef) {
+			const data = colDef?.length > 0 && colDef?.map((item: any) => {
+				if (item.field === activeGroupKey) {
+					return { ...item, rowGroup: true };
+				} else if (item.rowGroup) {
+					return { ...item, rowGroup: false };
+				}
+				return item;
+			});
+			setColDef(data);
+		}
+	}, [activeGroupKey])
+
+	const viewListOnChange = (data: any) => {
+		setViewBuilderData(data);
+		dispatch(getChangeEventList());
+	}
+
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
@@ -552,15 +651,30 @@ const ChangeEventRequestsWindow = (props: any) => {
 							show: true,
 							type: 'regular',
 							defaultFilters: defaultFilters,
+							defaultGroups: activeGroupKey,
 							groupOptions: isChangeEventSC() ? scGroupOptions : gcGroupOptions,
 							filterOptions: filterOptions,
 							onGroupChange: onGroupingChange,
 							onSearchChange: onGridSearch,
-							onFilterChange: onFilterChange
-						}
+							onFilterChange: (value: any) => { onFilterChange(value) },
+							placeholder: viewBuilderData?.viewName,
+							viewBuilderapplied: true,
+						},
+						viewBuilder: <ViewBuilder
+							moduleName={modName}
+							appInfo={appInfo}
+							dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
+							saveView={(data: any) => { saveViewHandler(data) }}
+							deleteView={() => { DeleteViewHandler() }}
+							saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
+							dataList={(data: any) => { setViewBuilderData(data) }}
+							viewListOnChange={(data: any) => { viewListOnChange(data) }}
+							requiredColumns={['name', 'status']}
+						/>
 					},
 					grid: {
-						headers: columns,
+						// headers: columns,
+						headers: colDef && colDef.length > 0 ? colDef : columns,
 						data: modifiedList,
 						getRowId: (params: any) => params.data?.id,
 						grouped: true,

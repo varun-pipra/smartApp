@@ -5,7 +5,7 @@
 }
 
 .hideshow {
-    color: #5b5b5b !important;
+    color: #333 !important;
     font-weight: 500 !important;
     font-family: "Roboto-Regular";
     font-size: 11pt;
@@ -23,18 +23,18 @@
         font-weight: bold;
     }
     .saveView_button_vb {
-        height: 39px;
+        height: 38px;
     }
     .saveViewAs_button_vb {
         border: 1px solid #059cdf !important;
         background-color: #f2f2f2 !important;
-        height: 39px;
+        height: 38px;
         color: #0590cd;
     }
     .deleteView_button_vb {
         border: 1px solid #eb1d0e !important;
         background-color: #f2f2f2 !important;
-        height: 39px;
+        height: 38px;
         color: #eb1d0e;
     }
     &.ag-header-cell-label {

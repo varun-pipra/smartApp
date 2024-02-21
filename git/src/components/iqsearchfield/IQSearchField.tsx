@@ -45,11 +45,13 @@ export interface IQSearchFieldProps {
 	showSearchField?:boolean;
 	addKeysToFilters?: boolean;
 	showNone?:boolean;
+	viewBuilderapplied?:boolean
 };
 
 const IQSearchField = (props: IQSearchFieldProps) => {
 	const {showNone = true, showGroups = true, showFilter = true, onFilterMenuClose = () => { }, defaultFilters, defaultSearchText = "", defaultGroups = "", headerStatusFilters,
-	isShowDropdown = false, dropDownListExtraColumns = [], dropdownValues, filterAllowSubMenu = true, isSearchPlaceHolder = 'Search', onSelectionChange = () => { }, showExtraColumns = true, showSearchField = false, addKeysToFilters = false, ...rest
+	isShowDropdown = false, dropDownListExtraColumns = [], dropdownValues, filterAllowSubMenu = true, isSearchPlaceHolder = 'Search', onSelectionChange = () => { }, showExtraColumns = true, 
+	showSearchField = false, addKeysToFilters = false,viewBuilderapplied = false, ...rest
 	} = props;
 	const [filters, setFilters] = useState<any>({});
 	const [group, setGroup] = useState({ name: '' });
@@ -78,8 +80,9 @@ const IQSearchField = (props: IQSearchFieldProps) => {
 		};
 	}, []);
 	React.useEffect(() => {
-		if (defaultGroups !== "") {
-			setGroup({ name: defaultGroups });
+		if (defaultGroups !== "" ) {
+			const data = { name: defaultGroups == 'undefined' ? '': defaultGroups }
+			setGroup(data);
 		};
 	}, [defaultGroups]);
 	const updateFilters = (filterEl: any, text: any) => {
@@ -155,7 +158,10 @@ const IQSearchField = (props: IQSearchFieldProps) => {
 	}, [search]);
 
 	useEffect(() => {
-		const text = (grouped || filtered) ? `${grouped ? 'Grouping ' : ''}${(grouped && filtered) ? '& ' : ''}${filtered ? 'Filter ' : ''}Applied` : (props.placeholder || 'Search');
+		const text = viewBuilderapplied ? (props.placeholder || 'Search') 
+										: (grouped || filtered) ? 
+												`${grouped ? 'Grouping ' : ''}${(grouped && filtered) ? '& ' : ''}${filtered ? 'Filter ' : ''} Applied` 
+												: (props.placeholder || 'Search');
 		setPlaceholder(text);
 	}, [grouped, filtered]);
 

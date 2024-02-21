@@ -29,19 +29,21 @@ const SMReferenceFiles = (props: any) => {
   const [specBookPagesData, setSpecBookPagesData] = useState("");
   const [smRefPUId, setSmRefPUId] = useState();
 
-  const debounceOnSearch = useCallback(
-    _.debounce((search,pageId) => {
-      setSearch(search);
-      if (search.length) {
-        handelSearchChange(search,pageId);
-      } else {
-        console.log(specRefMarkups, "markupsByPageForBidResp");
-        sketchPageinfo?.callback(specRefMarkups || {});
-      }
-    }, 2000),
-    [search]
-  );
+  useEffect(() => {
+    if (search.length) {
+      handelSearchChange(search, smRefPUId);
+    } else {
+      console.log(specRefMarkups, "markupsByPageForBidResp");
+      sketchPageinfo?.callback(specRefMarkups || {});
+    }
+  }, [search]);
 
+  const debounceOnSearch = useCallback(
+    _.debounce((search) => {
+      setSearch(search);      
+    }, 2000),
+    []
+  )
   useEffect(() => {
     if (selectedRec ?? false) {
       let payload = {
@@ -139,7 +141,7 @@ const SMReferenceFiles = (props: any) => {
           showGroups={false}
           showFilter={false}
           filterHeader=""
-          onSearchChange={(searchText: any) => debounceOnSearch(searchText,smRefPUId)}
+          onSearchChange={(searchText: any) => debounceOnSearch(searchText)}
         />
       </div>
       <IQBrenaDocViewer

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Stack, IconButton, Button } from '@mui/material';
 import { EastOutlined, KeyboardArrowLeft, KeyboardArrowRight, Gavel } from '@mui/icons-material';
 
@@ -27,21 +27,31 @@ import _ from "lodash";
 import { postMessage } from 'app/utils';
 import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 
+import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
+import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
+import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
+import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
+import SapButton from 'sui-components/SAPButton/SAPButton';
 const BidResponseManagerToolbar = (props: any) => {
+	const modName = 'bidresponse';
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const showRightPanel = useAppSelector(getShowLineItemDetails);
 	const [api, setApi] = useState<any>(props?.gridRef?.current?.api);
 	const { selectedRecord, selectedTabName, selectedNode } = useAppSelector((state) => state.bidResponseManager);
-	const { bidResponseData, selectedRows, activeMainGridDefaultFilters, activeMainGridFilters } = useAppSelector((state) => state.bidResponseManagerGrid);
+	const { bidResponseData, selectedRows, activeMainGridDefaultFilters, activeMainGridFilters, activeMainGridGroupKey } = useAppSelector((state) => state.bidResponseManagerGrid);
 	const { submitWait } = useAppSelector((state) => state.bidResponse);
-
+	const { connectors } = useAppSelector((state) => state.gridData);
+	const [groupValue, setGroupValue] = useState<any>();
 	const [showLeftButton, setShowLeftButton] = useState<boolean>(false);
 	const [showRightButton, setShowRightButton] = useState<boolean>(false);
 	const [disablePrint, setDisablePrint] = useState<boolean>(true);
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
 	const [declineBid, setDeclineBid] = useState<any>({ show: true, disable: false });
 	const [submitBid, setSubmitBid] = useState<any>({ show: false, disable: true });
+	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
+
+
 	const [alert, setAlert] = useState<any>({
 		open: false,
 		contentText: '',
@@ -114,6 +124,11 @@ const BidResponseManagerToolbar = (props: any) => {
 	useEffect(() => {
 		setApi(props?.gridRef?.current?.api);
 	}, [props?.gridRef]);
+
+	useMemo(() => {
+		if (activeMainGridGroupKey == 'None') { setGroupValue('undefined'); }
+		else { setGroupValue(activeMainGridGroupKey) }
+	}, [activeMainGridGroupKey]);
 
 	useEffect(() => {
 		setShowLeftButton(selectedNode?.firstChild ? true : false);
@@ -221,6 +236,46 @@ const BidResponseManagerToolbar = (props: any) => {
 		}
 		setAlert({ open: false });
 	};
+	const handleDropDown = (value: any, data: any) => {
+		if (value === "save") {
+			saveViewHandler(data);
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Saved Successfully` }));
+		}
+		else if (value === "delete") {
+			DeleteViewHandler();
+			dispatch(setToastMessage({ displayToast: true, message: `${viewData?.viewName} Deleted Successfully` }));
+		}
+	}
+	const saveNewViewHandler = (value: any) => {
+		const FilterValue = JSON.stringify(activeMainGridFilters);
+		const payload = { ...value, viewFor: modName, filters: FilterValue ? FilterValue : '{}', groups: activeMainGridGroupKey ? [activeMainGridGroupKey] : ['None'] };
+		console.log('payload', payload);
+		addNewView(appInfo, payload, modName, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'BidResponseManager' }));
+			dispatch(fetchBidResponseGridData(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+	const saveViewHandler = (value: any) => {
+		console.log('ssss', activeMainGridFilters)
+		const FilterValue = JSON.stringify(activeMainGridFilters);
+		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: activeMainGridGroupKey ? [activeMainGridGroupKey] : ['None'] };
+		console.log('payload', payload);
+		updateViewItem(appInfo, viewData.viewId, payload, (response: any) => {
+			dispatch(fetchBidResponseGridData(appInfo));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData.viewId }));
+		});
+	}
+	const DeleteViewHandler = () => {
+		deleteView(appInfo, viewData.viewId, (response: any) => {
+			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'BidResponseManager' }));
+		});
+	}
+	const viewListOnChange = (data: any) => {
+		console.log('get')
+		dispatch(fetchBidResponseGridData(appInfo));
+	}
+
 	const PrintOnclick = (event: any) => {
 		postMessage({
 			event: 'openitemlevelreport',
@@ -281,16 +336,18 @@ const BidResponseManagerToolbar = (props: any) => {
 			</div>
 			<div key='toolbar-search' className='toolbar-item-wrapper search-wrapper bid-response-search'>
 				<IQSearch
-					placeholder={'Search'}
+					placeholder={viewData && viewData?.viewName}
 					groups={groupOptions}
 					filters={filters}
 					onSearchChange={(text: string) => dispatch(setMainGridSearchText(text))}
 					filterHeader=''
 					defaultFilters={activeMainGridDefaultFilters}
-					// onSettingsChange={handleSettings}
-					// onViewFilterChange={handleViewFilter}
-					onGroupChange={(selectedVal: any) => { dispatch(setActiveMainGridGroupKey(selectedVal)); }}
-					// onSearchChange={searchHandler}
+					defaultGroups={groupValue}
+					onGroupChange={(selectedVal: any) => {
+						const data = selectedVal == null || selectedVal == 'undefined' ? 'None' : selectedVal;
+						dispatch(setActiveMainGridGroupKey(data));
+					}
+					}
 					onFilterChange={(filters: any) => {
 						if (filters) {
 							let filterObj = filters;
@@ -300,14 +357,30 @@ const BidResponseManagerToolbar = (props: any) => {
 								};
 							});
 							if (!_.isEqual(activeMainGridFilters, filterObj)) {
+								console.log('filterObj', filterObj)
 								dispatch(setActiveMainGridFilters(filterObj));
 							};
 						};
 					}}
+					viewBuilderapplied={true}
+				/>
+				<ViewBuilder
+					moduleName={modName}
+					appInfo={appInfo}
+					dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
+					griddata={viewData?.columnsForLayout}
+					viewData={viewData}
+					saveView={(data: any) => { saveViewHandler(data) }}
+					deleteView={() => { DeleteViewHandler() }}
+					saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
+					viewList={viewBuilderData}
+					requiredColumns={['name', 'responseStatus']}
+					viewListOnChange={(data: any) => { viewListOnChange(data) }}
 				/>
 			</div>
 			<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 				{<ReportAndAnalyticsToggle />}
+				{/* {connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>} */}
 			</div>
 			{showRightPanel && (
 				<SUIDrawer

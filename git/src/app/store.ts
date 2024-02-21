@@ -1,4 +1,4 @@
-import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit';
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import appInfoSlice from './common/appInfoSlice';
 import catalogReducer from 'features/toolsandequipment/operations/catalogSlice';
 import inventoryReducer from 'features/toolsandequipment/operations/inventorySlice';
@@ -20,7 +20,7 @@ import rightPanelSlice from 'features/budgetmanager/operations/rightPanelSlice';
 import vendorSlice from 'features/budgetmanager/operations/vendorInfoSlice';
 import settingsSlice from 'features/budgetmanager/operations/settingsSlice';
 import forecastSlice from 'features/budgetmanager/operations/forecastSlice';
-import viewBuilderSlice from 'features/budgetmanager/operations/viewBuilderSlice';
+import viewBuilderSlice from 'sui-components/ViewBuilder/Operations/viewBuilderSlice';
 
 import bidManagerSlice from 'features/bidmanager/stores/BidManagerSlice';
 import bidManagerGridSlice from 'features/bidmanager/stores/gridSlice';

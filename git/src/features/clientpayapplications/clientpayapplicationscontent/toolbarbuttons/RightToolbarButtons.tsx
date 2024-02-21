@@ -14,11 +14,13 @@ import IQToggle from 'components/iqtoggle/IQToggle';
 import {getServer, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/appInfoSlice';
 import {doBlockchainAction, moduleType} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
+import SapButton from 'sui-components/SAPButton/SAPButton';
 
 // Component definition
 const ClientPayAppToolbarRightButtons = () => {
 	const dispatch = useAppDispatch();
 	const tableViewType = useAppSelector(getTableViewType);
+	const { connectors } = useAppSelector((state) => state.gridData);
 
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
@@ -44,6 +46,7 @@ const ClientPayAppToolbarRightButtons = () => {
 	return <>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 			{<ReportAndAnalyticsToggle />}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}

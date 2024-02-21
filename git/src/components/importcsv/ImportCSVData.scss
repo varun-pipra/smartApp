@@ -1,20 +1,26 @@
+.SuiDialog {
+    .MuiDialog-container {
+        .MuiDialogContent-root {
+            padding: 10px 24px !important;
+        }
+        .MuiPaper-root .MuiDialogActions-root {
+            background: none !important;
+            height: 65px !important;
+            background: #f2f2f2 !important;
+            border-top: 1px solid #e8e6e6;
+        }
+    }
+}
 
-	.SuiDialog .MuiDialog-container .MuiDialogContent-root {
-		padding: 20px 24px !important;
-	}
-	.SuiDialog .MuiDialog-container .MuiPaper-root .MuiDialogActions-root {
-		background: none !important;
-		height:70px !important;
-	}
-	.main-container {
-		.browser_button{
-			 margin-left: -4px;
-			 border-radius: 0px;
-			 background:#1e8fd229;
-		}
-		.import-button {
-			margin-bottom: -50px;
-			margin-left: 330px;
-			align-items: flex-end;
-		}
-	}
+.main-container {
+    .browser_button {
+        margin-left: -4px;
+        border-radius: 0px;
+        background: #1e8fd229;
+    }
+    .import-button {
+        margin-bottom: -50px;
+        margin-left: 330px;
+        align-items: flex-end;
+    }
+}
