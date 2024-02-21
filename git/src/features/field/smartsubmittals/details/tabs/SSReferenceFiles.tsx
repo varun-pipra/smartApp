@@ -89,7 +89,7 @@ const SSReferenceFiles = (props: any) => {
         };
         dispatch(setSSRefMarkups(data))
         if (search.length) {
-					handelSearchChange(search , res[0]?.data?.pageUId);
+					handelSearchChange(search , res[0]?.data?.pageUId , data);
 				} else{
           sketchPageinfo.callback(data);
 				}
@@ -99,13 +99,16 @@ const SSReferenceFiles = (props: any) => {
       });
   };
 
-  const handelSearchChange =(searchText:any , pageId:any) =>{
+  const handelSearchChange =(searchText:any , pageId:any , updatedMData?:any) =>{
     console.log('udated markup data', sketchPageinfo);
     if(pageId && ssRightPanelData?.specBook?.id) {
       let params = `searchText=${searchText}&pageId=${pageId}&contentId=${ssRightPanelData?.specBook?.id}`
       getTextOccurences(params).then((resp:any)=>{
         console.log(modifyMarkupData(resp.data),ssRefMarkups , 'markupsByPageForBidResp')
-        let updatedRes = [...modifyMarkupData(resp.data) , ...ssRefMarkups.extractionAreas || []]
+        let updatedRes = [
+          ...modifyMarkupData(resp.data) , 
+          ...updatedMData?.extractionAreas || ssRefMarkups.extractionAreas || [],
+        ]
         let data = {
           "extractionAreas": updatedRes
         };

@@ -85,7 +85,7 @@ const SMReferenceFiles = (props: any) => {
         };
         dispatch(setSpecRefMarkups(data));
         if (search.length) {
-          handelSearchChange(search,res[0]?.data?.pageUId);
+          handelSearchChange(search,res[0]?.data?.pageUId , data);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -95,7 +95,7 @@ const SMReferenceFiles = (props: any) => {
       });
   };
 
-  const handelSearchChange = (searchText:any,pageId:any) => {
+  const handelSearchChange = (searchText:any,pageId:any,updatedMData?:any) => {
     console.log("selectedRecsData", selectedRecsData, selectedRec);
     if (
       (pageId && selectedRecsData?.[0]?.data?.specBook?.id) ||
@@ -112,7 +112,7 @@ const SMReferenceFiles = (props: any) => {
         );
         let updatedRes = [
           ...modifyMarkupData(resp.data),
-          ...specRefMarkups?.extractionAreas || [],
+          ...updatedMData?.extractionAreas || specRefMarkups.extractionAreas || [],
         ];
         let data = {
           extractionAreas: updatedRes,

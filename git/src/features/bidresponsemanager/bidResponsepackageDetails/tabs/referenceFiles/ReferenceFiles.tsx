@@ -59,7 +59,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         dispatch(setMarkupsByPageForBidResp(data));
         setBidRefernceagePUId(res[0]?.data?.pageUId);
         if (searchText.length) {
-          handelSearchChange(searchText, res[0]?.data?.pageUId);
+          handelSearchChange(searchText, res[0]?.data?.pageUId , data);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -205,7 +205,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
     }
   }, [searchText]);
 
-  const handelSearchChange = (search:any,pageId:any) => {
+  const handelSearchChange = (search:any,pageId:any, updatedMData?:any) => {
     console.log(sepcSelectedRecord, "sepcSelectedRecord");
     if (bidRefernceagePUId && sepcSelectedRecord?.specBookId) {
       let params = `searchText=${search}&pageId=${pageId}&contentId=${sepcSelectedRecord?.specBookId}`;
@@ -217,7 +217,7 @@ export const ReferenceFiles = ({ iFrameId, appType }: any) => {
         );
         let updatedRes = [
           ...modifyMarkupData(resp.data),
-          ...markupsByPageForBidResp.extractionAreas,
+          ...updatedMData?.extractionAreas || markupsByPageForBidResp.extractionAreas || [],
         ];
         let data = {
           extractionAreas: updatedRes,

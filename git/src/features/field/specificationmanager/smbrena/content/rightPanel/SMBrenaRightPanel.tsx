@@ -96,7 +96,7 @@ const SMBrenaRightPanel = (props: any) => {
         };
         dispatch(setSmBrenaRaightPanelMarkups(data));
         if (search.length) {
-          handelSearchChange(search,res[0]?.data?.pageUId);
+          handelSearchChange(search,res[0]?.data?.pageUId , data);
         } else {
           sketchPageinfo.callback(data);
         }
@@ -106,7 +106,7 @@ const SMBrenaRightPanel = (props: any) => {
       });
   };
 
-  const handelSearchChange = (searchText:any,pageId:any) => {
+  const handelSearchChange = (searchText:any,pageId:any ,updatedMData?:any) => {
     if (pageId && fileQueue?.[0]?.id) {
       let params = `searchText=${searchText}&pageId=${pageId}&contentId=${fileQueue?.[0]?.id}`;
       getTextOccurences(params).then((resp: any) => {
@@ -117,7 +117,7 @@ const SMBrenaRightPanel = (props: any) => {
         );
         let updatedRes = [
           ...modifyMarkupData(resp.data),
-          ...smBrenaRaightPanelMarkups.extractionAreas || [],
+          ...updatedMData?.extractionAreas || smBrenaRaightPanelMarkups.extractionAreas || [],
         ];
         let data = {
           extractionAreas: updatedRes,
