@@ -42,7 +42,7 @@ export const fetchTimeLog = async (payload:any) => {
       if (isMReal) {
         return [...timelogList?.segments, ...response?.segments];
       }
-      else return response?.segments;
+      else return [...timelogList?.segments, ...response?.segments];
     }
 
   } else return timelogList?.segments;
@@ -56,12 +56,12 @@ export const fetchTimeLogDetails = async (timeLogId: any) => {
     if (isMock) return timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
     else {
       const response = await TimeLogRequest(server, `/segments/${timeLogId}`, {});
+      const mockRecord:any = timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
+      console.log("mockRecord", mockRecord)
       if(isMReal) {
-        const mockRecord:any = timelogList?.segments?.find((obj: any) => obj.id === timeLogId);
-        console.log("mockRecord", mockRecord)
         return mockRecord ? mockRecord : response;
       }
-      else return response;
+      else return mockRecord ? mockRecord : response;
     }
 
   } else {

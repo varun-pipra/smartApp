@@ -39,6 +39,7 @@ import { useTranslation } from 'react-i18next';
 import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { settingcostcodetypeData } from 'data/SettingsCosttypeData';
 import { getPhaseDropdownValues, getSBSGridList } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
+import { getLocationSegmentsData } from 'features/common/locationfield/LocationStore';
 
 const HeaderPinning = (props: any) => {
 	const { t, i18n } = useTranslation();
@@ -87,6 +88,7 @@ const HeaderPinning = (props: any) => {
 		dispatch(getPhaseDropdownValues());
 		dispatch(getSBSGridList());
 		dispatch(fetchRollupTaskData({ 'appInfo': appInfo }));
+		dispatch(getLocationSegmentsData());
 		// dispatch(getTemplateForBudget(appInfo))	;
 		return () => { };
 	}, []);

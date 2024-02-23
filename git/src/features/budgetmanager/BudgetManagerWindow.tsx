@@ -60,7 +60,7 @@ const BudgetManagerWindow = (props: any) => {
 	useEffect(() => {
 		if(importStatus == 1) { 
 			setOpen(false); dispatch(setImportBudgetsStatus(null));
-			setToastMessage({ displayToast: true, message: 'Budget Line Items added successfully' });
+			setToastMessage({ displayToast: true, message: 'Budget File is Imported' });
 			dispatch(fetchGridData(appInfo));
 		}
 		if(importStatus == 2) {

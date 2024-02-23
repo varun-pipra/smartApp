@@ -1207,7 +1207,7 @@ const TableGrid = (props: TableGridProps) => {
 
 	useEffect(() => {
 		if (viewBuilderData.length && viewData?.columnsForLayout?.length) {
-			console.log('columnsForLayout', viewData)
+			console.log('viewData', viewData)
 			let updatedColumndDefList: any = [];
 			updatedColumndDefList[0] = columnDefs[0];
 			viewData?.columnsForLayout.forEach((viewItem: any) => {
@@ -1223,17 +1223,33 @@ const TableGrid = (props: TableGridProps) => {
 					}
 				});
 			});
-			console.log('updatedColumndDefList',updatedColumndDefList)
 			setViewBuilderColumns(updatedColumndDefList);
+		
 		}
 	}, [viewData, settingsData, isReadOnly]);
+
+		const clearObjectValues = (data:any,newdataa:any) => {
+			const newData = { ...data };
+			for (let key in newData) {
+				newData[key] = [];
+			}
+			return {...newData,...newdataa}
+		};
 
 	useMemo(() => {
 		// set the filters and grouping data
 		if (viewData?.viewId) {
-			viewData?.filters && dispatch(setSelectedFilters(JSON.parse(viewData?.filters)));
-			viewData?.groups && dispatch(setSelectedGroupKey(viewData?.groups?.[0] ?? 'divisions'));
-
+				const formatedFilter = viewData?.filters== '{}' || viewData?.filters == 'null' ? JSON.parse('{}') : JSON.parse(viewData?.filters);
+				const formatedgrouping = viewData?.groups && viewData?.groups?.[0] == "" ? 'division': viewData?.groups?.[0];
+					if(!_.isEmpty(selectedFilters) && formatedFilter){
+						const data = clearObjectValues(selectedFilters,formatedFilter);
+						dispatch(setSelectedFilters(data));
+					}	
+					else{
+						dispatch(setSelectedFilters(formatedFilter));
+					}
+				
+				 dispatch(setSelectedGroupKey(formatedgrouping));
 		}
 	}, [viewData?.viewId])
 
@@ -1252,10 +1268,8 @@ const TableGrid = (props: TableGridProps) => {
 	useEffect(() => {
 		if (columnDefs.length > 0) {
 				dispatch(setColumnDefsHeaders(columnDefs));
-				console.log('isBudgetLocked', isBudgetLocked);
-			setIsReadOnly(isBudgetLocked);
+				setIsReadOnly(isBudgetLocked);
 			if (isBudgetLocked) {
-				console.log('columnDefs', columnDefs)
 				const array = ['costCode', 'costType', 'curve', 'estimatedStart', 'estimatedEnd'];
 				let updatedColumndDefList: any = columnDefs.map((cDef: any) => {
 					if (cDef.hasOwnProperty('editable') && isBudgetLocked) {
@@ -1265,14 +1279,12 @@ const TableGrid = (props: TableGridProps) => {
 						return { ...cDef, cellRenderer: (params: any) => { return params.value } };
 					}
 					if (cDef.field == 'Vendors' && isBudgetLocked) {
-						console.log('Vendors')
 						return { ...cDef, cellRenderer: (params: any) => { 
 							return params?.data?.Vendors?.length > 0 ? params?.data?.Vendors?.map((rec: any) => rec.name) : 'None'; 
 						} };
 					}
 					return cDef;
 				});
-					console.log('updatedColumndDefList', updatedColumndDefList)
 					setColumnDefs(updatedColumndDefList);
 			}
 			else {
@@ -1557,18 +1569,6 @@ const rowSelected = (sltdRows: any) => {
 const onCellEditingStopped = useCallback((event: any) => {
 	handleOnChange(event.newValue, event);
 }, []);
-
-// const getRowStyle = (params: any) => {
-// 	if(
-// 		params?.data !== undefined && rightPannel === true
-// 			? params?.rowIndex === selectedRowIndexData.rowIndex
-// 			: null
-// 	) {
-// 		params.api.ensureIndexVisible(Number(params.rowIndex + 3));
-// 		return {background: '#fff9cc'};
-// 	}
-// 	return {background: 'white'};
-// };
 
 const onRowGroupOpened = (params: any) => {
 	if (params.expanded === false) {

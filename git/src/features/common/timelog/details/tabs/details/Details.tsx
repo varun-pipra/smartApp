@@ -74,6 +74,7 @@ const details = (props: any) => {
 		console.log('name',name);
 
 		let data;
+		let payload :any ;
 		const startDate_data = name == 'startDate' ? value : details.startDate;
 		const startTime_data = name == 'startTime' ? value : getTime(details.startTime); 
 		const enddate_data = name == 'endDate' ? value : details.endDate;
@@ -81,29 +82,24 @@ const details = (props: any) => {
 
 		if(name == 'startTime' || name == 'startDate'){
 				const startTime = addTimeToDate(startDate_data,startTime_data);
-				data = { ...details, ['startTime']: startTime ,['startDate']: value};
+				payload = {['startTime']: startTime}
+				data = { ...details, ['startDate']: value,...payload};
 			}
 		else if(name == 'endTime' || name == 'endDate'){
 			const endTime = addTimeToDate(enddate_data,endTime_data);
-			data = { ...details, ['endTime']: endTime ,['endDate']: value};
+			payload = {['endTime']: endTime}
+			data = { ...details,...payload,['endDate']: value};
 		}
 		else if(name == 'sbs'){
-			data = { ...details, [name] : {id : value}}
+			payload = {[name] : {id : value}}
+			data = { ...details, ...payload}
 		}
 		else{
-			data = { ...details, [name]: value };
+			payload = {[name] : value}
+			data = { ...details, ...payload };
 		}
-		console.log('data',data)
+	
 		setDetails(data);
-		const payload:any = {
-			startTime:data?.startTime,
-			endTime : data?.endTime,
-			status : data?.status,
-			smartItemId : data?.smartItem?.smartAppId,
-			notes: data?.notes,
-			sbsId: data?.sbs?.id,
-			sbsPhaseId:details?.sbsPhase ? details?.sbsPhase?.id : '',
-		}
 		dispatch(setDetailsPayloadSave(payload))
 	}
 	

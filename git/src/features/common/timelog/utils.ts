@@ -143,13 +143,14 @@ export const GetUniqueList = (data: any, key?: any) => {
   );
   return unique;
 };
+
 export const findAndUpdateFiltersData = (
   filterOptions: any,
   data: any,
   key: string,
   nested?: boolean,
   nestedKey?: any
-) => {
+	) => {
   const formattedData = data?.map((rec: any) => {
 	 if (nested)
       return {
@@ -163,7 +164,8 @@ export const findAndUpdateFiltersData = (
         value: rec?.[key] ?? rec?.["name"],
         id: rec?.id,
       };
-  });
+	});
+	
   const filtersCopy: any = [...filterOptions];
   let currentItem: any = filtersCopy.find((rec: any) => rec?.keyValue === key);
   currentItem.children.items = GetUniqueList(formattedData?.flat(), "text");
@@ -173,3 +175,60 @@ export const findAndUpdateFiltersData = (
   });
   return mapData;
 };
+
+export const dateFunctionalities  = (value:any) =>{
+		const dateFormat = (date:any) =>{
+					// Extract year, month, and day
+					const year = date.getFullYear();
+					const month = String(date.getMonth() + 1).padStart(2, '0'); // Month starts from 0
+					const day = String(date.getDate()).padStart(2, '0');
+
+				// Format the date as YYYY-MM-DD
+				const formattedDate = year + '-' + month + '-' + day;
+				return formattedDate
+		}
+		if(value == 'today'){
+				const date = dateFormat(new Date());
+				return {from :date ,to : date}
+		}
+		else if (value == 'yesterday'){
+			const defaultDate = new Date(new Date().setDate(new Date().getDate() - 1));
+			const yesterdaydate = dateFormat(defaultDate);
+			return {from :yesterdaydate ,to : yesterdaydate}
+		}
+		else if(value == 'thisWeek'){
+			const today = new Date();
+			const dayOfWeek = today.getDay();
+			const difference = dayOfWeek - 1;
+			const firstDayOfWeek = new Date(today);
+
+			const defaultDate = new Date(firstDayOfWeek.setDate(today.getDate() - difference));
+			const thisweek = dateFormat(defaultDate);
+			return {from :thisweek ,to : dateFormat(new Date())}
+		}
+		else if(value == 'lastWeek'){
+				var today = new Date();
+				var dayOfWeek = today.getDay();
+				var difference = dayOfWeek - 1;
+
+				// Adjust the date to get to the first day of the week
+				var firstDayOfCurrentWeek = new Date(today);
+				firstDayOfCurrentWeek.setDate(today.getDate() - difference);
+
+				// Subtract 7 days to get to the first day of the previous week
+				var firstDayOfPreviousWeek = new Date(firstDayOfCurrentWeek);
+				const previousDate = new Date(firstDayOfPreviousWeek.setDate(firstDayOfCurrentWeek.getDate() - 7))
+
+				// Subtract 1 day to get to the last day of the previous week
+				var lastDayOfPreviousWeek = new Date(firstDayOfCurrentWeek);
+				const defaultDate = new Date(lastDayOfPreviousWeek.setDate(firstDayOfCurrentWeek.getDate() - 1));
+
+		
+				const first = dateFormat(previousDate);
+				const last = dateFormat(defaultDate);
+				return {from :first ,to : last}
+		}
+		else if (value == ''){}
+		else if (value == ''){}
+		else if (value == ''){}
+}

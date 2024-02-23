@@ -23,11 +23,22 @@
                 font-size: 0.85em;
             }
         }
+        .preview-button {
+            width: 36px;
+        }
     }
 }
+
+.viewbuilder-list-button {
+    .preview-button {
+        width: 36px;
+    }
+}
+
 .no-border {
     border: none !important;
 }
+
 .user-menu-items {
     // menuItems
     border: 1px solid #ddd;

@@ -96,7 +96,7 @@ export const LaborSheetModel = (props: any) => {
       title="Select From Labor Sheet"
       className="labor-sheet-dialog"
       PaperProps={{
-        sx: { height: "85%", width: "30%" },
+        sx: { height: "85%", width: "25%" },
       }}
       tools={{
         closable: true,
@@ -105,6 +105,7 @@ export const LaborSheetModel = (props: any) => {
         <div>
           <IQButton
             color="orange"
+            className="pick-btn-cls"
             disabled={disabled}
             onClick={() => handleSelect()}
           >

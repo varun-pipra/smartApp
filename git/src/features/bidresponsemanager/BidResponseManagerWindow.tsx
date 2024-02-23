@@ -29,6 +29,7 @@ import IQWindow from 'components/iqbasewindow/IQBaseWindow';
 import SUIAlert from 'sui-components/Alert/Alert';
 import {isBidResponseManager} from 'app/common/userLoginUtils';
 import { fetchBidResponseGridData } from './stores/gridSlice';
+import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
 
 const BidResponseManagerWindow = () => {
 	const dispatch = useAppDispatch();
@@ -144,9 +145,9 @@ const BidResponseManagerWindow = () => {
 		//dispatch(setUploadQueue([]));
 	}, [fileQueue]);
 
-	// useEffect(() => {
-	// 	dispatch(checkBlockchainStatus('BidManager'));
-	// }, [appInfo]);
+	useEffect(() => {
+		dispatch(fetchConnectors(appInfo))
+	}, [appInfo]);
 
 	const handleNewTab = () => {
 		postMessage({

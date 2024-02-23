@@ -299,7 +299,10 @@ const LeftToolbarButtons = (props: any) => {
 	const disableActivate = isReadOnly ? isReadOnly :  !(isActiveInactivAllEqual) || isDeactivedForViolation;
 	const activeToolTip = !(activeInactiveArr && activeInactiveArr[ 0 ]) ? 'Activate' : 'De-Activate';
 	const activeBtnCls = !(activeInactiveArr && activeInactiveArr[ 0 ]) ? 'appzone-itemactivated usractivate' : 'appzone-itemactivated usrdeactivate';
-	let hasCompanyManagerPermission = selectedMembers.length > 0;
+	const disableCalendar = !(isSingle || isMultiSelected);
+	const disableReserveStaffBtn = !(isSingle || isMultiSelected);
+	const disableManagerGroupsBtn = !(isSingle || isMultiSelected);
+	let hasCompanyManagerPermission = selectedMembers?.length > 0;
 	selectedMembers.map((s: any) => {
 		if (hasCompanyManagerPermission) {
 			hasCompanyManagerPermission = getAllowedCompanyManager(s, gblConfig);
@@ -525,17 +528,17 @@ const LeftToolbarButtons = (props: any) => {
 		</IQTooltip> }
 		{isFromOrgStaff && 
 		<IQTooltip title='Calendar' placement='bottom'>
-			<IconButton aria-label='dates' disabled={ isReadOnly } data-action='dates' onClick={ clickHandler }>
+			<IconButton aria-label='dates' disabled={ disableCalendar } data-action='dates' onClick={ clickHandler }>
 			<span className='common-icon-DateCalendar' />
 			</IconButton>
 		</IQTooltip> }
 		{!isReadOnly && isFromOrgStaff && 
-			<IconButton aria-label='reservestaff' className='iq-border-button iq-reverse-button' data-action='reservestaff' onClick={ clickHandler }>
+			<IconButton aria-label='reservestaff' disabled={ disableReserveStaffBtn } className='iq-border-button iq-reverse-button' data-action='reservestaff' onClick={ clickHandler }>
 				Reserve Staff
 			</IconButton>
 		}
 		{!isReadOnly && isFromOrgStaff && 
-			<IconButton aria-label='managergroups' className='iq-border-button iq-manager-button' data-action='managergroups' onClick={ clickHandler }>
+			<IconButton aria-label='managergroups' disabled={ disableManagerGroupsBtn } className='iq-border-button iq-manager-button' data-action='managergroups' onClick={ clickHandler }>
 				Manage Groups
 			</IconButton>
 		}

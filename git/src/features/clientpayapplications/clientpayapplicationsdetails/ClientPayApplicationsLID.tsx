@@ -16,6 +16,7 @@ import {ContractorResponse} from 'features/vendorcontracts/vendorcontractsdetail
 import {getClientPayAppsList} from '../stores/GridSlice';
 import {amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
 import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
+import { sapLinksObj } from 'utilities/sapLink';
 var tinycolor = require('tinycolor2');
 
 
@@ -46,7 +47,7 @@ const HeaderContent = (props: any) => {
 											src={connectors?.[0]?.primaryIconUrl}
 											alt="connector Image"
 										/> : ''}
-										{connectors?.length ? <span className='sapnumber'>{clientPayAppLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+										{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.clientPayApps && window.open(sapLinksObj?.clientPayApps)}}>{clientPayAppLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 								</span>
 							</span>
 							<span className='last-modified-label grey-font'>Last Modified:</span>{props?.headerData?.modifiedOn ? stringToUSDateTime2(props?.headerData?.modifiedOn) : ''} by {props?.headerData?.modifiedBy?.displayName}<span className='grey-fontt'> </span>

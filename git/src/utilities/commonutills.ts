@@ -74,3 +74,10 @@ export const sourceTypeObj:any = {
 	0: "Purchase",
 	1: "Rent"
 };
+
+export const measurementSymbols:any = {
+	"Feet": 'ft',
+	"Meters": 'm',
+	"CentiMeters": 'cm',
+	"MilliMeters": 'mm',
+}

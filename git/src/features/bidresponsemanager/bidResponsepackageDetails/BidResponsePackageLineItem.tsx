@@ -27,6 +27,7 @@ import { setSelectedTabName } from '../stores/BidResponseManagerSlice';
 import BidResponse from './tabs/bidResponse/BidResponse';
 import BidQueries from './tabs/bidqueries/BidQueries';
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
+import { sapLinksObj } from 'utilities/sapLink';
 
 var tinycolor = require('tinycolor2');
 
@@ -311,12 +312,12 @@ const BidResponsePackageLineItem = (props: any) => {
 							<span className={getResponseStatusIcons(selectedRecord?.responseStatus)} />
 							{BidResponseStatus[selectedRecord?.responseStatus]}
 						</span>
-						{/* {connectors?.length ? <img
+						{connectors?.length ? <img
 										className="sapnumber"
 										src={connectors?.[0]?.primaryIconUrl}
 										alt="connector Image"
 									/> : ''}
-						{connectors?.length ? <span className='sapnumber'>{selectedRecord?.id?.substring(0, 10)?.toUpperCase()}</span> : ''} */}
+						{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.bidResponseManager && window.open(sapLinksObj?.bidResponseManager)}}>{selectedRecord?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 					</div> : ''}
 				</span>
 				<span className='right-box'>

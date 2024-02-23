@@ -205,7 +205,7 @@ export const VB_BudgetManager: any = {
 				}
 			],
 			"groups": ["division"],
-			"filters": "{}",
+			"filters": "null",
 			"viewFor": "budgetmanager"
 		},
 		{
@@ -418,6 +418,215 @@ export const VB_BudgetManager: any = {
 		{
 			"viewId": 3336708,
 			"viewName": "view3",
+			"viewType": 0,
+			"defaultView": false,
+			"selected": false,
+			"viewOwner": 0,
+			"columnsForLayout": [
+				{
+					"headerName": "Division/Cost Code",
+					"hide": false,
+					"field": "costCode"
+				},
+				{
+					"headerName": "Cost Type",
+					"hide": false,
+					"field": "costType"
+				},
+				{
+					"headerName": "BudgetID/CBS",
+					"hide": false,
+					"field": "name"
+				},
+
+				{
+					"headerName": "Description",
+					"hide": false,
+					"field": "description"
+				},
+
+				{
+					"headerName": "Associated Location/System",
+					"hide": false,
+					"field": "locations"
+				},
+				{
+					"headerName": "Original Budget Amount",
+					"hide": false,
+					"field": "originalAmount"
+				},
+				{
+					"headerName": "Mark-up Fee",
+					"hide": false,
+					"field": "markupFee"
+				},
+				{
+					"headerName": "Budget Transfer Amount",
+					"hide": false,
+					"field": null
+				},
+				{
+					"headerName": "ApprovedCOs",
+					"hide": false,
+					"field": "approvedBudgetChange"
+				},
+				{
+					"headerName": "Revised Budget",
+					"hide": false,
+					"field": "revisedBudget"
+				},
+				{
+					"headerName": "Provider Source",
+					"hide": false,
+					"field": "providerSource"
+				},
+				{
+					"headerName": "Transaction Amount",
+					"hide": false,
+					"field": "balanceModifications"
+				},
+				{
+					"headerName": "Remaining Balance",
+					"hide": false,
+					"field": "balance"
+				},
+				{
+					"headerName": "Curve",
+					"hide": false,
+					"field": "curve"
+				},
+				{
+					"headerName": "Vendor",
+					"hide": false,
+					"field": "Vendors"
+				},
+				{
+					"headerName": "Estimated Start Date",
+					"hide": false,
+					"field": "estimatedStart"
+				},
+				{
+					"headerName": "Estimated End Date",
+					"hide": false,
+					"field": "estimatedEnd"
+				},
+				{
+					"headerName": "Projected Schedule Start",
+					"hide": false,
+					"field": "projectedScheduleStart"
+				},
+				{
+					"headerName": "Projected Schedule End",
+					"hide": false,
+					"field": "projectedScheduleEnd"
+				},
+				{
+					"headerName": "Actual Schedule Start",
+					"hide": false,
+					"field": "actualScheduleStart"
+				},
+				{
+					"headerName": "Actual Schedule End",
+					"hide": false,
+					"field": "actualScheduleEnd"
+				},
+				{
+					"headerName": "Unit Of Measure",
+					"hide": false,
+					"field": "unitOfMeasure"
+				},
+				{
+					"headerName": "Unit Quantity",
+					"hide": false,
+					"field": "unitQuantity"
+				},
+				{
+					"headerName": "Unit Cost",
+					"hide": false,
+					"field": "unitCost"
+				},
+				{
+					"headerName": "Pending Change Order",
+					"hide": false,
+					"field": "pendingChangeOrderAmount"
+				},
+				{
+					"headerName": "Pending Transactions",
+					"hide": false,
+					"field": "pendingTransactionAmount"
+				},
+				{
+					"headerName": "Budget Forecast",
+					"hide": false,
+					"field": "budgetForecast"
+				},
+				{
+					"headerName": "Balance Forecast",
+					"hide": false,
+					"field": "balanceForecast"
+				},
+				{
+					"headerName": "Bid Package Name",
+					"hide": false,
+					"field": "bidPackage.name"
+				},
+				{
+					"headerName": "Bid Award Date",
+					"hide": false,
+					"field": "bidPackage.awardedOn"
+				},
+				{
+					"headerName": "Bid Status",
+					"hide": false,
+					"field": "bidPackage.status"
+				},
+				{
+					"headerName": "Vendor Contract Name",
+					"hide": false,
+					"field": "vendorContract.name"
+				},
+				{
+					"headerName": "Vendor Contract Date",
+					"hide": false,
+					"field": "vendorContract.startDate"
+				},
+				{
+					"headerName": "Vendor Contract Status",
+					"hide": false,
+					"field": "vendorContract.status"
+				},
+				{
+					"headerName": "Client Contract Name",
+					"hide": false,
+					"field": "clientContract.name"
+				},
+				{
+					"headerName": "Client Contract Date",
+					"hide": false,
+					"field": "clientContract.startDate"
+				},
+				{
+					"headerName": "Client Contract Status",
+					"hide": false,
+					"field": "clientContract.status"
+				},
+				{
+					"headerName": "Manufacturer",
+					"hide": false,
+					"field": "equipmentManufacturer"
+				},
+				{
+					"headerName": "Model Number",
+					"hide": false,
+					"field": "equipmentModel"
+				}
+			],
+			"groups": ["locations"],
+			filters: "{\"bidStatus\":[\"5\"] , \"isBillable\":[\"true\"]}"
+		},
+		{
+			"viewId": 3336709,
+			"viewName": "view4",
 			"viewType": 1,
 			"defaultView": false,
 			"selected": false,
@@ -622,7 +831,7 @@ export const VB_BudgetManager: any = {
 				}
 			],
 			"groups": ["locations"],
-			filters: "{\"bidStatus\":[\"5\"]}"
+			filters: "{\"bidStatus\":[\"5\"] , \"isBillable\":[\"true\"]}"
 		}
 	],
 };

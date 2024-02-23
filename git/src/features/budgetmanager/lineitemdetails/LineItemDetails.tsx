@@ -31,6 +31,7 @@ import { SUIToast } from 'sui-components/Toast/Suitoast';
 import { fetchTransactionsData } from 'features/budgetmanager/operations/transactionsSlice';
 import { fetchForecastData } from 'features/budgetmanager/operations/forecastSlice';
 import { fetchLineItemData } from '../operations/gridSlice';
+import { sapLinksObj } from 'utilities/sapLink';
 
 export interface headerprops {
 	image: any;
@@ -347,7 +348,8 @@ const LineItemDetails = (props: headerprops) => {
 									src={connectors?.[0]?.primaryIconUrl}
 									alt="connector Image"
 								/> : ''}
-								{connectors?.length ? <span className='sapnumber'>{selectedRow?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+								{connectors?.length ? <span className='sapnumber hot-link' onClick={() =>{sapLinksObj?.budgetManager && window.open(sapLinksObj?.budgetManager)}}
+								>{selectedRow?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 							</span>
 							<span className='last-modified-label grey-font'>Last Modified:</span><span className='grey-font'> {stringToUSDateTime2(selectedRow.modifiedDate)} by {selectedRow.modifiedBy?.displayName}</span>
 						</div>

@@ -1,4 +1,4 @@
-import { FormControlLabel, Radio, RadioGroup, Stack } from "@mui/material";
+import { FormControlLabel, IconButton, Radio, RadioGroup, Stack } from "@mui/material";
 import IQBaseWindow from "components/iqbasewindow/IQBaseWindow";
 import { gridData } from "data/Budgetmanger/griddata";
 import { memo } from "react";
@@ -18,6 +18,7 @@ import { ConfirmationDialog } from "./ConfirmationDialog/ConfirmationDialog";
 import { importBudgets, fetchImportStatus, cancelImport, checkIsReplaceAllowed } from "../operations/budgetImportAPI";
 import { importType } from "utilities/commonutills";
 import { fetchGridData } from "../operations/gridSlice";
+import IQTooltip from "components/iqtooltip/IQTooltip";
 
 const BudgetImporter = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -38,15 +39,14 @@ const BudgetImporter = (props: any) => {
 
 	React.useEffect(() => {props?.noOfBudgetItems == 0 ? setImportOption('new') : setImportOption('replace')}, [props?.noOfBudgetItems])
 	React.useEffect(() => {
-		if(importStatus == 1) { 
-			props?.onClose(true);			
-			dispatch(setToastMessage({ displayToast: true, message: 'Budget Line Items added successfully' }))
+		dispatch(setImportBudgetsStatus(importStatus));
+		if(importStatus == 1) {
+			dispatch(setToastMessage({ displayToast: true, message: 'Budget File is Imported' }))
+			props?.onClose(true);
 		}
 		if(importStatus == 2) { setShowError(true);
 			setShowSuccess(false)
-		}			
-		dispatch(setImportBudgetsStatus(importStatus));
-
+		}
 	}, [importStatus]);
 
 	const callImport = () => {
@@ -87,19 +87,21 @@ const BudgetImporter = (props: any) => {
 				})
 				else setShowAlert({
 					show:true, 
-					msg: <div className="warning-text"><span>One or more Budget Line Items are currently being used in one of the following modules-Bids, Contracts and Pay applications. Hence this budget file cannot be imported.?</span></div>
+					msg: <div className="warning-text"><span>One or more Budget Line Items are currently being used in one of the following modules - Bids, Contracts & Pay applications. Hence this Budget File cannot be imported.</span></div>,
+					button1:'CANCEL',
+					button2:'OK',
 				})			
 			})
 		}		
 		if(importOption == 'append') setShowAlert({
 				show:true, 
-				msg: <div className="warning-text"><span>New Budget Line items will be Appended to the existing items, Are you sure want to continue?</span></div>
+				msg: <div className="warning-text"><span>New Budget Line items will be Appended to the existing items Are you sure you want to continue?</span></div>
 			}
 		)
 		
 		// setTimeout(() => {setShowInProgress(false); setShowSuccess(true)}, 1000); 
 	};
-	const onCancelImport = () => { setShowInProgress(false); setShowSuccess(false); setShowError(false); cancelImport(appInfo, importResponse?.ResultId, (resp:any) => {}) };
+	const onCancelImport = () => { setShowInProgress(false); setShowSuccess(false); setShowError(false); setDisableStartImport(true) ; cancelImport(appInfo, importResponse?.ResultId, (resp:any) => {}) };
 	const onNotifyAfterImport = () => { props?.onClose(false); props?.openNotification(true) };
 	const onStartOver = () => {setShowError(false); setImportStatus(0); callImport()};
 	const handleOnOptionChange = (event:any) => {
@@ -114,97 +116,167 @@ const BudgetImporter = (props: any) => {
 		setShowAlert({show: false, msg: ''});
 	}
 
+	const handleHelp = () => {
+		postMessage({
+			event: "help",
+			body: {
+				iframeId: 'budgetManagerIframe',
+				roomId: appInfo && appInfo.presenceRoomId,
+				appType: "BudgetManager",
+				isFromHelpIcon: true
+			}
+		});
+	}
 
-	return <IQBaseWindow
-		open={true}
-		title='Budget Importer'
-		className="bm-importer"
-		minHeight='300px'
-		tools={{
-			closable: true
-		}}
-		actions={
-			<div>
-				{!showInProgress && !showSuccess && !showError && <IQButton color="orange" disabled={disableStartImport} onClick={() => onStartImport()}>
-					START IMPORT
-				</IQButton>}
-				{(showInProgress || showError) && <IQButton color="lightGrey" className="cancel-import-cls" onClick={() => onCancelImport()}>
-					CANCEL IMPORT
-				</IQButton>}
-				{showSuccess && <IQButton color="lightGrey" onClick={() => onNotifyAfterImport()}>
-					NOTIFY ME AFTER COMPLETE
-				</IQButton>}
-				{showError && <IQButton color="lightGrey" className="start-over-cls" onClick={() => onStartOver()}>
-					START OVER
-				</IQButton>}
-			</div>
-		}
-		withInModule={true}
-		{...props}
-	>
-		{showInProgress && <InProgressDialog />}
-		{showSuccess && <SuccessDialog />}
-		{showError && <ErrorDialog />}
-		{!showInProgress && !showSuccess && !showError && <div className="import-wrap-cls">
-			<Stack className="bm-type">
-				<div className="question-cls">How do you like to start your Budget Import?</div>
-				<RadioGroup
-					name="import-type"
-					value={importOption}
-					onChange={(e:any) => handleOnOptionChange(e)}
-				>
-					{props?.noOfBudgetItems == 0 && <FormControlLabel
-						value="new"
-						control={<Radio />}
-						label="New"
-					/>}
-					<FormControlLabel
-						value="replace"
-						control={<Radio />}
-						label="Replace"
-						disabled={props?.noOfBudgetItems == 0}
-					/>
-					<FormControlLabel
-						value="append"
-						control={<Radio />}
-						label="Append"
-						disabled={props?.noOfBudgetItems == 0}
-					/>
-					<FormControlLabel
-						value="merge"
-						control={<Radio />}
-						label="Merge"
-						disabled={true}
-					/>
-				</RadioGroup>
-			</Stack>
-			<Stack className="select-file-cls">
-				<IQFileUploadField
-					label='Select File to Import'
-					placeholder='Note: Supported file .xlsx or .xls'
-					onFileChange={(file:any) => { console.log("filee", file); setFile(file); setDisableStartImport(false) }}
-				/>
-			</Stack>
-			<Stack className="info-box">
-				<div className="info-container">
-					<span className='info-icon common-icon-info-white'></span>
-					<span className='info-text'>We recommend you to first download the standard budget template and use this template to build your data file.<br />
-						Note: Once the template is ready, use that to begin your import process.<br />
-						<IQButton
-							className="download-template-btn"
-							color="orange"
-							variant="outlined"
-							onClick={() =>
-								window.open(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/budgets/${appInfo?.uniqueId}/import/downloadtemplate?noofsegments=${props?.noOfLevels}&sessionId=${appInfo?.sessionId}`, "_blank")
-							}
-						>
-							DOWNLOAD TEMPLATE
-						</IQButton>
-					</span>
-				</div>
-			</Stack></div>}
-			{showAlert?.show && <ConfirmationDialog handleAction={(type:string) => {handleAlertAction(type, importOption)}} content={showAlert?.msg}/>}
-	</IQBaseWindow>;
+	return (
+    <IQBaseWindow
+      open={true}
+      title="Budget Importer"
+      className="bm-importer"
+      minHeight="300px"
+      tools={{
+        closable: true,
+        customTools: (
+          <IQTooltip title="Help" placement={"bottom"}>
+            <IconButton
+              key={"budget-importer-help"}
+              className="budget-importer-help"
+              aria-label="help"
+              onClick={handleHelp}
+            >
+              <span className="common-icon-Live-Support-Help header_icon"></span>
+            </IconButton>
+          </IQTooltip>
+        ),
+      }}
+      actions={
+        <div>
+          {!showInProgress && !showSuccess && !showError && (
+            <IQButton
+              color="orange"
+              className="start-import-cls"
+              disabled={disableStartImport}
+              onClick={() => onStartImport()}
+            >
+              START IMPORT
+            </IQButton>
+          )}
+          {(showInProgress || showError) && (
+            <IQButton
+              color="lightGrey"
+              className="cancel-import-cls"
+              onClick={() => onCancelImport()}
+            >
+              CANCEL IMPORT
+            </IQButton>
+          )}
+          {showSuccess && (
+            <IQButton color="lightGrey" onClick={() => onNotifyAfterImport()}>
+              NOTIFY ME AFTER COMPLETE
+            </IQButton>
+          )}
+          {showError && (
+            <IQButton
+              color="lightGrey"
+              className="start-over-cls"
+              onClick={() => onStartOver()}
+            >
+              START OVER
+            </IQButton>
+          )}
+        </div>
+      }
+      withInModule={true}
+      {...props}
+    >
+      {showInProgress && <InProgressDialog />}
+      {showSuccess && <SuccessDialog />}
+      {showError && <ErrorDialog />}
+      {!showInProgress && !showSuccess && !showError && (
+        <div className="import-wrap-cls">
+          <Stack className="bm-type">
+            <div className="question-cls">
+              How do you like to Start your Budget Import?
+            </div>
+            <RadioGroup
+              name="import-type"
+              value={importOption}
+              onChange={(e: any) => handleOnOptionChange(e)}
+            >
+              {props?.noOfBudgetItems == 0 && (
+                <FormControlLabel value="new" control={<Radio />} label="New" />
+              )}
+              <FormControlLabel
+                value="replace"
+                control={<Radio />}
+                label="Replace Data"
+                disabled={props?.noOfBudgetItems == 0}
+              />
+              <FormControlLabel
+                value="append"
+                control={<Radio />}
+                label="Append Data"
+                disabled={props?.noOfBudgetItems == 0}
+              />
+              <FormControlLabel
+                value="merge"
+                control={<Radio />}
+                label="Merge Data"
+                disabled={true}
+              />
+            </RadioGroup>
+          </Stack>
+          <Stack className="select-file-cls">
+            <IQFileUploadField
+              label="Select File to Import"
+              placeholder="Note: Supported file .xlsx or .xls"
+              onFileChange={(file: any) => {
+                console.log("filee", file);
+                setFile(file);
+                setDisableStartImport(false);
+              }}
+            />
+          </Stack>
+          <Stack className="info-box">
+            <div className="info-container">
+              <span className="info-icon common-icon-info-white"></span>
+              <span className="info-text">
+                We recommend you to first download the standard budget template
+                and use this template to build your data file.
+                <br />
+                Note: Once the template is ready, use that file to begin your
+                import process.
+                <br />
+                <IQButton
+                  className="download-template-btn"
+                  color="orange"
+                  variant="outlined"
+                  onClick={() =>
+                    window.open(
+                      `${appInfo?.hostUrl}/enterprisedesktop/api/v2/budgets/${appInfo?.uniqueId}/import/downloadtemplate?noofsegments=${props?.noOfLevels}&sessionId=${appInfo?.sessionId}`,
+                      "_blank"
+                    )
+                  }
+                >
+                  DOWNLOAD TEMPLATE
+                </IQButton>
+              </span>
+            </div>
+          </Stack>
+        </div>
+      )}
+      {showAlert?.show && (
+        <ConfirmationDialog
+          handleAction={(type: string) => {
+            handleAlertAction(type, importOption);
+          }}
+          content={showAlert?.msg}
+          button1={showAlert?.button1}
+          button2={showAlert?.button2}
+        />
+      )}
+    </IQBaseWindow>
+  );
 };
 
 export default memo(BudgetImporter);

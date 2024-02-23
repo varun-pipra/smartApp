@@ -38,7 +38,7 @@ import { updateBudgetLineItem } from '../../../operations/gridAPI';
 import { addRollupTask } from '../../../operations/rightPanelAPI';
 import { setSelectedRowData } from "../../../operations/rightPanelSlice";
 import { fetchGridData } from '../../../operations/gridSlice';
-import { fetchLocationData } from 'features/common/locationfield/LocationStore';
+import { fetchLocationData, getProjetLocationConfig } from 'features/common/locationfield/LocationStore';
 
 import SUIBaseDropdownSelector from 'sui-components/BaseDropdown/BaseDropdown';
 import SUIAlert from 'sui-components/Alert/Alert';
@@ -51,6 +51,7 @@ import { isLocalhost } from 'app/utils';
 var tinycolor = require('tinycolor2');
 import { postMessage } from "../../../../../app/utils";
 import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
+import { measurementSymbols } from 'utilities/commonutills';
 
 interface BudgetDetailsProps {
 	onFormSubmit?: (data: any) => void;
@@ -88,7 +89,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const { rollupTaskData } = useAppSelector((state) => state.rightPanel);
 	const { lineItemDescription } = useAppSelector(state => state.tableColumns);
 	const { lineItem } = useAppSelector(state => state.gridData);
-	const { levels = [], locations = [] } = useAppSelector(state => state.location);
+	const { levels = [], locations = [], locationSegmentsData, locationConfig } = useAppSelector(state => state.location);
 	const [location, setLocation] = useState<any>([]);
 	const [dynamicClose, setDynamicClose] = useState<any>(false);
 	const [rollupDisabelData, setRollupDisabelData] = useState<any>([]);
@@ -96,10 +97,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const [selectedLevel, setSelectedLevel] = useState<any>();
 	const [alert, setAlert] = useState<any>({ show: false, msg: '', type: 'Warning' });
 	const [levelValue, setLevelValue] = useState<any>('');
+	const [selectedLocationTypeObj,setSelectedLocationTypeObj] = useState<any>({})
 	const [catalogLocalData, setCatalogLocalData] = useState<any>(catalogData);
 	const companyDataRef = useRef<any>([]);
 	const [divisionDefaultFilters, setDivisionDefaultFilters] = React.useState<any>([]);
 	const [sbsOptions, setSbsOptions] = React.useState<any>([]);
+	const [selectedSegment, setSelectedSegment] = React.useState<any>(false);
+	
 	
 
 	// const [wbsAddButton, setWbsAddButton] = useState<any>(false);
@@ -275,8 +279,13 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	React.useEffect(() => {
 		if (selectedLevel) {
 			dispatch(fetchLocationData(selectedLevel));
+			dispatch(getProjetLocationConfig());
+			const selectedLevelObj:any = levels?.filter((level:any) => level?.levelId == selectedLevel)?.[0]
+			setSelectedLocationTypeObj({...selectedLevelObj})
+
 		}
 	}, [selectedLevel]);
+	console.log("locationConfig", locationConfig, selectedLevel)
 
 	const submitUpdate = () => {
 		const data = {
@@ -460,6 +469,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 										equipmentManufacturerName: catObj.manufacturer?.name
 									});
 								} else {
+									const obj = companyDataRef.current.find((rec: any) => catObj?.distributorId === rec.objectId);									
 									setFormData({
 										...formData,
 										equipmentCatalogId: catObj.id,
@@ -468,7 +478,9 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 										equipmentThumbnail: catObj.src,
 										equipmentItemPrice: catObj.price,
 										referenceId: catObj.referenceId,
-										equipmentSKU: catObj.sku
+										equipmentSKU: catObj.sku,
+										equipmentManufacturerName: catObj?.distributorName,
+										equipmentManufacturer: [obj]
 									});
 								}
 
@@ -1480,12 +1492,89 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 								sx={{ fontSize: "18px" }}
 								handleChange={(value: string | undefined | string[]) => {
 									setSelectedLevel(value);
+									// if(value?.label == 'Jobsite') setShowLocationSegments(true);
+									// else setShowLocationSegments(false);
 								}}
 							/>
 						}
 					</div>
 				</span>
-				<span className="budget-info-tile">
+				{ (locationConfig?.spatialType == 'linear' && selectedLocationTypeObj?.name == 'Jobsite') ? 
+				<span className="budget-segment-cls">
+					<span className="segment-block-cls">
+					<div className="budget-info-label">Segment</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? selectedSegment?.label : <SmartDropDown
+								options={
+									locationSegmentsData?.spatialData?.linearData?.map((segment: any) => {
+										return { label: segment.name, value: segment?.uniqueId };
+									}) || []
+								}
+								required={false}
+								// isFullWidth
+								outSideOfGrid={false}
+								// selectedValue={levelValue}
+								menuProps={classes.menuPaper}
+								sx={{ fontSize: "18px" }}
+								handleChange={(value: string | undefined | string[]) => {
+									const segment = locationSegmentsData?.spatialData?.linearData?.filter((segmentItem:any) => segmentItem?.uniqueId == value?.[0])?.[0]
+									console.log("segment", {...segment, startAt: 0, endAt: segment?.distance})
+									setSelectedSegment({...segment, startAt: 0, endAt: segment?.distance});
+								}}
+						/>}
+					</div>
+					</span>
+					<span className="segment-block-cls">
+					<div className="budget-info-label">Start At</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? selectedSegment?.startAt : <TextField
+							id="startAt"
+							type='number'
+							InputProps={{
+								inputProps: {min: 0, step: ".01"}
+							}}
+							onKeyDown={(evt) =>
+								(evt.key === "-" || evt.key === "+") && evt.preventDefault()
+							}
+							name='startAt'
+							variant="standard"
+							value={Math.round(selectedSegment?.startAt*100)/100}
+							// onChange={(e: any) => handleOnChange("intendToBidCountdown", e.target?.value)}
+							// onBlur={(e: any) => handleOnBlur('intendToBidCountdown')}
+						/>}
+					</div>
+				</span>
+				<span className="segment-block-cls">
+					<div className="budget-info-label">End At</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? selectedSegment?.endAt : <TextField
+							id="EndAt"
+							type='number'
+							InputProps={{
+								inputProps: {min: 0, step: ".01"}
+							}}
+							onKeyDown={(evt) =>
+								(evt.key === "-" || evt.key === "+") && evt.preventDefault()
+							}
+							name='EndAt'
+							variant="standard"
+							value={Math.round(selectedSegment?.endAt*100)/100}
+							// onChange={(e: any) => handleOnChange("intendToBidCountdown", e.target?.value)}
+							// onBlur={(e: any) => handleOnBlur('intendToBidCountdown')}
+						/>}
+					</div>
+				</span>
+				{/* <span className="segment-block-cls">
+					<div className="budget-info-data-box">
+						{locationSegmentsData?.units}
+					</div>
+				</span> */}
+				<span className="segment-block-cls">
+				<span className="unit">{locationSegmentsData?.unit ? measurementSymbols?.[locationSegmentsData?.unit] : ''}</span>
+				<span className="common-icon-road"></span>
+				</span>
+				</span>
+				:<span className="budget-info-tile">
 					<div className="budget-info-label">Default Location</div>
 					<div className="budget-info-data-box">
 						{isReadOnly ? getLocationNames(formData?.locations) : <Location
@@ -1500,7 +1589,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 							getOptionLabel={(option: any) => option?.text || ""}
 						/>}
 					</div>
-				</span>
+				</span> }
 
 				<div className="budget-info-subheader">
 					System Breakdown Structure (SBS)

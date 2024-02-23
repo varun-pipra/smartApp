@@ -21,19 +21,26 @@ const ViewDropDown = (props: any) => {
 	const [selectOptions, setSelectOptions] = useState<any>([]);
 
 	useEffect(() => {
-		if (options && options.length > 0) {
-			const updated = options?.map((value: any, index: any) => {
-				const item = value.data;
-				const headerName = item.defaultView ? "Standard" : item.viewType === 1 ? "Public" : "Private";
-				return {
-					id: index + 1,
-					headerName: headerName,
-					open: item.defaultView ? false : true,
-					collapse: item.defaultView ? false : true,
-					children: [{ key: item.viewId, value: item.viewId, text: item.viewName, selected: item.defaultView },],
-				};
-			});
-			setSelectOptions([...updated]);
+		if (options && options.length > 0) {	
+			const data = options?.map((value: any, index: any)=>{return value.data});
+			const groupedData = data?.reduce((acc:any, item:any, index:any) => {
+				const headerName = item.viewType === 2 ? "Standard" 
+													: item.viewType === 1 ? "Public" : "Private";
+				const existingItem = acc.find((group:any) => group.headerName === headerName);
+				if (existingItem) {
+						existingItem.children.push({ key: item.viewId, value: item.viewId, text: item.viewName, selected: item.defaultView });
+				} else {
+					acc.push({
+						id: index + 1,
+						headerName: headerName,
+						open: item.defaultView ? false : true,
+						collapse: item.defaultView ? false : true,
+						children: [{ key: item.viewId, value: item.viewId, text: item.viewName, selected: item.defaultView }]
+					});
+				}
+				return acc;
+			}, []);
+			setSelectOptions([...groupedData]);
 		}
 	}, [options])
 

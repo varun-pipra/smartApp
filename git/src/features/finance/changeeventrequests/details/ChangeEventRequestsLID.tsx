@@ -25,6 +25,7 @@ import ChangeEventsDetails from './tabs/changeeventdetail/ChangeEventDetails';
 import Links from './tabs/links/Links';
 import ReferenceFiles from './tabs/referencefiles/ReferenceFiles';
 import { amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
+import { sapLinksObj } from 'utilities/sapLink';
 
 const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
@@ -507,7 +508,7 @@ const HeaderContent = memo((props: any) => {
 								src={connectors?.[0]?.primaryIconUrl}
 								alt="connector Image"
 							/> : ''}
-							{connectors?.length ? <span className='sapnumber'>{changeRequestDetails?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+							{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.changeEvents && window.open(sapLinksObj?.changeEvents)}}>{changeRequestDetails?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 				</span>
 				<span className='budgetid-label grey-font'>Status:</span>
 				<span className='status-pill' style={{ backgroundColor: stateObject?.lightColor, color: stateObject?.bgColor }}>

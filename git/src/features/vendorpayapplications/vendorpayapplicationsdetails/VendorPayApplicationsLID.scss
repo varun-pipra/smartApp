@@ -117,6 +117,7 @@
                     display: flex;
                     align-items: center;
                     height: 25px;
+                    min-width: fit-content;
                     span {
                         margin-right: 5px;
                     }
@@ -127,26 +128,27 @@
                 .budgetid-label,
                 .last-modified-label {
                     height: 100%;
-                    font-family: Roboto-Regular !important;
+                    font-family: 'Roboto-Regular' !important;
                 }
             }
-            .bid-content{
+            .bid-content {
                 display: flex;
-                gap:10px;
+                gap: 10px;
                 .bid-id {
                     font-weight: bold;
                 }
-                .sap{
+                .sap {
                     display: flex;
                     align-items: center;
+                    min-width: fit-content;
                 }
                 img.sapnumber {
                     height: 1.5rem;
                     object-fit: contain;
                     margin-top: -3px;
                 }
-                .sapnumber{
-                    color:#059cdf;
+                .sapnumber {
+                    color: #059cdf;
                     &.common-icon-sap-logo:before {
                         color: #3198f2 !important;
                         background: -webkit-linear-gradient(#00AEEF, #0097DC, #007CC5, #006CB8, #0066B3);
@@ -208,7 +210,7 @@
     .tab-panel-container {
         flex: auto;
         padding-top: 1.5em;
-        #lien-Waiver{
+        #lien-Waiver {
             height: fit-content !important;
         }
     }
@@ -224,8 +226,7 @@
     }
     .iqobjectpage-main-container .iqobjectpage-tabbar-outer {
         flex: 0 !important;
-	}
-	
+    }
     .dynamic-page-body {
         #pay-Application-Details {
             height: fit-content !important;

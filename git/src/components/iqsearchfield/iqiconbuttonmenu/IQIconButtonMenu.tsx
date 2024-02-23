@@ -1,7 +1,7 @@
 import {useEffect, useState, ReactNode} from 'react';
 import _ from 'lodash';
 import {
-	Button, Checkbox, ListItemIcon, ListItemText, ListItemButton,
+	Button, Checkbox,Radio, ListItemIcon, ListItemText, ListItemButton,
 	ListSubheader, ListItem, MenuList, ClickAwayListener, Paper, Popper, Divider, Box, TextField, InputAdornment, Avatar
 } from '@mui/material';
 import {KeyboardArrowRight as ArrowRight} from '@mui/icons-material';
@@ -231,7 +231,7 @@ const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, 
 			subMenuNodes = <CheckboxListMenu name={name} items={child.items} selection={selected} onChange={changeHandler} isSearchField={isSearchField} />;
 			break;
 		case 'radio':
-			subMenuNodes = child.component;
+			subMenuNodes =  <RadioListMenu name={name} items={child.items} selection={selected} onChange={changeHandler} isSearchField={isSearchField} />;;
 			break;
 		default:
 			subMenuNodes = <MultipleSubMenu name={name} childItems={child} selection={selected} onChange={changeHandler} />;
@@ -449,6 +449,161 @@ export const CheckboxListMenu = (props: {name: string, selection: any, items: Ar
 		})}
     </MenuList>
   ) : null;
+};
+
+
+export const RadioListMenu = (props: {name: string, selection: any, items: Array<IQIconButtonMenuChildrenItem> | undefined, onChange: any, isSearchField?: boolean}) => {
+	const {isSearchField, ...rest} = props;
+	
+	let itemList :any = props.items || [];
+	const [menuItems, setMenuItems] = React.useState<any>(itemList || []);
+	const [selection, setSelection] = useState<any>(props.selection || []);
+
+
+	const onItemClick = (e: any) => {
+		const currentValue = e.currentTarget.getAttribute('data-value') || e.target.value;
+		setSelection(currentValue);
+		// console.log('currentValue',currentValue)
+		// const valueIndex = selection.indexOf(currentValue);
+		// console.log('else',valueIndex)
+		// if(valueIndex > -1) {
+		// 	console.log('else if',currentValue)
+		// 	//setSelection((prev: any) => prev.filter((el: any) => el !== currentValue));
+		// 	setSelection(currentValue);
+		// } else {
+		// 	console.log('else else',currentValue);
+		//	setSelection(currentValue);
+		//}
+	};
+
+	useEffect(() => {
+		props.onChange && props.onChange({[props.name]: selection});
+	}, [selection]);
+
+	const [searchValue, setSearchValue] = useState("");
+
+	const handleSearch = (e: any) => {
+		let keyword = e?.target?.value;
+		setSearchValue(keyword);
+		const res = JSON.parse(JSON.stringify(itemList)).filter((obj: any) => {
+			return obj.value && JSON.stringify(obj.value)?.toLowerCase()?.includes(keyword);
+		});
+		setMenuItems(res);
+	};
+	
+	const handleSearchClear = () => {
+		setSearchValue('');
+		setMenuItems(itemList);
+	};
+	
+	return props.items?.length ? (
+    <MenuList>
+      {isSearchField && (
+        <Box className="search-wrapper skill-search">
+          <TextField
+            variant={"outlined"}
+            autoFocus
+            value={searchValue}
+            onChange={handleSearch}
+            size="small"
+            fullWidth
+            tabIndex={1}
+            className={"smart-dropdown-search-box search-field "}
+            onKeyDown={(e: any) => {
+              if (e.key !== "Escape") {
+                e.stopPropagation();
+              }
+            }}
+            placeholder={"Search"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  {searchValue == "" ? (
+                    <SearchIcon />
+                  ) : (
+                    <ClearIcon
+                      onClick={handleSearchClear}
+                      style={{ cursor: "pointer" }}
+                    />
+                  )}
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+      )}
+      {menuItems?.map((item: any, index :any) => {
+					const labelId = `checkbox-list-${item?.value}-${index}`;
+					const hasSubMenu = item.children?.items?.length > 0;
+					const subMenuNode = hasSubMenu ? getSubMenuNodeByType(item.value, item.children) : undefined;
+					const MenuListItem = hasSubMenu ? IQMenuListItem : ListItem;
+					const secondaryActionProp = hasSubMenu ? { menu: subMenuNode, secondaryAction: <ArrowRight /> } : null;
+					return <div>
+									{!item?.hidden && (
+										<ListItem
+											key={`listitem-${item?.value}-${index}`}
+											className={
+											props.selection?.indexOf(item?.value) > -1
+												? "menu-selected"
+												: ""
+											}
+										>
+											<ListItemButton
+												key={`listitembutton-${item?.value}-${index}`}
+												dense
+												disableRipple
+												role={undefined}
+												data-value={item?.value}
+												onClick={onItemClick}
+												selected={selection == item?.value}
+											>
+												<ListItemIcon key={`listitem-icon-${item?.value}-${index}`}>
+													<Checkbox
+													key={`listitem-checkbox-${item?.value}-${index}`}
+													edge="start"
+													tabIndex={-1}
+													disableRipple
+													checked={selection == item?.value}
+													value={item?.value}
+													inputProps={{ "aria-labelledby": labelId }}
+													onChange={(e) => onItemClick(e)}
+													/>
+												</ListItemIcon>
+												{(item?.basecustomline ?? false) && (
+													<div
+													className="base-custom-line"
+													style={{ backgroundColor: `#${item.color}` }}
+													></div>
+												)}
+												{item.iconCls && (
+													<ListItemIcon
+													key={`iqmenu-item-icon-${item.value}-${index}`}
+													>
+													<span
+														className={item.iconCls}
+														style={{ color: item.color }}
+													></span>
+													</ListItemIcon>
+												)}
+												<ListItemText id={labelId} primary={item?.text} />
+				  						</ListItemButton>
+											{item?.children?.items?.length && (
+												<MenuListItem
+													key={`iqmenu-item-${item.value}-${index}`}
+													className={
+														selection && selection.indexOf(item.value) > -1
+															? "menu-selected"
+															: ""
+													}
+													{...secondaryActionProp}
+												/>
+											)}
+										</ListItem>
+									)}
+								</div>
+							})}
+		</MenuList>
+	) : null;
 };
 
 export const PopoverSelect = (props: any) => {

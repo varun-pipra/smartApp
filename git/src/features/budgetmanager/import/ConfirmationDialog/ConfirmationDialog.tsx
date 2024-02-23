@@ -24,7 +24,7 @@ export const ConfirmationDialog = (props: any) => {
         }
 
     >
-    {props?.icon ? props?.icon : <div className="warning-icon-cls"><span className="common-icon-policy-notification-icon"></span></div>}
+    {props?.icon ? props?.icon : <div className="warning-icon-cls"><span className="common-icon-not-import-warning"></span></div>}
     {props?.content ? props?.content : <div className="warning-confirm">Are you sure you want to continue?</div>}
 
     </IQBaseWindow>;

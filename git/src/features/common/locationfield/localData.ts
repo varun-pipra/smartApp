@@ -3372,3 +3372,72 @@ export const tags = {
 	],
 	"TotalCount": 0
 };
+
+export const locationConfigData = {
+    "success": true,
+    "values": {
+        "projectId": 531979,
+        "spatialType": "linear",
+        "unit": "Meters",
+        "distance": 17030.0,
+        "enableGeoFence": true,
+        "hasCustomHierarchy": true,
+        "geoFenceAlertType": 1
+    },
+    "message": ""
+}
+
+export const segmentsDataByLocation = {
+    "success": true,
+    "values": {
+        "id": 0,
+        "levelId": null,
+        "name": "Smartapp Safety",
+        "spatialData": {
+            "encodedPolyline": "",
+            "spatialType": "linear",
+            "point": null,
+            "linearData": [
+                {
+                    "uniqueId": "807ad488-564c-4d23-bbee-2334f0af1060",
+                    "encodedPolyline": "q`j_Dac_|MbnDaxDvqAbnKklGrsF",
+                    "linearPoints": null,
+                    "name": "Test Segment",
+                    "distance": 17029.853814295544,
+                    "displayDistance": 17029.853814295544,
+                    "startDate": "2021-08-10T00:00:00",
+                    "endDate": "2022-06-30T00:00:00"
+				},
+				{
+                    "uniqueId": "807ad488-564c-4d23-bbee-2334f0af1061",
+                    "encodedPolyline": "q`j_Dac_|MbnDaxDvqAbnKklGrsF",
+                    "linearPoints": null,
+                    "name": "Test Segment2",
+                    "distance": 34567,
+                    "displayDistance": 17029.853814295544,
+                    "startDate": "2021-08-10T00:00:00",
+                    "endDate": "2022-06-30T00:00:00"
+				},
+				{
+                    "uniqueId": "807ad488-564c-4d23-bbee-2334f0af1062",
+                    "encodedPolyline": "q`j_Dac_|MbnDaxDvqAbnKklGrsF",
+                    "linearPoints": null,
+                    "name": "Test Segment3",
+                    "distance": 12456,
+                    "displayDistance": 17029.853814295544,
+                    "startDate": "2021-08-10T00:00:00",
+                    "endDate": "2022-06-30T00:00:00"
+                }
+            ],
+            "spatialOptions": ""
+        },
+        "parentId": null,
+        "child": false,
+        "childData": [],
+        "offlineCacheId": 1,
+        "unit": "Meters",
+        "distance": 17030.0,
+        "displayDistance": 17030.0
+    },
+    "message": ""
+}

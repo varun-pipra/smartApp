@@ -1,5 +1,4 @@
 .budget-details-box {
-    // padding: 0 1em;
     .budget-details-header {
         min-height: 4em;
         display: flex;
@@ -15,9 +14,9 @@
         }
     }
     .budget-details-content {
-        display: grid; // grid-template-columns: repeat(3, 1fr);
+        display: grid;
         grid-gap: 1em 2em;
-        grid-template-columns: repeat(3, 30%); // margin-bottom: 2em;
+        grid-template-columns: repeat(3, 30%);
         .budget-info-subheader {
             font-size: 16px;
             font-weight: bold;
@@ -42,7 +41,7 @@
                 grid-column: span 2;
             }
             &.span-3.mark-up-fee {
-                grid-column: span 2; // width: 42vw; 
+                grid-column: span 2;
                 .budget-info-label {
                     color: #333;
                     min-width: 124px;
@@ -171,7 +170,7 @@
             .source-checkbox-cls {
                 .MuiFormGroup-root {
                     .MuiTypography-root {
-                        color: #666 !important;
+                        //  color: #666 !important;
                     }
                     padding-left: 8px;
                     .MuiTypography-root {
@@ -184,7 +183,6 @@
             }
         }
         .budget-billable-cls {
-            //display: contents;
             grid-column: span 3;
             display: flex;
             gap: 8rem;
@@ -253,7 +251,7 @@
         img {
             width: 220px;
             height: 150px;
-            object-fit: contain; //object-fit: cover;
+            object-fit: contain;
         }
     }
     &_body {
@@ -305,5 +303,33 @@
         line-height: 1.4;
         margin-bottom: 10px;
         display: block;
+    }
+}
+
+.budget-segment-cls {
+    display: flex;
+    width: max-content;
+    align-items: end;
+    .segment-block-cls {
+        margin-right: 24px;
+        min-width: 154px;
+        .unit {
+            margin-right: 20px
+        }
+        .MuiSelect-select {
+            min-width: 154px !important;
+        }
+        .common-icon-road:before {
+            color: #059cdf;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .budget-info-label {
+            align-items: center;
+            color: gray;
+            display: flex;
+            font-family: 'Roboto-Regular';
+            padding: 1em 0;
+        }
     }
 }

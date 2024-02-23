@@ -100,7 +100,7 @@ const SBSManagerWindow = (props: any) => {
 		];
 		return filterMenu;
 	}, []);
-	const modName = 'sbsmanger';
+	const modName = 'sbsmanager';
 	const dispatch = useAppDispatch();
 	const [localhost] = React.useState(isLocalhost);
 	const [appData] = React.useState(appInfoData);

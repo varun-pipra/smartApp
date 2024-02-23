@@ -80,7 +80,6 @@ const HeaderPage = (props: HeaderPageProps) => {
 	const [defaultFilters, setDefaultFilters] = React.useState<any>([])
 	const [originalBudgetCatalogReadOnly, setOriginalBudgetCatalogReadOnly] = React.useState<any>({unitofMeasure: false,quantity: false,cost: false});
 	const [originalBudgetCatalogData, setOriginalBudgetCatalogData] = React.useState<any>({unitOfMeasure: '',quantity: '',cost: ''});
-	console.log("divisionCostCodeFilterData", divisionCostCodeFilterData)
 	const [showWorkersDialog, setShowWorkersDialog] = React.useState<any>(false);
 	const [laborSheetData, setLaborSheetData] = React.useState<any>([])
 	React.useEffect(() => {
@@ -236,8 +235,8 @@ const HeaderPage = (props: HeaderPageProps) => {
 						unitOfMeasure: '',
 						quantity: catObj.quantity,
 						cost: catObj.price,
-						equipmentManufacturer: catObj?.manufacturer?.name,
-						equipmentManufacturerId: catObj?.manufacturer?.id,
+						equipmentManufacturer: catObj?.type == 1 ? catObj?.distributorName : catObj?.manufacturer?.name,
+						equipmentManufacturerId: catObj?.type == 1 ? catObj?.distributorId : catObj?.manufacturer?.id,
 						equipmentModel: catObj?.sku,
 						equipmentCatalogId: catObj?.id
 					};
@@ -281,7 +280,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 					options={costCodeDropdownData?.length > 0 ? costCodeDropdownData : []}
 					onChange={(value:any) => handleOnChange(value, 'costCode')}
 					required={true}
-					startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
+					startIcon={<div className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
 					checkedColor={'#0590cd'}
 					showFilter={false}
 					selectedValue={headerPageData.division && headerPageData.costCode ? headerPageData.division + '|' + headerPageData.costCode : ''}
@@ -355,7 +354,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 			<MuiGrid item xl={1.5} lg={1.5} md={1.5} sm={6} xs={6}>
 				<SmartDropDown
 					// LeftIcon={<CalculateIcon fontSize={primaryIconSize} style={{ color: globalStyles.primaryColor }} />}
-					LeftIcon={<div className='common-icon-Curve' style={{ fontSize: '1.3rem' }}></div>}
+					LeftIcon={<div className='common-icon-Curve' style={{ fontSize: '1.4rem' }}></div>}
 					options={curveList}
 					dropDownLabel="Curve"
 					isSearchField={false}

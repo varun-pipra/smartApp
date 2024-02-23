@@ -202,14 +202,14 @@ const ProjectTeamWindow = (props: any) => {
 	const customSortingObjFields = ['company', 'tradeName', 'shift'];
 	const customSortingArrFields = ['skills', 'roles','regions'];
 	const customSortingFields = ['lastName', 'email', 'phone']; //-->
-	const customFilterFields = ['permissions', 'onlineStatus', 'companyManagerAttestation', 'status'];
+	const customFilterFields = ['permissions', 'onlineStatus', 'companyManagerAttestation', 'status', 'currentProjects'];
 	const hideRtlsColumns = ['company', 'roles', "tradeName", "skills", "workCategoryName", "safetyStatus", "policyStatus", "certificateStatus", 'projectZonePermissions'];
 	const isMTA = localhost ? true : (appInfo?.gblConfig?.project?.isProjectCentralZone) || false;
 	let isOrgSubscribed = localhost ? true : (appInfo?.gblConfig?.currentProjectInfo?.isOrgSubscribed);
 	const [groupKey, setGroupKey] = React.useState<any>('');
 	const [filteredValues, setFilteredValues] = React.useState<any>({});
 	const radioRef = useRef<any>('');
-	const ptTitle = appInfo?.viewConfig?.title.indexOf('Team Orientation');
+	const ptTitle = appInfo?.viewConfig?.title?.indexOf('Team Orientation');
 	const [selectedWorker, setSelectedWorker] = React.useState<any>('');
 	const escapeRegExp = (s: any) => {
 		return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -232,6 +232,7 @@ const ProjectTeamWindow = (props: any) => {
 	const [gridSearchText, setGridSearchText] = React.useState('');
 	const [gridFilters, setGridFilters] = React.useState({});
 	const [gridSafetyStatusFilters, setGridSafetyStatusFilters] = React.useState<any>({});
+	const [gridCurrentProjectFilters, setGridCurrentProjectFilters] = React.useState<any>({});
 	//End
 	const activeColsTab = useRef<any>(null);
 	let safetyStatusFilterFormat: any = {
@@ -247,17 +248,65 @@ const ProjectTeamWindow = (props: any) => {
 	const [gridSelectedRowIds, setGridSelectedRowIds] = React.useState<string[]>([]);
 	const [regionsData, setRegionsData] = React.useState([]);
 	const [regionsOriginalData, setRegionsOriginalData] = React.useState([]);
+	const [reserveFormData, setReserveFormData] = React.useState<any>({});
+	const ProjectsData = [
+		{
+			"uniqueId": "0bc9c7e9-1ee9-4ad8-8b08-9c9efc39a020",
+			"id": 548829,
+			"value": "Captial Common Projects",
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "Captial Common Projects",
+			"name": "Captial Common Projects",
+			"text": "Captial Common Projects"
+		},
+		{
+			"uniqueId": "641ccf57-79eb-4542-b9e2-7d43a07df215",
+			"id": 532018,
+			"value": "Captial Gateway Renovation",
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "Captial Gateway Renovation",
+			"name": "Captial Gateway Renovation",
+			"text": "Captial Gateway Renovation"
+		},
+		{
+			"uniqueId": "9a8d9eea-d8a6-4b16-8023-3cb9c0c5302d",
+			"id": 2866620,
+			"value": "Captial Commercial Solutions",
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "Captial Commercial Solutions",
+			"name": "Captial Commercial Solutions",
+			"text": "Captial Commercial Solutions"
+		},
+		{
+			"uniqueId": "849dd451-c6a1-412c-8000-fdb0e1ffc823",
+			"id": 605844,
+			"value": "Captial City Bussiness Park",
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "Captial City Bussiness Park",
+			"name": "Captial City Bussiness Park",
+			"text": "Captial City Bussiness Park"
+		},
+		{
+			"uniqueId": "1761be78-b2f5-4ede-b774-372fb7565a51",
+			"id": 3346359,
+			"value": "East Side Enterprise Building",
+			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
+			"label": "East Side Enterprise Building",
+			"name": "East Side Enterprise Building",
+			"text": "East Side Enterprise Building"
+		}
+	];
 	const safetyGroupOptions = [
 		{ text: "Safety Status", value: "safetyStatus", iconCls: 'common-icon-Safety-Onboarding-Flyer' },
 		{ text: "Policy Status", value: "policyStatus", iconCls: 'common-icon-orgconsole-safety-policies' },
 		{ text: "Certification Status", value: "certificateStatus", iconCls: 'common-icon-certification' }
 	];
 	const safetyFilterOptions = [{
-		text: "Safety Status",
+		text: isFromOrgStaff ? 'Onboarding Status' : "Safety Status",
 		value: "safetyStatus",
 		iconCls: 'common-icon-SafetyPermit main',
 		key: "safetyStatus",
-		hidden: !appInfo?.gblConfig?.currentProjectInfo?.safetyTracking,
+		hidden: isFromOrgStaff ? !isFromOrgStaff : !appInfo?.gblConfig?.currentProjectInfo?.safetyTracking,
 		children: {
 			type: "checkbox",
 			items: [
@@ -655,6 +704,17 @@ const ProjectTeamWindow = (props: any) => {
 				type: "checkbox",
 				items: [],
 			},
+		},
+		{
+			text: "Current Project(s)",
+			value: "currentProjects",
+			iconCls: 'common-icon-Approval-Role',
+			key: "currentProjects",
+			hidden : !isFromOrgStaff,
+			children: {
+				type: "checkbox",
+				items: ProjectsData,
+			},
 		}],
 			onlineStatusFilter = [{
 				text: "Online Status",
@@ -744,6 +804,11 @@ const ProjectTeamWindow = (props: any) => {
 			type: "String",
 			searchBy: 'onlineStatusFilterText'
 		},
+		currentProjects: {
+			byKeyName: "value",
+			type: "Array",
+			searchBy: 'currentProjects'
+		},
 	};
 	const GetSortingCookie = () => {
 		let sorting = getCookie(`sorting_${appInfo?.projectId}_${CookieTitle}`);
@@ -785,7 +850,7 @@ const ProjectTeamWindow = (props: any) => {
 					let searchKey = filterBy[key].byKeyName;
 					if (filterBy[key]?.type === "Object" && obj[filterBy[key].searchBy] !== null)
 						return find.includes(obj[filterBy[key].searchBy][searchKey]);
-					else if (filterBy[key]?.type === "Array" && obj[filterBy[key].searchBy] !== null) {
+					else if (filterBy[key]?.type === "Array" && (obj[filterBy[key].searchBy] ?? false)) {
 						return obj[filterBy[key].searchBy].some((item: any) => {
 							if (item[searchKey] !== null) return find.includes(item[searchKey]);
 							else return false;
@@ -853,17 +918,26 @@ const ProjectTeamWindow = (props: any) => {
 				if (filterObj?.safetyStatus?.length > 0 ?? false) {
 					setGridSafetyStatusFilters(checkSafetyStatusFromFilteredData(filterObj?.safetyStatus))
 				};
+				if(isFromOrgStaff && (filterObj?.currentProjects?.length > 0 ?? false)) {
+					setGridCurrentProjectFilters(checkCurrentProjectsFromFilteredData(filterObj?.currentProjects));
+				}
 			} else {
 				if (!_.isEqual(filteredValues, filterObj)
 					&& Object.keys(filterValues).length === 0) {
 					setFilteredValues(filterObj);
 					setGridSafetyStatusFilters(safetyStatusFilterFormat);
+					if(isFromOrgStaff){
+						setGridCurrentProjectFilters(safetyStatusFilterFormat);
+					};
 				};
 			}
 		} else {
 			if (Object.keys(filterValues).length === 0) {
 				setFilteredValues(filterValues);
 				setGridSafetyStatusFilters(safetyStatusFilterFormat);
+				if(isFromOrgStaff){
+					setGridCurrentProjectFilters(safetyStatusFilterFormat);
+				};
 			};
 		};
 	};
@@ -986,9 +1060,33 @@ const ProjectTeamWindow = (props: any) => {
 			};
 		};
 	};
+	const checkCurrentProjectsFilters:any = () => {
+		let currentProjectFilter: any = localhost ? getCookie(`currentProjects_-1_${CookieTitle}`) : getCookie(`currentProjects_${appInfo.projectId}_${CookieTitle}`);
+		if (isFromOrgStaff && currentProjectFilter?.length > 0) {
+			let values = currentProjectFilter;
+			let Obj = [...filters].find((x) => x.text === 'Current Project(s)');
+			Obj = Obj.children.items;
+			let format: any = {
+				"ids": [],
+				"names": values
+			};
+			for (let i = 0; i < Obj.length; i++) {
+				if (values.includes(Obj[i].text)) {
+					format.ids.push(Obj[i].id);
+				}
+			};
+			return format;
+		} else {
+			return {
+				"ids": [],
+				"names": []
+			};
+		};
+	};
 	const checkSafetyStatusFromFilteredData = (filter: any) => {
 		if (filter?.length > 0) {
-			let safetyStatusObj = [...filters].find((x) => x.text === 'Safety Status');
+			const text = isFromOrgStaff ? 'Onboarding Status' : 'Safety Status';
+			let safetyStatusObj = [...filters].find((x) => x.text === text);
 			safetyStatusObj = safetyStatusObj.children.items;
 			let format: any = {
 				"ids": [],
@@ -997,6 +1095,27 @@ const ProjectTeamWindow = (props: any) => {
 			for (let i = 0; i < safetyStatusObj.length; i++) {
 				if (filter.includes(safetyStatusObj[i].text)) {
 					format.ids.push(safetyStatusObj[i].id);
+				}
+			};
+			return format;
+		} else {
+			return {
+				"ids": [],
+				"names": []
+			};
+		};
+	};
+	const checkCurrentProjectsFromFilteredData = (filter: any) => {
+		if (filter?.length > 0) {
+			let currentProject = [...filters].find((x) => x.text === 'Current Project(s)');
+			currentProject = currentProject.children.items;
+			let format: any = {
+				"ids": [],
+				"names": filter
+			};
+			for (let i = 0; i < currentProject.length; i++) {
+				if (filter.includes(currentProject[i].text)) {
+					format.ids.push(currentProject[i].id);
 				}
 			};
 			return format;
@@ -1092,10 +1211,11 @@ const ProjectTeamWindow = (props: any) => {
 			dispatch(fetchTradesData(appInfo));
 			dispatch(fetchWorkTeamsData(appInfo));
 			dispatch(fetchCompaniesData(appInfo));
-			appInfo?.viewConfig?.title ? setPopTitle(appInfo?.viewConfig?.title) : setPopTitle('Project Team');
+			appInfo?.viewConfig?.title ? (isFromOrgStaff ? setPopTitle('Staff') : setPopTitle(appInfo?.viewConfig?.title)) : setPopTitle('Project Team');
 			/* appInfo?.fullScreen &&  */
 			setFullScreen(appInfo?.fullScreen || false);
 			setGridSafetyStatusFilters(checkSafetyStatusFilters());
+			setGridCurrentProjectFilters(checkCurrentProjectsFilters());
 			if((appInfo?.orgId ?? false)) {
 				fetchRegionsData(appInfo)
 				.then((res: any) => {
@@ -1216,6 +1336,7 @@ const ProjectTeamWindow = (props: any) => {
 			setGridSearchText(search ?? "");
 			searchKey.current = search ?? "";
 			setGridSafetyStatusFilters(checkSafetyStatusFilters());
+			setGridCurrentProjectFilters(checkCurrentProjectsFilters());
 			setGroupKey(group ?? "");
 			dispatch(setCurrencySymbol(currency["USD"]));
 			dispatch(setCostUnitList(appData?.DivisionCost?.CostUnit));
@@ -1252,9 +1373,11 @@ const ProjectTeamWindow = (props: any) => {
 					switch (iframeEvent) {
 						case "updatetotalcount":
 							const pTitle = appInfo?.viewConfig?.title || popTitle || '';
-							if (data.data && data.data.totalCount > 0 && pTitle && pTitle.indexOf('Team Orientation') >= 0) {
+							if(isFromOrgStaff) {
+								setPopTitle('Staff');
+							} else if (data.data && data.data.totalCount > 0 && pTitle && pTitle?.indexOf('Team Orientation') >= 0) {
 								setPopTitle('Team Orientation (' + data.data.totalCount + ')');
-							} else if (pTitle && pTitle.indexOf('Team Orientation') >= 0) {
+							} else if (pTitle && pTitle?.indexOf('Team Orientation') >= 0) {
 								setPopTitle('Team Orientation');
 							}
 							break;
@@ -1298,9 +1421,11 @@ const ProjectTeamWindow = (props: any) => {
 								break;
 							case "updatetotalcount":
 								const pTitle = appInfo?.viewConfig?.title || popTitle || '';
-								if (data.data && data.data.totalCount > 0 && ((pTitle && pTitle.indexOf('Team Orientation') >= 0) || (structuredData?.viewConfig?.title && structuredData?.viewConfig?.title.indexOf('Team Orientation') >= 0))) {
+								if(isFromOrgStaff) {
+									setPopTitle('Staff');
+								} else if (data.data && data.data.totalCount > 0 && ((pTitle && pTitle?.indexOf('Team Orientation') >= 0) || (structuredData?.viewConfig?.title && structuredData?.viewConfig?.title.indexOf('Team Orientation') >= 0))) {
 									setPopTitle('Team Orientation (' + data.data.totalCount + ')');
-								} else if (pTitle && pTitle.indexOf('Team Orientation') >= 0) {
+								} else if (pTitle && pTitle?.indexOf('Team Orientation') >= 0) {
 									setPopTitle('Team Orientation');
 								}
 								break;
@@ -1967,7 +2092,19 @@ const ProjectTeamWindow = (props: any) => {
 			);
 		},
 	};
-
+	const onCurrentProjectFilterUpdated = (values: any) => {
+		let existingFilters = { ...filteredValues };
+		if (values?.ids?.length === 0 && existingFilters.hasOwnProperty('currentProjects')) {
+			delete existingFilters.currentProjects;
+			setFilteredValues({ ...existingFilters });
+			setGridFilters({ ...existingFilters });
+			setGridCurrentProjectFilters(values);
+		} else {
+			setGridFilters({ ...existingFilters, "currentProjects": values.names });
+			setFilteredValues({ ...existingFilters, "currentProjects": values.names });
+			setGridCurrentProjectFilters(values);
+		};
+	};
 	/**
 	 * Callback method, triggers from parent customHeader/Filter component on selection change
 	 * Filters out the local table data based on the options selected and sets it to rowData state
@@ -2118,6 +2255,12 @@ const ProjectTeamWindow = (props: any) => {
 			defaultState: { sort: null }
 		});
 	};
+	const handleCurrentProjectSorting = (e: any) => {
+		gridApi.columnModel.applyColumnState({
+			state: [{ colId: 'currentProjects', sort: e }],
+			defaultState: { sort: null }
+		});
+	};
 	/**
 	 * All the columns cofigs related to all toggle's avaialble
 	 * For maintanability purpose + to reduce duplicate instances for columns
@@ -2137,9 +2280,11 @@ const ProjectTeamWindow = (props: any) => {
 				return (
           <>
 		  {params?.data?.isReserved && (
+			<IQTooltip title='Reserved' placement='bottom' arrow>
 			<div className="reserved-staff-cls">
 				<span>R</span>
 			</div>
+			</IQTooltip>
 		  )}     
             <Box
               component="img"
@@ -2372,22 +2517,22 @@ const ProjectTeamWindow = (props: any) => {
 			minWidth: 280,
 			pinned: "left",
 			lockPosition: "left",
-			// headerComponent: CustomHeader,
+			headerComponent: CustomHeader,
 			sortable: true,
 			headerComponentParams: {
-				options: SafetyStatusOptions,
+				options: ProjectsData,
 				columnName: 'Current Project(s)',
-				filterUpdated: (values: any) => onSafetyStatusFilterUpdated(values),
+				filterUpdated: (values: any) => onCurrentProjectFilterUpdated(values),
 				showSorting: true,
-				handleSorting: (e: any) => handleSorting(e),
-				defaultFilters: gridSafetyStatusFilters
+				handleSorting: (e: any) => handleCurrentProjectSorting(e),
+				defaultFilters: gridCurrentProjectFilters
 			},
 			cellRenderer: (params:any) => {
 				return (
 				<div style={{display: "flex",alignContent: "center",alignItems: "center"}}>
             {params?.data?.currentProjects?.[0]?.thumbnailUrl && (
               <img
-                src={params?.data?.currentProjects?.[0]?.thumbnailUrl}
+                src={params?.data?.currentProjects?.[0]?.img}
                 alt="Avatar"
                 style={{ width: "24px", height: "24px", padding: "1px" }}
                 className="base-custom-img"
@@ -2404,9 +2549,9 @@ const ProjectTeamWindow = (props: any) => {
 						// else
 						 return (
 							<div key={index}>
-								{item.thumbnailUrl && (
+								{item.img && (
 									<img
-									src={item?.thumbnailUrl}
+									src={item?.img}
 									alt="Avatar"
 									style={{ width: "24px", height: "24px", padding: "1px" }}
 									className="base-custom-img"
@@ -3097,8 +3242,8 @@ const ProjectTeamWindow = (props: any) => {
 			minWidth: 190,
 			sortable: true,
 			comparator: (valueA: any, valueB: any, nodeA: any, nodeB: any, isDescending: any) => {
-				let a = nodeA.data?.globalId && nodeA.data?.globalId.indexOf('00000000') > -1 ? 'No' : 'Yes';
-				let b = nodeB.data?.globalId && nodeB.data?.globalId.indexOf('00000000') > -1 ? 'No' : 'Yes'
+				let a = nodeA.data?.globalId && nodeA.data?.globalId?.indexOf('00000000') > -1 ? 'No' : 'Yes';
+				let b = nodeB.data?.globalId && nodeB.data?.globalId?.indexOf('00000000') > -1 ? 'No' : 'Yes'
 				return a?.localeCompare(b);
 			},
 			cellRenderer: (params: any) => {
@@ -3112,7 +3257,7 @@ const ProjectTeamWindow = (props: any) => {
 							setOpenRightPanel(true);
 						}
 					}
-				}}>{(!params.data?.globalId || (params.data?.globalId && params.data?.globalId.indexOf('00000000') > -1)) ? 'No' : 'Yes'}</span>; // class name is fieldname
+				}}>{(!params.data?.globalId || (params.data?.globalId && params.data?.globalId?.indexOf('00000000') > -1)) ? 'No' : 'Yes'}</span>; // class name is fieldname
 			},
 		},
 		{
@@ -3722,9 +3867,11 @@ const ProjectTeamWindow = (props: any) => {
 	useEffect(() => {
 		console.log('updatetotalcount', rowData, new Date());
 		const pTitle = appInfo?.viewConfig?.title || popTitle || '';
-		if (rowData?.length > 0 && pTitle && pTitle.indexOf('Team Orientation') >= 0) {
+		if(isFromOrgStaff) {
+			setPopTitle('Staff');
+		} else if (rowData?.length > 0 && pTitle && pTitle?.indexOf('Team Orientation') >= 0) {
 			setPopTitle('Team Orientation (' + rowData.length + ')');
-		} else if (pTitle && pTitle.indexOf('Team Orientation') >= 0) {
+		} else if (pTitle && pTitle?.indexOf('Team Orientation') >= 0) {
 			setPopTitle('Team Orientation');
 		}
 	}, [rowData]);
@@ -4299,52 +4446,10 @@ const ProjectTeamWindow = (props: any) => {
 		};
 	};
 	console.log("appInfo Obj", appInfo);
-	const ReserveData = [
-		{name : 'Kelvin', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 0},
-		{name : 'Morgan', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 1},
-		{name : 'Bing', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 2},
-		{name : 'Chandler', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 3},
-		{name : 'Handler', src:'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg', id : 4}
-	];
-	const ProjectsData = [
-		{
-			"uniqueId": "0bc9c7e9-1ee9-4ad8-8b08-9c9efc39a020",
-			"id": 548829,
-			"value": 548829,
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "Captial Common Projects"
-		},
-		{
-			"uniqueId": "641ccf57-79eb-4542-b9e2-7d43a07df215",
-			"id": 532018,
-			"value": 532018,
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "Captial Gateway Renovation"
-		},
-		{
-			"uniqueId": "9a8d9eea-d8a6-4b16-8023-3cb9c0c5302d",
-			"id": 2866620,
-			"value": 2866620,
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "Captial Commercial Solutions"
-		},
-		{
-			"uniqueId": "849dd451-c6a1-412c-8000-fdb0e1ffc823",
-			"id": 605844,
-			"value": 605844,
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "Captial City Bussiness Park"
-		},
-		{
-			"uniqueId": "1761be78-b2f5-4ede-b774-372fb7565a51",
-			"id": 3346359,
-			"value": 3346359,
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "East Side Enterprise Building"
-		}
-	];
-	console.log("reserve staff", reserveStaff)
-	const handleReserveStaffChange = (values:any, key:any) => {
+	const handleReserveStaffChange = (values:any) => {
+		setReserveFormData(values);
+	};
+	const handleSubmit  = () => {
 
 	};
 	return (
@@ -4582,8 +4687,8 @@ const ProjectTeamWindow = (props: any) => {
 					actions={
 						<div>
 						<IQButton
-							disabled={true}
-							// onClick={() => handleSelect()}
+							disabled={((reserveFormData?.startDate === "" ?? true) && (reserveFormData?.endDate === "" ?? true))}
+							onClick={() => handleSubmit()}
 						>
 							RESERVE STAFF
 						</IQButton>
@@ -4593,7 +4698,7 @@ const ProjectTeamWindow = (props: any) => {
 					{...props}
 				>
 				<div>		
-					<ReserveStaffContent data={selectedMembers} projectData={ProjectsData} handleChange={(key:any, values:any) => handleReserveStaffChange(key, values)} />
+					<ReserveStaffContent data={selectedMembers} projectData={ProjectsData} handleChange={(values:any) => handleReserveStaffChange(values)} />
 				</div>
 				</IQBaseWindow>
 			)}

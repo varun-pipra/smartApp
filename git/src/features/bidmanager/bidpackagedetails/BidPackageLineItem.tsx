@@ -30,6 +30,7 @@ import BidQueries from './tabs/bidqueries/BidQueries';
 import { ReferenceFiles } from './tabs/referencefiles/ReferenceFiles';
 import { setViewType } from '../stores/awardBidSlice';
 import BlockchainIB from 'features/common/informationBubble/BlockchainIB';
+import { sapLinksObj } from 'utilities/sapLink';
 
 var tinycolor = require('tinycolor2');
 
@@ -337,7 +338,7 @@ const BidPackageLineItem = (props: any) => {
 										src={connectors?.[0]?.primaryIconUrl}
 										alt="connector Image"
 									/> : ''}
-									{connectors?.length ? <span className='sapnumber'>{bidLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+									{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.bidManager && window.open(sapLinksObj?.bidManager)}}>{bidLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 							</span>
 						</p>
 						{collapsed === false ? <p className='head-info-box'>

@@ -429,7 +429,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 			pinned: 'left',
 			field: 'status',
 			rowGroup: selectedGroup === 'status',
-			width: 325,
+			width: 332,
 			headerComponent: CustomFilterHeader,
 			headerComponentParams: {
 				columnName: isUserGCForVPA(appInfo) ? 'Payment Status' : 'Response Status',

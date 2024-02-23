@@ -34,7 +34,7 @@ const IQFileUploadField = (props: IQFileUploadFieldProps) => {
 				{file ? <Chip label={file.name} onDelete={() => setFile(undefined)} /> : <span className='placeholder'>{placeholder}</span>}
 			</Stack>
 			<Button
-				disabled={!!file}
+				// disabled={!!file}
 				onClick={() => inputRef.current.click()}
 			>
 				Browse

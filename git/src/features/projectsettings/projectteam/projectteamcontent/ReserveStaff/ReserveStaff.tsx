@@ -18,13 +18,14 @@ const ReserveStaffContent = (props: any) => {
   const classes = useStyles();
   const { data,projectData, isReadOnly = false,handleChange, ...rest } = props;
   const [formData, setFormData] = React.useState<any>({
-    startDateTime: "",
-    endDateTime: "",
+    startDate: "",
+    endDate: "",
     projects : []
   });
   const handleOnChange = (key: any, value: any) => {
-    handleChange && handleChange(key, value);
-    setFormData({ ...formData, [key]: value });
+    let values = { ...formData, [key]: value };
+    handleChange && handleChange(values);
+    setFormData(values);
   };
   return (
     <div className="reserve-staff-container">
@@ -47,7 +48,7 @@ const ReserveStaffContent = (props: any) => {
           doTextSearch={false}
           isSearchField={false}
           isMultiple={true}
-          selectedValue={[2866620, 605844]}
+          selectedValue={formData?.projects || []}
           isFullWidth
           outSideOfGrid={true}
           handleChange={(value: any) => handleOnChange("projects", value)}
@@ -85,12 +86,7 @@ const ReserveStaffContent = (props: any) => {
                 val ? new Date(val)?.toISOString() : val
               )
             }
-            minDate={new Date()}
-            maxDate={
-              formData.endDate
-                ? new Date(formData.endDate)
-                : new Date("12/31/9999")
-            }
+            maxDate={formData?.endDate !== '' ? new Date(formData?.endDate) : new Date('12/31/9999')}
             render={
               <InputIcon
                 placeholder="MM/DD/YYYY"
@@ -115,20 +111,14 @@ const ReserveStaffContent = (props: any) => {
           <DatePickerComponent
             zIndex={9999}
             containerClassName="iq-customdate-cont"
-            defaultValue={convertDateToDisplayFormat(formData?.startDate)}
+            defaultValue={convertDateToDisplayFormat(formData?.end)}
             onChange={(val: any) =>
               handleOnChange(
                 "endDate",
                 val ? new Date(val)?.toISOString() : val
               )
             }
-            minDate={
-              formData?.startDate
-                ? new Date(formData?.startDate) < new Date()
-                  ? new Date()
-                  : new Date(formData?.startDate)
-                : new Date()
-            }
+            minDate={new Date(formData?.startDate)}
             render={
               <InputIcon
                 placeholder="MM/DD/YYYY"

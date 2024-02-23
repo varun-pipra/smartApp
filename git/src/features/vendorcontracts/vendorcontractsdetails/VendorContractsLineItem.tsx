@@ -36,6 +36,7 @@ import {getVCChangeEventsList} from '../stores/VCChangeEventsSlice';
 import {amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
 import {getBudgets} from 'features/clientContracts/stores/CCSovSlice';
 import BlockchainIB from 'features/common/informationBubble/BlockchainIB';
+import { sapLinksObj } from 'utilities/sapLink';
 
 const tinycolor = require('tinycolor2');
 
@@ -345,7 +346,7 @@ const VendorContractsLineItem = (props: headerprops) => {
 										src={connectors?.[0]?.primaryIconUrl}
 										alt="connector Image"
 									/> : ''}
-									{connectors?.length ? <span className='sapnumber'>{vendorLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+									{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.vendorContracts && window.open(sapLinksObj?.vendorContracts)}}>{vendorLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 								</span>
 							<span className='budgetid-label grey-font'>Status:</span>
 

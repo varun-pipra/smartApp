@@ -69,6 +69,11 @@
                     .bid-id {
                         font-weight: bold;
                     }
+                    img.sapnumber {
+                        height: 1.5rem;
+                        object-fit: contain;
+                        margin-top: -3px;
+                    }
                     .status-pill {
                         padding: 0.25em 0.5em;
                         border-radius: 0.2em;

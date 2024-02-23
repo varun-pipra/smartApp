@@ -380,7 +380,7 @@ const BidResponseManagerToolbar = (props: any) => {
 			</div>
 			<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 				{<ReportAndAnalyticsToggle />}
-				{/* {connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>} */}
+				{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
 			</div>
 			{showRightPanel && (
 				<SUIDrawer

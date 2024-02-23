@@ -32,6 +32,7 @@ import {getCCPaymentLedgerList, getPaymentLedgerCount} from '../stores/PaymentLe
 import {getCCChangeEventsList} from '../stores/CCChangeEventsSlice';
 import {amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
 import BlockchainIB from 'features/common/informationBubble/BlockchainIB';
+import { sapLinksObj } from 'utilities/sapLink';
 
 const tinycolor = require('tinycolor2');
 
@@ -340,7 +341,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 										src={connectors?.[0]?.primaryIconUrl}
 										alt="connector Image"
 									/> : ''}
-									{connectors?.length ? <span className='sapnumber'>{contractLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+									{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.clientContracts && window.open(sapLinksObj?.clientContracts)}}>{contractLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 								</span>
 							<span className='budgetid-label grey-font'>Status:</span>
 							<Button

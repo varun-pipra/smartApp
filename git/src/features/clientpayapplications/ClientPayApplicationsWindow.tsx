@@ -398,7 +398,7 @@ const ClientPayApplicationsWindow = (props: any) => {
 			headerName: isUserGCForCPA(appInfo) ? 'Payment Status' : 'Response Status',
 			pinned: 'left',
 			field: 'status',
-			width: 325,
+			width: 332,
 			// filter: true,
 			// valueGetter: (params:any) => params?.data?.status ? getBidStatus(params?.data?.status) : '',
 			// headerComponent: CustomHeader,

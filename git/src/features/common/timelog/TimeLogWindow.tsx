@@ -11,7 +11,7 @@ import { appInfoData } from 'data/appInfo';
 import _ from 'lodash';
 import { memo, useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { triggerEvent } from 'utilities/commonFunctions';
+import convertDateToDisplayFormat , { triggerEvent } from 'utilities/commonFunctions';
 import { formatDate, getTime } from 'utilities/datetime/DateTimeUtils';
 import SUIAlert from 'sui-components/Alert/Alert';
 import AddTimeLogForm from './AddTimeLogForm';
@@ -31,7 +31,7 @@ import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import SplitTimeSegmentDialog from './timeSplitSegment/SplitTimeSegmentDialog';
-import { getPickerDefaultTime ,getDuration } from './utils';
+import { getPickerDefaultTime ,getDuration,dateFunctionalities } from './utils';
 import ManageWorkers from './workerDailog/addManageWorkers/ManageWorkers';
 import {workTeamData} from "data/timelog/TimeLogData";
 import CompanyIcon from "resources/images/Comapany.svg";
@@ -381,17 +381,17 @@ const TimeLogWindow = (props: any) => {
 					};
 				});
 				if (!_.isEqual(selectedFilters2, filterObj) && Object.keys(filterObj).length > 0) {
-					setSelectedFilters2(filterObj);
-					dispatch(getTimeLogList(filterObj));
 					if (filterObj?.hasOwnProperty('status')) {
 						updateCustomHeaderParams(filterObj.status);
+						setSelectedFilters2(filterObj);
+						dispatch(getTimeLogList(filterObj));
 					};
 				} else {
 					if (!_.isEqual(selectedFilters2, filterObj)&& Object.keys(filterValues).length === 0) {
-						setSelectedFilters2(filterObj);
-						dispatch(getTimeLogList(filterObj));
 						defaultDateRangeState();
 						if (selectedFilters2?.hasOwnProperty('status') && !filterObj?.hasOwnProperty('status')) {
+							setSelectedFilters2(filterObj);
+							dispatch(getTimeLogList(filterObj));
 							updateCustomHeaderParams([]);
 						};
 					};
@@ -411,7 +411,10 @@ const TimeLogWindow = (props: any) => {
 					dispatch(getTimeLogList(filterObj));
 				}
 				if(!_.isEqual(selectedFilters2, filterObj) && filterObj?.hasOwnProperty('dateRange')){
-						console.log('dateRange',filterObj.dateRange )
+							setSelectedFilters2(filterObj);
+							const todaydate : any = dateFunctionalities(filterObj.dateRange);
+							const data = {...filterObj , dateRange : todaydate}
+							dispatch(getTimeLogList(data));
 				}
 			} else {
 				if (Object.keys(filterValues).length === 0) {
@@ -913,7 +916,7 @@ const TimeLogWindow = (props: any) => {
 			key: 'dateRange',
 			keyValue: 'dateRange',
 			children: {
-				type: 'checkbox',
+				type: 'radio',
 				items: [{
 					text: 'Today',
 					key: 'today',
@@ -1043,14 +1046,14 @@ const TimeLogWindow = (props: any) => {
 		 if (nested)
 				return {
 					text: nestedKeySecondText != "" ? rec?.[key]?.[nestedKeyFirstText] + ' ' + rec?.[key]?.[nestedKeySecondText] : rec?.[key]?.[nestedKeyFirstText],
-					value: rec?.[key]?.[nestedkeyValue],
-					id: rec?.[key]?.id,
+					value: rec?.[key]?.[nestedkeyValue]?.toString(),
+					id: rec?.[key]?.id?.toString(),
 				};
 			else
 				return {
 					text: rec?.[key] ?? rec?.["name"],
-					value: rec?.[keyValue] ?? rec?.["name"],
-					id: rec?.id,
+					value: rec?.[keyValue]?.toString() ?? rec?.["name"],
+					id: rec?.id?.toString(),
 				};
 		});
 		const filtersCopy: any = [...filterOptions];
@@ -1064,7 +1067,8 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	useMemo(()=>{
-		if (appsList?.length > 0 && filterOptions) {
+		if (sbsGridData?.length > 0 && filterOptions) {
+			console.log('sbsGridData',sbsGridData)
 			const updatedarray = sbsGridData.map((res:any) => { return{ ...res , ['sbs'] : res.name }});
 			setFilters(findAndUpdateFiltersData(filterOptions, updatedarray,"sbs","uniqueid"));
 		}
@@ -1079,6 +1083,7 @@ const TimeLogWindow = (props: any) => {
 
 	useMemo(() => {
 		if (workTeams?.length > 0 && filterOptions) {
+			console.log('workTeams',workTeams)
 			const updatedarray = workTeams.map((res:any) => { return{ ...res , ['workTeams'] : res.name }});
 		  setFilters(findAndUpdateFiltersData(filterOptions,updatedarray, 'workTeams', "id"))
 		}
@@ -1265,7 +1270,7 @@ const TimeLogWindow = (props: any) => {
 				gridContainer: {
 					toolbar: {
 						leftItems: <TLLeftButtons />,
-						rightItems: <TLRightButtons />,
+						rightItems: <TLRightButtons />, 
 						searchComponent: {
 							show: true,
 							type: 'regular',

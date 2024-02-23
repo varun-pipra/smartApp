@@ -113,6 +113,7 @@ const SMReferenceFiles = (props: any) => {
         let updatedRes = [
           ...modifyMarkupData(resp.data),
           ...updatedMData?.extractionAreas || specRefMarkups.extractionAreas || [],
+
         ];
         let data = {
           extractionAreas: updatedRes,
