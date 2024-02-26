@@ -462,18 +462,16 @@ export const RadioListMenu = (props: {name: string, selection: any, items: Array
 
 	const onItemClick = (e: any) => {
 		const currentValue = e.currentTarget.getAttribute('data-value') || e.target.value;
-		setSelection(currentValue);
-		// console.log('currentValue',currentValue)
-		// const valueIndex = selection.indexOf(currentValue);
-		// console.log('else',valueIndex)
-		// if(valueIndex > -1) {
-		// 	console.log('else if',currentValue)
-		// 	//setSelection((prev: any) => prev.filter((el: any) => el !== currentValue));
-		// 	setSelection(currentValue);
-		// } else {
-		// 	console.log('else else',currentValue);
-		//	setSelection(currentValue);
-		//}
+		if(currentValue){
+		const valueIndex = selection.indexOf(currentValue);
+		if(valueIndex > -1) {
+			console.log('else if',currentValue)
+			setSelection([]);
+		} else {
+			console.log('else',currentValue);
+			setSelection(currentValue);
+		}
+		}
 	};
 
 	useEffect(() => {

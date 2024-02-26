@@ -15,12 +15,12 @@ const SendBackGrid = (props: any) => {
 	const dateTimeFields = ['startDate', 'endDate', 'startTime', 'endTime'];
 
 	useEffect(() => {
-		if (props.griddata?.length > 0) {
-			setRowData(props.griddata);
+		if (props.gridData?.length > 0) {
+			setRowData(props.gridData);
 		} else {
-			setRowData([...timelogList?.segments]);
+			setRowData([]);
 		}
-	}, [props.griddata]);
+	}, [props.gridData]);
 
 	const headers: any = useMemo(() => [
 		{

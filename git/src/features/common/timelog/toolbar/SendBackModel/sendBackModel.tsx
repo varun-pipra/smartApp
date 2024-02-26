@@ -7,10 +7,9 @@ import SmartDialog from 'components/smartdialog/SmartDialog';
 import { getServer } from 'app/common/appInfoSlice';
 import DialogContent from "@mui/material/DialogContent";
 import IQSignature from 'components/iqsignature/IQSignature';
-
 import SendBackGrid from './grid';
 
-const PaymentDetailsForm = (props: any) => {
+const sendBackModel = (props: any) => {
 
 	const [reasonVal, setReasonVal] = useState<any>('');
 	const sendBackSignRef = useRef<any>();
@@ -49,9 +48,9 @@ const PaymentDetailsForm = (props: any) => {
 						CANCEL
 					</IQButton>
 					<IQButton
-						disabled={false}
+						disabled={(reasonVal) ? false : true }
 						className='btn-add-line-items'
-						onClick={() => { props?.onSubmit && props?.onSubmit(); }}
+						onClick={() => {console.log("dataaa"); props?.onSubmit && props?.onSubmit({reason: reasonVal, sign:getreviseSign()}); }}
 					>
 						Submit
 					</IQButton>
@@ -68,7 +67,7 @@ const PaymentDetailsForm = (props: any) => {
 				<div className='grid-section'>
 					<SendBackGrid 
 						groupkey='createdBy'
-						griddata = {[]} 
+						gridData = {props?.data} 
 					/>
 				</div>
 				<div className='bottom-section'>
@@ -108,4 +107,4 @@ const PaymentDetailsForm = (props: any) => {
 	);
 };
 
-export default PaymentDetailsForm;
+export default sendBackModel;

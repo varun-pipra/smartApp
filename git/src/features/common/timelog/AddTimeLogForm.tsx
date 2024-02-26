@@ -14,11 +14,10 @@ import TimeLogPicker from "sui-components/TimeLogPicker/TimeLogPicker";
 import convertDateToDisplayFormat from "utilities/commonFunctions";
 import WorkerDailog from "./workerDailog/WorkerDailog";
 import { makeStyles, createStyles } from "@mui/styles";
-import { setToast } from './stores/TimeLogSlice';
+import { setToast ,getTimeLogList,setSmartItemOptionSelected} from './stores/TimeLogSlice';
 import { AppList, AppList_PostMessage } from './utils';
 import { addTimeToDate } from 'utilities/datetime/DateTimeUtils';
 import { addTimeLog } from './stores/TimeLogAPI';
-import {setSmartItemOptionSelected} from './stores/TimeLogSlice';
 import { canManageTimeForCompany, canManageTimeForWorkTeam, isWorker, canManageTimeForProject } from 'app/common/userLoginUtils';
 
 interface TimeLogFormProps {
@@ -87,10 +86,7 @@ const AddTimeLogForm = (props: any) => {
 	}, [appsList]);
 
 	useMemo(() => {
-	
 		if(!_.isEmpty(smartItemOptionSelected) ){
-			console.log('smartItemOptionSelected',smartItemOptionSelected)
-			console.log('AppList',AppList)
 			const duplicate = [{...smartItemOptionSelected}]
 			const addLinksOptionsCopy = AppList([...appsList,...duplicate]);
 			setAddLinksOptions(addLinksOptionsCopy);
@@ -135,8 +131,7 @@ const AddTimeLogForm = (props: any) => {
 			: setAddDisabled( _.isEmpty(record?.resource) || _.isEmpty(record?.time));
 	}; 
 
-	const handleAdd = () => {
-		console.log('timelogForm',timelogForm);		
+	const handleAdd = () => {	
 		const timeEntries = timelogForm?.time?.map((obj:any) => {
 			return {
 				startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
@@ -151,11 +146,11 @@ const AddTimeLogForm = (props: any) => {
 			source: 0,
 			segments: [...timeEntries]
 		};
-		console.log('payload',payload);
 		setTimeLogForm(defaultValues);
 		setSelectedSmartItem('');
 		addTimeLog(payload, (resp:any) => {
 			dispatch(setToast('Time Logged Successfully.'));
+			dispatch(getTimeLogList({}));
 		});		
 
 	};

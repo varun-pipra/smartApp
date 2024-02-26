@@ -15,7 +15,7 @@ import { InProgressDialog } from "./InProgess";
 import { SuccessDialog } from "./Success";
 import { ErrorDialog } from "./Error";
 import { ConfirmationDialog } from "./ConfirmationDialog/ConfirmationDialog";
-import { importBudgets, fetchImportStatus, cancelImport, checkIsReplaceAllowed } from "../operations/budgetImportAPI";
+import { importBudgets, fetchImportStatus, cancelImport, checkIsReplaceAllowed, valdationStatus } from "../operations/budgetImportAPI";
 import { importType } from "utilities/commonutills";
 import { fetchGridData } from "../operations/gridSlice";
 import IQTooltip from "components/iqtooltip/IQTooltip";
@@ -53,25 +53,37 @@ const BudgetImporter = (props: any) => {
 		setShowInProgress(true)
 		importBudgets(appInfo, importType?.[importOption], file, (response:any) => {
 			console.log("import response", response)
-			if(response?.Success && response?.IsDataValid) {
-				setShowInProgress(false)
-				setImportResponse(response)
-				setShowSuccess(true)
-				let statusResult:any=0;
-				const interval = setInterval(function() {
-					if([1,2]?.includes(statusResult)){
-						clearInterval(interval);
-						dispatch(fetchGridData(appInfo)); 
-					}
-					fetchImportStatus(appInfo, response?.ResultId, (statusResp:any) => {
-						statusResult=statusResp
-						if(statusResp) setImportStatus(statusResp)
-					});
-				}, 3000);
-			} else {
-				setShowInProgress(false)
-				setShowError(true)
-			}	
+      setImportResponse(response);
+      const validationInterval = setInterval(function () {
+        valdationStatus(appInfo, response?.ResultId, (vldStatus: any) => {
+          if (vldStatus?.Success && vldStatus?.IsDataValid) {
+            setShowInProgress(false);
+            setImportResponse(vldStatus);
+            setShowSuccess(true);
+            let statusResult: any = 0;
+            const interval = setInterval(function () {
+              if ([1, 2]?.includes(statusResult)) {
+                clearInterval(interval);
+                dispatch(setImportBudgetsStatus(statusResult));
+                dispatch(fetchGridData(appInfo));
+              }
+              fetchImportStatus(
+                appInfo,
+                vldStatus?.ResultId,
+                (statusResp: any) => {
+                  statusResult = statusResp;
+                  if (statusResp) setImportStatus(statusResp);
+                }
+              );
+            }, 3000);
+            clearInterval(validationInterval);
+          } else if (vldStatus?.Success && vldStatus?.IsDataValid === false) {
+            setShowInProgress(false);
+            setShowError(true);
+            clearInterval(validationInterval);
+          }
+        });
+      }, 3000);
 		})
 	}
 

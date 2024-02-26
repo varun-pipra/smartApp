@@ -54,7 +54,25 @@ export const timelogList = {
 					"name": "comaonyX",
 					"icon": null
 			},
-			"links": [],
+			"links": [
+				{
+					"sbsId": 2,
+					"name": "WI-2036",
+					"stage": "Approval",
+					"stageColor": "4A148C",
+					"type": 0,
+					"linkType": "CASymbols",
+					"description": "",
+					"createdBy": {
+						"id": null,
+						"name": "Mani, Vimal Raj"
+					},
+					"createdOn": "2024-01-19T10:46:56.903",
+					"objectId": 2288057,
+					"id": "8049d1ce-05c3-44cf-af03-01dcb8823810",
+					"thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/a1ec16cd64194fb8a28a3c58e4f9d8de",
+				},
+			],
 			"sentBackBy": null,
 			"sendBackReason": null,
 			"sentBackOn": null,
@@ -80,7 +98,6 @@ export const timelogList = {
 			"status": 0,
 			"hasTimeOverlap": false,
 			"hasLocationConflict": false,
-			"timeEntryFor": "Kolli, Swathi"
 	},
 	{
     "id": "0751ef0c-9f83-4fe1-853d-a2671d59705e",
@@ -101,13 +118,11 @@ export const timelogList = {
     "status": 0,
     "hasTimeOverlap": false,
     "hasLocationConflict": false,
-    "timeEntryFor": "Kolli, Swathi"
 },
  {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e01",
 	timeSegmentId: 'TS00199',
 	status: 0,
-	timeEntryFor: 'Justin,inson',
 	company:{
         "id": "f5547234-7940-48fd-a716-ec336b6eb761",
         "name": 'ACME ElectrRobicals Inc.'
@@ -172,7 +187,6 @@ export const timelogList = {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e02",
 	timeSegmentId: 'TS00197',
 	status: 1,
-	timeEntryFor: 'Kevin,Morgan',
 	company: {
         "id": "f5547234-7940-48fd-a716-ec336b6eb761",		
 		"name": 'JK Electrical LLC',
@@ -237,7 +251,6 @@ location: {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e03",
 	timeSegmentId: 'TS00195',
 	status: 5,
-	timeEntryFor: 'Robert,Kelly',
 	company: {id: "45678hj", name:'Zane Engineering'},
 	startDate: "2024-01-10T10:00:00.00Z",
 	endDate: "2024-02-08T12:30:00.00Z",
@@ -298,7 +311,6 @@ location: {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e04",
 	timeSegmentId: 'TS00192',
 	status: 5,
-	timeEntryFor: 'Ann,Peterson',
 	"hasTimeOverlap": false,	
 	"hasLocationConflict": false,	
 	createdDate: "2024-02-02T13:41:29.29",		
@@ -334,10 +346,13 @@ location: {
 	id:1,
 	name : 'Building3 - Floor3'
 },
-	sbs:null,
+	sbs: {
+		"id": "da2250b4-0095-44a1-83a0-4fbf6b32c56a",
+		"name": "test 29 "
+	},
 	sbsPhase:{
 		id:1,
-		name: "In Construction"
+		name: "Pre Construction"
 	},
 	team: {
 		id : 1,
@@ -356,7 +371,6 @@ location: {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e05",
 	timeSegmentId: 'TS0099',
 	status: 0,
-	timeEntryFor: 'Justin, Robinson',
 	"hasTimeOverlap": false,	
 	"hasLocationConflict": false,	
 	company: {id: "567cfghj5467", name:'ACME Electricals Inc.'},
@@ -415,7 +429,6 @@ location: {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e06",
 	timeSegmentId: 'TS0099',
 	status: 3,
-	timeEntryFor: 'Justin',
 	company: {id: "ghjk5678vbn", name: 'No Company'},
 	startDate: "2024-01-10T10:00:00.00Z",
 	endDate: "2024-01-16T12:30:00.00Z",
@@ -477,7 +490,6 @@ location: {
 		id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e07",
 		timeSegmentId: 'TS0092',
 		status: 2,
-		timeEntryFor: 'Justin Robert',
 		company: {id: "ghjk5678vbn", name: 'No Company'},
 		startDate: "2024-01-10T10:00:00.00Z",
 		endDate: "2024-01-16T12:30:00.00Z",

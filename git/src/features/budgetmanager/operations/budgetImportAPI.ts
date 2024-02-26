@@ -79,6 +79,22 @@ export const fetchImportStatus = async (appInfo:any, requestId:any, callback?:an
 }
 
 
+export const valdationStatus = async (appInfo:any, requestId:any, callback?:any) => {
+    let response:any;
+    if(!isLocalhost) {
+        if(requestId) { 
+            const response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/budgets/${appInfo?.uniqueId}/import/validationstatus?requestId=${requestId}&sessionId=${appInfo?.sessionId}`)
+            if (!response?.ok) {
+                const message = `API Request Error (${moduleName}): ${response?.status}`;
+                throw new Error(message);
+            }
+            const responseData = await response?.json();
+            callback && callback(responseData);
+        }
+    } else setTimeout(() => {callback && callback(1)}, 10000);   
+}
+
+
 // export const fetchImportStatus = async (appInfo: any, body: any) => {
 // 	let response: any;
 // 	if (!isLocalhost) {

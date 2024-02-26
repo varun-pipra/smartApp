@@ -176,17 +176,18 @@ export const findAndUpdateFiltersData = (
   return mapData;
 };
 
-export const dateFunctionalities  = (value:any) =>{
-		const dateFormat = (date:any) =>{
-					// Extract year, month, and day
-					const year = date.getFullYear();
-					const month = String(date.getMonth() + 1).padStart(2, '0'); // Month starts from 0
-					const day = String(date.getDate()).padStart(2, '0');
+export const dateFormat = (date:any) =>{
+	// Extract year, month, and day
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0'); // Month starts from 0
+	const day = String(date.getDate()).padStart(2, '0');
 
-				// Format the date as YYYY-MM-DD
-				const formattedDate = year + '-' + month + '-' + day;
-				return formattedDate
-		}
+	// Format the date as YYYY-MM-DD
+	const formattedDate = year + '-' + month + '-' + day;
+	return formattedDate
+}
+export const dateFunctionalities  = (value:any) =>{
+	
 		if(value == 'today'){
 				const date = dateFormat(new Date());
 				return {from :date ,to : date}
@@ -223,12 +224,36 @@ export const dateFunctionalities  = (value:any) =>{
 				var lastDayOfPreviousWeek = new Date(firstDayOfCurrentWeek);
 				const defaultDate = new Date(lastDayOfPreviousWeek.setDate(firstDayOfCurrentWeek.getDate() - 1));
 
-		
 				const first = dateFormat(previousDate);
 				const last = dateFormat(defaultDate);
 				return {from :first ,to : last}
 		}
-		else if (value == ''){}
-		else if (value == ''){}
-		else if (value == ''){}
+		else if (value == 'thisMonth'){
+				var today = new Date();
+				var thismonth = new Date();
+				var monthfirstdate = new Date(thismonth.setDate(1));
+
+				var currentDate = new Date();
+				currentDate.setMonth(currentDate.getMonth() + 1, 0);
+				const monthlastdate  = new Date(currentDate.setMonth(currentDate.getMonth() + 1, 0));
+
+				return {from : dateFormat(monthfirstdate) ,to : dateFormat(monthlastdate)}
+		}
+		else if (value == 'lastMonth'){
+			var currentDate = new Date();
+			
+			// Get the first date of the current month
+			var firstDateOfCurrentMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+			
+			var lastDateOfPreviousMonth = new Date(firstDateOfCurrentMonth);
+			const lastdate = 	new Date(lastDateOfPreviousMonth.setDate(firstDateOfCurrentMonth.getDate() - 1));
+			
+			// Move back one month from the first date of the current month to get the first date of the previous month
+			var firstDateOfPreviousMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+
+			return {from : dateFormat(firstDateOfPreviousMonth) ,to : dateFormat(lastdate)}
+		}
+		else if (value == 'future'){
+			
+		}
 }

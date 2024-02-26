@@ -115,11 +115,10 @@ export const timeLogRequest = createSlice({
 		setSplitTimeSegmentBtn: (state, action: PayloadAction<boolean>) => {
 			state.splitTimeSegmentBtn = action.payload;
 		},
-		setDetailsPayloadSave: (state, action: PayloadAction<boolean>) => {
+		setDetailsPayloadSave: (state, action: PayloadAction<any>) => {
 			state.DetailspayloadSave = action.payload;
 		},
 		setSmartItemOptionSelected:(state,action:PayloadAction<any>)=>{
-			console.log('action',action)
 			state.smartItemOptionSelected = action.payload;
 		}
 	},

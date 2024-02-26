@@ -24,14 +24,14 @@ import { Avatar, Button } from '@mui/material';
 import { GetUniqueList } from 'features/common/timelog/utils';
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import { getAppsList,getSBSGridList} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
+import { getAppsList,getSBSGridList,getPhaseDropdownValues} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
 import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected} from './stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import SplitTimeSegmentDialog from './timeSplitSegment/SplitTimeSegmentDialog';
-import { getPickerDefaultTime ,getDuration,dateFunctionalities } from './utils';
+import { getPickerDefaultTime ,getDuration,dateFunctionalities,dateFormat } from './utils';
 import ManageWorkers from './workerDailog/addManageWorkers/ManageWorkers';
 import {workTeamData} from "data/timelog/TimeLogData";
 import CompanyIcon from "resources/images/Comapany.svg";
@@ -60,7 +60,7 @@ const TimeLogWindow = (props: any) => {
 	const [toastMessage, setToastMessage] = useState<string>('');
 	const [filters, setFilters] = useState<any>({});
 	const [selectedFilters, setSelectedFilters] = useState<any>();
-	const [selectedFilters2, setSelectedFilters2] = useState<any>();
+	const [selectedFilters2, setSelectedFilters2] = useState<any>({});
 	const [search, setSearch] = useState<string>('');
 	const [defaultFilters, setDefaultFilters] = useState<any>({});
 	const groupKeyValue = useRef<any>(null);
@@ -88,7 +88,7 @@ const TimeLogWindow = (props: any) => {
 	const { locationsdata = [] } = useAppSelector(state => state.location);
 
 	const groupOptions = [{
-			text: 'Time Entry For', value: 'timeEntryFor', iconCls: 'common-icon-work-team'
+			text: 'Time Entry For', value: 'user', iconCls: 'common-icon-work-team'
 		}, {
 			text: 'Work Team', value: 'team', iconCls: 'common-icon-work-team'
 		}, {
@@ -186,6 +186,7 @@ const TimeLogWindow = (props: any) => {
 			dispatch(fetchWorkTeamsData(server));
 			dispatch(fetchCompaniesData(server));
 			dispatch(fetchLocationswithOutIdData());
+			dispatch(getPhaseDropdownValues());
 		}
 	}, [server]);
 
@@ -311,13 +312,16 @@ const TimeLogWindow = (props: any) => {
 				);
 			}
 			else if (colName === 'smartItem') return (
-				<TimeLogGridGroupHeader iconUrl={data?.smartItem?.smartAppIcon} name={data?.smartItem?.smartApp} />
+				<TimeLogGridGroupHeader iconUrl={data?.smartItem?.smartAppIcon} name={data?.smartItem?.name} />
 			);
 			else if (colName === 'company') return (
 				<TimeLogGridGroupHeader iconUrl={data?.company?.url ?? CompanyIcon} name={data?.company?.name} />
 			);
 			else if(colName === 'createdBy') return (
-				<TimeLogGridGroupHeader iconUrl={data?.createdBy?.url} name={data?.createdBy?.firstName} />
+				<TimeLogGridGroupHeader iconUrl={data?.createdBy?.url} name={data?.createdBy?.firstName + ' '+data?.createdBy?.lastName} />
+			);
+			else if(colName === 'user')return (
+				<TimeLogGridGroupHeader iconUrl={data?.user?.icon} name={data?.createdBy?.firstName + ' ' +data?.createdBy?.lastName} />
 			);
 			else return (
 				<div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
@@ -365,8 +369,8 @@ const TimeLogWindow = (props: any) => {
 	}, []);
 
 	const onFilterChange = (filterValues: any, type?: string) => {
-		console.log('filterValues',filterValues)
-		if(!_.isEqual(selectedFilters2,filterValues)){
+		console.log('filterValues',filterValues);
+		if(!_.isEqual(selectedFilters2,filterValues) && !_.isEmpty(filterValues)){
 			if (Object.keys(filterValues).length !== 0) {
 				let filterObj = filterValues;
 				if (selectedFilters2?.dateRange?.includes('custom') && !filterValues?.dateRange?.includes('custom')) {
@@ -416,7 +420,15 @@ const TimeLogWindow = (props: any) => {
 							const data = {...filterObj , dateRange : todaydate}
 							dispatch(getTimeLogList(data));
 				}
-			} else {
+				else{
+					if(!_.isEqual(selectedFilters2, filterObj)){
+						console.log('else filterObj',filterObj)
+						setSelectedFilters2(filterObj);
+						dispatch(getTimeLogList(filterObj));
+					}
+				}
+			} 
+			else {
 				if (Object.keys(filterValues).length === 0) {
 					setSelectedFilters2(filterValues);
 					dispatch(getTimeLogList(filterValues));
@@ -458,13 +470,13 @@ const TimeLogWindow = (props: any) => {
 				filterValues.dateRange = dateRange;
 			};
 			const filterVal = (_.isEmpty(filterValues) || (!_.isEmpty(filterValues)
-				&& (_.isEmpty(filterValues?.apps) || filterValues?.apps?.length === 0 || filterValues?.apps?.indexOf(item.smartItem.smartApp) > -1)
+				&& (_.isEmpty(filterValues?.apps) || filterValues?.apps?.length === 0 || filterValues?.apps?.indexOf(item.smartItem.name) > -1)
 				&& (_.isEmpty(filterValues?.companies) || filterValues?.companies?.length === 0 || filterValues?.companies?.indexOf(item.company.name) > -1)
 				&& (_.isEmpty(filterValues?.conflicting) || filterValues?.conflicting?.length === 0 || filterValues?.conflicting?.indexOf(item?.conflicting)) > -1)
 				&& (_.isEmpty(filterValues?.createdBy) || filterValues?.createdBy?.length === 0 || filterValues?.createdBy?.indexOf(item.createdBy?.name) > -1)
 				&& (_.isEmpty(filterValues?.location) || filterValues?.location?.length === 0 || filterValues?.location?.indexOf(item?.location)) > -1)
 				&& (_.isEmpty(filterValues?.sbs) || filterValues?.sbs?.length === 0 || filterValues?.sbs?.indexOf(item.sbs) > -1)
-				&& (_.isEmpty(filterValues?.timeEntryFor) || filterValues?.timeEntryFor?.length === 0 || filterValues?.timeEntryFor?.indexOf(item.timeEntryFor) > -1)
+				&& (_.isEmpty(filterValues?.timeEntryFor) || filterValues?.timeEntryFor?.length === 0 || filterValues?.timeEntryFor?.indexOf(item.user.ID) > -1)
 				&& (_.isEmpty(filterValues?.source) || filterValues?.source?.length === 0 || filterValues?.source?.indexOf(item?.source?.toString()) > -1)
 				&& (_.isEmpty(filterValues?.team) || filterValues?.team?.length === 0 || filterValues?.team?.indexOf(item?.team) > -1)
 				&& (_.isEmpty(filterValues?.status) || filterValues?.status?.length === 0 || filterValues?.status?.indexOf(item?.status?.toString()) > -1)
@@ -505,13 +517,26 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const handleApplyDatesFilter = (dates: any) => {
+		
+		var from = dates?.startDate?.split('/');
+		var to = dates?.endDate?.split('/');
+		var day = from[1]; var frommonth = from[0]; var fromyear = from[2];
+		var day1 = to[1];var tomonth = to[0];var toyear = to[2];
+		
+		var fromDate = new Date(fromyear, frommonth - 1, day);
+		var toDate = new Date(toyear, tomonth - 1, day1);
+		const date = {from : dateFormat(fromDate),to:dateFormat(toDate)}
+		const data = {...selectedFilters2 , dateRange : date};
+		dispatch(getTimeLogList(data));
+
 		if (!!selectedFiltersRef?.current?.dateRange) {
-			setSelectedFilters({ ...selectedFiltersRef?.current, ['dateRange']: [...selectedFiltersRef?.current?.dateRange, 'custom'] });
+			//setSelectedFilters({ ...selectedFiltersRef?.current, ['dateRange']: [...selectedFiltersRef?.current?.dateRange, 'custom'] });
 		} else {
-			setSelectedFilters({ ...selectedFiltersRef?.current, ['dateRange']: ['custom'] });
+			//setSelectedFilters({ ...selectedFiltersRef?.current, ['dateRange']: ['custom'] });
 		};
 		datesRef.current = dates;
 		dispatch(setCustomDatesRange(dates));
+	
 	};
 
 	const handleClearDatesFilter = () => {
@@ -650,7 +675,7 @@ const TimeLogWindow = (props: any) => {
 			}
 		}, {
 			headerName: 'Time Entry For',
-			field: 'timeEntryFor',
+			field: 'user',
 			width: 280,
 			pinned: 'left',
 			// aggFunc: (params: any) => {
@@ -658,6 +683,7 @@ const TimeLogWindow = (props: any) => {
 			// 		return 'Summary';
 			// 	} return `Sub Total - ${params.rowNode?.key}`;
 			// },
+			keyCreator: (params: any) =>  params.data?.user && params.data?.user?.firstName  ? params.data?.user?.firstName + ' '+params.data?.user?.lastName : '' || "None",
 			cellRenderer: (params: any) => {
 				if (!!params?.node?.footer) {
 				  if (!params.node?.key) {
@@ -666,12 +692,8 @@ const TimeLogWindow = (props: any) => {
 				  return `Sub Total - ${params.node?.key}`;
 				} else {
 				  return (
-					<span
-					  onMouseOver={(e: any) => {
-						userImageHandleOver(e, params);
-					  }}
-					>
-					  {params.data?.timeEntryFor}
+					<span onMouseOver={(e: any) => {userImageHandleOver(e, params);}}>
+					  { params.data?.user && params.data?.user?.firstName  ? params.data?.user?.firstName + ' '+params.data?.user?.lastName : ''}
 					</span>
 				  );
 				}
@@ -782,8 +804,8 @@ const TimeLogWindow = (props: any) => {
 					postMessage({ event: 'openitem', body: { smartItemId: event.data?.smartItem?.smartItemId } });
 				}
 			},
-			valueGetter: (params: any) => params.data?.smartItem?.smartApp,
-			keyCreator: (params: any) => params.data?.smartItem?.smartApp || "None"
+			valueGetter: (params: any) => params.data?.smartItem?.name,
+			keyCreator: (params: any) => params.data?.smartItem?.name || "None"
 		}, {
 			headerName: 'Work Team',
 			field: 'team',
@@ -1068,7 +1090,6 @@ const TimeLogWindow = (props: any) => {
 
 	useMemo(()=>{
 		if (sbsGridData?.length > 0 && filterOptions) {
-			console.log('sbsGridData',sbsGridData)
 			const updatedarray = sbsGridData.map((res:any) => { return{ ...res , ['sbs'] : res.name }});
 			setFilters(findAndUpdateFiltersData(filterOptions, updatedarray,"sbs","uniqueid"));
 		}
@@ -1083,7 +1104,6 @@ const TimeLogWindow = (props: any) => {
 
 	useMemo(() => {
 		if (workTeams?.length > 0 && filterOptions) {
-			console.log('workTeams',workTeams)
 			const updatedarray = workTeams.map((res:any) => { return{ ...res , ['workTeams'] : res.name }});
 		  setFilters(findAndUpdateFiltersData(filterOptions,updatedarray, 'workTeams', "id"))
 		}
@@ -1182,10 +1202,7 @@ const TimeLogWindow = (props: any) => {
 				name: smartData?.smartItemName,
 			}
 			dispatch(setSmartItemOptionSelected(details));
-		// saveLinksData(payload, (response: any) => {
-		// 	dispatch(getSBSDetailsById(detailsData?.uniqueid));
-		// 	setSmartItemLink({});
-		// });
+			setSmartItemLink({});
 	};
 	
 	useEffect(() => {

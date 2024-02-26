@@ -11,9 +11,10 @@ import SUIGrid from 'sui-components/Grid/Grid';
 import { formatDate } from 'utilities/datetime/DateTimeUtils';
 import IQSubMenuButton from 'components/iqmenu/IQSubMenuButton';
 import { postMessage } from "app/utils";
-import { deleteLinksRecs } from 'features/safety/sbsmanager/operations/sbsManagerAPI';
-import { getSBSDetailsById } from "features/safety/sbsmanager/operations/sbsManagerSlice";
+
 import { AppList_PostMessage } from '../../../utils';
+import {deleteLinksData,saveLinksData} from '../../../stores/TimeLogAPI';
+import {getTimeLogDetails,setSmartItemOptionSelected} from '../../../stores/TimeLogSlice';
 
 const linksOptions = [
 	{
@@ -57,60 +58,6 @@ const linksOptions = [
 	},
 ];
 
-const linksgridData = [
-	{
-		"sbsId": 2,
-		"name": "1",
-		"stagename": "Approval",
-		"stageColor": "4A148C",
-		"type": 0,
-		"linkType": "CASymbols",
-		"description": "",
-		"createdBy": {
-			"id": null,
-			"name": "Mani, Vimal Raj"
-		},
-		"createdDate": "2024-01-19T10:46:56.903",
-		"objectId": 2288057,
-		"id": "8049d1ce-05c3-44cf-af03-01dcb8823810",
-		"thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/a1ec16cd64194fb8a28a3c58e4f9d8de",
-	},
-	{
-		"sbsId": 2,
-		"name": "AR - 0023",
-		"stagename": "Report Prepared",
-		"stageColor": "59D800",
-		"type": 0,
-		"linkType": "Accident Report",
-		"description": "test",
-		"createdBy": {
-			"id": null,
-			"name": "MK, Sudeep"
-		},
-		"createdDate": "2024-01-29T09:52:22.717",
-		"objectId": 3410732,
-		"id": "179ac9c4-d9eb-47e0-8fc2-013c45f31837",
-		"thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f6222293d88145acbc2ce2de6df8d9b5",
-	},
-	{
-		"sbsId": 2,
-		"name": "123 -123",
-		"stagename": "For Record",
-		"stageColor": "558B2F",
-		"type": 0,
-		"linkType": "Bid Packages",
-		"description": "Architectural-123",
-		"createdBy": {
-			"id": null,
-			"name": "Mani, Vimal Raj"
-		},
-		"createdDate": "2024-01-19T10:46:29.81",
-		"objectId": 3133282,
-		"id": "7db51d7e-6938-4d6d-91b2-9473789d117d",
-		"thumbnail": "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2Fiqthumbnail%2F41cba6bdb70846489b4048993c7561c3%2F1b39047498b04b679400301e6c286161.png?generation=1655379006248906&alt=media",
-	}
-]
-
 const filterOptions = [
 	{
 		text: "Smart Item", value: "SmartItem", key: "SmartItem",
@@ -127,6 +74,7 @@ const Links = () => {
 	var tinycolor = require('tinycolor2');
 	const appInfo = useAppSelector(getServer);
 	const { appsList, detailsData } = useAppSelector(state => state.sbsManager)
+	const { selectedTimeLogDetails ,smartItemOptionSelected} = useAppSelector(state => state.timeLogRequest);
 	const [disableDeleteBtn, setDisableDeleteBtn] = useState<boolean>(true);
 	const [selected, setSelected] = useState<any>();
 
@@ -139,26 +87,37 @@ const Links = () => {
 	const [filterKeyValue, setFilterKeyValue] = useState<any>([]);
 
 	useMemo(() => {
-		setLinksData(linksgridData?.length ? linksgridData : [])
-		setGridData(linksgridData?.length ? linksgridData : [])
-	}, [linksgridData])
+		setLinksData(selectedTimeLogDetails?.links?.length > 0 ? selectedTimeLogDetails?.links : [])
+		setGridData(selectedTimeLogDetails?.links?.length > 0? selectedTimeLogDetails?.links : [])
+	}, [selectedTimeLogDetails])
 
 	useMemo(() => {
-		if (linksgridData?.length > 0) {
+		if (linksData?.length > 0) {
 			const filtersCopy = [...filters];
 			let FileType = filtersCopy.find((rec: any) => rec?.value === "FileType");
+			let SmartItem = filtersCopy.find((rec: any) => rec?.value === "SmartItem");
+
 			const uniqueTypes = new Set();
-			const linkType_array = linksgridData?.reduce((acc: any, item: any) => {
+			const linkType_array = linksData?.reduce((acc: any, item: any) => {
 				if (!uniqueTypes.has(item.linkType)) {
 					uniqueTypes.add(item.linkType);
 					acc.push({ text: item.linkType, id: item.linkType, key: item.linkType, value: item.linkType, });
 				}
 				return acc;
 			}, []);
+			const SmartItemTypes = new Set();
+			const smartItem_array = linksData?.reduce((acc: any, item: any) => {
+				if (!SmartItemTypes.has(item.name)) {
+					SmartItemTypes.add(item.linkType);
+					acc.push({ text: item.name, id: item.name, key: item.name, value: item.name, });
+				}
+				return acc;
+			}, []);
 			FileType.children.items = linkType_array;
+			SmartItem.children.items = smartItem_array;
 			setFilters(filtersCopy);
 		}
-	}, [linksgridData]);
+	}, [linksData]);
 
 	useEffect(() => {
 		const addLinksOptionsCopy = [...addLinksOptions];
@@ -223,6 +182,10 @@ const Links = () => {
 			const linkTypearray = filteredData?.filter((obj: any) => filterValue?.FileType?.includes(obj.linkType));
 			filteredData = linkTypearray;
 		}
+		if (filterValue?.SmartItem?.length > 0) {
+			const linkTypearray = filteredData?.filter((obj: any) => filterValue?.SmartItem?.includes(obj.name));
+			filteredData = linkTypearray;
+		}
 		return filteredData;
 	};
 	const SearchBy = (gridData: any) => {
@@ -265,7 +228,7 @@ const Links = () => {
 			suppressMenu: true,
 		}, {
 			headerName: 'Stage',
-			field: 'stagename',
+			field: 'stage',
 			minWidth: 150,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
@@ -294,13 +257,13 @@ const Links = () => {
 			field: 'createdBy',
 			minWidth: 150,
 			suppressMenu: true,
-			valueGetter: (params: any) => params?.data?.createdBy?.name || '',
-			keyCreator: (params: any) => params.data?.createdBy?.name || 'None'
+			valueGetter: (params: any) => params?.data?.createdBy || '',
+			keyCreator: (params: any) => params.data?.createdBy || 'None'
 		}, {
 			headerName: 'Creation Date',
-			field: 'createdDate',
+			field: 'createdOn',
 			suppressMenu: true,
-			valueGetter: (params: any) => params.data?.createdDate ? formatDate(params.data?.createdDate) : '',
+			valueGetter: (params: any) => params.data?.createdOn ? formatDate(params.data?.createdOn) : '',
 		},
 	], []);
 
@@ -308,13 +271,29 @@ const Links = () => {
 		useDriveFileBrowser({ iframeId: 'vendorContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorContracts', folderType: folderType });
 	};
 
-	const onSelectedFilesDelete = () => {
-		deleteLinksRecs(
-			selected?.map((file: any) => file.objectId),
-			(response: any) => {
-				dispatch(getSBSDetailsById(detailsData?.uniqueId))
-			}
-		);
+	useEffect(()=>{
+			const payload = [{itemId : smartItemOptionSelected?.id}]
+			saveLinksData(selectedTimeLogDetails?.id,payload, (response: any) => {
+					dispatch(getTimeLogDetails(smartItemOptionSelected?.id))
+					dispatch(setSmartItemOptionSelected({}));
+			});
+
+	},[smartItemOptionSelected])
+
+	const onSelectedFilesDelete = async() => {
+		console.log('selected',selected)
+		try{
+			await Promise.all(selected.map((links:any) => {
+						deleteLinksData(selectedTimeLogDetails?.id,links?.id,(response:any) => {
+						if(response) {
+							console.log('response linkdelete',response)
+						}
+					});
+			}));	
+		}
+		catch{
+			console.log('delete error')
+		}	
 	}
 
 	const rowSelected = (sltdRows: any) => {

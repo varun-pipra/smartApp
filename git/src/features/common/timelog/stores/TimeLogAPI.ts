@@ -140,3 +140,29 @@ export const sendBackTimeLog = async (payload:any, callback: any) =>{
     callback && callback(response);
   }
 }
+
+//-------------------------Links APi Start -----------------------------//
+export const deleteLinksData = async (timeLogId :any,linkid: any, callback: any) =>{
+  const server: any = getServerInfo();
+  const options = {
+    method: 'DELETE',
+    headers: { 'content-type': 'application/json' },
+  };
+  if (!isLocalhost) {
+    const response = await TimeLogRequest(server, `/segments/${timeLogId}/links/${linkid}`, options, true);
+    callback && callback(response);
+  }
+}
+export const saveLinksData = async (timeLogId:any,payload: any, callback: any) => {
+  console.log("saveLinksData", payload)
+	const server: any = getServerInfo();
+  const options = {
+		method: 'POST',
+		headers: { 'content-type': 'application/json' },
+		body: JSON.stringify(payload),
+	};
+	if (!isLocalhost) {
+		const response = await TimeLogRequest(server, `/segments/${timeLogId}/links`, options);
+		callback && callback(response);
+	}
+};

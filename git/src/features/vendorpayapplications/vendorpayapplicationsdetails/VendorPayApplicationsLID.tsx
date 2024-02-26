@@ -50,7 +50,7 @@ const HeaderContent = (props: any) => {
 												src={connectors?.[0]?.primaryIconUrl}
 												alt="connector Image"
 											/> : ''}
-											{connectors?.length ? <span className='sapnumber' onClick={()=>{sapLinksObj?.vendorPayApps && window.open(sapLinksObj?.vendorPayApps)}}>{vendorPayAppLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+											{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.vendorPayApps && window.open(sapLinksObj?.vendorPayApps)}}>{vendorPayAppLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
 								</span>
 						</span>
 						<span className='last-modified-label grey-font'>Last Modified:</span><span className='grey-fontt'>{props?.headerData?.modifiedOn ? stringToUSDateTime2(props?.headerData?.modifiedOn) : ''} by {props?.headerData?.modifiedBy?.displayName} </span>

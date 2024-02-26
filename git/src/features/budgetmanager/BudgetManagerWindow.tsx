@@ -62,10 +62,12 @@ const BudgetManagerWindow = (props: any) => {
 			setOpen(false); dispatch(setImportBudgetsStatus(null));
 			setToastMessage({ displayToast: true, message: 'Budget File is Imported' });
 			dispatch(fetchGridData(appInfo));
+			dispatch(setOpenNotification(false))
 		}
 		if(importStatus == 2) {
 			setOpen(false); dispatch(setImportBudgetsStatus(null));	
 			setToastMessage({displayToast: true, message: 'Your Budget File was not imported. We found one or many issues with the import file...'});			
+			dispatch(setOpenNotification(false))
 		} 
 	}, [importStatus])	
 
