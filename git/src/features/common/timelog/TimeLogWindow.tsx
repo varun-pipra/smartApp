@@ -25,7 +25,7 @@ import { GetUniqueList } from 'features/common/timelog/utils';
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList,getSBSGridList,getPhaseDropdownValues} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
-import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected} from './stores/TimeLogSlice';
+import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , setWorkTeamFromExt } from './stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
@@ -233,7 +233,8 @@ const TimeLogWindow = (props: any) => {
 								// dispatch(setPresenceData(data.data));
 								break;
 							case 'resourcepicker':
-								setWorkTeamDataFromExt(data.response)
+								// setWorkTeamDataFromExt(data.response)
+								dispatch(setWorkTeamFromExt((data.response)));
 								// setOpenManageWorkers(true);
 								break;
 							case "smartitemlink":

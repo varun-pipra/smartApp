@@ -45,7 +45,7 @@ const AddTimeLogForm = (props: any) => {
 	const appInfo = useAppSelector(getServer);
 	const classes = useStyles();
 	const { appsList } = useAppSelector(state => state.sbsManager);
-	const { access ,smartItemOptionSelected} = useAppSelector(state => state.timeLogRequest);
+	const { access ,smartItemOptionSelected , WorkTeamDataFromExt} = useAppSelector(state => state.timeLogRequest);
 	const defaultValues: TimeLogFormProps = useMemo(() => {
 		return {
 			resource: "",
@@ -53,6 +53,7 @@ const AddTimeLogForm = (props: any) => {
 			time: [],
 			duration: "0 Hrs 00 Mins",
 			smartItems: "",
+			workers:''
 		};
 	}, []);
 
@@ -98,6 +99,40 @@ const AddTimeLogForm = (props: any) => {
 		}
 	}, [smartItemOptionSelected]);
 
+	useEffect(()=>{
+		if(WorkTeamDataFromExt.length > 0){
+			let wholeDuration = 0;
+			let OverallDuration = "0 Hrs 00 Mins"
+			let timeLogData:any = []
+			console.log(WorkTeamDataFromExt,'WorkTeamDataFromExt');
+			WorkTeamDataFromExt.forEach((ele:any)=>{
+				timeLogData = [...timeLogData , ...ele.timeLogData.map((data:any)=> {return {...data , userId : ele.userUId}} )]
+				ele.timeLogData.forEach((item:any)=>{
+					const durationInSeconds =
+						(new Date(item.endTime).getTime() -
+							new Date(item.startTime).getTime()) /
+						1000;
+					if (durationInSeconds) {
+						wholeDuration += durationInSeconds;
+					  }
+				})
+				
+					  if (wholeDuration > 0) {
+						const hours = Math.floor(wholeDuration / (60 * 60));
+						const minutes = Math.floor(wholeDuration / 60) % 60;
+						OverallDuration =`${hours} Hrs ${minutes} Mins`
+					  }
+
+			})
+
+			setTimeLogForm((currentState) => {
+				const newState = { ...currentState, ...{ ['workers']: WorkTeamDataFromExt.length ,['duration']: OverallDuration ,['time']:timeLogData} };
+				checkFormValidity(newState);
+				return newState;
+			})
+		}
+	},[WorkTeamDataFromExt])
+
 	useMemo(() => {
 		if (resource && resource.length > 0) {
 			const companyArray = ['Me', 'mycompany'];
@@ -131,14 +166,24 @@ const AddTimeLogForm = (props: any) => {
 			: setAddDisabled( _.isEmpty(record?.resource) || _.isEmpty(record?.time));
 	}; 
 
-	const handleAdd = () => {	
+	const handleAdd = () => {
 		const timeEntries = timelogForm?.time?.map((obj:any) => {
-			return {
-				startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
-				endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
-				userId: timelogForm?.resource == 'Me' ? appInfo?.currentUserInfo?.userid : '',
-				notes : obj.notes
+			if(timelogForm?.resource == "workteam" || timelogForm?.resource == "mycompany" ){
+				return {
+					startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
+					endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
+					userId:obj.userId,
+					notes : obj.notes
+				}
+			}else{
+				return {
+					startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
+					endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
+					userId: timelogForm?.resource == 'Me' ? appInfo?.currentUserInfo?.userid : '',
+					notes : obj.notes
+				}
 			}
+			
 		})
 		const payload = {
 			smartItemId : timelogForm?.smartItems,
@@ -146,6 +191,7 @@ const AddTimeLogForm = (props: any) => {
 			source: 0,
 			segments: [...timeEntries]
 		};
+		console.log('payload',payload);
 		setTimeLogForm(defaultValues);
 		setSelectedSmartItem('');
 		addTimeLog(payload, (resp:any) => {
