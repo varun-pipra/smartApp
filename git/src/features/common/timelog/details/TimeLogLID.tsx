@@ -14,11 +14,12 @@ import { getTimeLogDetails, setSelectedTimeLogDetails,setDetailsPayloadSave, get
 import { stringToUSDateTime2 } from 'utilities/commonFunctions';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import { timelogStatusMap } from '../TimeLogConstants';
-import {getDuration} from '../utils';
+import {generateSplitEntryData, getDuration} from '../utils';
 import {updateTimeLogDetails, addTimeLog, acceptTimeLog, sendBackTimeLog} from '../stores/TimeLogAPI';
 import {canManageTimeForCompany,canManageTimeForProject, isWorker} from 'app/common/userLoginUtils';
 import SendBackModel from '../toolbar/SendBackModel/sendBackModel';
 import SplitTimeSegmentDialog from '../timeSplitSegment/SplitTimeSegmentDialog';
+import { addTimeToDate } from 'utilities/datetime/DateTimeUtils';
 
 const TimeLogLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
@@ -73,10 +74,20 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 		setOpenSendBack(false);
 	}
 	const handleSplit = (data:any) => {
+		console.log("splitt", data)
+		const splitEntries = data?.timeEntries?.map((entry:any) => {
+			return {
+				startTime: addTimeToDate(selectedTimeLogDetails?.startTime, entry?.startTime),
+				endTime: addTimeToDate(selectedTimeLogDetails?.startTime, entry?.endTime),
+				userId:selectedTimeLogDetails?.user?.ID
+			}
+		});
 		const payload = {
 			splitFromSegmentId: selectedTimeLogDetails?.id,
-			segments: []
+			segments: [...splitEntries],
+			reason: data?.description
 		}
+		console.log("split Payload", payload)
 		addTimeLog(payload, (response:any) => {});
 	}
 
@@ -134,10 +145,10 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 
 				</>
 			}
-			{(isWorker() && getTimeLogStatus(selectedTimeLogDetails?.status) == 'Sent Back') && <IQButton className='resubmit-buttons' disabled={false} onClick={() => { console.log('Resubmit') }}>
+			{(getTimeLogStatus(selectedTimeLogDetails?.status) == 'Sent Back') && <IQButton className='resubmit-buttons' disabled={false} onClick={() => {  onClickSave() }}>
 					Resubmit
 			</IQButton>}
-			{['In Progress', 'Planned']?.includes(getTimeLogStatus(selectedTimeLogDetails?.status)) && <IQButton className='save-buttons' disabled={false} onClick={() => { onClickSave() }}>
+			{['Reported']?.includes(getTimeLogStatus(selectedTimeLogDetails?.status)) && <IQButton className='save-buttons' disabled={false} onClick={() => { onClickSave() }}>
 				SAVE
 			</IQButton> }
 
@@ -211,7 +222,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 			<IQGridLID {...lidProps} {...props} />
 			{openSendBack && <SendBackModel data={selectedTimeLogDetails ? [selectedTimeLogDetails] : []} onClose={(value: any) => { setOpenSendBack(false) }} onSubmit={(val:any) => {handleSendback(val)}}/>}
 			{
-			openSplit && <SplitTimeSegmentDialog data={selectedTimeLogDetails} handleSubmit={(data:any) => handleSplit(data)} onClose={() => {setOpenSplit(false)}} />				
+			openSplit && <SplitTimeSegmentDialog defaultRowData = {generateSplitEntryData(selectedTimeLogDetails)} data={selectedTimeLogDetails} handleSubmit={(data:any) => handleSplit(data)} onClose={() => {setOpenSplit(false)}} />				
 			}
 		</div >
 	);
@@ -286,7 +297,7 @@ const SubTitleContent = (props: any) => {
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
 
 	const Status = getTimeLogStatus(selectedTimeLogDetails.status);
-	const Title = Status == 'Sent Back' ? 'The Split Time entry was Created from the orignal Time Segment ID: TS00.' :
+	const Title = Status == 'Sent Back' ? `The Split Time entry was Created from the orignal Time Segment ID: ${selectedTimeLogDetails?.timeSegmentId}.` :
 								selectedTimeLogDetails?.hasTimeOverlap == true ? 'There seems to be a duplicate or an overlapping time entry' :
 								selectedTimeLogDetails?.hasLocationConflict == true  ? 'This Time was not entered anywhere within the Job Location'
 								: null;

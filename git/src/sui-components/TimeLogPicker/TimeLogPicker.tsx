@@ -25,6 +25,16 @@ const TimeLogPicker = (props: any) => {
     setAnchorEl(null);
   };
 
+  useEffect(()=>{
+    if(props.resetRecords){
+      setLogEntries([
+        { ...rowObj, id: Date.now() },
+      ])
+      props.resetClearTimeLogPickerDataState(false);
+    }
+  },[props.resetRecords])
+  
+
   const open = Boolean(anchorEl);
   const id = open ? "popover" : undefined;
   

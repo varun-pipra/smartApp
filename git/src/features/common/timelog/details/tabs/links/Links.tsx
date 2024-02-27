@@ -288,7 +288,7 @@ const Links = () => {
 			await Promise.all(selected.map((links:any) => {
 						deleteLinksData(selectedTimeLogDetails?.id,links?.id,(response:any) => {
 							console.log('response linkdelete',response)
-							//dispatch(setSelectedTimeLogDetails(response));
+							dispatch(getTimeLogDetails(selectedTimeLogDetails?.id))
 					});
 			}));	
 		}

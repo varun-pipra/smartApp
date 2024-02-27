@@ -142,9 +142,9 @@ export const timelogList = {
 	conflicting: 'Conflicting Location',
 	createdDate: "2022-09-19T14:41:29.29",
 	"createdBy": {
-		"ID": "00000000-0000-0000-0000-000000000000",
-        "firstName": 'Justin',
-        "lastName": 'inson',
+			"ID": "00000000-0000-0000-0000-000000000000",
+        "firstName": null,
+        "lastName": null,
         "email": null,
         "globalId": "00000000-0000-0000-0000-000000000000"
 	},

@@ -21,7 +21,7 @@ import { TLLeftButtons, TLRightButtons } from './toolbar/TimeLogToolbar';
 import { timelogList } from 'data/timelog/TimeLogData';
 import TimeLogLID from './details/TimeLogLID';
 import { Avatar, Button } from '@mui/material';
-import { GetUniqueList } from 'features/common/timelog/utils';
+import { generateSplitEntryData, GetUniqueList } from 'features/common/timelog/utils';
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList,getSBSGridList,getPhaseDropdownValues} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
@@ -318,7 +318,7 @@ const TimeLogWindow = (props: any) => {
 				<TimeLogGridGroupHeader iconUrl={data?.company?.url ?? CompanyIcon} name={data?.company?.name} />
 			);
 			else if(colName === 'createdBy') return (
-				<TimeLogGridGroupHeader iconUrl={data?.createdBy?.url} name={data?.createdBy?.firstName + ' '+data?.createdBy?.lastName} />
+				<TimeLogGridGroupHeader iconUrl={data?.createdBy?.url} name={ data?.createdBy?.firstName + ' '+data?.createdBy?.lastName} />
 			);
 			else if(colName === 'user')return (
 				<TimeLogGridGroupHeader iconUrl={data?.user?.icon} name={data?.createdBy?.firstName + ' ' +data?.createdBy?.lastName} />
@@ -369,7 +369,7 @@ const TimeLogWindow = (props: any) => {
 	}, []);
 
 	const onFilterChange = (filterValues: any, type?: string) => {
-		console.log('filterValues',filterValues);
+
 		if(!_.isEqual(selectedFilters2,filterValues)){
 			if (Object.keys(filterValues).length !== 0) {
 				let filterObj = filterValues;
@@ -422,7 +422,6 @@ const TimeLogWindow = (props: any) => {
 				}
 				else{
 					if(!_.isEqual(selectedFilters2, filterObj)){
-						console.log('else filterObj',filterObj)
 						setSelectedFilters2(filterObj);
 						dispatch(getTimeLogList(filterObj));
 					}
@@ -595,7 +594,7 @@ const TimeLogWindow = (props: any) => {
 							<IQTooltip
 								title={
 									<Stack direction='row' className='tooltipcontent'>
-										<p className='tooltiptext'>The Split Time entry was Created from the orignal Time Segment ID: TS00.</p>
+										<p className='tooltiptext'>The Split Time entry was Created from the orignal Time Segment ID: {data?.timeSegmentId}.</p>
 									</Stack>}
 								placement={'bottom'}
 								arrow={true}
@@ -1066,11 +1065,13 @@ const TimeLogWindow = (props: any) => {
 	const findAndUpdateFiltersData = (filterOptions: any,data: any,key: string, keyValue?:any ,nested?: boolean,nestedKeyFirstText?: any,nestedKeySecondText?:any,nestedkeyValue?:any) => {
 		const formattedData = data?.map((rec: any) => {
 		 if (nested)
-				return {
-					text: nestedKeySecondText != "" ? rec?.[key]?.[nestedKeyFirstText] + ' ' + rec?.[key]?.[nestedKeySecondText] : rec?.[key]?.[nestedKeyFirstText],
-					value: rec?.[key]?.[nestedkeyValue]?.toString(),
-					id: rec?.[key]?.id?.toString(),
-				};
+				if( rec?.[key]?.[nestedKeySecondText] != null && rec?.[key]?.[nestedKeyFirstText] != null ){
+					return {
+						text: rec?.[key]?.[nestedKeySecondText] != "" ? rec?.[key]?.[nestedKeyFirstText] + ' ' + rec?.[key]?.[nestedKeySecondText] : rec?.[key]?.[nestedKeyFirstText],
+						value: rec?.[key]?.[nestedkeyValue]?.toString(),
+						id: rec?.[key]?.id?.toString(),
+					};
+				}
 			else
 				return {
 					text: rec?.[key] ?? rec?.["name"],
@@ -1122,7 +1123,7 @@ const TimeLogWindow = (props: any) => {
 			setFilters(findAndUpdateFiltersData(filterOptions,updatedarray, 'location', "uniqueId"))
 		}
 	}, [locationsdata]);
-
+	
 	const GenerateFilters = () => {
 
 		setFilters(findAndUpdateFiltersData(filterOptions, TimeLogGridList, "user","",true,"firstName" ,'lastName',"ID"));
@@ -1222,17 +1223,7 @@ const TimeLogWindow = (props: any) => {
 			saveSmartItemLink(smartItemLink);
 		}
 	}, [smartItemLink]);
-	const generateSplitEntryData  = (row:any) => {
-		let data:any = [];
-		[0,1]?.forEach((item:any, index:any) => {
-			if(index === 0) {
-				data.push({ startTime: moment?.utc(row?.startTime)?.format('LT'), endTime: "", notes: "", duration: "" });
-			} else if(index === 1) {
-				data.push({ startTime: "", endTime: moment?.utc(row?.endTime)?.format('LT'), notes: "", duration: "", disable:true });
-			};
-		});
-		return data;
-	};
+	
 	return (
 		server && <> <GridWindow
 			open={true}

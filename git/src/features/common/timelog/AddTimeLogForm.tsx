@@ -53,7 +53,7 @@ const AddTimeLogForm = (props: any) => {
 			time: [],
 			duration: "0 Hrs 00 Mins",
 			smartItems: "",
-			workers:''
+			workers:0
 		};
 	}, []);
 
@@ -80,6 +80,7 @@ const AddTimeLogForm = (props: any) => {
 	const [addLinksOptions, setAddLinksOptions] = React.useState<any>();
 	const [selectedSmartItem, setSelectedSmartItem] = React.useState<any>("");
 	const [selectedWorkers, setSelectedWorkers] = React.useState<Boolean>(false);
+	const [clearTimeLogPickerData, setClearTimeLogPickerData] = useState<boolean>(false);
 
 	useMemo(() => {
 		const addLinksOptionsCopy = AppList(appsList);
@@ -121,18 +122,17 @@ const AddTimeLogForm = (props: any) => {
 						wholeDuration += durationInSeconds;
 					  }
 				})
-				
-					  if (wholeDuration > 0) {
-						const hours = Math.floor(wholeDuration / (60 * 60));
-						const minutes = Math.floor(wholeDuration / 60) % 60;
-						OverallDuration =`${hours} Hrs ${minutes} Mins`
-					  }
+				if (wholeDuration > 0) {
+					const hours = Math.floor(wholeDuration / (60 * 60));
+					const minutes = Math.floor(wholeDuration / 60) % 60;
+					OverallDuration =`${hours} Hrs ${minutes} Mins`
+				}
 
 			})
-
+			console.log('OverallDuration',OverallDuration)
 			setTimeLogForm((currentState) => {
 				const newState = { ...currentState, ...{ ['workers']: WorkTeamDataFromExt.length ,['duration']: OverallDuration ,['time']:timeLogData} };
-				checkFormValidity(newState);
+				checkFormValidity(newState)
 				return newState;
 			})
 		}
@@ -145,30 +145,51 @@ const AddTimeLogForm = (props: any) => {
 			const projectLevelArray = ['Me', 'mycompany', 'workteam', 'adhocUser']
 
 			const updatedarray = resource?.filter((data: any) => {
-				return canManageTimeForCompany() ? companyArray?.includes(data.value)
+				return canManageTimeForProject() ? projectLevelArray?.includes(data?.value)
 					: canManageTimeForWorkTeam() ? workerArray?.includes(data.value)
-					: canManageTimeForProject() ? projectLevelArray?.includes(data?.value) : []
+					: canManageTimeForCompany() ? companyArray?.includes(data.value) : []
 			});
 			setResourceOptions(updatedarray);
 		}
 	}, [access]);
 
 	const handleFieldChange = (event: any, name: any) => {
-		if(name == 'resource'){
-			if((event === "workteam") || (event === "mycompany")) setSelectedWorkers(true) 
-			else setSelectedWorkers(false)
+		console.log('event',event);
+		console.log('name',name);
+		if(name == 'resource'){	
+			setTimeLogForm((currentState) => {
+				const oldState =  { ...currentState, ...{ [name]: event } };
+				const newState =  { ...{ [name]: event} , ...{	time: [],duration: "0 Hrs 00 Mins",smartItems: "",workers:'',date: new Date()?.toISOString() }}
+				return currentState.resource != name ? newState :  oldState;
+			});
+			if((event === "workteam") || (event === "mycompany")) {
+				setSelectedWorkers(true)
+			} 
+			else {
+				setSelectedWorkers(false)
+			}
 		}
-		setTimeLogForm((currentState) => {
-			const newState = { ...currentState, ...{ [name]: event } };
-			checkFormValidity(newState);
-			return newState;
-		});
+		else{
+			setTimeLogForm((currentState) => {
+				const newState =  { ...currentState, ...{ [name]: event } };
+				checkFormValidity(newState);
+				return newState;
+			});
+		}
 	};
 
 	const checkFormValidity = (record: TimeLogFormProps) => {
-	 	 timelogForm.resource == 'workteam' || timelogForm.resource == 'mycompany' ?
-			setAddDisabled(_.isEmpty(record?.resource) || _.isEmpty(record.workers))
-			: setAddDisabled( _.isEmpty(record?.resource) || _.isEmpty(record?.time));
+		console.log('checkFormValidity',record)
+	 	  if(record.resource == 'workteam' || record.resource == 'mycompany' ){
+				setAddDisabled(record.workers > 0 ? false : true)
+			}
+			else if (timelogForm?.resource == 'Me' || timelogForm.resource == 'adhocUser') {
+				if(!_.isEmpty(record?.time)){
+					if (record?.time[0]['startTime'] !='' && record?.time[0]['endTime'] !='') setAddDisabled(false);
+					else setAddDisabled(true);
+				}
+				else setAddDisabled(true);
+			}
 	}; 
 
 	const handleAdd = () => {
@@ -203,7 +224,8 @@ const AddTimeLogForm = (props: any) => {
 		console.log('payload',payload);
 		setTimeLogForm(defaultValues);
 		setSelectedSmartItem('');
-	
+		setAddDisabled(true);
+        setClearTimeLogPickerData(true)
 		addTimeLog(payload, (resp:any) => {
 			dispatch(setSmartItemOptionSelected({}));
 			dispatch(setToast('Time Logged Successfully.'));
@@ -259,11 +281,7 @@ const AddTimeLogForm = (props: any) => {
 						<InputLabel required className="inputlabel" sx={{ "& .MuiFormLabel-asterisk": { color: "red" } }}>
 							Resource
 						</InputLabel>
-						{/* <TextField
-							InputProps={{ startAdornment: (<span className='common-icon-title'></span>) }}
-							name='resource' variant='standard' value={timelog.resource}
-							onChange={handleFieldChange}
-						/> */}
+
 						{
 							isWorker() ? <span className='common-icon-ContactPicker'>{appInfo?.currentUserInfo?.name}</span> 
 							: <SmartDropDown
@@ -315,6 +333,8 @@ const AddTimeLogForm = (props: any) => {
 								name="time"
 								onDurationChange={(value: any) =>handleFieldChange(value, "duration")}
 								TimeonChange={(data: any) => { handleFieldChange(data, 'time') }}
+								resetRecords={clearTimeLogPickerData}
+                                resetClearTimeLogPickerDataState={ (e:any)=> setClearTimeLogPickerData(e)}
 							></TimeLogPicker>
 							:
 							<TextField
@@ -323,7 +343,7 @@ const AddTimeLogForm = (props: any) => {
 								}}
 								name="name"
 								variant="standard"
-								value={timelogForm?.workers}
+								value={timelogForm?.workers > 0 ? timelogForm?.workers : ""}
 								onClick={openSelectResource}
 								placeholder='Select'
 							/>

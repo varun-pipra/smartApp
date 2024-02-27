@@ -259,3 +259,15 @@ export const dateFunctionalities  = (value:any) =>{
 			return {from :dateFormat(currentDate) ,to : dateFormat(yesterdaydate)}
 		}
 }
+
+export const generateSplitEntryData  = (row:any) => {
+	let data:any = [];
+	[0,1]?.forEach((item:any, index:any) => {
+		if(index === 0) {
+			data.push({ startTime: moment?.utc(row?.startTime)?.format('LT'), endTime: "", notes: "", duration: "0 Hrs 00 Mins" });
+		} else if(index === 1) {
+			data.push({ startTime: "", endTime: moment?.utc(row?.endTime)?.format('LT'), notes: "", duration: "0 Hrs 00 Mins", disable:true });
+		};
+	});
+	return data;
+};

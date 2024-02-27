@@ -13,6 +13,7 @@ import SendBackModel from './SendBackModel/sendBackModel';
 import { getTimeLogList, setSplitTimeSegmentBtn ,setToast} from '../stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import {acceptTimeLog, addTimeLog, deleteTimeLogData, sendBackTimeLog} from '../stores/TimeLogAPI';
+import { addTimeToDate } from 'utilities/datetime/DateTimeUtils';
 
 // Component definition
 export const TLLeftButtons = memo(() => {
@@ -43,21 +44,27 @@ export const TLLeftButtons = memo(() => {
 			if (array.includes('Reported') && !array.includes('In Progress') && !array.includes('Accepted') && !array.includes('Planned') && !array.includes('Unavailable') && !array.includes('Sent Back')) {
 				setAcceptBtn(false);
 				setsendBackBtn(false);
-				setSplitBtn(false)
 			}
 			else {
 				setAcceptBtn(true);
 				setsendBackBtn(true);
-				setSplitBtn(true);
 			}
 		}
 		else{
 			setAcceptBtn(true);
 			setsendBackBtn(true);
-			setSplitBtn(true);
 		}
 	}, [selectedRowData]);
 
+	useMemo(() => {
+		if (selectedRowData.length > 0){
+			let array: any = selectedRowData?.map((value: any) => getTimeLogStatus(value.status));
+			if (array.includes('Reported') && !array.includes('In Progress') && !array.includes('Accepted') && !array.includes('Planned') && !array.includes('Unavailable') && !array.includes('Sent Back')) setSplitBtn(false)
+			else setSplitBtn(true);
+		}
+		else setSplitBtn(true);
+	}, [selectedRowData]);
+	
 	const deleteTimeLog = async () =>{
 		try{
 			await Promise.all(selectedRowData.map((record:any) => {
@@ -104,11 +111,20 @@ export const TLLeftButtons = memo(() => {
 		setSendBackClick(false);
 	}
 	const handleSplit = (data:any) => {
+		const splitEntries = data?.timeEntries?.map((entry:any) => {
+			return {
+				startTime: addTimeToDate(selectedRowData?.[0]?.startTime, entry?.startTime),
+				endTime: addTimeToDate(selectedRowData?.[0]?.startTime, entry?.endTime),
+				userId:selectedRowData?.[0]?.user?.ID
+			}
+		});
 		const payload = {
-			splitFromSegmentId: selectedTimeLogDetails?.id,
-			segments: []
+			splitFromSegmentId: selectedRowData?.[0]?.id,
+			segments: [...splitEntries],
+			reason: data?.description
 		}
-		addTimeLog(payload, (response:any) => {});
+		addTimeLog(payload, afterItemAction);
+		dispatch(setSplitTimeSegmentBtn(false))
 	}
 
 	return <>
@@ -130,7 +146,7 @@ export const TLLeftButtons = memo(() => {
 		</IQTooltip>
 		<IconButton className='divider-line-cls'>
 		</IconButton>
-		<Button className={`tl-toolbar-btn  ${!acceptBtn ? 'accept-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-accept'></span>} disabled={acceptBtn} onClick={() => { setacceptClick(true) }}>
+		<Button className={`tl-toolbar-btn  ${!acceptBtn ? 'accept-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-accept'></span>} disabled={acceptBtn} onClick={() => { selectedRowData?.length == 1 ? handleAccept() : setacceptClick(true) }}>
 			Accept
 		</Button>
 		<Button className={`tl-toolbar-btn  ${!splitBtn ? '' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} disabled={splitBtn} onClick={() => { dispatch(setSplitTimeSegmentBtn(true)) }}>

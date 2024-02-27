@@ -150,6 +150,7 @@ export const deleteLinksData = async (timeLogId :any,linkid: any, callback: any)
   };
   if (!isLocalhost) {
     const response = await TimeLogRequest(server, `/segments/${timeLogId}/links/${linkid}`, options, true);
+    console.log('deletelinkresponse',response)
     callback && callback(response);
   }
 }

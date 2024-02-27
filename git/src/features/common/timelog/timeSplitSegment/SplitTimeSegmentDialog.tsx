@@ -25,7 +25,8 @@ const SplitTimeSegmentDialog = (props: any) => {
     
   };
   const handleTimeEntries = (data: any) => {
-    setFormData(data);
+    console.log("entries", data)
+    setFormData({timeEntries: [...data], description: formData?.description});
   };
   const handleAlertAction =(type:string) => {
     if(type == 'yes') {setShowConfirmation(false); handleSubmit && handleSubmit(formData); if (props?.onClose) props?.onClose(false)}
@@ -54,7 +55,7 @@ const SplitTimeSegmentDialog = (props: any) => {
       }}
       actions={
         <>
-          <IQButton disabled={!(!_.values(formData['0'])?.every(_.isEmpty) && formData?.description !== '')} onClick={() => handleSplit()}>
+          <IQButton disabled={!((!_.values(formData?.timeEntries?.[0])?.every(_.isEmpty) && formData?.description && formData?.description !== ''))} onClick={() => handleSplit()}>
             SPLIT & SEND BACK
           </IQButton>
         </>
@@ -118,7 +119,7 @@ const SplitTimeSegmentDialog = (props: any) => {
             maxRows={10}
             placeholder="Enter Note"
             name="description"
-            onChange={(e: any) => setFormData({...formData, ["description"] :  e.target.value})}
+            onChange={(e: any) => setFormData({...formData, description :  e.target.value})}
           />
         </div>
         {showConfirmation && (
