@@ -11,10 +11,10 @@ import SUIGrid from 'sui-components/Grid/Grid';
 import { formatDate } from 'utilities/datetime/DateTimeUtils';
 import IQSubMenuButton from 'components/iqmenu/IQSubMenuButton';
 import { postMessage } from "app/utils";
-
+import _ from 'lodash';
 import { AppList_PostMessage } from '../../../utils';
 import {deleteLinksData,saveLinksData} from '../../../stores/TimeLogAPI';
-import {getTimeLogDetails,setSmartItemOptionSelected} from '../../../stores/TimeLogSlice';
+import {getTimeLogDetails,setSmartItemOptionSelected,setSelectedTimeLogDetails} from '../../../stores/TimeLogSlice';
 
 const linksOptions = [
 	{
@@ -247,17 +247,17 @@ const Links = () => {
 			}
 
 		},
-		{
-			headerName: 'Type',
-			field: 'linkType',
-			suppressMenu: true,
-		},
+		// {
+		// 	headerName: 'Type',
+		// 	field: 'linkType',
+		// 	suppressMenu: true,
+		// },
 		{
 			headerName: 'Created By',
 			field: 'createdBy',
 			minWidth: 150,
 			suppressMenu: true,
-			valueGetter: (params: any) => params?.data?.createdBy || '',
+			valueGetter: (params: any) => params?.data?.createdBy   ? params?.data?.createdBy : '',
 			keyCreator: (params: any) => params.data?.createdBy || 'None'
 		}, {
 			headerName: 'Creation Date',
@@ -272,22 +272,23 @@ const Links = () => {
 	};
 
 	useEffect(()=>{
+		if(!_.isEmpty(smartItemOptionSelected)){
 			const payload = [{itemId : smartItemOptionSelected?.id}]
 			saveLinksData(selectedTimeLogDetails?.id,payload, (response: any) => {
-					dispatch(getTimeLogDetails(smartItemOptionSelected?.id))
+					console.log('response',response)
+					dispatch(setSelectedTimeLogDetails(response));
 					dispatch(setSmartItemOptionSelected({}));
 			});
-
-	},[smartItemOptionSelected])
+		}
+	},[smartItemOptionSelected]);
 
 	const onSelectedFilesDelete = async() => {
 		console.log('selected',selected)
 		try{
 			await Promise.all(selected.map((links:any) => {
 						deleteLinksData(selectedTimeLogDetails?.id,links?.id,(response:any) => {
-						if(response) {
 							console.log('response linkdelete',response)
-						}
+							//dispatch(setSelectedTimeLogDetails(response));
 					});
 			}));	
 		}

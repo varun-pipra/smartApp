@@ -5,7 +5,7 @@ import { getTime, addTimeToDate } from "utilities/datetime/DateTimeUtils";
 
 import "./WorkerTimeLog.scss";
 const WorkerTimeLog = (props: any) => {
-  const {showDuration = false} = props;
+  const {showDuration = false, defaultData = [], ...rest} = props;
   const rowObj = { startTime: "", endTime: "", notes: "", duration: "" };
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [logEntries, setLogEntries] = useState<any>([
@@ -14,6 +14,11 @@ const WorkerTimeLog = (props: any) => {
   const [overallDuration, setOverallDuration] = useState<any>("0 Hrs 00 Mins");
   const [timeLogVal, setTimeLogVal] = useState<any>("");
   const dateStr: any = "1/1/1970";
+  useEffect(() => {
+    if(defaultData?.length > 0) {
+      setLogEntries(defaultData);
+    }
+  },[defaultData]);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -252,6 +257,7 @@ const WorkerTimeLog = (props: any) => {
         {index !== 0 && (
           <IconButton  className="delete-btn"
             data-action="delete"
+            disabled={(rec.disable ?? false)}
             onClick={(e: any) => onDeleteBtnClick(index)}
           >
             <span className="common-icon-delete" />

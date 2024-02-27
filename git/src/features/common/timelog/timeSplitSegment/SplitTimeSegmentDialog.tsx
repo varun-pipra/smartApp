@@ -11,7 +11,7 @@ import { getDuration } from "../utils";
 import { ConfirmationDialog } from "features/budgetmanager/import/ConfirmationDialog/ConfirmationDialog";
 
 const SplitTimeSegmentDialog = (props: any) => {
-  const { data, handleSubmit, ...rest } = props;
+  const {defaultRowData, data, handleSubmit, ...rest } = props;
   const [formData, setFormData] = useState<any>({});
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showAlert, setShowAlert] = useState<any>({
@@ -91,6 +91,7 @@ const SplitTimeSegmentDialog = (props: any) => {
             // onDurationChange={(duration: any) =>
             //   setChangeEvent({ ...changeEvent, duration: duration })
             // }
+            defaultData={defaultRowData}
             onTimeEntryChange={(timeEntries: any) =>
               handleTimeEntries(timeEntries)
             }

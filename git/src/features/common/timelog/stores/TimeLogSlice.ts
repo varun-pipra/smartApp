@@ -55,7 +55,9 @@ export const getWorkTeamGridData = createAsyncThunk<any>(
 
 export const getTimeLogList = createAsyncThunk<any,any>('TimeLogList',
 	async (payload = {}) => {
-		const response = await fetchTimeLog(payload);
+		const data = {...payload}
+		if(data?.hasOwnProperty('conflicting')){ delete data.conflicting }
+		const response = await fetchTimeLog(data);
 		const modifiedResp = response?.map((obj:any) => {
 			return {
 				...obj,
@@ -70,7 +72,6 @@ export const getTimeLogList = createAsyncThunk<any,any>('TimeLogList',
 export const getTimeLogDetails = createAsyncThunk<any, string>('TimeLogDetails',
 	async (id) => {
 		const response = await fetchTimeLogDetails(id);
-		console.log('response slice',response)
 		return {
 			...response,
 			startDate: response?.startTime,

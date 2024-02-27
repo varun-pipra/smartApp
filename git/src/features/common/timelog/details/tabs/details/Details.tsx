@@ -126,15 +126,17 @@ const details = (props: any) => {
 	};
 
 	useMemo(() => {
-	
 		if(!_.isEmpty(smartItemOptionSelected) ){
-			console.log('smartItemOptionSelected',smartItemOptionSelected)
-			console.log('AppList',AppList)
 			const duplicate = [{...smartItemOptionSelected}]
 			const addLinksOptionsCopy = AppList([...appsList,...duplicate]);
 			setTimeAddedOptions(addLinksOptionsCopy);
 			setTimeAdded(smartItemOptionSelected?.name);
 			dispatch(setDetailsPayloadSave({...DetailspayloadSave,['smartItemId'] : smartItemOptionSelected?.id}))
+		}
+		else{
+			const addLinksOptionsCopy = AppList([...appsList]);
+			setTimeAddedOptions(addLinksOptionsCopy);
+			setTimeAdded('');
 		}
 	}, [smartItemOptionSelected]);
 

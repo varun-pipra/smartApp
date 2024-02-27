@@ -4,6 +4,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { Button, Avatar } from '@mui/material';
 import { timelogStatusMap } from '../../TimeLogConstants';
 import moment from "moment";
+import { formatDate, getTime } from 'utilities/datetime/DateTimeUtils';
 import { timelogList } from 'data/timelog/TimeLogData';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import {getDuration} from '../../utils';
@@ -49,39 +50,44 @@ const SendBackGrid = (props: any) => {
 			}
 		}, {
 			headerName: 'Time Entry For',
-			field: 'timeEntryFor',
+			field: 'user.name',
 			pinned: 'left',
-			aggFunc: (params: any) => {
-				if (!params.rowNode?.key) {
-					return 'Summary';
-				} else {
-					return `Subtotal - ${params.rowNode?.key}`;
-				}
-			},
+			keyCreator: (params: any) =>  params.data?.user && params.data?.user?.firstName  ? params.data?.user?.firstName + ' '+params.data?.user?.lastName : '' || "None",
 			cellRenderer: (params: any) => {
-				if (!!params?.node?.footer) return <span style={{ fontWeight: 'bold' }}>{params.value}</span>
-				else return params.value;
-			}
+				if (!!params?.node?.footer) {
+				  if (!params.node?.key) {
+					return "Summary";
+				  }
+				  return `Sub Total - ${params.node?.key}`;
+				} else {
+				  return (
+					<span>
+					  { params.data?.user && params.data?.user?.firstName  ? params.data?.user?.firstName + ' '+params.data?.user?.lastName : ''}
+					</span>
+				  );
+				}
+			  }
 		}, {
 			headerName: 'Company',
 			field: 'company',
 			valueGetter: (params: any) => params.data?.company?.name,
+			keyCreator: (params: any) => params.data?.company?.name || "None"
 		}, {
 			headerName: 'Start Date',
 			field: 'startDate',
-			valueGetter: (params: any) => `${moment.utc(params?.data?.startDate).format('DD/MM/YYYY')}`,
+			valueGetter: (params: any) => params.data ? formatDate(params.data?.startDate) : '',
 		}, {
 			headerName: 'End Date',
 			field: 'endDate',
-			valueGetter: (params: any) => `${moment.utc(params?.data?.endDate).format('DD/MM/YYYY')}`,
+			valueGetter: (params: any) => params.data ? formatDate(params.data?.endDate) : '',
 		}, {
 			headerName: 'Start Time',
 			field: 'startTime',
-			valueGetter: (params: any) => `${moment.utc(params?.data?.startTime).format('h:mm A')}`,
+			valueGetter: (params: any) => `${getTime(params?.data?.startTime) || ''}`,
 		}, {
 			headerName: 'End Time',
 			field: 'endTime',
-			valueGetter: (params: any) => `${moment.utc(params?.data?.endTime).format('h:mm A')}`,
+			valueGetter: (params: any) => `${getTime(params?.data?.endTime) || ''}`,
 		}, {
 			headerName: 'Duration',
 			field: 'duration',
@@ -99,33 +105,43 @@ const SendBackGrid = (props: any) => {
 		{
 			headerName: 'Created By',
 			field: 'createdBy',
-			valueGetter: (params: any) => params.data?.createdBy?.name,
-			keyCreator: (params: any) => params.data?.createdBy?.name || "None"
-		}, {
+			valueGetter: (params: any) => params.data?.createdBy ? `${params.data?.createdBy?.firstName ? params.data?.createdBy?.firstName : ''} ${params.data?.createdBy?.lastName ? params.data?.createdBy?.lastName : ''}` : '',
+		},
+		{
 			headerName: 'Smart Item',
 			field: 'smartItem',
+			cellStyle: {color: "#059cdf",cursor:'pointer'},
+			onCellClicked: (event: any) => {
+				if (event.data?.smartItemId) {
+					postMessage({ event: 'openitem', body: { smartItemId: event.data?.smartItem?.smartItemId } });
+				}
+			},
 			valueGetter: (params: any) => params.data?.smartItem?.name,
 			keyCreator: (params: any) => params.data?.smartItem?.name || "None"
-		}, {
+		},
+		{
 			headerName: 'Work Team',
 			field: 'workTeam',
-			keyCreator: (params: any) => params.data?.workTeam || "None"
+			valueGetter: (params: any) => params.data?.team?.name,
+			keyCreator: (params: any) => params.data?.team?.name || "None"
 		}, {
 			headerName: 'Location',
 			field: 'location',
-			keyCreator: (params: any) => params.data?.location || "None"
+			valueGetter: (params: any) => params.data?.location?.name,
+			keyCreator: (params: any) => params.data?.location?.name || "None"
 		}, {
 			headerName: 'System Breakdown Structure',
 			field: 'sbs',
+			valueGetter: (params: any) => params.data?.sbs?.name,
 		}, {
 			headerName: 'Phase',
 			field: 'phase',
 			keyCreator: (params: any) => params.data?.phase?.[0]?.name || "None",
 			minWidth: 260,
 			cellRenderer: (params: any) => {
-				const phase = params.data?.phase?.[0]?.name;
+				const phase = params.data?.sbsPhase?.name;
 				const buttonStyle = {
-					backgroundColor: params.data?.phase?.[0]?.color ?? "red",
+					backgroundColor: "blue",
 					color: "#fff",
 					alignItems: "center",
 				};

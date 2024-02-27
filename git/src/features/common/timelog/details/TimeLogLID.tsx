@@ -10,7 +10,7 @@ import { TextField } from '@mui/material';
 import TLLinks from './tabs/links/Links';
 import Details from './tabs/details/Details';
 import { ContractorResponse } from 'features/vendorcontracts/vendorcontractsdetails/ContractorResponse/ContractorResponse';
-import { getTimeLogDetails, setSelectedTimeLogDetails,setDetailsPayloadSave } from '../stores/TimeLogSlice';
+import { getTimeLogDetails, setSelectedTimeLogDetails,setDetailsPayloadSave, getTimeLogList } from '../stores/TimeLogSlice';
 import { stringToUSDateTime2 } from 'utilities/commonFunctions';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import { timelogStatusMap } from '../TimeLogConstants';
@@ -47,17 +47,20 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	const onClickSave = () =>{
 			updateTimeLogDetails(selectedTimeLogDetails?.id, DetailspayloadSave, 
 				(response: any) => {
+					console.log('response',response)
 				 dispatch(setSelectedTimeLogDetails(response));
 				 dispatch(setDetailsPayloadSave({}));
 			});
 	}
+	const afterItemAction = (response: any) => {
+		dispatch(getTimeLogDetails(selectedTimeLogDetails?.id))
+		dispatch(getTimeLogList({}));
+	};
 	const handleAccept = () => {
 		const payload = {
 			timeSegmentIds:[selectedTimeLogDetails?.id]
 		}
-		acceptTimeLog(payload, (response:any) => {
-			console.log("response accept", response);
-		})
+		acceptTimeLog(payload, afterItemAction)
 	}
 	const handleSendback = (data:any) => {
 		console.log("handleSendback data", data)
@@ -66,7 +69,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 			reason:data?.reason,
 			signature:data?.sign
 		}
-		sendBackTimeLog(payload, (response:any) => {console.log("sent back resp", response)})
+		sendBackTimeLog(payload, afterItemAction);
 		setOpenSendBack(false);
 	}
 	const handleSplit = (data:any) => {
@@ -74,7 +77,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 			splitFromSegmentId: selectedTimeLogDetails?.id,
 			segments: []
 		}
-		addTimeLog(payload, (response:any) => {})
+		addTimeLog(payload, (response:any) => {});
 	}
 
 	const tabConfig = [

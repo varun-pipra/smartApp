@@ -254,6 +254,8 @@ export const dateFunctionalities  = (value:any) =>{
 			return {from : dateFormat(firstDateOfPreviousMonth) ,to : dateFormat(lastdate)}
 		}
 		else if (value == 'future'){
-			
+			var currentDate = new Date();
+			const yesterdaydate = new Date(new Date().setDate(new Date().getDate() + 1));
+			return {from :dateFormat(currentDate) ,to : dateFormat(yesterdaydate)}
 		}
 }

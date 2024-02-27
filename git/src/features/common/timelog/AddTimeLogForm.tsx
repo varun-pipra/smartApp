@@ -16,7 +16,7 @@ import WorkerDailog from "./workerDailog/WorkerDailog";
 import { makeStyles, createStyles } from "@mui/styles";
 import { setToast ,getTimeLogList,setSmartItemOptionSelected} from './stores/TimeLogSlice';
 import { AppList, AppList_PostMessage } from './utils';
-import { addTimeToDate } from 'utilities/datetime/DateTimeUtils';
+import { addTimeToDate, getTime } from 'utilities/datetime/DateTimeUtils';
 import { addTimeLog } from './stores/TimeLogAPI';
 import { canManageTimeForCompany, canManageTimeForWorkTeam, isWorker, canManageTimeForProject } from 'app/common/userLoginUtils';
 
@@ -97,6 +97,11 @@ const AddTimeLogForm = (props: any) => {
 				return newState;
 			});
 		}
+		else{
+			const addLinksOptionsCopy = AppList([...appsList]);
+			setAddLinksOptions(addLinksOptionsCopy);
+			setSelectedSmartItem('')
+		}
 	}, [smartItemOptionSelected]);
 
 	useEffect(()=>{
@@ -112,7 +117,7 @@ const AddTimeLogForm = (props: any) => {
 						(new Date(item.endTime).getTime() -
 							new Date(item.startTime).getTime()) /
 						1000;
-					if (durationInSeconds) {
+					if (durationInSeconds > 0) {
 						wholeDuration += durationInSeconds;
 					  }
 				})
@@ -169,9 +174,13 @@ const AddTimeLogForm = (props: any) => {
 	const handleAdd = () => {
 		const timeEntries = timelogForm?.time?.map((obj:any) => {
 			if(timelogForm?.resource == "workteam" || timelogForm?.resource == "mycompany" ){
+				let startTime:any = getTime(obj?.startTime);
+                let endTime:any = getTime(obj?.endTime);
 				return {
-					startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
-					endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
+					startTime: obj?.startTime ? addTimeToDate(timelogForm?.date,startTime) : '',
+                    endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, endTime) : '',
+					// startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
+					// endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
 					userId:obj.userId,
 					notes : obj.notes
 				}
@@ -194,7 +203,9 @@ const AddTimeLogForm = (props: any) => {
 		console.log('payload',payload);
 		setTimeLogForm(defaultValues);
 		setSelectedSmartItem('');
+	
 		addTimeLog(payload, (resp:any) => {
+			dispatch(setSmartItemOptionSelected({}));
 			dispatch(setToast('Time Logged Successfully.'));
 			dispatch(getTimeLogList({}));
 		});		

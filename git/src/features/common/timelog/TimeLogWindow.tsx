@@ -238,7 +238,6 @@ const TimeLogWindow = (props: any) => {
 								// setOpenManageWorkers(true);
 								break;
 							case "smartitemlink":
-								console.log("smartitemlink data", data);
 								setSmartItemLink(data);
 								break;
 						}
@@ -371,7 +370,7 @@ const TimeLogWindow = (props: any) => {
 
 	const onFilterChange = (filterValues: any, type?: string) => {
 		console.log('filterValues',filterValues);
-		if(!_.isEqual(selectedFilters2,filterValues) && !_.isEmpty(filterValues)){
+		if(!_.isEqual(selectedFilters2,filterValues)){
 			if (Object.keys(filterValues).length !== 0) {
 				let filterObj = filterValues;
 				if (selectedFilters2?.dateRange?.includes('custom') && !filterValues?.dateRange?.includes('custom')) {
@@ -402,16 +401,16 @@ const TimeLogWindow = (props: any) => {
 					};
 				}
 				if(!_.isEqual(selectedFilters2, filterObj) && filterObj?.hasOwnProperty('conflicting')){
-						if(filterObj['conflicting'].includes('conflictingTime')) filterObj.conflictingTime = [true];
-						if(filterObj['conflicting'].includes('conflictingLocations')) filterObj.conflictingLocations = [true];
-						if(!filterObj['conflicting'].includes('conflictingTime')) filterObj.conflictingTime = [false];
-						if(!filterObj['conflicting'].includes('conflictingLocations')) filterObj.conflictingLocations = [false];
+						if(filterObj['conflicting'].includes('conflictingTime')) filterObj.conflictingTime = true;
+						if(filterObj['conflicting'].includes('conflictingLocations')) filterObj.conflictingLocations = true;
+						if(!filterObj['conflicting'].includes('conflictingTime')) filterObj.conflictingTime = false;
+						if(!filterObj['conflicting'].includes('conflictingLocations')) filterObj.conflictingLocations = false;
 						setSelectedFilters2(filterObj);
 						dispatch(getTimeLogList(filterObj));
 				}
 				if(!filterObj?.hasOwnProperty('conflicting') && (filterObj?.hasOwnProperty('conflictingTime') || filterObj?.hasOwnProperty('conflictingLocations'))){
-					filterObj.conflictingTime = [false];
-					filterObj.conflictingLocations = [false];
+				  delete 	filterObj.conflictingTime
+					delete filterObj.conflictingLocations
 					setSelectedFilters2(filterObj);
 					dispatch(getTimeLogList(filterObj));
 				}
@@ -1193,7 +1192,19 @@ const TimeLogWindow = (props: any) => {
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
 	const handleSplit = (data:any) => {
-		console.log("Split Time Log Data", data);
+		let segments:any = [];
+		(Object.values(data)?.filter((x:any) => typeof(x) !== 'string') || [])?.forEach((element:any) => {
+				segments.push({
+					startTime : element.startTime,
+					endTime : element.endTime,
+					userId : ''
+				})
+		});
+		let payload = {
+			segments : segments,
+			splitSegmentId : ''
+		};
+		console.log("Split Time Log Data", payload);
 	};
 
 	const saveSmartItemLink = (smartData: any) => {
@@ -1211,7 +1222,17 @@ const TimeLogWindow = (props: any) => {
 			saveSmartItemLink(smartItemLink);
 		}
 	}, [smartItemLink]);
-
+	const generateSplitEntryData  = (row:any) => {
+		let data:any = [];
+		[0,1]?.forEach((item:any, index:any) => {
+			if(index === 0) {
+				data.push({ startTime: moment?.utc(row?.startTime)?.format('LT'), endTime: "", notes: "", duration: "" });
+			} else if(index === 1) {
+				data.push({ startTime: "", endTime: moment?.utc(row?.endTime)?.format('LT'), notes: "", duration: "", disable:true });
+			};
+		});
+		return data;
+	};
 	return (
 		server && <> <GridWindow
 			open={true}
@@ -1322,7 +1343,7 @@ const TimeLogWindow = (props: any) => {
 			}}
 		/>
 		{splitTimeSegmentBtn && (
-			<SplitTimeSegmentDialog data={selectedRowData?.[0]} handleSubmit={(data:any) => handleSplit(data)}onClose={() => dispatch(setSplitTimeSegmentBtn(false))} />
+			<SplitTimeSegmentDialog defaultRowData= {generateSplitEntryData(selectedRowData?.[0])} data={selectedRowData?.[0]} handleSubmit={(data:any) => handleSplit(data)}onClose={() => dispatch(setSplitTimeSegmentBtn(false))} />
 		)}
 		{openManageWorkers ? (
 			<ManageWorkers

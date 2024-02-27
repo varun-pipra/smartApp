@@ -12,14 +12,14 @@ import { ReportAndAnalyticsToggle } from 'sui-components/ReportAndAnalytics/Repo
 import SendBackModel from './SendBackModel/sendBackModel';
 import { getTimeLogList, setSplitTimeSegmentBtn ,setToast} from '../stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
-import {deleteTimeLogData} from '../stores/TimeLogAPI';
+import {acceptTimeLog, addTimeLog, deleteTimeLogData, sendBackTimeLog} from '../stores/TimeLogAPI';
 
 // Component definition
 export const TLLeftButtons = memo(() => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 
-	const { selectedRowData } = useAppSelector(state => state.timeLogRequest);
+	const { selectedRowData, TimeLogGridList } = useAppSelector(state => state.timeLogRequest);
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
 
 	const [sendBackClick, setSendBackClick] = useState<boolean>(false);
@@ -32,12 +32,13 @@ export const TLLeftButtons = memo(() => {
 	const acceptModel = (e: any, type: any) => {
 		if (type == 'cancel' || type == 'close') { setacceptClick(false) }
 		else {
-			console.log('click')
+			handleAccept();
+			setacceptClick(false)
 		}
 	}
 
 	useMemo(() => {
-		if (selectedRowData.length > 0){
+		if (selectedRowData.length > 1){
 			let array: any = selectedRowData?.map((value: any) => getTimeLogStatus(value.status));
 			if (array.includes('Reported') && !array.includes('In Progress') && !array.includes('Accepted') && !array.includes('Planned') && !array.includes('Unavailable') && !array.includes('Sent Back')) {
 				setAcceptBtn(false);
@@ -76,6 +77,39 @@ export const TLLeftButtons = memo(() => {
 	const refresh = () =>{
 		dispatch(getTimeLogList({}));
 	}
+	const getIds = (selectedRecords:any) => {
+		return selectedRecords?.map((obj:any) => {
+			if(getTimeLogStatus(obj?.status) == 'Reported') return obj?.id
+		})?.filter((element:any) => {return element !== undefined});
+	}
+	const afterItemAction = (response: any) => {
+		dispatch(getTimeLogList({}));
+	};
+	const handleAccept = () => {
+		const ids = getIds(selectedRowData)
+		const payload = {
+			timeSegmentIds:[...ids]
+		}
+		acceptTimeLog(payload, afterItemAction)
+	}
+	const handleSendback = (data:any) => {
+		const ids = getIds(selectedRowData);		
+		console.log("handleSendback data in toolbar", data, ids)
+		const payload = {
+			timeSegmentIds:[...ids],
+			reason:data?.reason,
+			signature:data?.sign
+		}
+		sendBackTimeLog(payload, afterItemAction);
+		setSendBackClick(false);
+	}
+	const handleSplit = (data:any) => {
+		const payload = {
+			splitFromSegmentId: selectedTimeLogDetails?.id,
+			segments: []
+		}
+		addTimeLog(payload, (response:any) => {});
+	}
 
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
@@ -107,7 +141,7 @@ export const TLLeftButtons = memo(() => {
 		</Button>
 
 		{
-			sendBackClick && <SendBackModel data={[]} onClose={(value: any) => { setSendBackClick(value) }} onSubmit={(formData: any) => { console.log('') }} />
+			sendBackClick && <SendBackModel data={[...selectedRowData]} onClose={(value: any) => { setSendBackClick(value) }} onSubmit={(obj: any) => { handleSendback(obj) }} />
 		}
 		{
 			acceptClick &&

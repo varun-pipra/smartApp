@@ -162,7 +162,8 @@ export const saveLinksData = async (timeLogId:any,payload: any, callback: any) =
 		body: JSON.stringify(payload),
 	};
 	if (!isLocalhost) {
-		const response = await TimeLogRequest(server, `/segments/${timeLogId}/links`, options);
+    const response = await TimeLogRequest(server, `/segments/${timeLogId}/links`, options);
+    console.log('response api',response)
 		callback && callback(response);
 	}
 };
