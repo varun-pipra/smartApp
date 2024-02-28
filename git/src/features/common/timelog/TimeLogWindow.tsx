@@ -727,7 +727,7 @@ const TimeLogWindow = (props: any) => {
 			field: 'startDate',
 			sort:'desc',
 			comparator : CustomDateSorting,
-			valueGetter: (params: any) => params.data ? formatDate(params.data?.startDate) : '',		
+			valueGetter: (params: any) => params.data ? moment.utc(params?.data?.startDate).format('MM/DD/YYYY') : '',		
 			keyCreator: (params: any) => {
 				return moment.utc(params?.data?.startDate).format('MM/DD/YYYY')  + " " + (params?.data.dateRange ? (`(${getTimeLogDateRange(params.data.dateRange)})`) : '') || "None" ;
 				// return moment.utc(params?.data?.endDate).format('MM/DD/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
@@ -1155,7 +1155,7 @@ const TimeLogWindow = (props: any) => {
 		const todayEnd = moment.utc().endOf('day');
 		const yesterdayStart = moment.utc().subtract(1, 'days').startOf('day');
 		const yesterdayEnd = moment.utc().subtract(1, 'days').endOf('day');
-		const actualDate = moment.utc(data?.endDate);
+		const actualDate = moment.utc(data?.startDate);
 
 		// if(moment.utc(actualDate).isAfter(todayEnd)) return 'future';
 

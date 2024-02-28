@@ -333,8 +333,8 @@ const AddTimeLogForm = (props: any) => {
 								name="time"
 								onDurationChange={(value: any) =>handleFieldChange(value, "duration")}
 								TimeonChange={(data: any) => { handleFieldChange(data, 'time') }}
-								resetRecords={clearTimeLogPickerData}
-                                resetClearTimeLogPickerDataState={ (e:any)=> setClearTimeLogPickerData(e)}
+								resetTimeLog={clearTimeLogPickerData}
+                                resetDone={ (e:any)=> setClearTimeLogPickerData(e)}
 							></TimeLogPicker>
 							:
 							<TextField
