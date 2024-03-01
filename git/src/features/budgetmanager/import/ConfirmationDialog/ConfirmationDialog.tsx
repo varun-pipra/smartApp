@@ -9,6 +9,11 @@ export const ConfirmationDialog = (props: any) => {
         className="bm-importer warning"
         withInModule={true}
 		//minHeight='300px'
+        onClose={(event, reason) => {
+            if (reason && reason == "closeButtonClick") {
+              if (props?.onClose) props?.onClose(false);
+            }
+          }}
         tools={{
             closable: true
         }}

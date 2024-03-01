@@ -20,6 +20,7 @@ const SplitTimeSegmentDialog = (props: any) => {
             you sure you would like Split the Time Entries and Send Back?"</span>
       </div>
   });	
+  const [overallDuration, setOverallDuration] = useState<any>("0 Hrs 00 Mins");
   const handleSplit = () => {
     setShowConfirmation(true)
     
@@ -32,6 +33,10 @@ const SplitTimeSegmentDialog = (props: any) => {
     if(type == 'yes') {setShowConfirmation(false); handleSubmit && handleSubmit(formData); if (props?.onClose) props?.onClose(false)}
     else if(type == 'no') {setShowConfirmation(false)};
   };
+
+  const handelDurationChange = (duration:any) =>{
+    setOverallDuration(duration)
+  }
   return (
     <IQBaseWindow
       open={true}
@@ -80,7 +85,7 @@ const SplitTimeSegmentDialog = (props: any) => {
                 className="summary_header-text time"
                 style={{ color: "#ed7431" }}
               >
-                {getDuration(data?.duration)}
+                {overallDuration}
               </div>
             </div>
           </div>
@@ -89,9 +94,9 @@ const SplitTimeSegmentDialog = (props: any) => {
         <div className="summary-field-cls">
           <WorkerTimeLog
             name="time"
-            // onDurationChange={(duration: any) =>
-            //   setChangeEvent({ ...changeEvent, duration: duration })
-            // }
+            onDurationChange={(duration: any) =>
+              handelDurationChange(duration)
+            }
             defaultData={defaultRowData}
             onTimeEntryChange={(timeEntries: any) =>
               handleTimeEntries(timeEntries)

@@ -34,7 +34,9 @@ const BudgetImporter = (props: any) => {
 	const [showToast, setShowToast] = React.useState<boolean>(false);
 	const [isReplaceAllowed, setIsReplaceAllowed] = React.useState<boolean>(false);							
 	const [showAlert, setShowAlert] = React.useState<any>({show:false, msg: <div className="warning-text"><span>This will Replace/Overwrite all the existing Budget Line Items with the New Items. Do you want to Continue?</span></div>})	
-	const [importResponse, setImportResponse] = React.useState<any>({})
+	const [importResponse, setImportResponse] = React.useState<any>({});
+  const validationInterval = React.useRef<any>({})
+  const statusInterval = React.useRef<any>()
 	console.log("props?.noOfBudgetItems", props?.noOfBudgetItems, props?.noOfLevels)
 
 	React.useEffect(() => {props?.noOfBudgetItems == 0 ? setImportOption('new') : setImportOption('replace')}, [props?.noOfBudgetItems])
@@ -54,16 +56,16 @@ const BudgetImporter = (props: any) => {
 		importBudgets(appInfo, importType?.[importOption], file, (response:any) => {
 			console.log("import response", response)
       setImportResponse(response);
-      const validationInterval = setInterval(function () {
+       validationInterval.current = setInterval(function () {
         valdationStatus(appInfo, response?.ResultId, (vldStatus: any) => {
           if (vldStatus?.Success && vldStatus?.IsDataValid) {
             setShowInProgress(false);
             setImportResponse(vldStatus);
             setShowSuccess(true);
             let statusResult: any = 0;
-            const interval = setInterval(function () {
+             statusInterval.current = setInterval(function () {
               if ([1, 2]?.includes(statusResult)) {
-                clearInterval(interval);
+                clearInterval(statusInterval.current);
                 dispatch(setImportBudgetsStatus(statusResult));
                 dispatch(fetchGridData(appInfo));
               }
@@ -76,11 +78,11 @@ const BudgetImporter = (props: any) => {
                 }
               );
             }, 3000);
-            clearInterval(validationInterval);
+            clearInterval(validationInterval.current);
           } else if (vldStatus?.Success && vldStatus?.IsDataValid === false) {
             setShowInProgress(false);
             setShowError(true);
-            clearInterval(validationInterval);
+            clearInterval(validationInterval.current);
           }
         });
       }, 3000);
@@ -113,7 +115,18 @@ const BudgetImporter = (props: any) => {
 		
 		// setTimeout(() => {setShowInProgress(false); setShowSuccess(true)}, 1000); 
 	};
-	const onCancelImport = () => { setShowInProgress(false); setShowSuccess(false); setShowError(false); setDisableStartImport(true) ; cancelImport(appInfo, importResponse?.ResultId, (resp:any) => {}) };
+	const onCancelImport = () => { 
+    setShowInProgress(false); 
+    setShowSuccess(false); 
+    setShowError(false); 
+    setDisableStartImport(true) ; 
+    setImportStatus(0)
+    cancelImport(appInfo, 
+      importResponse?.ResultId, (resp:any) => {
+        clearInterval(statusInterval.current);
+        clearInterval(validationInterval.current);
+      }) 
+    };
 	const onNotifyAfterImport = () => { props?.onClose(false); props?.openNotification(true) };
 	const onStartOver = () => {setShowError(false); setImportStatus(0); callImport()};
 	const handleOnOptionChange = (event:any) => {
@@ -281,6 +294,9 @@ const BudgetImporter = (props: any) => {
         <ConfirmationDialog
           handleAction={(type: string) => {
             handleAlertAction(type, importOption);
+          }}
+          onClose={() => {
+              setShowAlert({show: false, msg: ''});
           }}
           content={showAlert?.msg}
           button1={showAlert?.button1}

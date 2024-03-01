@@ -104,6 +104,11 @@ const WorkerTimeLog = (props: any) => {
       maxEndTime: any = "";
     (logEntries || []).forEach((rec: any, index: any) => {
       if (rec.duration) {
+        const hours = Math.floor(rec.duration / (60 * 60));
+        const minutes = Math.floor(rec.duration / 60) % 60;
+        if (rec.startTime !== '' && rec.endTime !== '') {
+          rec.durationFormat = `${hours ?? 0} Hrs ${minutes ?? 0} Mins`;
+        };
         wholeDuration += rec.duration;
       }
       if (rec.startTime) {
@@ -128,11 +133,7 @@ const WorkerTimeLog = (props: any) => {
           }
         }
       };
-      const hours = Math.floor(wholeDuration / (60 * 60));
-      const minutes = Math.floor(wholeDuration / 60) % 60;
-      if (rec.startTime !== '' && rec.endTime !== '') {
-        rec.durationFormat = `${hours ?? 0} Hrs ${minutes ?? 0} Mins`;
-      };
+     
     });
     if (wholeDuration > 0) {
       const hours = Math.floor(wholeDuration / (60 * 60));
