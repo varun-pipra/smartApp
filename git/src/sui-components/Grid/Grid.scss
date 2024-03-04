@@ -95,7 +95,7 @@
 .ag-header-cell-text {
     overflow: hidden;
     text-overflow: ellipsis;
-    color: #333;
+    color: #000;
     font-weight: 500;
     font-family: 'Roboto-Regular';
     font-size: 11pt;
@@ -150,10 +150,10 @@
     .common-icon-No-Item-Available:before {
         color: #d9d9d9;
         font-size: 80px;
-	}
-	.icon-modify{
+    }
+    .icon-modify {
         font-size: 80px !important;
-	}
+    }
 }
 
 .empty-rows-mark {

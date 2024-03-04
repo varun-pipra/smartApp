@@ -188,10 +188,10 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 				{getTimeLogStatus(selectedTimeLogDetails.status) == 'Sent Back' &&
 					<ContractorResponse
 						text={'Time Log Entries Sent Back for Revision'}
-						contractorName={'Gerald,Alexendra'}
-						respondedOn={'05/01/2024'}
+						contractorName={selectedTimeLogDetails?.sentBackBy ? selectedTimeLogDetails?.sentBackBy : ''}
+						respondedOn={selectedTimeLogDetails?.sentBackOn ? stringToUSDateTime2(selectedTimeLogDetails?.sentBackOn) : ''}
 						responseType={1}
-						reason={'cross check the timelog'}
+						reason={selectedTimeLogDetails?.sendBackReason}
 						sign={'sign'}
 						thumbNailImg={''}
 					/>
@@ -241,7 +241,7 @@ const HeaderContent = memo((props: any) => {
 				<span className='budgetid-label grey-font'>Segment Duration:</span>
 				<span className='grey-fontt bold'>{getDuration(selectedTimeLogDetails?.duration)}</span>
 				<span className='last-modified-label grey-font'>Date Created:</span>
-				<span className='grey-fontt'>{selectedTimeLogDetails?.startDate && stringToUSDateTime2(selectedTimeLogDetails?.startDate)} by {selectedTimeLogDetails?.createdBy?.firstName + ' ' +selectedTimeLogDetails?.createdBy?.lastName}</span>
+				<span className='grey-fontt'>{selectedTimeLogDetails?.startDate && stringToUSDateTime2(selectedTimeLogDetails?.startDate)} by {selectedTimeLogDetails?.createdBy?.firstName && selectedTimeLogDetails?.createdBy?.firstName + ' ' +selectedTimeLogDetails?.createdBy?.lastName}</span>
 			</div>
 			<span className='kpi-right-container'>
 				<span className='kpi-name'>

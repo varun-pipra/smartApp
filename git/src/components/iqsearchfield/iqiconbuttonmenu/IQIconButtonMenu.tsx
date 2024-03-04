@@ -269,7 +269,7 @@ export const MultipleSubMenu = (props: any) => {
 										<img
 											src={item?.icon}
 											alt="Avatar"
-											style={{ width: "24px", height: "24px", padding: "1px" }}
+											style={{ width: "26px", height: "26px" }}
 											className="base-custom-img"
 										/> : <Avatar 
 										sx={{ backgroundColor: `#${item.color}`, 

@@ -13,7 +13,7 @@ export const ConfirmationDialog = (props: any) => {
             if (reason && reason == "closeButtonClick") {
               if (props?.onClose) props?.onClose(false);
             }
-          }}
+        }}
         tools={{
             closable: true
         }}

@@ -268,7 +268,7 @@ const TimeLogPicker = (props: any) => {
             ampmInClock={true}
           ></SUIClock>
         </div>
-        <div className="notes-field">
+        <div className="notes-field inline">
           <InputLabel
             className="inputlabel"
             sx={{
@@ -287,6 +287,7 @@ const TimeLogPicker = (props: any) => {
             name="name"
             variant="standard"
             value={rec?.notes || ""}
+            placeholder='Enter Note'
             onChange={(e: any) => onDataChange("notes", e.target?.value, index)}
           />
         </div>
@@ -334,7 +335,7 @@ const TimeLogPicker = (props: any) => {
               Add Time Entries
             </span>
             <span className="time-log-modal-header_close" onClick={handleClose}>
-              +
+            <span className="common-icon-Cancel"></span>
             </span>
           </div>
           <div className="time-log-modal_form">

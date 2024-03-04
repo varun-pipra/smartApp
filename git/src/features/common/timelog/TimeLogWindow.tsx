@@ -90,7 +90,7 @@ const TimeLogWindow = (props: any) => {
 	const groupOptions = [{
 			text: 'Time Entry For', value: 'user', iconCls: 'common-icon-work-team'
 		}, {
-			text: 'Work Team', value: 'team', iconCls: 'common-icon-work-team'
+			text: 'Work Team', value: 'team', iconCls: 'common-icon-workteam'
 		}, {
 			text: 'Companies', value: 'company', iconCls: 'common-icon-filter-companies'
 		}, {
@@ -100,9 +100,9 @@ const TimeLogWindow = (props: any) => {
 		}, {
 			text: 'Source', value: 'source', iconCls: 'common-icon-Workactivity'
 		}, {
-			text: 'Created By', value: 'createdBy', iconCls: 'common-icon-filter-user'
+			text: 'Created By', value: 'createdBy', iconCls: 'common-icon-created-by'
 		}, {
-			text: 'Timelog ID', value: 'timeLogId', iconCls: 'common-icon-work-team'
+			text: 'Timelog ID', value: 'timeLogId', iconCls: 'common-icon-timelog-id'
 		}, {
 			text: 'Date', value: 'startDate', iconCls: 'common-icon-DateCalendar'
 		}, {
@@ -277,7 +277,7 @@ const TimeLogWindow = (props: any) => {
 						<img
 							src={iconUrl}
 							alt="Avatar"
-							style={{ width: "24px", height: "24px", padding: "1px" }}
+							style={{ width: "26px", height: "26px" }}
 							className="base-custom-img"
 						/> : <Avatar
 							src={name}
@@ -727,7 +727,7 @@ const TimeLogWindow = (props: any) => {
 			field: 'startDate',
 			sort:'desc',
 			comparator : CustomDateSorting,
-			valueGetter: (params: any) => params.data ? moment.utc(params?.data?.startDate).format('MM/DD/YYYY') : '',		
+			valueGetter: (params: any) => params.data ? moment.utc(params?.data?.startDate).format('MM/DD/YYYY') : '',	
 			keyCreator: (params: any) => {
 				return moment.utc(params?.data?.startDate).format('MM/DD/YYYY')  + " " + (params?.data.dateRange ? (`(${getTimeLogDateRange(params.data.dateRange)})`) : '') || "None" ;
 				// return moment.utc(params?.data?.endDate).format('MM/DD/YYYY') + " " + (`(${getTimeLogDateRange(params.data.dateRange)})`) || "None";
@@ -799,8 +799,8 @@ const TimeLogWindow = (props: any) => {
 			field: 'smartItem',
 			cellStyle: {color: "#059cdf",cursor:'pointer'},
 			onCellClicked: (event: any) => {
-				if (event.data?.smartItemId) {
-					postMessage({ event: 'openitem', body: { smartItemId: event.data?.smartItem?.smartItemId } });
+				if (event.data?.id) {
+					postMessage({ event: 'openitem', body: { smartItemId: event.data?.smartItem?.id } });
 				}
 			},
 			valueGetter: (params: any) => params.data?.smartItem?.name,
@@ -1064,7 +1064,7 @@ const TimeLogWindow = (props: any) => {
 
 	const findAndUpdateFiltersData = (filterOptions: any,data: any,key: string, keyValue?:any ,nested?: boolean,nestedKeyFirstText?: any,nestedKeySecondText?:any,nestedkeyValue?:any) => {
 		const formattedData = data?.map((rec: any) => {
-		 if (nested)
+		 	if (nested){
 				if( rec?.[key]?.[nestedKeySecondText] != null && rec?.[key]?.[nestedKeyFirstText] != null ){
 					return {
 						text: rec?.[key]?.[nestedKeySecondText] != "" ? rec?.[key]?.[nestedKeyFirstText] + ' ' + rec?.[key]?.[nestedKeySecondText] : rec?.[key]?.[nestedKeyFirstText],
@@ -1072,12 +1072,14 @@ const TimeLogWindow = (props: any) => {
 						id: rec?.[key]?.id?.toString(),
 					};
 				}
-			else
+			}
+			else{
 				return {
 					text: rec?.[key] ?? rec?.["name"],
 					value: rec?.[keyValue]?.toString() ?? rec?.["name"],
 					id: rec?.id?.toString(),
 				};
+			}
 		});
 		const filtersCopy: any = [...filterOptions];
 		let currentItem: any = filtersCopy.find((rec: any) => rec?.keyValue === key);

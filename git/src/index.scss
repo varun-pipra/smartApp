@@ -265,6 +265,17 @@ code {
             .common-icon-filter-sbs:before {
                 font-size: 22px;
             }
+            .common-icon-created-by:before {
+                font-size: 24px;
+            }
+            .common-icon-timelog-id:before {
+                font-size: 20px;
+                margin-left: -2px;
+            }
+            .common-icon-workteam:before {
+                font-size: 14px;
+                margin-left: 1px;
+            }
             .MuiListItemButton-root {
                 padding: 0;
                 background-color: unset;
@@ -521,7 +532,7 @@ code {
                         align-items: center;
                         justify-content: center;
                         &:before {
-                            font-size: 1.25em;
+                            font-size: 1.5em;
                         }
                     }
                     .MuiListItemText-root {

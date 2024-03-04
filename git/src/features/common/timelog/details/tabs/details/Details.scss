@@ -87,7 +87,7 @@
                     .phaseButton {
                         cursor: text;
                         box-shadow: none;
-                        border-radius: 2px;
+                        border-radius: 3px;
                     }
                 }
                 .contract-info-data {
@@ -106,6 +106,10 @@
                 .common-icon-Budgetcalculator {
                     font-size: 1.3rem;
                 }
+                .common-icon-phase:before {
+                    color: #ed7532;
+                    font-size: 22px;
+                }
             }
         }
         .timelog-icon {
@@ -116,6 +120,7 @@
             img {
                 border: 1px solid #ccc;
                 margin-top: -2px;
+                object-fit: contain;
             }
         }
     }
@@ -148,8 +153,7 @@
         display: flex;
         cursor: pointer;
         align-items: center;
-        gap: 8px;
-       
+        gap: 10px;
         >img {
             width: 24px;
             height: 24px;
@@ -176,7 +180,8 @@
     }
     .common-icon-Workactivity:before {
         color: #ed7431 !important;
-        font-size: 24px !important;
+        font-size: 26px !important;
+        margin-left: -2px;
     }
     .common-icon-companies:before {
         color: #ed7431;

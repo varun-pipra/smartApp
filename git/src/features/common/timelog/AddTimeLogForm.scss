@@ -32,9 +32,22 @@
                 font-size: 18px;
                 margin-right: 6px;
             }
+            .resourcenodropdown {
+                font-family: 'Roboto-Regular' !important;
+                &:before {
+                    color: #ed7532 !important;
+                    font-size: 24px !important;
+                    vertical-align: bottom;
+                    margin-right: 4px;
+                    font-family: 'common-webfont' !important;
+                }
+            }
         }
         .time-field {
             min-width: 170px;
+            .MuiInputBase-input {
+                cursor: pointer;
+            }
             .common-icon-CurrentTime {
                 color: #ed7431;
                 font-size: 23px;
@@ -66,7 +79,8 @@
     }
 }
 
-#menu-smartItems {
+#menu-smartItems,
+#menu-resource {
     .MuiPaper-root {
         min-width: 260px !important;
     }

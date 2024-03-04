@@ -35,8 +35,8 @@ const BudgetImporter = (props: any) => {
 	const [isReplaceAllowed, setIsReplaceAllowed] = React.useState<boolean>(false);							
 	const [showAlert, setShowAlert] = React.useState<any>({show:false, msg: <div className="warning-text"><span>This will Replace/Overwrite all the existing Budget Line Items with the New Items. Do you want to Continue?</span></div>})	
 	const [importResponse, setImportResponse] = React.useState<any>({});
-  const validationInterval = React.useRef<any>({})
-  const statusInterval = React.useRef<any>()
+  const validationInterval = React.useRef<any>({});
+  const statusInterval = React.useRef<any>();
 	console.log("props?.noOfBudgetItems", props?.noOfBudgetItems, props?.noOfLevels)
 
 	React.useEffect(() => {props?.noOfBudgetItems == 0 ? setImportOption('new') : setImportOption('replace')}, [props?.noOfBudgetItems])
@@ -56,14 +56,14 @@ const BudgetImporter = (props: any) => {
 		importBudgets(appInfo, importType?.[importOption], file, (response:any) => {
 			console.log("import response", response)
       setImportResponse(response);
-       validationInterval.current = setInterval(function () {
+      validationInterval.current = setInterval(function () {
         valdationStatus(appInfo, response?.ResultId, (vldStatus: any) => {
           if (vldStatus?.Success && vldStatus?.IsDataValid) {
             setShowInProgress(false);
             setImportResponse(vldStatus);
             setShowSuccess(true);
             let statusResult: any = 0;
-             statusInterval.current = setInterval(function () {
+            statusInterval.current = setInterval(function () {
               if ([1, 2]?.includes(statusResult)) {
                 clearInterval(statusInterval.current);
                 dispatch(setImportBudgetsStatus(statusResult));
@@ -109,24 +109,23 @@ const BudgetImporter = (props: any) => {
 		}		
 		if(importOption == 'append') setShowAlert({
 				show:true, 
-				msg: <div className="warning-text"><span>New Budget Line items will be Appended to the existing items Are you sure you want to continue?</span></div>
+				msg: <div className="warning-text"><span>New Budget Line items will be Appended to the existing items. Are you sure you want to continue?</span></div>
 			}
 		)
 		
 		// setTimeout(() => {setShowInProgress(false); setShowSuccess(true)}, 1000); 
 	};
-	const onCancelImport = () => { 
-    setShowInProgress(false); 
-    setShowSuccess(false); 
-    setShowError(false); 
-    setDisableStartImport(true) ; 
-    setImportStatus(0)
-    cancelImport(appInfo, 
-      importResponse?.ResultId, (resp:any) => {
-        clearInterval(statusInterval.current);
-        clearInterval(validationInterval.current);
-      }) 
-    };
+	const onCancelImport = () => {
+    setShowInProgress(false);
+    setShowSuccess(false);
+    setShowError(false);
+    setDisableStartImport(true);
+    setImportStatus(null);
+    cancelImport(appInfo, importResponse?.ResultId, (resp: any) => {
+      clearInterval(statusInterval.current);
+      clearInterval(validationInterval.current);
+    });
+  };
 	const onNotifyAfterImport = () => { props?.onClose(false); props?.openNotification(true) };
 	const onStartOver = () => {setShowError(false); setImportStatus(0); callImport()};
 	const handleOnOptionChange = (event:any) => {
@@ -296,7 +295,7 @@ const BudgetImporter = (props: any) => {
             handleAlertAction(type, importOption);
           }}
           onClose={() => {
-              setShowAlert({show: false, msg: ''});
+            setShowAlert({show: false, msg: ''});
           }}
           content={showAlert?.msg}
           button1={showAlert?.button1}

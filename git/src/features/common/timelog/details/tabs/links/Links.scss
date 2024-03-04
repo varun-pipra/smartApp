@@ -3,23 +3,22 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-
-	.timelog-details-header {
-		height: 3em;
-		padding: 1em 0.4em 1em 0.2em;
-		display: flex;
-		align-items: end;
-		.title-action {
-			flex: 1;
-			display: flex;
-			align-items: center;
-			.title {
-				font-family: "Roboto-Regular";
-				font-size: 16px;
-				font-weight: bold;
-			}
-		}
-	}
+    .timelog-details-header {
+        height: 3em;
+        padding: 1em 0.4em 1em 0.2em;
+        display: flex;
+        align-items: end;
+        .title-action {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            .title {
+                font-family: "Roboto-Regular";
+                font-size: 16px;
+                font-weight: bold;
+            }
+        }
+    }
     .toolbar {
         display: flex;
         justify-content: space-between;
@@ -64,15 +63,28 @@
                 justify-content: center;
                 flex-direction: column;
                 margin-right: 4px;
-                color: white;                
+                color: white;
             }
             .link-name-tag {
                 font-weight: 600;
+                color: #333;
             }
         }
-	}
-	.iconmodify {
+    }
+    .iconmodify {
         color: #ed7431 !important;
         font-size: 20px !important;
-	}
+    }
+    .grid {
+        .no-rows-msg {
+            border: 2px dotted #d9d9d9;
+            .icon-modify {
+                font-size: 40px !important;
+            }
+            .empty-rows-mark {
+                font-size: 14px;
+                color: #999;
+            }
+        }
+    }
 }

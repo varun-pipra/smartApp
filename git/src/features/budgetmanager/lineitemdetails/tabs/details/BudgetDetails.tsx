@@ -550,6 +550,17 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		})
 		return value?.slice(0, -1);
 	};
+	const handleMap = () => {
+		postMessage({
+			event: "common",
+			body: {
+				evt: "linearviewer",
+				data:{
+					
+				}
+			}
+		})
+	}
 
 	return (
 		<div className="budget-details-box">
@@ -1571,7 +1582,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				</span> */}
 				<span className="segment-block-cls">
 				<span className="unit">{locationSegmentsData?.unit ? measurementSymbols?.[locationSegmentsData?.unit] : ''}</span>
-				<span className="common-icon-road"></span>
+				<span className="common-icon-road" onClick={()=> handleMap()}></span>
 				</span>
 				</span>
 				:<span className="budget-info-tile">

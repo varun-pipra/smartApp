@@ -100,9 +100,10 @@ export function convertTimeToDisplayFormat(date?: any) {
 		hours = hours % 12;
 		hours = hours ? hours : 12; // the hour '0' should be '12'
 		var minutess = minutes < 10 ? '0' + minutes : minutes;
+		let formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
 
 		//var formattedDate = currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
-		formattedDate = hours + ":" + minutess + ':' + seconds + ' ' + ampm;
+		formattedDate = hours + ":" + minutess + ':' + formattedSeconds + ' ' + ampm;
 		// console.log("formattedDateformattedDate", formattedDate)
 		return formattedDate;
 	}

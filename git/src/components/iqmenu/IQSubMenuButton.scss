@@ -17,11 +17,24 @@
             .MuiListItemIcon-root {
                 min-width: 30px;
                 .common-icon-new-smart-item,
-				.common-icon-existing-smart-items,
-				.common-icon-rule-based-linking,
-				.common-icon-add-external-url {
+                .common-icon-existing-smart-items,
+                .common-icon-rule-based-linking,
+                .common-icon-add-external-url {
                     font-size: 22px;
                     color: #666;
+                }
+                .common-icon-drive-icon:before {
+                    font-size: 16px;
+                    font-weight: bold;
+                    margin-left: 1px;
+                }
+                .common-icon-upload1:before {
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-left: 0px;
+                }
+                .common-icon-add-external-url:before {
+                    font-size: 20px;
                 }
             }
         }

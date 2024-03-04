@@ -33,7 +33,7 @@ const details = (props: any) => {
 	const [locationType, setLocationType] = useState<any>();
 	const [locationValue, setlocationValue] = useState<any>('');
 	const [timeadded, setTimeAdded] = useState<any>('');
-	let statusbasedDisable = ['0','2'];
+	let statusbasedDisable = ['0','2']; // reported, Accepted
 
 	useMemo(() => {
 		const addLinksOptionsCopy = AppList(appsList);
@@ -100,7 +100,7 @@ const details = (props: any) => {
 		}
 	
 		setDetails(data);
-		dispatch(setDetailsPayloadSave(payload))
+		dispatch(setDetailsPayloadSave({...DetailspayloadSave,...payload}))
 	}
 	
 	useEffect(() => {
@@ -327,9 +327,10 @@ const details = (props: any) => {
 									isMultiple={false}
 									isDropdownSubMenu={true}
 									handleChange={(e: any) => { handleMenu(e) }}
+									disabled={details?.status == 2 ? true :false}
 								/>
 								:
-								<div className='timeaddedto' onClick={()=>{postMessage({ event: 'openitem', body: { smartItemId: details?.smartItem?.smartAppId } });}}>
+								<div className='timeaddedto' onClick={()=>{postMessage({ event: 'openitem', body: { smartItemId: details?.smartItem?.id } });}}>
 									<img className='img' src={details?.smartItem?.smartAppIcon ? details?.smartItem?.smartAppIcon : ''} />
 									<span className='timeadded'>{details?.smartItem?.name}</span>
 								</div>
@@ -376,41 +377,14 @@ const details = (props: any) => {
 								selectedValue={[details?.sbs?.id]}
 								isMultiple={false}
 								handleChange={(value: any) => handleFieldChange(value[0], 'sbs')}
+								disabled={details?.status == 2 ? true :false}
 							/>
 						</div>
 					</span>
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>Phase</div>
 						<div className='timelog-info-data-box'>
-							{/* <TextField
-								id="sbsPhase"
-								fullWidth
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position='start'>
-											<span className='common-icon-system-breakdown iconmodify'> </span>
-										</InputAdornment>
-									),
-									endAdornment: (
-										<InputAdornment position='start'>
-											<span className='common-icon-phase'
-												style={{
-													backgroundColor: "#059cdf",
-													color: "#fff",
-													borderRadius:'10px'
-												}}
-											></span>
-										</InputAdornment>
-									)
-								}}
-								placeholder='Enter Phase'
-								name='name'
-								variant="standard"
-								value={details?.sbsPhase !== null && details?.sbsPhase?.name}
-								onChange={(e: any) => handleFieldChange(e.target?.value, 'sbsPhase')}
-								disabled={true}
-							//onBlur={(e: any) => handleOnBlur('name')}
-							/> */}
+	
 							<SmartDropDown
 								LeftIcon={<div className="common-icon-phase"></div>}
 								options={phaseDropDownOptions || []}
@@ -427,6 +401,7 @@ const details = (props: any) => {
 								}}
 								ignoreSorting={true}
 								showIconInOptionsAtRight={true}
+								disabled={details?.status == 2 ? true :false}
 							/>
 						</div>
 					</span>
@@ -460,6 +435,7 @@ const details = (props: any) => {
 								handleChange={(value: string | undefined | string[]) => {
 									setLocationType(value);
 								}}
+								disabled={details?.status == 2 ? true :false}
 							/>
 						</div>
 					</span>
@@ -474,6 +450,7 @@ const details = (props: any) => {
 								value={defaultlocation}
 								onChange={(e, newValue) => { handleLocationChange(newValue) }}
 								getOptionLabel={(option: any) => option?.text || ""}
+								disabled={details?.status == 2 ? true :false}
 							/>
 						</div>
 					</span>

@@ -23,8 +23,12 @@
     .tl-toolbar-btn {
         margin-left: 20px !important;
         padding: 0px 8px !important;
-        border-radius: 3px;
+        border-radius: 4px;
         height: 28px;
+        box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
+        .MuiButton-startIcon {
+            margin-right: 4px;
+        }
         span:before {
             font-size: 24px;
         }
@@ -50,9 +54,9 @@
         border-radius: 0px !important;
     }
     .divider-line-cls {
-        border-left: 1px solid #d9d9d9 !important;
+        border-left: 1px solid #ececec !important;
         padding: 0px;
-        height: 22px;
+        height: 26px;
     }
     .no-rows-msg {
         border: 0px dotted #d9d9d9;

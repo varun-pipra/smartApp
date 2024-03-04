@@ -48,7 +48,7 @@ const AddTimeLogForm = (props: any) => {
 	const { access ,smartItemOptionSelected , WorkTeamDataFromExt} = useAppSelector(state => state.timeLogRequest);
 	const defaultValues: TimeLogFormProps = useMemo(() => {
 		return {
-			resource: "",
+			resource: isWorker() ? "Me" : "",
 			date: new Date()?.toISOString(),
 			time: [],
 			duration: "0 Hrs 00 Mins",
@@ -179,7 +179,6 @@ const AddTimeLogForm = (props: any) => {
 	};
 
 	const checkFormValidity = (record: TimeLogFormProps) => {
-		console.log('checkFormValidity',record)
 	 	  if(record.resource == 'workteam' || record.resource == 'mycompany' ){
 				setAddDisabled(record.workers > 0 ? false : true)
 			}
@@ -283,7 +282,7 @@ const AddTimeLogForm = (props: any) => {
 						</InputLabel>
 
 						{
-							isWorker() ? <span className='common-icon-ContactPicker'>{appInfo?.currentUserInfo?.name}</span> 
+							isWorker() ? <span className='common-icon-ContactPicker resourcenodropdown'>{appInfo?.currentUserInfo?.name}</span> 
 							: <SmartDropDown
 								name="resource"
 								LeftIcon={

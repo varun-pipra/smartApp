@@ -3006,6 +3006,7 @@ const ProjectTeamWindow = (props: any) => {
 			headerName: "Skills",
 			field: "skills",
 			minWidth: 150,
+			keyCreator: (params: any) => { return AddNoneToEmptyRec(params ?.data ?.skills) },
 			cellRenderer: (params: any) => {
 				const canEdit = isCellEditable(params);
 				return (

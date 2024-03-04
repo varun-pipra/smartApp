@@ -132,8 +132,7 @@ const WorkerTimeLog = (props: any) => {
             maxEndTime = rec.endTime;
           }
         }
-      };
-     
+      };      
     });
     if (wholeDuration > 0) {
       const hours = Math.floor(wholeDuration / (60 * 60));

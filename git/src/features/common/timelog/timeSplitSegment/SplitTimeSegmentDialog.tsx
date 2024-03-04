@@ -9,7 +9,7 @@ import WorkerTimeLog from "../workerDailog/WorkerTimeLog/WorkerTimeLog";
 import moment from "moment";
 import { getDuration } from "../utils";
 import { ConfirmationDialog } from "features/budgetmanager/import/ConfirmationDialog/ConfirmationDialog";
-
+import { getTime } from 'utilities/datetime/DateTimeUtils';
 const SplitTimeSegmentDialog = (props: any) => {
   const {defaultRowData, data, handleSubmit, ...rest } = props;
   const [formData, setFormData] = useState<any>({});
@@ -21,6 +21,9 @@ const SplitTimeSegmentDialog = (props: any) => {
       </div>
   });	
   const [overallDuration, setOverallDuration] = useState<any>("0 Hrs 00 Mins");
+  const handelDurationChange = (duration:any) =>{
+    setOverallDuration(duration)
+  }
   const handleSplit = () => {
     setShowConfirmation(true)
     
@@ -33,10 +36,6 @@ const SplitTimeSegmentDialog = (props: any) => {
     if(type == 'yes') {setShowConfirmation(false); handleSubmit && handleSubmit(formData); if (props?.onClose) props?.onClose(false)}
     else if(type == 'no') {setShowConfirmation(false)};
   };
-
-  const handelDurationChange = (duration:any) =>{
-    setOverallDuration(duration)
-  }
   return (
     <IQBaseWindow
       open={true}
@@ -73,11 +72,11 @@ const SplitTimeSegmentDialog = (props: any) => {
           <div className="summary_container">
             <div>
               <InputLabel className="summary_inputlabel">Start Time</InputLabel>
-              <div className="summary_header-text time">{moment?.utc(data?.startTime)?.format('LT')}</div>
+              <div className="summary_header-text time">{ data?.startTime && getTime(data?.startTime)}</div>
             </div>
             <div>
               <InputLabel className="summary_inputlabel">End Time</InputLabel>
-              <div className="summary_header-text time">{moment?.utc(data?.endTime)?.format('LT')}</div>
+              <div className="summary_header-text time">{data?.endTime && getTime(data?.endTime)}</div>
             </div>
             <div>
               <InputLabel className="summary_inputlabel">Duration</InputLabel>
@@ -94,6 +93,9 @@ const SplitTimeSegmentDialog = (props: any) => {
         <div className="summary-field-cls">
           <WorkerTimeLog
             name="time"
+            // onDurationChange={(duration: any) =>
+            //   setChangeEvent({ ...changeEvent, duration: duration })
+            // }
             onDurationChange={(duration: any) =>
               handelDurationChange(duration)
             }

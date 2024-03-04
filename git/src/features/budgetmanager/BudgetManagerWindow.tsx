@@ -43,6 +43,8 @@ const BudgetManagerWindow = (props: any) => {
 	const [toastMessage, setToastMessage] = useState<any>({displayToast: false, message: ''});
 	const gridRT = useRef<boolean>(false);
 	const [open, setOpen] = React.useState(false);
+	const [notifyStatus, setNotifyStatus] = React.useState(false);
+
 	useEffect(() => {
 		const loader = document.getElementById('smartapp-react-loader');
 		if(loader) {
@@ -59,10 +61,12 @@ const BudgetManagerWindow = (props: any) => {
 	useEffect(() => {setOpen(openNotification)}, [openNotification])
 	useEffect(() => {
 		if(importStatus == 1) { 
-			setOpen(false); dispatch(setImportBudgetsStatus(null));
+			// setOpen(false);
+			setNotifyStatus(true); 
+			dispatch(setImportBudgetsStatus(null));
 			setToastMessage({ displayToast: true, message: 'Budget File is Imported' });
 			dispatch(fetchGridData(appInfo));
-			dispatch(setOpenNotification(false))
+			// dispatch(setOpenNotification(false))
 		}
 		if(importStatus == 2) {
 			setOpen(false); dispatch(setImportBudgetsStatus(null));	
@@ -339,6 +343,7 @@ const BudgetManagerWindow = (props: any) => {
   
 	  setOpen(false);
 	  dispatch(setOpenNotification(false))
+	  setNotifyStatus(false)
 	};
 	return (
 		appInfo && (isBudgetManager() ?
@@ -386,7 +391,7 @@ const BudgetManagerWindow = (props: any) => {
 				<Paper sx={{ width: 300, maxWidth: '100%' }}>
 						<div className="bd-importer">
 							<div className="bd-importer_progress">
-								<div>Budget Import in progress</div>
+								{notifyStatus?<div>Budget Import is completed</div>:<div>Budget Import in progress</div>}
 								<span className="common-icon-close" style={{cursor:'pointer'}} onClick={handleClose}/>
 							</div>
 						

@@ -8,7 +8,7 @@
     }
     &-header_close {
         cursor: pointer;
-        transform: rotate(45deg);
+        font-weight: bold;
         color: #666;
         font-size: 22px;
     }
@@ -32,6 +32,14 @@
                 font-size: 24px;
                 line-height: 0.8;
             }
+            &.inline {
+                .common-icon-Description:before {
+                    color: #ec711c;
+                }
+            }
+            .MuiInputBase-input {
+                padding: 4px 4px 5px 5px;
+            }
         }
         .delete-btn {
             span:before {
@@ -45,8 +53,9 @@
                     content: "\e945";
                     background-color: #059cdf;
                     color: #fff;
-                    border-radius: 50%; //padding: 4px;
-                    font-size: 14px;
+                    border-radius: 50%;
+                    font-size: 16px;
+                    padding: 4px;
                 }
             }
         }
@@ -55,6 +64,8 @@
             span {
                 color: #333;
                 font-size: 22px;
+                width: 24px;
+                height: 24px;
             }
         }
     }
