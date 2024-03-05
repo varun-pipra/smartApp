@@ -33,7 +33,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	
 	useEffect(() => {
 		if (selectedTimeLogDetails?.id) {
-			const subtitleEnable: any = getTimeLogStatus(selectedTimeLogDetails?.status) == 'Sent Back' || selectedTimeLogDetails?.hasTimeOverlap || selectedTimeLogDetails?.hasLocationConflict;
+			const subtitleEnable: any = (selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null )  || selectedTimeLogDetails?.hasTimeOverlap || selectedTimeLogDetails?.hasLocationConflict;
 			setCloseSubtitle(subtitleEnable)
 		}
 	}, [selectedTimeLogDetails?.id]);
@@ -120,7 +120,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	const lidProps = {
 		title: <TitleUpdate />,
 		showSubTitle: closeSubtitle,
-		subtitle: getTimeLogStatus(selectedTimeLogDetails.status) == 'Sent Back' || getTimeLogStatus(selectedTimeLogDetails.status) == 'Reported' ? <SubTitleContent toast={(value: any) => { setCloseSubtitle(value) }} /> : null,
+		subtitle: (selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null ) || getTimeLogStatus(selectedTimeLogDetails.status) == 'Reported' ? <SubTitleContent toast={(value: any) => { setCloseSubtitle(value) }} /> : null,
 		defaultTabId: 'details',
 		tabPadValue: 10,
 		headContent: {
@@ -193,7 +193,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 						responseType={1}
 						reason={selectedTimeLogDetails?.sendBackReason}
 						sign={'sign'}
-						thumbNailImg={''}
+						thumbNailImg={selectedTimeLogDetails?.sentBackByThumbnail}
 					/>
 				}
 			</>,
@@ -241,7 +241,7 @@ const HeaderContent = memo((props: any) => {
 				<span className='budgetid-label grey-font'>Segment Duration:</span>
 				<span className='grey-fontt bold'>{getDuration(selectedTimeLogDetails?.duration)}</span>
 				<span className='last-modified-label grey-font'>Date Created:</span>
-				<span className='grey-fontt'>{selectedTimeLogDetails?.startDate && stringToUSDateTime2(selectedTimeLogDetails?.startDate)} by {selectedTimeLogDetails?.createdBy?.firstName && selectedTimeLogDetails?.createdBy?.firstName + ' ' +selectedTimeLogDetails?.createdBy?.lastName}</span>
+				<span className='grey-fontt'>{selectedTimeLogDetails?.createdDate && stringToUSDateTime2(selectedTimeLogDetails?.createdDate)} by {selectedTimeLogDetails?.createdBy?.firstName && selectedTimeLogDetails?.createdBy?.firstName + ' ' +selectedTimeLogDetails?.createdBy?.lastName}</span>
 			</div>
 			<span className='kpi-right-container'>
 				<span className='kpi-name'>
@@ -296,12 +296,12 @@ const Title = memo(() => {
 const SubTitleContent = (props: any) => {
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
 
-	const Status = getTimeLogStatus(selectedTimeLogDetails.status);
-	const Title = Status == 'Sent Back' ? `The Split Time entry was Created from the orignal Time Segment ID: ${selectedTimeLogDetails?.timeSegmentId}.` :
+	const splitFromSegment =  selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null ;
+	const Title = splitFromSegment == true ? `The Split Time entry was Created from the orignal Time Segment ID: ${selectedTimeLogDetails?.timeSegmentId}.` :
 								selectedTimeLogDetails?.hasTimeOverlap == true ? 'There seems to be a duplicate or an overlapping time entry' :
 								selectedTimeLogDetails?.hasLocationConflict == true  ? 'This Time was not entered anywhere within the Job Location'
 								: null;
-	const iconClass = Status == 'Sent Back' ? 'common-icon-sku': selectedTimeLogDetails?.hasTimeOverlap == true || selectedTimeLogDetails?.hasLocationConflict == true ? 'common-icon-exclamation' : '';
+	const iconClass = splitFromSegment == true ? 'common-icon-sku': selectedTimeLogDetails?.hasTimeOverlap == true || selectedTimeLogDetails?.hasLocationConflict == true ? 'common-icon-exclamation' : '';
 
 	return (
 		<div style={{
@@ -315,11 +315,11 @@ const SubTitleContent = (props: any) => {
 			width: 'fit-content',
 			border: '2px solid #fae57a'
 		}}>
-			<span className={iconClass} style={{ color: Status === 'Sent Back' ? 'orange' : 'red', fontSize: "30px", marginTop: "-1px", }} />
+			<span className={iconClass} style={{ color: splitFromSegment === true ? 'orange' : 'red', fontSize: "30px", marginTop: "-1px", }} />
 			<div style={{ fontSize: '14px', fontFamily: "Roboto-Regular", color: 'black', fontWeight: 500 }}>
 				{Title}
 			</div>
-			{Status == 'Sent Back' && <span className={'closeicon common-icon-close'} onClick={() => { props.toast(false) }} />}
+			{splitFromSegment == true && <span className={'closeicon common-icon-close'} onClick={() => { props.toast(false) }} />}
 		</div>
 	)
 };

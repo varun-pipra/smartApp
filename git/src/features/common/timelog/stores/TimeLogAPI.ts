@@ -42,7 +42,7 @@ export const fetchTimeLog = async (payload:any) => {
       if (isMReal) {
         return [...timelogList?.segments, ...response?.segments];
       }
-      else return [...timelogList?.segments, ...response?.segments];
+      else return [...response?.segments];
     }
 
   } else return timelogList?.segments;

@@ -18,7 +18,7 @@
     }
     &_form-row {
         display: flex;
-        align-items: center;
+        align-items: end;
         margin: 20px 0;
         .time-field {
             width: 130px;
@@ -49,18 +49,21 @@
         &:first-child {
             .MuiIconButton-root {
                 margin-left: 40px;
-                .common-icon-add:before {
-                    content: "\e945";
-                    background-color: #059cdf;
-                    color: #fff;
-                    border-radius: 50%;
-                    font-size: 16px;
-                    padding: 4px;
+                .common-icon-add {
+                    line-height: 0.9;
+                    &:before {
+                        content: "\e945";
+                        background-color: #059cdf;
+                        color: #fff;
+                        border-radius: 50%;
+                        font-size: 16px;
+                        padding: 4px;
+                    }
                 }
             }
         }
         .action-btn-cls {
-            //padding-top: 20px;
+            top: 8px; //padding-top: 20px;
             span {
                 color: #333;
                 font-size: 22px;

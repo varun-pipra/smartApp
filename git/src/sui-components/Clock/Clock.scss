@@ -1,5 +1,10 @@
 @import "Smart_theme_variable";
 .clock-container {
+    .MuiInputBase-root {
+        .MuiInputAdornment-root {
+            margin-right: 5px;
+        }
+    }
     .common-icon-CurrentTime {
         margin-top: 2px;
         &:before {
@@ -36,5 +41,17 @@
     }
     .MuiClock-pin {
         background-color: #059cdf;
+    }
+    .MuiClock-root {
+        .MuiButtonBase-root {
+          //  background-color: #059cdf;
+        }
+    }
+    .MuiDialogActions-root {
+        .MuiButtonBase-root {
+            display: block;
+            background-color: transparent;
+            color: #059cdf;
+        }
     }
 }

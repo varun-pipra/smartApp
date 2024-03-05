@@ -154,7 +154,6 @@ export const cancelImport = async (appInfo:any, requestId:any, callback?:any) =>
 			const message = `API Request Error (${moduleName}): ${response?.status}`;
 			throw new Error(message);
 		}
-		const responseData = await response?.json();
-        callback && callback(responseData);
+        callback && callback(response);
     } else callback && callback(false);  
 }

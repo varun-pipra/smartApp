@@ -14,11 +14,13 @@
     .field-section {
         display: grid;
         grid-gap: 2.4em;
+        align-items: end;
         grid-template-columns: minmax(200px, 3fr) minmax(200px, 1fr) 2fr 1.9fr 3.5fr minmax(75px, auto); // grid-template-columns: minmax(200px, 2fr) minmax(200px, 1fr) minmax(140px, 1fr) minmax(160px, 2fr) 1fr minmax(250px, 2fr) minmax(75px, auto);
         .resource-field {
             .resourcedropdown {
                 color: #ed7532 !important;
-                font-size: 26px !important;
+                font-size: 24px !important;
+                line-height: 0.8;
             }
             &.worker-field {
                 .MuiFormControl-root {
@@ -34,12 +36,13 @@
             }
             .resourcenodropdown {
                 font-family: 'Roboto-Regular' !important;
+                font-size: 14px;
                 &:before {
                     color: #ed7532 !important;
-                    font-size: 24px !important;
-                    vertical-align: bottom;
-                    margin-right: 4px;
                     font-family: 'common-webfont' !important;
+                    font-size: 24px !important;
+                    margin-right: 4px;
+                    vertical-align: middle;
                 }
             }
         }
@@ -57,6 +60,11 @@
                 color: #ed7431;
                 font-size: 24px;
                 margin-right: 4px;
+            }
+            .select-resource-cls {
+                .MuiInputBase-input {
+                    color: #059cdf;
+                }
             }
         }
         .duration-field {

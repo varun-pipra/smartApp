@@ -428,13 +428,17 @@ li .sd-desc-option-cell-wrapper-cls {
 }
 
 .sd-icon-at-right {
-    width: 26px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
-    height: 26px;
     display: flex;
     color: white;
+    .common-icon-phase:before {
+        font-size: 18px;
+        margin-left: 2px;
+    }
 }
 
 #demo-simple-select-standard {

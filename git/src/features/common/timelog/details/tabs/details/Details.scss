@@ -9,6 +9,7 @@
                 flex: 1;
                 display: flex;
                 align-items: center;
+                margin-left: -2px;
                 .common-icon-details:before {
                     font-size: 24px;
                 }
@@ -36,8 +37,14 @@
         }
         .timelog-details-content-col4 {
             display: grid;
-            grid-gap: 1em 1em;
-            grid-template-columns: repeat(4, 24.5%);
+            grid-gap: 1em 2.4em;
+            grid-template-columns: repeat(4, 22.5%);
+            .time-log-summary {
+                display: block !important;
+                .rmdp-container {
+                    display: block !important;
+                }
+            }
         }
         .timelog-details-content-col3 {
             display: grid;
@@ -46,13 +53,13 @@
         }
         .timelog-details-content-col2 {
             display: grid;
-            grid-gap: 1em 2em;
-            grid-template-columns: repeat(2, 48%);
+            grid-gap: 1em 2.5em;
+            grid-template-columns: repeat(2, 48.4%);
         }
         .timelog-details-content-col1 {
             display: grid;
             grid-gap: 1em 2em;
-            grid-template-columns: repeat(1, 98.5%);
+            grid-template-columns: repeat(1, 99.8%);
         }
         .timelog-info-tile {
             display: flex;
@@ -84,11 +91,16 @@
                 min-height: 35px;
                 .client-contract-info-data {
                     padding-left: 6px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     .phaseButton {
                         cursor: text;
                         box-shadow: none;
                         border-radius: 3px;
                     }
+                }
+                .stage {
+                    padding-left: 0px;
                 }
                 .contract-info-data {
                     color: #333333;
@@ -116,7 +128,7 @@
             border-radius: 50%;
             width: 25px;
             height: 25px;
-            margin: 0px 10px;
+            margin: 0px 10px 0px 8px;
             img {
                 border: 1px solid #ccc;
                 margin-top: -2px;
@@ -171,12 +183,17 @@
     .iconmodify {
         color: #ed7431 !important;
         font-size: 20px !important;
+        margin-left: -2px;
     }
     .common-icon-Location-filled:before {
         font-size: 18px !important;
     }
     .common-icon-monthly:before {
         font-size: 26px;
+        margin-left: -2px;
+    }
+    .common-icon-adminNote:before {
+        margin-left: -5px;
     }
     .common-icon-Workactivity:before {
         color: #ed7431 !important;
@@ -190,6 +207,7 @@
     }
     .common-icon-ContactPicker:before {
         font-size: 24px !important;
+        margin-left: -1px;
     }
     .ec-floating-toast-cls {
         background-color: #3aca9b !important;

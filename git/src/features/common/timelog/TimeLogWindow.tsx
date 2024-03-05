@@ -25,7 +25,7 @@ import { generateSplitEntryData, GetUniqueList } from 'features/common/timelog/u
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList,getSBSGridList,getPhaseDropdownValues} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
-import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , setWorkTeamFromExt } from './stores/TimeLogSlice';
+import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile } from './stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
@@ -215,7 +215,7 @@ const TimeLogWindow = (props: any) => {
 								break;
 							case 'getdrivefiles':
 								try {
-									// dispatch(setDriveFiles(data.data));
+									dispatch(setDriveFile(data.data));
 								} catch (error) {
 									console.log('Error in adding Files from Drive:', error);
 								}
@@ -590,7 +590,7 @@ const TimeLogWindow = (props: any) => {
 							<span className='common-icon-exclamation hand-pointer' style={{ color: 'red', fontSize: '1.8em' }} />
 						</IQTooltip>}
 
-						{getTimeLogStatus(data?.status) == 'Sent Back' &&
+						{ data?.hasOwnProperty('splitFromSegmentId') && data?.splitFromSegmentId !== null ?
 							<IQTooltip
 								title={
 									<Stack direction='row' className='tooltipcontent'>
@@ -600,7 +600,7 @@ const TimeLogWindow = (props: any) => {
 								arrow={true}
 							>
 								<span className='common-icon-sku hand-pointer' style={{ color: '#fa8b59', fontSize: '1.8em' }} />
-							</IQTooltip>
+							</IQTooltip> : <></>
 						}
 
 					</div>
@@ -749,7 +749,7 @@ const TimeLogWindow = (props: any) => {
 						}}
 						disabled={(status.includes(params?.data?.status?.toString()))}
 						defaultTime={getTime(params?.data?.startTime) || ""}
-						pickerDefaultTime={getPickerDefaultTime(params?.data?.startTime, true)}
+						pickerDefaultTime={getTime(params?.data?.startTime)}
 						placeholder={"HH:MM"}
 						// actions={[]}
 						ampmInClock={true}
@@ -768,7 +768,7 @@ const TimeLogWindow = (props: any) => {
 						}}
 						disabled={(status.includes(params?.data?.status?.toString()))}
 						defaultTime={getTime(params?.data?.endTime) || ''}
-						pickerDefaultTime={getPickerDefaultTime(params?.data?.endTime, false)}
+						pickerDefaultTime={getTime(params?.data?.endTime)}
 						placeholder={"HH:MM"}
 						// actions={[]}
 						ampmInClock={true}
@@ -881,7 +881,7 @@ const TimeLogWindow = (props: any) => {
 			children: { type: "checkbox", items: [] }
 		}, {
 			text: 'Apps',
-			value: 'smartItem',
+			value: 'apps',
 			key: 'smartItem',
 			keyValue: 'smartItem',
 			children: { type: "checkbox", items: [] }
@@ -1100,7 +1100,7 @@ const TimeLogWindow = (props: any) => {
 
 	useMemo(() => {
 		if (appsList?.length > 0 && filterOptions) {
-			const updatedarray = appsList.map((res:any) => { return{ ...res , ['smartItem'] : res.displayField }});
+			const updatedarray = appsList.map((res:any) => { return{ ...res , ['apps'] : res.displayField }});
 			setFilters(findAndUpdateFiltersData(filterOptions, updatedarray,"smartItem","objectId"));
 		}
 	}, [appsList]);
@@ -1141,18 +1141,6 @@ const TimeLogWindow = (props: any) => {
 	const GetDateRangeFilterData = (data: any) => {
 		const todayDate = new Date();
 
-		// const startDayOfThisWeek = moment.utc(todayDate).startOf('week');
-		// const lastDayOfThisWeek = moment.utc(todayDate).endOf('week');
-
-		// const startDayOfPrevWeek = moment.utc(startDayOfThisWeek).subtract(1, 'week').startOf('week');
-		// const lastDayOfPrevWeek = moment.utc(lastDayOfThisWeek).subtract(1, 'week').endOf('week');
-
-		// const startDayOfPrevMonth = moment.utc(todayDate).subtract(1, 'month').startOf('month');
-		// const lastDayOfPrevMonth = moment.utc(todayDate).subtract(1, 'month').endOf('month');
-
-		// const startDayOfThisMonth = moment.utc(todayDate).startOf('month');
-		// const lastDayOfThisMonth = moment.utc(todayDate).endOf('month');
-
 		const todayStart = moment.utc().startOf('day');
 		const todayEnd = moment.utc().endOf('day');
 		const yesterdayStart = moment.utc().subtract(1, 'days').startOf('day');
@@ -1165,13 +1153,6 @@ const TimeLogWindow = (props: any) => {
 		else if (moment.utc(actualDate).isBetween(yesterdayStart, yesterdayEnd)) return 'yesterday';
 		else return null
 
-		// else if (moment.utc(actualDate).isBetween(startDayOfPrevWeek, lastDayOfPrevWeek)) return 'lastWeek';
-		// else if (moment.utc(actualDate).isBetween(startDayOfThisWeek, lastDayOfThisWeek)) return 'thisWeek';
-
-		// else if (moment.utc(actualDate).isBetween(startDayOfThisMonth, lastDayOfThisMonth)) return 'thisMonth';
-		// else if (moment.utc(actualDate).isBetween(startDayOfPrevMonth, lastDayOfPrevMonth)) return 'lastMonth';
-
-		// else return 'past';
 	};
 
 
@@ -1211,17 +1192,20 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const saveSmartItemLink = (smartData: any) => {
+		let smartname = smartData?.hasOwnProperty('smartItemName') ? smartData?.smartItemName : 'New' + ' ' + smartData?.body?.data?.Text;	
 			let details = {
 				id: smartData?.smartItemId,	
 				value: smartData?.smartItemId,	
-				name: smartData?.smartItemName,
+				name: smartname,
 			}
+			console.log('details',details)
 			dispatch(setSmartItemOptionSelected(details));
 			setSmartItemLink({});
 	};
 	
 	useEffect(() => {
 		if (Object.keys(smartItemLink).length) {
+			console.log('smartItemLink',smartItemLink)
 			saveSmartItemLink(smartItemLink);
 		}
 	}, [smartItemLink]);
@@ -1231,7 +1215,7 @@ const TimeLogWindow = (props: any) => {
 			open={true}
 			title={isFromOrg ? `Time Log (${TimeLogGridList?.length})` : 'Time Log'}
 			className='time-log-window'
-			iconCls={isFromOrg ? 'common-icon-home org' : isFromPlanner ? 'common-icon-home planner' : isFromFinance ? 'common-icon-home finance' : isFromField ? 'common-icon-home field' : isFromSafety ? 'common-icon-home safety' : 'common-icon-home'}
+			iconCls={isInline ? isFromOrg ? 'common-icon-home org' : isFromPlanner ? 'common-icon-home planner' : isFromFinance ? 'common-icon-home finance' : isFromField ? 'common-icon-home field' : isFromSafety ? 'common-icon-home safety' : 'common-icon-home' : ''}
 			appType={appType}
 			commonModule={true}
 			centerPiece={

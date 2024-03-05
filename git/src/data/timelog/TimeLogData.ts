@@ -2,68 +2,13 @@
 export const timelogList = {
 	segments: [
 		{
-            "id": "5a1a3d5d-1557-439f-9f63-8d76a6afa93a",
-            "timeSegmentId": "TS00244",
-            "timeLogId": "TS00244",
-            "startTime": "2024-05-20T14:30:00",
-            "endTime": "2024-05-20T16:30:00",
-            "duration": 120,
-            "source": "Manual",
-            "smartItem": null,
-            "location": null,
-            "sbs": null,
-            "sbsPhase": null,
-            "createdBy": {
-                "ID": "fb9fe865-986e-4991-91e5-656aa7b7fe14",
-                "firstName": "Sudeep",
-                "lastName": "MK",
-                "email": "mksudeep@smartapp.com",
-                "globalId": "4cac5fc1-62d5-4676-9f1f-be5323b7a29b",
-                "displayName": null,
-                "icon": null,
-                "phone": null
-            },
-            "status": "Reported",
-            "hasTimeOverlap": false,
-            "hasLocationConflict": false,
-            "user": {
-                "ID": "fb9fe865-986e-4991-91e5-656aa7b7fe14",
-                "firstName": "Sudeep",
-                "lastName": "MK",
-                "email": "mksudeep@smartapp.com",
-                "globalId": "4cac5fc1-62d5-4676-9f1f-be5323b7a29b",
-                "displayName": "MK, Sudeep",
-                "icon": "https://central.smartappbeta.com/images/37466949-8b40-485c-84e8-a6a69b56a34f",
-                "phone": null
-            },
-            "adhocUser": null,
-            "startTimeUtc": "0001-01-01T00:00:00",
-            "endTimeUtc": null,
-            "timeSegmentFor": 0,
-            "notes": "",
-            "createdDate": "2024-03-01T14:45:42.533Z",
-            "splitFromSegmentId": "00000000-0000-0000-0000-000000000000",
-            "team": null,
-            "company": {
-                "id": "babe38cd-a0a3-4f1b-b7e9-5d715bd22066",
-                "name": "Tutions",
-                "icon": "gs://smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg"
-            },
-            "links": [],
-            "sentBackBy": null,
-            "sendBackReason": null,
-            "sentBackOn": null,
-            "sendBackSignature": null,
-            "sentBackByThumbnail": null
-        },
-		{
 			"id": "5ea8a376-76ca-4c91-9652-34a386845a42",
 			"timeSegmentId": "TS00191",
 			"timeLogId": "TS00191",
 			"startTime": "2024-02-22T05:00:31.923",
 			"endTime": "2024-02-22T14:05:31.923",
 			"duration": 545,
-			"source": 0,
+			"source": 'Manual',
 			"smartItem": {
 					"id": "d83d50a5-b858-471a-a8e2-e0295ea06603",
 					"name": "123 -123",
@@ -84,7 +29,7 @@ export const timelogList = {
 					"displayName": null,
 					"icon": null
 			},
-			"status": 0,
+			"status": 'Reported',
 			"hasTimeOverlap": false,
 			"hasLocationConflict": false,
 			"user": {
@@ -141,7 +86,7 @@ export const timelogList = {
 			"startTime": "2024-02-14T07:10:00Z",
 			"endTime": "2024-02-14T13:15:00Z",
 			"duration": 365,
-			"source": 0,
+			"source": 'Manual',
 			smartItem: {
 				"id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
 				"name": "F1 - 01125 ",
@@ -150,7 +95,7 @@ export const timelogList = {
 				"stage": "In Progress",
 				"smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 			},
-			"status": 0,
+			"status": 'Reported',
 			"hasTimeOverlap": false,
 			"hasLocationConflict": false,
 	},
@@ -161,7 +106,7 @@ export const timelogList = {
     "startTime": "2024-02-14T13:10:00Z",
     "endTime": "2024-02-14T18:15:00Z",
     "duration": 305,
-    "source": 0,
+    "source": 'Manual',
     smartItem: {
 			"id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
 			"name": "F1 - 01125 ",
@@ -170,14 +115,14 @@ export const timelogList = {
 			"stage": "In Progress",
 			"smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 		},
-    "status": 0,
+    "status": 'Reported',
     "hasTimeOverlap": false,
     "hasLocationConflict": false,
 },
  {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e01",
 	timeSegmentId: 'TS00199',
-	status: 0,
+	status: 'Reported',
 	company:{
         "id": "f5547234-7940-48fd-a716-ec336b6eb761",
         "name": 'ACME ElectrRobicals Inc.'
@@ -188,7 +133,7 @@ export const timelogList = {
 	endTime: "2024-02-05T18:30:00.00Z",
 	duration: 350,
 	"hasTimeOverlap": true,	
-	source: 0,
+	source: 'Manual',
 	project: 'Capital City',
 	"hasLocationConflict": false,	
 	region: 'Europe',
@@ -241,7 +186,7 @@ export const timelogList = {
 }, {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e02",
 	timeSegmentId: 'TS00197',
-	status: 1,
+	status: 'InProgress',
 	company: {
         "id": "f5547234-7940-48fd-a716-ec336b6eb761",		
 		"name": 'JK Electrical LLC',
@@ -252,7 +197,7 @@ export const timelogList = {
 	startTime: "2024-02-09T17:30:00",
 	endTime: "2024-02-09T18:30:00",
 	duration: 60,
-	source: 1,
+	source: 'Rtls',
 	project: 'Capital Commercial Solutions',
 	region: 'North America',
 	orgLocation: 'Canada-Quebec City',
@@ -305,14 +250,14 @@ location: {
 }, {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e03",
 	timeSegmentId: 'TS00195',
-	status: 5,
+	status: 'Unavailable',
 	company: {id: "45678hj", name:'Zane Engineering'},
 	startDate: "2024-01-10T10:00:00.00Z",
 	endDate: "2024-02-08T12:30:00.00Z",
 	startTime: "2024-02-01T10:00:00.00Z",
 	endTime: "2024-02-02T12:00:00.00Z",
 	duration: 120,
-	source: 2,
+	source: 'Gps',
 	createdDate: "2024-02-07T14:30:29.29",		
 	"hasTimeOverlap": false,	
 	project: 'Capital City',
@@ -365,7 +310,7 @@ location: {
 }, {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e04",
 	timeSegmentId: 'TS00192',
-	status: 5,
+	status: 'Unavailable',
 	"hasTimeOverlap": false,	
 	"hasLocationConflict": false,	
 	createdDate: "2024-02-02T13:41:29.29",		
@@ -379,7 +324,7 @@ location: {
 	region: 'Asia-India',
 	orgLocation: 'India-Hyderabad',
 	orgProfile: 'Commercial Constructions',
-	source: 3,
+	source: 'Rtls',
 	conflicting: 'Conflicting Time',
 	"createdBy": {
 		"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a26",
@@ -428,7 +373,7 @@ location: {
 }, {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e05",
 	timeSegmentId: 'TS0099',
-	status: 0,
+	status: 'Reported',
 	"hasTimeOverlap": false,	
 	"hasLocationConflict": false,	
 	company: {id: "567cfghj5467", name:'ACME Electricals Inc.'},
@@ -442,7 +387,7 @@ location: {
 	region: 'Japan',
 	orgProfile: 'Commercial Constructions',
 	orgLocation: 'Japan-Tokyo',
-	source: 0,
+	source: 'Manual',
 	conflicting: 'Conflicting Time',
 	"createdBy": {
 		"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a21",
@@ -486,7 +431,7 @@ location: {
 }, {
 	id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e06",
 	timeSegmentId: 'TS0099',
-	status: 3,
+	status: 'SentBack',
 	company: {id: "ghjk5678vbn", name: 'No Company'},
 	startDate: "2024-01-10T10:00:00.00Z",
 	endDate: "2024-01-16T12:30:00.00Z",
@@ -495,7 +440,7 @@ location: {
 	startTime: "2024-01-01T10:00:00.00Z",
 	endTime: "2024-01-10T12:00:00.00Z",
 	duration: 220,
-	source: 1,
+	source: 'Manual',
 	conflicting: 'Conflicting Time',
 	project: 'Capital Commercial Solutions',
 	region: 'Asia-India',
@@ -547,7 +492,7 @@ location: {
 	{
 		id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e07",
 		timeSegmentId: 'TS0092',
-		status: 2,
+		status: 'Accepted',
 		company: {id: "ghjk5678vbn", name: 'No Company'},
 		startDate: "2024-01-10T10:00:00.00Z",
 		endDate: "2024-01-16T12:30:00.00Z",
@@ -557,7 +502,7 @@ location: {
 		endTime: "2024-01-10T14:00:00.00Z",
 		duration: 400,
 		createdDate: "2024-02-09T10:41:29.29",		
-		source: 1,
+		source: 'Manual',
 		conflicting: 'Conflicting Time',
 		project: 'Capital Commercial Solutions2',
 		region: 'Asia-India',

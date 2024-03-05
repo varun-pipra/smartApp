@@ -19,6 +19,7 @@ import { AppList, AppList_PostMessage } from './utils';
 import { addTimeToDate, getTime } from 'utilities/datetime/DateTimeUtils';
 import { addTimeLog } from './stores/TimeLogAPI';
 import { canManageTimeForCompany, canManageTimeForWorkTeam, isWorker, canManageTimeForProject } from 'app/common/userLoginUtils';
+import moment from 'moment';
 
 interface TimeLogFormProps {
 	resource?: string;
@@ -89,6 +90,7 @@ const AddTimeLogForm = (props: any) => {
 
 	useMemo(() => {
 		if(!_.isEmpty(smartItemOptionSelected) ){
+			console.log('smartItemOptionSelected',smartItemOptionSelected)
 			const duplicate = [{...smartItemOptionSelected}]
 			const addLinksOptionsCopy = AppList([...appsList,...duplicate]);
 			setAddLinksOptions(addLinksOptionsCopy);
@@ -157,17 +159,22 @@ const AddTimeLogForm = (props: any) => {
 		console.log('event',event);
 		console.log('name',name);
 		if(name == 'resource'){	
-			setTimeLogForm((currentState) => {
-				const oldState =  { ...currentState, ...{ [name]: event } };
-				const newState =  { ...{ [name]: event} , ...{	time: [],duration: "0 Hrs 00 Mins",smartItems: "",workers:'',date: new Date()?.toISOString() }}
-				return currentState.resource != name ? newState :  oldState;
-			});
+			// setTimeLogForm((currentState) => {
+			// 	const oldState =  { ...currentState, ...{ [name]: event } };
+			// 	const newState =  { ...{ [name]: event} , ...{	time: [],duration: "0 Hrs 00 Mins",smartItems: currentState?.smartItems ,workers:'',date: currentState?.data }}
+			// 	return currentState.resource != name ? newState :  oldState;
+			// });
 			if((event === "workteam") || (event === "mycompany")) {
 				setSelectedWorkers(true)
 			} 
 			else {
 				setSelectedWorkers(false)
 			}
+			setTimeLogForm((currentState) => {
+				const newState =  { ...currentState, ...{ [name]: event } };
+				checkFormValidity(newState);
+				return newState;
+			});
 		}
 		else{
 			setTimeLogForm((currentState) => {
@@ -193,12 +200,12 @@ const AddTimeLogForm = (props: any) => {
 
 	const handleAdd = () => {
 		const timeEntries = timelogForm?.time?.map((obj:any) => {
+			let startDate = addTimeToDate(timelogForm?.date,obj.startTime);
+			let endDate = addTimeToDate(timelogForm?.date, obj?.endTime);
 			if(timelogForm?.resource == "workteam" || timelogForm?.resource == "mycompany" ){
-				let startTime:any = getTime(obj?.startTime);
-                let endTime:any = getTime(obj?.endTime);
 				return {
-					startTime: obj?.startTime ? addTimeToDate(timelogForm?.date,startTime) : '',
-                    endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, endTime) : '',
+					startTime: obj?.startTime ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
+                    endTime: obj?.endTime ? moment(endDate).format("MM/DD/yyyy h:mm A") : '',
 					// startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
 					// endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
 					userId:obj.userId,
@@ -206,8 +213,8 @@ const AddTimeLogForm = (props: any) => {
 				}
 			}else{
 				return {
-					startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
-					endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
+					startTime: obj?.startTime ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
+					endTime: obj?.endTime ? moment(endDate).format("MM/DD/yyyy h:mm A"): '',
 					userId: timelogForm?.resource == 'Me' ? appInfo?.currentUserInfo?.userid : '',
 					notes : obj.notes
 				}
@@ -221,10 +228,10 @@ const AddTimeLogForm = (props: any) => {
 			segments: [...timeEntries]
 		};
 		console.log('payload',payload);
-		setTimeLogForm(defaultValues);
-		setSelectedSmartItem('');
+		// setTimeLogForm(defaultValues);
+		// setSelectedSmartItem('');
 		setAddDisabled(true);
-        setClearTimeLogPickerData(true)
+    //setClearTimeLogPickerData(true)
 		addTimeLog(payload, (resp:any) => {
 			dispatch(setSmartItemOptionSelected({}));
 			dispatch(setToast('Time Logged Successfully.'));
@@ -235,7 +242,6 @@ const AddTimeLogForm = (props: any) => {
 
 	const smartItemOnClick = (e: any) => {
 		AppList_PostMessage(e);
-		// dispatch(setSmartItemOptionSelected({id: 'Raguuuu',name: "Raghuuuuu"}));
 	};
 
 	const openSelectResource = () => {
@@ -343,6 +349,7 @@ const AddTimeLogForm = (props: any) => {
 								name="name"
 								variant="standard"
 								value={timelogForm?.workers > 0 ? timelogForm?.workers : ""}
+								className="select-resource-cls"
 								onClick={openSelectResource}
 								placeholder='Select'
 							/>

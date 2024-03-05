@@ -5,13 +5,16 @@
     flex-direction: column;
     .timelog-details-header {
         height: 3em;
-        padding: 1em 0.4em 1em 0.2em;
+        padding: 1em 0.4em 1em 0.0em;
         display: flex;
         align-items: end;
         .title-action {
             flex: 1;
             display: flex;
             align-items: center;
+            .common-icon-Links:before {
+                font-size: 24px;
+            }
             .title {
                 font-family: "Roboto-Regular";
                 font-size: 16px;

@@ -2,7 +2,7 @@
 import React, { useRef, useState, useMemo, useEffect } from 'react';
 import './Links.scss';
 import UploadMenu from "sui-components/DocUploader/UploadMenu/UploadMenu";
-import { useDriveFileBrowser, useAppSelector, useAppDispatch } from 'app/hooks';
+import { useDriveFileBrowser, useAppSelector, useAppDispatch ,useLocalFileUpload} from 'app/hooks';
 import { getServer } from 'app/common/appInfoSlice';
 import { IconButton, Button } from "@mui/material";
 import IQTooltip from "components/iqtooltip/IQTooltip";
@@ -73,8 +73,10 @@ const Links = () => {
 	const dispatch = useAppDispatch();
 	var tinycolor = require('tinycolor2');
 	const appInfo = useAppSelector(getServer);
+	const inputRef = useRef<any>();
+
 	const { appsList, detailsData } = useAppSelector(state => state.sbsManager)
-	const { selectedTimeLogDetails ,smartItemOptionSelected} = useAppSelector(state => state.timeLogRequest);
+	const { selectedTimeLogDetails ,smartItemOptionSelected,driveFile} = useAppSelector(state => state.timeLogRequest);
 	const [disableDeleteBtn, setDisableDeleteBtn] = useState<boolean>(true);
 	const [selected, setSelected] = useState<any>();
 
@@ -85,6 +87,7 @@ const Links = () => {
 	const [filters, setFilters] = React.useState<any>(filterOptions);
 	const [searchText, setSearchText] = useState<any>();
 	const [filterKeyValue, setFilterKeyValue] = useState<any>([]);
+	const[localupload ,setLocalupload] = useState<boolean>(false);
 
 	useMemo(() => {
 		setLinksData(selectedTimeLogDetails?.links?.length > 0 ? selectedTimeLogDetails?.links : [])
@@ -308,6 +311,50 @@ const Links = () => {
 		setSelected(selectedRowData);
 	}
 
+	const openDrive = () => {
+    let params: any = {
+      iframeId: '',
+      roomId: appInfo && appInfo.presenceRoomId,
+      appType: '',
+      multiSelect: false,
+    };
+    postMessage({
+      event: "getdrivefiles",
+      body: params,
+    });
+	};
+	
+	const AddLinks = (e:any) =>{
+		console.log('e',e)
+		if(e == 'Select from Drive'){
+			openDrive();
+		}
+		else if(e == 'Upload Files'){
+			if (inputRef.current) {inputRef?.current?.click();};
+		}
+		else if(e == 'Add External URL'){
+
+		}
+		else{
+			AppList_PostMessage(e)
+		}
+	}
+	const LocalFileUpload = (event: any) => {
+		const data = event?.target?.files
+		console.log('event',data);
+		event.preventDefault();
+		useLocalFileUpload(appInfo, data).then((res) => {
+			console.log('res',res)
+    });
+		event.target.value = null;
+	};
+	
+	useEffect(() => {
+    if (driveFile) {
+      console.log('driveFile',driveFile)
+    }
+	}, [driveFile]);
+	
 	return (
 		<div className='timelog-Links'>
 			<div className='timelog-details-header'>
@@ -320,7 +367,7 @@ const Links = () => {
 				<div className='left-Section'>
 					<IQSubMenuButton
 						menuOptions={addLinksOptions || []}
-						handleMenuChange={(e: any) => { AppList_PostMessage(e) }}
+						handleMenuChange={(e: any) => { AddLinks(e) }}
 						startIcon={<span className="common-icon-Add" />}
 						endIcon={<span className="common-icon-down-arrow1" />}
 						label={'Add Links'}
@@ -336,6 +383,13 @@ const Links = () => {
 							</IconButton>
 						</IQTooltip>
 					</div>
+					<input
+						multiple
+						style={{ display: "none" }}
+						ref={inputRef}
+						type="file"
+						onChange={LocalFileUpload}
+					/>
 				</div>
 				<div className='right-section'>
 					<IQSearch

@@ -48,10 +48,10 @@ const defaultData = {
 	}
 }
 export const curveList = [
-	{ label: "Back Loaded", value: 2 },
-	{ label: "Front Loaded", value: 0 },
-	{ label: "Linear", value: 3 },
-	// { label: "Bell", value: 1 },
+	{ label: "Back Loaded", value: 0 },
+	{ label: "Front Loaded", value: 1 },
+	{ label: "Linear", value: 2 },
+	// { label: "Bell", value: 3 },
 ];
 
 const useStyles: any = makeStyles((theme: any) =>

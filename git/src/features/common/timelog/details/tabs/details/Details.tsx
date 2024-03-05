@@ -66,42 +66,46 @@ const details = (props: any) => {
 	}, [locationType]);
 
 	const handleFieldChange = (value: any, name: any) => {
-		console.log('value',value);
-		console.log('name',name);
+        let data;
+        let payload :any ;
+        let APIpayload :any
+		
+        const startDate_data = name == 'startDate' ? value : details.startDate;
+        const startTime_data = name == 'startTime' ? value : getTime(details.startTime); 
+        const enddate_data = name == 'endDate' ? value : details.endDate;
+        const endTime_data = name == 'endTime' ? value : getTime(details.endTime);
 
-		let data;
-		let payload :any ;
-		const startDate_data = name == 'startDate' ? value : details.startDate;
-		const startTime_data = name == 'startTime' ? value : getTime(details.startTime); 
-		const enddate_data = name == 'endDate' ? value : details.endDate;
-		const endTime_data = name == 'endTime' ? value : getTime(details.endTime);
+        if(name == 'startTime' || name == 'startDate'){
+                const startTime = addTimeToDate(startDate_data,startTime_data);
+                APIpayload = {['startTime']: moment(startTime).format("MM/DD/yyyy h:mm A")};
+                payload = {['startTime']:startTime}
+                data = { ...details, ['startDate']: startTime,...payload};
+            }
+        else if(name == 'endTime' || name == 'endDate'){
+            const endTime = addTimeToDate(enddate_data,endTime_data);
+            APIpayload = {['endTime']: moment(endTime).format("MM/DD/yyyy h:mm A")}
+            payload = {['endTime']: endTime}
 
-		if(name == 'startTime' || name == 'startDate'){
-				const startTime = addTimeToDate(startDate_data,startTime_data);
-				payload = {['startTime']: startTime}
-				data = { ...details, ['startDate']: value,...payload};
-			}
-		else if(name == 'endTime' || name == 'endDate'){
-			const endTime = addTimeToDate(enddate_data,endTime_data);
-			payload = {['endTime']: endTime}
-			data = { ...details,...payload,['endDate']: value};
-		}
-		else if(name == 'sbs'){
-			payload = {['sbsId'] : value}
-			data = { ...details ,[name] : {id : value}}
-		}
-		else if(name == 'sbsPhase'){
-			payload = {['sbsPhaseId'] : value?.uniqueId}
-			data = { ...details, [name] : {...value}}
-		}
-		else{
-			payload = {[name] : value}
-			data = { ...details, ...payload };
-		}
-	
-		setDetails(data);
-		dispatch(setDetailsPayloadSave({...DetailspayloadSave,...payload}))
-	}
+            data = { ...details,...payload,['endDate']: endTime};
+        }
+        else if(name == 'sbs'){
+            APIpayload = {['sbsId'] : value}
+            data = { ...details ,[name] : {id : value}}
+        }
+        else if(name == 'sbsPhase'){
+            APIpayload = {['sbsPhaseId'] : value?.uniqueId}
+            data = { ...details, [name] : {...value}}
+        }
+        else{
+             payload = {[name] : value}
+             APIpayload = payload
+            data = { ...details, ...payload };
+        }
+    
+        setDetails(data);
+        console.log({...DetailspayloadSave,...APIpayload})
+        dispatch(setDetailsPayloadSave({...DetailspayloadSave,...APIpayload}))
+    }
 	
 	useEffect(() => {
 		const levelVal =
@@ -120,13 +124,17 @@ const details = (props: any) => {
 		newValues?.map((obj: any) => {
 			!locations?.map((a: any) => a?.id)?.includes(obj?.id) && locations.push(obj);
 		});
-		setdefaultlocation(locations);
 		
-		dispatch(setDetailsPayloadSave({...DetailspayloadSave,['locationId'] : locations}))
+		if (locations?.length > 0 ) {
+				console.log('locations',locations[0]['uniqueId'])
+				setdefaultlocation([locations[0]]);
+				dispatch(setDetailsPayloadSave({...DetailspayloadSave,['locationId'] : locations[0]['uniqueId']}))
+		}
 	};
 
 	useMemo(() => {
 		if(!_.isEmpty(smartItemOptionSelected) ){
+			console.log('smartItemOptionSelected',smartItemOptionSelected)
 			const duplicate = [{...smartItemOptionSelected}]
 			const addLinksOptionsCopy = AppList([...appsList,...duplicate]);
 			setTimeAddedOptions(addLinksOptionsCopy);
@@ -207,7 +215,7 @@ const details = (props: any) => {
 				<div className='timelog-details-content-col4'>
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>Start Date</div>
-						<div className='timelog-info-data-box'>
+						<div className='timelog-info-data-box time-log-summary'>
 							<DatePickerComponent
 								containerClassName={"iq-customdate-cont"}
 								render={
@@ -225,7 +233,7 @@ const details = (props: any) => {
 
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>End Date</div>
-						<div className='timelog-info-data-box'>
+						<div className='timelog-info-data-box time-log-summary'>
 							<DatePickerComponent
 								containerClassName={"iq-customdate-cont"}
 								render={
@@ -243,14 +251,14 @@ const details = (props: any) => {
 
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>Start Time</div>
-						<div className='timelog-info-data-box'>
+						<div className='timelog-info-data-box time-log-summary'>
 							<SUIClock
-								onTimeSelection={(value: any) => {
+								onTimeSelection={(value: any) => {									
 									handleFieldChange(getTime(value), "startTime");
 								}}
 								disabled={(statusbasedDisable.includes(details?.status?.toString()))}
 								defaultTime={getTime(details?.startTime) || ""}
-								pickerDefaultTime={getPickerDefaultTime(details?.startTime, true)}
+								pickerDefaultTime={getTime(details?.startTime)}
 								placeholder={"HH:MM"}
 								// actions={[]}
 								ampmInClock={true}
@@ -260,14 +268,14 @@ const details = (props: any) => {
 					</span>
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>End Time</div>
-						<div className='timelog-info-data-box'>
+						<div className='timelog-info-data-box time-log-summary'>
 							<SUIClock
 								onTimeSelection={(value: any) => {
 									handleFieldChange(getTime(value), "endTime");
-								}}
+								}}             
 								disabled={(statusbasedDisable.includes(details.status?.toString()))}
 								defaultTime={getTime(details?.endTime) || ""}
-								pickerDefaultTime={getPickerDefaultTime(details?.endTime, true)}
+								pickerDefaultTime={getTime(details?.endTime)}
 								placeholder={"HH:MM"}
 								// actions={[]}
 								ampmInClock={true}
@@ -340,7 +348,7 @@ const details = (props: any) => {
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>Stage</div>
 						<div className='timelog-info-data-box'>
-							<span className='client-contract-info-data'>
+							<span className='client-contract-info-data stage'>
 								<Button
 									variant='contained'
 									style={{

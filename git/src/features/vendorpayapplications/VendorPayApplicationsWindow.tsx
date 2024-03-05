@@ -245,7 +245,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 								// dispatch(setPresenceData(data.data));
 								break;
 							case "frame-active":
-								console.log("frame-active", data);
+								console.log("frame-active", data, appInfo);
 								data?.data?.name == "vendorpayapp" && dispatch(getVendorPayAppsLst(appInfo));
 								break;
 						}
