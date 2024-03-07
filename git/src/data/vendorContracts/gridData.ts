@@ -156,6 +156,12 @@ export const VendorContractsGridData = {
     "bidPackage": {
       "id": "eeab89e6-770e-4fcc-a2e1-e4683fdb597a",
       "name": "4 Sudeep"
+    },
+    connectorItemData: {
+      "name": "Vendor Contract 1",
+      "url": "https://my401471.s4hana.cloud.sap/ui#EnterpriseProject-processProjectElement?IsActiveEntity=true&ProjectUUID=61f255c4-44f6-1eee-96b5-07411319b1d4&TaskUUID=8b937f3d-a613-450d-8704-b29f0e49a2b9&sap-app-origin-hint=&/C_EnterpriseProjWrkPckgRootTP(ProjectUUID=guid'61f255c4-44f6-1eee-96b5-07411319b1d4',IsActiveEntity=true)/to_EnterpriseProjectElement(TaskUUID=guid'8b937f3d-a613-450d-8704-b29f0e49a2b9',IsActiveEntity=true)",
+      "itemId": "dd6bea34-cdce-4db0-85eb-fffe88854aa0",
+      "type": 0
     }
   },
   {

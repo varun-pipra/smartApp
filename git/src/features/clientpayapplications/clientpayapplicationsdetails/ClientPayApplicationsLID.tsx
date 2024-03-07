@@ -42,12 +42,12 @@ const HeaderContent = (props: any) => {
 									{vendorPayAppsPaymentStatus[props?.headerData?.status]}
 								</span> 
 								<span className='sap'>
-									{connectors?.length ? <img
+									{connectors?.length && clientPayAppLineItem?.connectorItemData ? <img
 											className="sapnumber"
 											src={connectors?.[0]?.primaryIconUrl}
 											alt="connector Image"
 										/> : ''}
-										{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.clientPayApps && window.open(sapLinksObj?.clientPayApps)}}>{clientPayAppLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+										{connectors?.length && clientPayAppLineItem?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{clientPayAppLineItem?.connectorItemData?.url && window.open(clientPayAppLineItem?.connectorItemData?.url)}}>{clientPayAppLineItem?.connectorItemData?.name}</span> : ''}
 								</span>
 							</span>
 							<span className='last-modified-label grey-font'>Last Modified:</span>{props?.headerData?.modifiedOn ? stringToUSDateTime2(props?.headerData?.modifiedOn) : ''} by {props?.headerData?.modifiedBy?.displayName}<span className='grey-fontt'> </span>

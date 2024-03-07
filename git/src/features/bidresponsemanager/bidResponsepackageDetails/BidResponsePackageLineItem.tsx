@@ -312,12 +312,12 @@ const BidResponsePackageLineItem = (props: any) => {
 							<span className={getResponseStatusIcons(selectedRecord?.responseStatus)} />
 							{BidResponseStatus[selectedRecord?.responseStatus]}
 						</span>
-						{connectors?.length ? <img
+						{connectors?.length && selectedRecord?.connectorItemData ? <img
 										className="sapnumber"
 										src={connectors?.[0]?.primaryIconUrl}
 										alt="connector Image"
 									/> : ''}
-						{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.bidResponseManager && window.open(sapLinksObj?.bidResponseManager)}}>{selectedRecord?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+						{connectors?.length && selectedRecord?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{selectedRecord?.connectorItemData?.url && window.open(selectedRecord?.connectorItemData?.url)}}>{selectedRecord?.connectorItemData?.name}</span> : ''}
 					</div> : ''}
 				</span>
 				<span className='right-box'>

@@ -1,4 +1,4 @@
-import { getServer } from 'app/common/appInfoSlice';
+import { getServer, getShowSettingsPanel, setShowSettingsPanel } from 'app/common/appInfoSlice';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 // Project files and internal support import
 import IQTooltip from 'components/iqtooltip/IQTooltip';
@@ -7,7 +7,7 @@ import SUIAlert from 'sui-components/Alert/Alert';
 
 import { GridOn, Refresh, TableRows } from '@mui/icons-material';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
-import { Button, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Button, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 
 import { deleteChangeEventRequest } from '../../stores/ChangeEventAPI';
 import {
@@ -16,6 +16,10 @@ import {
 import {ReportAndAnalyticsToggle} from 'sui-components/ReportAndAnalytics/ReportAndAnalyticsToggle';
 import { postMessage } from 'app/utils';
 import SapButton from 'sui-components/SAPButton/SAPButton';
+import IQToggle from 'components/iqtoggle/IQToggle';
+import SmartDropDown from 'components/smartDropdown';
+import SUIDrawer from 'sui-components/Drawer/Drawer';
+import React from 'react';
 
 // Component definition
 export const CERLeftButtons = memo(() => {
@@ -101,6 +105,11 @@ export const CERLeftButtons = memo(() => {
 // Component definition
 export const CERRightButtons = memo(() => {
 	const dispatch = useAppDispatch();
+	const { defaultData } = useAppSelector(state => state.settings);				
+
+	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
+	const [toggleChecked, setToggleChecked] = React.useState(false);
+	const {blockchainEnabled} = useAppSelector((state: any) => state.blockchain);
 	const { connectors } = useAppSelector((state) => state.gridData);
 
 	const handleView = (event: React.MouseEvent<HTMLElement>, value: string) => {
@@ -131,10 +140,86 @@ export const CERRightButtons = memo(() => {
 				<IconButton
 					className='settings-button'
 					aria-label='Change Events Settings'
+					onClick={() => dispatch(setShowSettingsPanel(true))}					
 				>
 					<TableRows />
 				</IconButton>
 			</IQTooltip>
 		</div>
+		{showSettingsPanel ?
+			<SUIDrawer
+				PaperProps={{
+					style: {
+						borderRadius: "4px",
+						boxShadow: "-6px 0px 10px -10px",
+						border: "1px solid rgba(0, 0, 0, 0.12) !important",
+						position: "absolute",
+						top: '105px',
+						bottom: '0px',
+						width: '25em',
+						height: 'inherit',
+						overflow: 'auto'
+					},
+				}}
+				anchor='right'
+				variant='permanent'
+				elevation={8}
+				open={false}
+			>
+				<Box>
+					<Stack direction="row" sx={{justifyContent: "end", height: "5em"}}>
+						<IconButton className="Close-btn" aria-label="Close Right Pane"
+							onClick={() => dispatch(setShowSettingsPanel(false))}
+						>
+							<span className="common-icon-Declined"></span>
+						</IconButton>
+					</Stack>
+					<Stack className='General-settings'>
+						<Stack className='generalSettings-Sections'>
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Settings</Typography>
+							<List className='generalSettings-list'
+								sx={{
+									display: 'flex',
+									justifyContent: 'center',
+									alignItems: 'center',
+									alignSelf: 'center',
+									textWrap: 'nowrap'
+								}}
+							>
+								{(window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled && <ListItem className='generalSettings-listitem'>
+									<ListItemText primary="Blockchain Two Factor Authentication" className='generalsettingtext' />
+									<ListItemIcon key={`iqmenu-item-icon-common-icon-sketch`}>
+										<span className="common-icon-Project-Info"></span>
+									</ListItemIcon>
+									<ListItemIcon>
+										<IQToggle
+											// checked={toggleChecked}
+											switchLabels={['ON', 'OFF']}
+											// onChange={(e) => {handleToggleChange(e);}}
+											edge={'end'}
+										/>
+									</ListItemIcon>
+								</ListItem>}
+							</List>
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
+							<SmartDropDown
+								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								dropDownLabel="Vendor Pay Invoices"
+								isSearchField
+								required={false}
+								useNestedOptions
+								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								isFullWidth
+								ignoreSorting={true}
+								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								variant={'outlined'}
+								optionImage={true}
+								// menuProps={classes3.menuPaper}
+							/>
+						</Stack>
+					</Stack>
+				</Box>
+			</SUIDrawer>
+			: null}
 	</>;
 });

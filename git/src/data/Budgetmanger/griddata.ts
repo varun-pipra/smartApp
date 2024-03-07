@@ -71,6 +71,12 @@ export const gridData = {
 			sbsPhaseId: 2,
 			sbs: [{id: 16, name: "19Jan"}, {id: 21, name: "001 Test"}],
 			sbsPhaseName:"In Construction",
+			connectorItemData: {
+				"name": "Budget 1",
+				"url": "https://my401471.s4hana.cloud.sap/ui#EnterpriseProject-processProjectElement?IsActiveEntity=true&ProjectUUID=61f255c4-44f6-1eee-96b5-07411319b1d4&TaskUUID=8b937f3d-a613-450d-8704-b29f0e49a2b9&sap-app-origin-hint=&/C_EnterpriseProjWrkPckgRootTP(ProjectUUID=guid'61f255c4-44f6-1eee-96b5-07411319b1d4',IsActiveEntity=true)/to_EnterpriseProjectElement(TaskUUID=guid'8b937f3d-a613-450d-8704-b29f0e49a2b9',IsActiveEntity=true)",
+				"itemId": "dd6bea34-cdce-4db0-85eb-fffe88854aa0",
+				"type": 0
+			}
 
 		},
 		{

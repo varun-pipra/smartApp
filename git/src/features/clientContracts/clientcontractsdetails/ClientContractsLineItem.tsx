@@ -336,12 +336,12 @@ const ClientContractsLineItem = (props: headerprops) => {
 							<span className='budgetid-label grey-font'>Contract ID:</span>
 								<span className='client-content'>
 									<span className='grey-fontt'>{contractLineItem?.code}</span>
-									{connectors?.length ? <img
+									{connectors?.length && contractLineItem?.connectorItemData ? <img
 										className="sapnumber"
 										src={connectors?.[0]?.primaryIconUrl}
 										alt="connector Image"
 									/> : ''}
-									{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.clientContracts && window.open(sapLinksObj?.clientContracts)}}>{contractLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+									{connectors?.length && contractLineItem?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{contractLineItem?.connectorItemData?.url && window.open(contractLineItem?.connectorItemData?.url)}}>{contractLineItem?.connectorItemData?.name}</span> : ''}
 								</span>
 							<span className='budgetid-label grey-font'>Status:</span>
 							<Button

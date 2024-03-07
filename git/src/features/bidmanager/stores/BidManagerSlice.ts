@@ -108,6 +108,7 @@ export const getCompanyFilters = createAsyncThunk<any, any>(
 		const response = await fetchCompanyFilters(appInfo, name);
 		response.map((data: any) => {
 			modifiedFilters.push({
+				...data,
 				text: data?.value,
 				value: data?.value,
 			});

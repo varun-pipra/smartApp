@@ -132,3 +132,22 @@ export const patchBidPackage = async (appInfo: any, packageId: any, body: any) =
 
 	return {};
 };
+
+export const postBidsToConnector = async (appInfo: any, type:number, callback?:any) => {
+	let response;
+	if (!isLocalhost) {
+		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/bids/${appInfo?.uniqueId}/postToConnector?connectorType=${type}&sessionId=${appInfo?.sessionId}`, {
+			method: 'POST',
+			headers: { 'content-type': 'application/json' },
+			// body: JSON.stringify(body),
+		});
+
+		if (!response?.ok) {
+			const message = `API Request Error (${moduleName}): ${response?.status}`;
+			throw new Error(message);
+		}
+		const data = await response?.json();
+		callback && callback(data);
+	}
+	return {};
+};

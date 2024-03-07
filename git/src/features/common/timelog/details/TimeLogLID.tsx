@@ -10,22 +10,23 @@ import { TextField } from '@mui/material';
 import TLLinks from './tabs/links/Links';
 import Details from './tabs/details/Details';
 import { ContractorResponse } from 'features/vendorcontracts/vendorcontractsdetails/ContractorResponse/ContractorResponse';
-import { getTimeLogDetails, setSelectedTimeLogDetails,setDetailsPayloadSave, getTimeLogList } from '../stores/TimeLogSlice';
+import { getTimeLogDetails, setSelectedTimeLogDetails,setDetailsPayloadSave, getTimeLogList ,setSmartItemOptionSelected} from '../stores/TimeLogSlice';
 import { stringToUSDateTime2 } from 'utilities/commonFunctions';
 import { getTimeLogDateRange, getTimeLogStatus } from 'utilities/timeLog/enums';
 import { timelogStatusMap } from '../TimeLogConstants';
-import {generateSplitEntryData, getDuration} from '../utils';
+import {generateSplitEntryData, getDuration,checkGUID} from '../utils';
 import {updateTimeLogDetails, addTimeLog, acceptTimeLog, sendBackTimeLog} from '../stores/TimeLogAPI';
 import {canManageTimeForCompany,canManageTimeForProject, isWorker} from 'app/common/userLoginUtils';
 import SendBackModel from '../toolbar/SendBackModel/sendBackModel';
 import SplitTimeSegmentDialog from '../timeSplitSegment/SplitTimeSegmentDialog';
 import { addTimeToDate } from 'utilities/datetime/DateTimeUtils';
+import moment from 'moment';
 
 const TimeLogLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
 	const { server } = useAppSelector(state => state.appInfo);
 	const appInfo = useAppSelector(getServer);
-	const { selectedTimeLogDetails ,DetailspayloadSave, TimeLogGridList} = useAppSelector(state => state.timeLogRequest);
+	const { selectedTimeLogDetails ,DetailspayloadSave, TimeLogGridList,saveButtonEnable} = useAppSelector(state => state.timeLogRequest);
 	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status?.toString());
 	const [closeSubtitle, setCloseSubtitle] = React.useState<any>(true)
 	const [openSendBack, setOpenSendBack] = React.useState<any>(false)
@@ -33,8 +34,9 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	
 	useEffect(() => {
 		if (selectedTimeLogDetails?.id) {
-			const subtitleEnable: any = (selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null )  || selectedTimeLogDetails?.hasTimeOverlap || selectedTimeLogDetails?.hasLocationConflict;
+			const subtitleEnable: any = (selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null && checkGUID(selectedTimeLogDetails?.splitFromSegmentId))  || selectedTimeLogDetails?.hasTimeOverlap || selectedTimeLogDetails?.hasLocationConflict;
 			setCloseSubtitle(subtitleEnable)
+			dispatch(setSmartItemOptionSelected({}));
 		}
 	}, [selectedTimeLogDetails?.id]);
 
@@ -48,9 +50,10 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	const onClickSave = () =>{
 			updateTimeLogDetails(selectedTimeLogDetails?.id, DetailspayloadSave, 
 				(response: any) => {
-					console.log('response',response)
 				 dispatch(setSelectedTimeLogDetails(response));
+				 afterItemAction(response);
 				 dispatch(setDetailsPayloadSave({}));
+				 dispatch(setSmartItemOptionSelected({}));
 			});
 	}
 	const afterItemAction = (response: any) => {
@@ -64,7 +67,6 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 		acceptTimeLog(payload, afterItemAction)
 	}
 	const handleSendback = (data:any) => {
-		console.log("handleSendback data", data)
 		const payload = {
 			timeSegmentIds:[selectedTimeLogDetails?.id],
 			reason:data?.reason,
@@ -74,12 +76,14 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 		setOpenSendBack(false);
 	}
 	const handleSplit = (data:any) => {
-		console.log("splitt", data)
 		const splitEntries = data?.timeEntries?.map((entry:any) => {
+
+			let startDate = addTimeToDate(selectedTimeLogDetails?.startTime,entry?.startTime);
+			let endDate = addTimeToDate(selectedTimeLogDetails?.endTime, entry?.endTime);
 			return {
-				startTime: addTimeToDate(selectedTimeLogDetails?.startTime, entry?.startTime),
-				endTime: addTimeToDate(selectedTimeLogDetails?.startTime, entry?.endTime),
-				userId:selectedTimeLogDetails?.user?.ID
+				startTime: startDate ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
+				endTime: endDate ? moment(endDate).format("MM/DD/yyyy h:mm A"): '',
+				userId : selectedTimeLogDetails?.user?.ID
 			}
 		});
 		const payload = {
@@ -87,8 +91,8 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 			segments: [...splitEntries],
 			reason: data?.description
 		}
-		console.log("split Payload", payload)
-		addTimeLog(payload, (response:any) => {});
+		console.log('payload',payload)
+		addTimeLog(payload,afterItemAction)
 	}
 
 	const tabConfig = [
@@ -102,9 +106,10 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 		}, {
 			tabId: 'links',
 			label: 'Links',
-			showCount: false,
+			showCount: true,
 			iconCls: 'common-icon-Links',
 			disabled: false,
+			count: selectedTimeLogDetails?.links?.length,
 			content: <TLLinks />
 		}
 	];
@@ -120,7 +125,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	const lidProps = {
 		title: <TitleUpdate />,
 		showSubTitle: closeSubtitle,
-		subtitle: (selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null ) || getTimeLogStatus(selectedTimeLogDetails.status) == 'Reported' ? <SubTitleContent toast={(value: any) => { setCloseSubtitle(value) }} /> : null,
+		subtitle: (selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null && checkGUID(selectedTimeLogDetails?.splitFromSegmentId) ) || getTimeLogStatus(selectedTimeLogDetails.status) == 'Reported' ? <SubTitleContent toast={(value: any) => { setCloseSubtitle(value) }} /> : null,
 		defaultTabId: 'details',
 		tabPadValue: 10,
 		headContent: {
@@ -145,10 +150,10 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 
 				</>
 			}
-			{(getTimeLogStatus(selectedTimeLogDetails?.status) == 'Sent Back') && <IQButton className='resubmit-buttons' disabled={false} onClick={() => {  onClickSave() }}>
+			{(getTimeLogStatus(selectedTimeLogDetails?.status) == 'Sent Back') && <IQButton className='resubmit-buttons' disabled={saveButtonEnable} onClick={() => {  onClickSave() }}>
 					Resubmit
 			</IQButton>}
-			{['Reported']?.includes(getTimeLogStatus(selectedTimeLogDetails?.status)) && <IQButton className='save-buttons' disabled={false} onClick={() => { onClickSave() }}>
+			{['Reported']?.includes(getTimeLogStatus(selectedTimeLogDetails?.status)) && <IQButton className='save-buttons' disabled={saveButtonEnable} onClick={() => { onClickSave() }}>
 				SAVE
 			</IQButton> }
 
@@ -296,7 +301,7 @@ const Title = memo(() => {
 const SubTitleContent = (props: any) => {
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
 
-	const splitFromSegment =  selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null ;
+	const splitFromSegment = selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null && checkGUID(selectedTimeLogDetails?.splitFromSegmentId) ;
 	const Title = splitFromSegment == true ? `The Split Time entry was Created from the orignal Time Segment ID: ${selectedTimeLogDetails?.timeSegmentId}.` :
 								selectedTimeLogDetails?.hasTimeOverlap == true ? 'There seems to be a duplicate or an overlapping time entry' :
 								selectedTimeLogDetails?.hasLocationConflict == true  ? 'This Time was not entered anywhere within the Job Location'
@@ -304,23 +309,27 @@ const SubTitleContent = (props: any) => {
 	const iconClass = splitFromSegment == true ? 'common-icon-sku': selectedTimeLogDetails?.hasTimeOverlap == true || selectedTimeLogDetails?.hasLocationConflict == true ? 'common-icon-exclamation' : '';
 
 	return (
-		<div style={{
-			display: 'flex',
-			gap: '6px',
-			alignItems: 'center',
-			background: '#fdf5ca',
-			padding: '8px 10px',
-			borderRadius: '6px',
-			marginTop: '6px',
-			width: 'fit-content',
-			border: '2px solid #fae57a'
-		}}>
-			<span className={iconClass} style={{ color: splitFromSegment === true ? 'orange' : 'red', fontSize: "30px", marginTop: "-1px", }} />
-			<div style={{ fontSize: '14px', fontFamily: "Roboto-Regular", color: 'black', fontWeight: 500 }}>
-				{Title}
-			</div>
-			{splitFromSegment == true && <span className={'closeicon common-icon-close'} onClick={() => { props.toast(false) }} />}
-		</div>
+		<>
+		 {(selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null && checkGUID(selectedTimeLogDetails?.splitFromSegmentId))  || selectedTimeLogDetails?.hasTimeOverlap || selectedTimeLogDetails?.hasLocationConflict &&
+				<div style={{
+					display: 'flex',
+					gap: '6px',
+					alignItems: 'center',
+					background: '#fdf5ca',
+					padding: '8px 10px',
+					borderRadius: '6px',
+					marginTop: '6px',
+					width: 'fit-content',
+					border: '2px solid #fae57a'
+				}}>
+					<span className={iconClass} style={{ color: splitFromSegment === true ? 'orange' : 'red', fontSize: "30px", marginTop: "-1px", }} />
+					<div style={{ fontSize: '14px', fontFamily: "Roboto-Regular", color: 'black', fontWeight: 500 }}>
+						{Title}
+					</div>
+					{splitFromSegment == true && <span className={'closeicon common-icon-close'} onClick={() => { props.toast(false) }} />}
+				</div>
+		 }
+		</>
 	)
 };
 export default TimeLogLID;

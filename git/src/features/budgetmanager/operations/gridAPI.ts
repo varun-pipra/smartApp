@@ -166,3 +166,25 @@ export const fetchWorkPlannerCategories = async (appInfo: any) => {
 	}
 	else return laborSheet?.values;
 };
+
+// {{protocol}}://{{zonedns}}/EnterpriseDesktop/api/v2/budgets/{{projectguid}}/postToConnector?connectorType=1&sessionId={{sessionId}}
+
+export const postBudgetsToConnector = async (appInfo: any, connectorType: number, callback?: any) => {
+	let response: any;
+	console.log("type", connectorType)
+	if(!isLocalhost) {
+		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/budgets/${appInfo?.uniqueId}/postToConnector?connectorType=${connectorType}&sessionId=${appInfo?.sessionId}`, {
+			method: 'POST',
+			headers: {'content-type': 'application/json'},
+			// body: JSON.stringify(body),
+
+		});
+		if(!response.ok) {
+			const message = `API Request Error (${moduleName}): ${response.status}`;
+			throw new Error(message);
+		}
+		const data = await response.json();
+		
+		callback && callback(data);
+	} 
+};

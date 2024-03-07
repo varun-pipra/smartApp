@@ -19,14 +19,15 @@ interface ClockProps {
 	actions?: any;
 	ampmInClock?:boolean;
 	pickerDefaultTime?:any;
+	focus?:any;
 }
 
 const SUIClock = (props: ClockProps) => {
-	const { defaultTime, onTimeSelection, disabled, placeholder } = props;
+	const { defaultTime, onTimeSelection, disabled, placeholder,focus = false } = props;
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [time, setTime] = React.useState<any>();
 	const [pickerTime, setPickerTime] = React.useState<any>();
-
+	const inputRef = React.useRef<any>(null);
 	// React.useEffect(() => {
 	// 	setTime(defaultTime ? dayjs(defaultTime).format("hh:mm A") : dayjs(new Date()).format("hh:mm A"))
 	// 	setPickerTime(defaultTime ? new Date(defaultTime) : new Date())
@@ -35,6 +36,14 @@ const SUIClock = (props: ClockProps) => {
 	const open = Boolean(anchorEl);
 	const id = open ? "simple-popover" : undefined;
 
+	useEffect(() => {
+		// Focus the TextField when the component mounts
+		if(focus == true){
+			console.log('focus',focus)
+			if (inputRef.current) {	inputRef?.current?.focus();}
+		}
+	}, [focus]); 
+	
 	React.useEffect(() => {
 		// setTime(defaultTime ? dayjs(defaultTime).format("hh:mm A") : dayjs(new Date()).format("hh:mm A"))
 		// setPickerTime(defaultTime ? new Date(defaultTime) : new Date())
@@ -149,13 +158,14 @@ const SUIClock = (props: ClockProps) => {
 			} else {
 				setTime('12:00 AM');
 			}
-	}
+		}
 		
   };
 
 	return (
 		<div className="clock-container">
 			<TextField
+			 	inputRef={inputRef}
 				fullWidth
 				InputProps={{
 					startAdornment: (

@@ -28,6 +28,7 @@ import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
 import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
 import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
+import { fetchdefaultdrodown } from 'features/budgetmanager/operations/settingsSlice';
 
 let defaultCERStatusFilter: any = [];
 
@@ -119,6 +120,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 		if (server) {
 			dispatch(getChangeEventList());
 			dispatch(fetchConnectors(server));
+			dispatch(fetchdefaultdrodown(appInfo));				
 		}
 	}, [server]);
 

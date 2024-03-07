@@ -12,7 +12,7 @@ import {
 } from 'features/bidmanager/stores/BidManagerSlice';
 import { patchBidPackage } from 'features/bidmanager/stores/gridAPI';
 import { fetchGridData } from 'features/bidmanager/stores/gridSlice';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import infoicon from 'resources/images/common/infoicon.svg';
 import SUIAlert from 'sui-components/Alert/Alert';
 import SUIBaseDropdownSelector from 'sui-components/BaseDropdown/BaseDropdown';
@@ -24,7 +24,8 @@ import {
 	Box, Button, Grid, InputLabel, Stack, TextField, ToggleButton, ToggleButtonGroup
 } from '@mui/material';
 import _ from 'lodash';
-
+import SUIPagingDropdown from 'sui-components/PagingDropdown/SUIPagingDropdown';
+import { fetchBidderCompanyData } from 'features/bidmanager/stores/BidManagerAPI';
 interface BiddersProps {
 	readOnly?: boolean;
 };
@@ -52,7 +53,69 @@ const Bidders = (props: BiddersProps) => {
 		company: { id: '', value: '', color: '' }, contactPerson: { id: '', displayId: '' }, email: '', phoneNo: ''
 	}];
 	const { BiddersGridData } = useAppSelector((state) => state.bidders);
-	const { companyList, contactPersonsList, BudgetLineItems, selectedRecord } = useAppSelector((state) => state.bidManager);
+	const { companyList, contactPersonsList, BudgetLineItems, selectedRecord, companyFiltersList } = useAppSelector((state:any) => state.bidManager);
+	let filterOptions = useMemo(() => {
+		var filterMenu = [{
+			text: 'Scope',
+			key: 'scope',
+			value: 'scope',
+			icon: <span className='common-icon-scope' />,
+			children: {
+				type: 'checkbox',
+				items: [{
+					id : 1,
+					text: 'This Project',
+					key: 'scope',
+					value: 'This Project'
+				}, {
+					id : 2,
+					text: 'Organizational',
+					value: 'Organizational',
+					key: 'scope',
+				},]
+			}
+		},
+		{
+			text: 'Diverse Supplier',
+			key: 'diverseCategories',
+			value: 'diverseCategories',
+			icon: <span className='common-icon-diverse-supplier' />,
+			children: {
+				type: 'checkbox',
+				items: [...companyFiltersList]
+			}
+		},
+		{
+			text: 'Compliance Status',
+			key: 'complianceStatus',
+			value: 'complianceStatus',
+			icon: <span className='common-icon-compliance-Status' />,
+			children: {
+				type: 'checkbox',
+				items: [{
+					text: 'Compliant',
+					key: 'complianceStatus',
+					value: 'Compliant'
+				}, {
+					text: 'Not Verified',
+					value: 'Not Verified',
+					key: 'complianceStatus',
+				},
+				{
+					text: 'Non Compliant',
+					value: 'N/A',
+					key: 'complianceStatus',
+				},
+				{
+					text: 'Expired',
+					value: 'Expired',
+					key: 'complianceStatus',
+				}
+				]
+			}
+		}];
+		return filterMenu;
+	}, []);
 	const CompanyData = useAppSelector(getCompanyData)
 	const appInfo = useAppSelector(getServer);
 	// const { BudgetLineItems, selectedRecord } = useAppSelector((state) => state.bidManager);
@@ -82,6 +145,38 @@ const Bidders = (props: BiddersProps) => {
 	const { newCompany, newBidder } = useAppSelector((state) => state.bidders);
 	const [bidPackageId, setBidPackageId] = useState();
 	const [selectedCompany, setSelectedCompany] = useState<any>();
+
+	/*Below state's are used for server side pagination for the company Dropdown. */
+	
+	const [pageSize, setPageSize] = React.useState(50);
+  	const [companyFilters, setCompanyFilters] = React.useState({});
+	const [companySearch, setCompanySearch] = React.useState("");
+	const pageRef = useRef(1);
+	const companySearchRef =  useRef("");
+	const companyFiltersRef = useRef({});
+	const groupedCompanyRef = useRef<any>();
+	const existedCompanyRef = useRef<any>();
+	const suggestedCompanyRef = useRef<any>();
+	const oldPayload = useRef<any>();
+	const filterMenuOptionsRef = useRef<any>(filterOptions);
+	const isMakeApi = useRef(true);
+	const defaultPayloadRef = useRef({
+		"projectId": appInfo?.uniqueId,
+		"sortBy":"name",
+		"sortDirection":"ASC",
+		"start": 0,
+		"limit": pageSize,
+		"orgStart" : 0,
+		"orgLimit" : 0,
+		"page" : 1,
+		"searchText": companySearchRef.current,
+		"filters": companyFiltersRef.current
+	});
+	useEffect(() => {
+		if(appInfo && companyFiltersList) {
+			filterMenuOptionsRef.current = filterOptions;
+		}
+	},[]);
 
 	useEffect(() => {
 		console.log('newCompany', newCompany)
@@ -120,44 +215,96 @@ const Bidders = (props: BiddersProps) => {
 				setShowAddRow(false);
 			} else {
 				const companyIds = BiddersGridData?.map((row: any) => { return row?.company?.objectId });
+				existedCompanyRef.current = companyIds;
 				setExistedCompanies(companyIds);
 				setRowData([...emptyBiddersRow, ...BiddersGridData]);
 				setShowAddRow(true);
 			}
 		}
 	}, [BiddersGridData, props.readOnly, toggleBtnsData]);
-
+	const GetScopeFilter = (params:any) => {
+		if(!!params) {
+			let scope:any;
+			let values = ['This Project', 'Organizational'];
+			if(values?.every((x:any) => params?.includes(x))) {
+				scope = 0; // All
+			} else if(params?.includes('This Project')) {
+				scope = 1; // This Project
+			} else if(params?.includes('Organizational')) {
+				scope = 2; // Organization
+			};
+			return scope;
+		};
+	};
+	const ApiCall = (info:any, payload:any, scroll?:boolean) => {
+		let params = _.cloneDeep(payload);
+			if(Object.keys(params?.filters)?.length) {
+				Object.keys(params?.filters).map((item:any, index:any) => {
+					if(item === 'diverseCategories') return	params.filters[item] = ([...companyFiltersList] || [])?.filter((rec:any) => params?.filters?.[item]?.includes(rec?.value))?.map((x:any)  => x?.id);
+					else if(item === 'scope') {
+						params = {...params, ['scope'] : GetScopeFilter(params?.filters?.[item])};
+						delete params?.filters?.[item];
+					};
+					if(params?.filters[item] === 'complianceStatus' && params?.filters[item]?.includes('all')) return	params.filters[item] = params?.filters?.complianceStatus.shift();
+				});
+			};
+			fetchBidderCompanyData(info,params).then((res: any) => {
+				if(!!res) {
+					isMakeApi.current = true;
+					if(scroll) {
+						pageRef.current = (pageRef.current + 1);
+					};
+					oldPayload.current = res;
+					getCompanyOptions(res?.values?.companies);
+				}
+			})
+			.catch((error: any) => {
+				console.log("error", error);
+				return;
+			});
+	};
 	useEffect(() => {
-		if (companyData.length) {
-			getCompanyOptions();
+		if (companyData?.length) {
+			ApiCall(appInfo, defaultPayloadRef.current);
 		}
-	}, [companyData]);
-
-	const getCompanyOptions = () => {
+	}, [companyData, companySearch]);
+	const RemoveDuplicates = (array:any) => {
+		return Array.from(new Set(array.map((a:any) => a.uniqueId)))
+		.map((uniqueId:any) => {
+		  return array.find((a:any) => a.uniqueId === uniqueId)
+		})
+	};
+	const getCompanyOptions = (array:any) => {
 		let groupedList: any = [];
-		companyData?.map((data: any) => {
+		([...array] || [])?.map((data: any) => {
 			groupedList.push({
 				...data,
 				color: data.colorCode,
-				id: data.objectId,
+				id: data.id ?? data?.objectId,
 				displayField: data.name,
 				thumbnailUrl: data.thumbnailUrl,
 				scope: data.isOrgCompany ? 'Organizational' : 'This Project',
 				isSuggested: data.isOrgCompany
 			});
 		});
-		console.log('groupedList', groupedList)
 		if (groupedList.length > 0) {
-			let filterDataAndMap: any = [...groupedList].filter((item: any) => item.isSuggested);
-			let removeDuplicates: any = [...groupedList]?.filter((item: any) => { return !item.isOrgCompany });
-			setCompanyOptions(removeDuplicates);
-			setSuggestCompanyValues(filterDataAndMap);
-			setGroupedCompanyList(groupedList);
+			let filterOrgCompanies: any = [...groupedList].filter((item: any) => item.isSuggested);
+			let filterThisProjectCompanies: any = [...groupedList]?.filter((item: any) => { return !item.isSuggested });
+			let mergeSuggestCompany = suggestedCompanyRef.current?.length > 0 ? RemoveDuplicates([...suggestedCompanyRef.current, ...filterOrgCompanies]) : filterOrgCompanies;
+			let mergeGroupedCompany = groupedCompanyRef.current?.length > 0 ? RemoveDuplicates([...groupedCompanyRef.current,...filterThisProjectCompanies]) : filterThisProjectCompanies; 
+			groupedCompanyRef.current = mergeGroupedCompany;
+			suggestedCompanyRef.current = mergeSuggestCompany;
+			setCompanyOptions(filterThisProjectCompanies);
+			setSuggestCompanyValues(suggestedCompanyRef.current);
+			setGroupedCompanyList(groupedCompanyRef.current);
 		} else {
 			setCompanyOptions([]);
 			setSuggestCompanyValues([]);
 			setGroupedCompanyList(groupedList);
+			groupedCompanyRef.current = [];
+			suggestedCompanyRef.current = [];
 		};
+		gridRef?.current?.setColumnDefs(headers);
 	};
 
 	useEffect(() => {
@@ -197,18 +344,7 @@ const Bidders = (props: BiddersProps) => {
 					&& (_.isEmpty(selectedFilters?.scope) || selectedFilters?.scope?.length === 0 || selectedFilters?.scope?.indexOf(item.scope) > -1)));
 		});
 	};
-	const handleFilterChange = (list: any, selectedFilters?:any, searchVal?:any) => {
-		// const filteredData: any = [];
-		// companyData?.map((companyObj: any) => {
-		// 	Object.keys(filters)?.map((key: any) => {
-		// 		if (filters[key]?.includes(companyObj[key])) filteredData.push(companyObj)
-		// 	})
-		// });
-		return searchAndFilter(list, selectedFilters, searchVal)
-	};
-	const handleSearchChange = (list: any, selectedFilters?:any, searchVal?:any) => {
-		return searchAndFilter(list, selectedFilters, searchVal)
-	};
+	
 	const onCompnayAddButtonClick = (options: any, searchVal: any) => {
 		postMessage({
 			event: "common",
@@ -234,7 +370,60 @@ const Bidders = (props: BiddersProps) => {
 	const handleContactSearchChange = (list: any, selectedFilters?:any, searchVal?:any) => {
 		return searchAndFilter(list, selectedFilters, searchVal)
 	};
-	const headers = [
+	const ResetValues = () => {
+		groupedCompanyRef.current = [];
+		suggestedCompanyRef.current = [];
+		pageRef.current = 1;
+	};
+	const debounce = useCallback(_.debounce((val, key) => {
+		if(key === 'search'){
+			companySearchRef.current = val;
+			defaultPayloadRef.current = {...defaultPayloadRef.current, ['searchText'] : val};
+			setCompanySearch(val);
+			ResetValues();
+		};
+	}, 1000), []);
+	const handleCompanyFilterChange = (filterValues:any) => {
+		if(!_.isEqual(companyFiltersRef.current, filterValues)) {
+			companyFiltersRef.current = filterValues;
+			defaultPayloadRef.current = {...defaultPayloadRef.current, ['filters'] : filterValues};
+			setCompanyFilters(filterValues);
+			ApiCall(appInfo, defaultPayloadRef.current);
+			ResetValues();
+		} else if(_.isEqual(companyFiltersRef.current, filterValues)) {
+			companyFiltersRef.current = filterValues;
+			defaultPayloadRef.current = {...defaultPayloadRef.current, ['filters'] : filterValues};
+			setCompanyFilters(filterValues);
+			ApiCall(appInfo, defaultPayloadRef.current);
+			ResetValues();
+		};
+	};
+	const handleCompanySearchChange = (searchVal?:any) => {
+		debounce(searchVal, 'search');
+	};
+	const handleScrollEvent = useCallback((e:any) => {
+		if(isMakeApi.current) {
+			let payload:any;
+			let page = pageRef.current;
+			let previousPayload = oldPayload?.current?.values;
+			let startPage = page * (pageSize);
+			let params:any = _.cloneDeep(companyFiltersRef.current);
+			payload = {
+				"projectId": appInfo?.uniqueId,
+				"sortBy":"name",
+				"sortDirection":"ASC",
+				"start": previousPayload?.orgStart > 0 ? previousPayload?.start : startPage,
+				"limit": previousPayload?.orgStart > 0 ? previousPayload?.limit : pageSize,
+				"orgStart" : previousPayload?.orgStart > 0 ? previousPayload?.orgStart : 0,
+				"orgLimit" : previousPayload?.orgStart > 0 ? previousPayload?.orgLimit : pageSize,
+				"searchText": companySearchRef.current,
+				"filters": params,
+			};
+			isMakeApi.current = false;
+			ApiCall(appInfo, payload, true);
+		}
+	}, [oldPayload, companyFiltersRef, companySearchRef]);
+	const headers = useMemo(() => [
 		{
 			headerName: "Company",
 			field: 'company',
@@ -247,27 +436,27 @@ const Bidders = (props: BiddersProps) => {
 			},
 			cellRenderer: (params: any) => {
 				return !props.readOnly && showAddRow && params.node?.level == 0 && params.node.rowIndex === 0 ? (
-					<SUIBaseDropdownSelector
+					<SUIPagingDropdown
 						value={[selectedBidder?.company]}
 						width="100%"
 						menuWidth="450px"
 						placeHolder={'Select'}
-						dropdownOptions={groupedCompanyList || []}
+						dropdownOptions={groupedCompanyRef.current || []}
 						noDataFoundMsg={noDataFoundMsg_company}
 						handleValueChange={companyHandleValueChange}
-						disableOptionsList={existedCompanies}
+						disableOptionsList={existedCompanyRef.current}
 						showFilterInSearch={true}
-						filterOptions={getFilterMenuOptions()}
-						onFilterChange={handleFilterChange}
-						onSearchChange={handleSearchChange}
+						filterOptions={filterOptions ?? filterMenuOptionsRef?.current}
+						onFilterChange={(values:any) => handleCompanyFilterChange(values)}
+						onSearchChange={(values:any) => handleCompanySearchChange(values)}
 						paperpropsclassName={'companyMenu-dropdown-cls'}
-						showSuggested={(suggestCompanyValues.length === 0 ? false : true)}
-						suggestedDropdownOptions={suggestCompanyValues ? suggestCompanyValues : []}
+						suggestedDropdownOptions={suggestedCompanyRef.current || []}
 						suggestedText={'Organizational (Org Console)'}
 						suggestedDefaultText={'This Project'}
-						moduleName={'bidManager'}
 						handleAdd={(options: any, searchVal: any) => onCompnayAddButtonClick(options, searchVal)}
-					></SUIBaseDropdownSelector>
+						handleScrollEvent= {(e:any) => handleScrollEvent(e)}
+						totalCount = {oldPayload?.current?.totalCount}
+					/>
 				) : (
 					<>
 						{params?.data?.company?.thumbnailUrl ?
@@ -348,13 +537,13 @@ const Bidders = (props: BiddersProps) => {
 				);
 			},
 		}
-	]
+	], [groupedCompanyRef, contactPersonOptions])
 	const [columnDefs, setColumnDefs] = useState(headers);
 
 	useEffect(() => {
 		setColumnDefs(headers)
 		if (selectedBidder?.company?.value != '' && selectedBidder?.contactPerson?.displayId != '') setEnableAddbtn(true)
-	}, [selectedBidder, toggleBtnsData, existedCompanies, showAddRow, groupedCompanyList]);
+	}, [selectedBidder, toggleBtnsData, showAddRow]);
 
 	const onItemAdd = (data: any) => {
 		const payload = {
@@ -511,6 +700,7 @@ const Bidders = (props: BiddersProps) => {
 			<Stack className="bidders_table">
 				<InputLabel style={{ fontWeight: 'bold' }}>{` ${selectedRecord?.type == 0 ? 'Add Bidder' : 'Add Bidders'} (${selectedRecord?.bidderCount ? selectedRecord?.bidderCount : 0})`}</InputLabel>
 				<SUILineItem
+					tableref={(e:any) => gridRef.current = e}
 					headers={columnDefs}
 					data={rowData}
 					enbleAddBtn={enableAddbtn}
@@ -535,97 +725,3 @@ const Bidders = (props: BiddersProps) => {
 };
 
 export default Bidders;
-
-const getFilterMenuOptions = () => {
-	const { companyFiltersList } = useAppSelector((state) => state.bidManager);
-	return [{
-		text: 'Scope',
-		key: 'scope',
-		value: 'scope',
-		icon: <span className='common-icon-scope' />,
-		children: {
-			type: 'checkbox',
-			items: [{
-				text: 'This Project',
-				key: 'scope',
-				value: 'This Project'
-			}, {
-				text: 'Organizational',
-				value: 'Organizational',
-				key: 'scope',
-			},]
-		}
-	},
-	{
-		text: 'Diverse Supplier',
-		key: 'diverseSupplier',
-		value: 'diverseSupplier',
-		icon: <span className='common-icon-diverse-supplier' />,
-		children: {
-			type: 'checkbox',
-			items: [...companyFiltersList]
-			// 	[{
-			// 		text: 'Minority-owned business',
-			// 		value: 'Minority-owned business'
-			// 	}, {
-			// 		text: 'Women-owned business',
-			// 		value: 'Women-owned business',
-			// 	},
-			// 	{
-			// 		text: 'LGBT-owned business',
-			// 		value: 'LGBT-owned business',
-			// 		key: 'diverseSupplier',				
-			// 	},
-			// 	{
-			// 		text: 'Veteran-owned business',
-			// 		value: 'Veteran-owned business',
-			// 		key: 'diverseSupplier',				
-			// 	},
-			// 	{
-			// 		text: 'Service-disabled veteran-owned business',
-			// 		value: 'Service-disabled veteran-owned business',
-			// 		key: 'diverseSupplier',				
-			// 	},
-			// 	{
-			// 		text: 'Historically underutilized business zones(HUBZone)',
-			// 		value: 'Historically underutilized business zones(HUBZone)',
-			// 		key: 'diverseSupplier',				
-			// 	},
-			// 	{
-			// 		text: 'Small business enterprises',
-			// 		value: 'Small business enterprises',
-			// 		key: 'diverseSupplier',				
-			// 	},
-			// ]
-		}
-	},
-	{
-		text: 'Compliance Status',
-		key: 'complianceStatus',
-		value: 'complianceStatus',
-		icon: <span className='common-icon-compliance-Status' />,
-		children: {
-			type: 'checkbox',
-			items: [{
-				text: 'Compliant',
-				key: 'complianceStatus',
-				value: 'Compliant'
-			}, {
-				text: 'Not Verified',
-				value: 'Not Verified',
-				key: 'complianceStatus',
-			},
-			{
-				text: 'Non Compliant',
-				value: 'N/A',
-				key: 'complianceStatus',
-			},
-			{
-				text: 'Expired',
-				value: 'Expired',
-				key: 'complianceStatus',
-			}
-			]
-		}
-	}];
-};

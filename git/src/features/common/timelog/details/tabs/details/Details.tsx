@@ -14,7 +14,7 @@ import { postMessage } from "app/utils";
 import SUIClock from 'sui-components/Clock/Clock';
 import { getTime ,addTimeToDate} from 'utilities/datetime/DateTimeUtils';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
-import {setDetailsPayloadSave} from '../../../stores/TimeLogSlice';
+import {setDetailsPayloadSave,setSaveButtonEnable} from '../../../stores/TimeLogSlice';
 import _ from "lodash";
 import moment from "moment";
 
@@ -53,8 +53,12 @@ const details = (props: any) => {
 			userimage: selectedTimeLogDetails?.user && selectedTimeLogDetails?.user?.icon,
 			stage: selectedTimeLogDetails?.smartItem?.stage ?  selectedTimeLogDetails?.smartItem?.stage  : 'N/A',
 		}
-		setDetails({ ...details, ...data })
-		selectedTimeLogDetails?.locations ? setdefaultlocation([selectedTimeLogDetails?.locations]) : null;
+		console.log('data',data)
+		setDetails(data)
+		selectedTimeLogDetails?.location != null ? setdefaultlocation([selectedTimeLogDetails?.location]) : null;
+		// setLocation(rowLocations?.map((el: any) => {
+		// 	return { id: el.id, text: el.name };
+		// }) || []);
 	}, [selectedTimeLogDetails])
 
 
@@ -65,6 +69,19 @@ const details = (props: any) => {
 		}
 	}, [locationType]);
 
+	const checkTimeValidation = (startTime:any,endTime:any) => {
+    const startTimeDate = new Date(startTime);
+		const endTimeDate = new Date(endTime);
+    if ((endTimeDate < startTimeDate) || (startTimeDate > endTimeDate)) {
+				console.log('if');
+				dispatch(setSaveButtonEnable(true));
+		}
+		else{
+			console.log('else');
+			dispatch(setSaveButtonEnable(false));
+		}
+	}
+	
 	const handleFieldChange = (value: any, name: any) => {
         let data;
         let payload :any ;
@@ -76,36 +93,36 @@ const details = (props: any) => {
         const endTime_data = name == 'endTime' ? value : getTime(details.endTime);
 
         if(name == 'startTime' || name == 'startDate'){
-                const startTime = addTimeToDate(startDate_data,startTime_data);
-                APIpayload = {['startTime']: moment(startTime).format("MM/DD/yyyy h:mm A")};
-                payload = {['startTime']:startTime}
-                data = { ...details, ['startDate']: startTime,...payload};
-            }
+						const startTime = addTimeToDate(startDate_data,startTime_data);
+						APIpayload = {['startTime']: moment(startTime).format("MM/DD/yyyy h:mm A")};
+						payload = {['startTime']:startTime}
+						data = { ...details, ['startDate']: startTime,...payload};
+        }
         else if(name == 'endTime' || name == 'endDate'){
             const endTime = addTimeToDate(enddate_data,endTime_data);
             APIpayload = {['endTime']: moment(endTime).format("MM/DD/yyyy h:mm A")}
             payload = {['endTime']: endTime}
 
             data = { ...details,...payload,['endDate']: endTime};
-        }
+				}
         else if(name == 'sbs'){
             APIpayload = {['sbsId'] : value}
             data = { ...details ,[name] : {id : value}}
         }
         else if(name == 'sbsPhase'){
             APIpayload = {['sbsPhaseId'] : value?.uniqueId}
-            data = { ...details, [name] : {...value}}
+            data = { ...details, [name] : {id:value?.uniqueId ,name:value?.name}}
         }
         else{
              payload = {[name] : value}
              APIpayload = payload
             data = { ...details, ...payload };
-        }
-    
+				}
+				console.log('data',data)
+				checkTimeValidation(data.startTime,data.endTime);
         setDetails(data);
-        console.log({...DetailspayloadSave,...APIpayload})
         dispatch(setDetailsPayloadSave({...DetailspayloadSave,...APIpayload}))
-    }
+  }
 	
 	useEffect(() => {
 		const levelVal =
@@ -126,7 +143,6 @@ const details = (props: any) => {
 		});
 		
 		if (locations?.length > 0 ) {
-				console.log('locations',locations[0]['uniqueId'])
 				setdefaultlocation([locations[0]]);
 				dispatch(setDetailsPayloadSave({...DetailspayloadSave,['locationId'] : locations[0]['uniqueId']}))
 		}
@@ -134,10 +150,9 @@ const details = (props: any) => {
 
 	useMemo(() => {
 		if(!_.isEmpty(smartItemOptionSelected) ){
-			console.log('smartItemOptionSelected',smartItemOptionSelected)
 			const duplicate = [{...smartItemOptionSelected}]
-			const addLinksOptionsCopy = AppList([...appsList,...duplicate]);
-			setTimeAddedOptions(addLinksOptionsCopy);
+			const addLinksOptions = AppList([...appsList,...duplicate]);
+			setTimeAddedOptions(addLinksOptions);
 			setTimeAdded(smartItemOptionSelected?.name);
 			dispatch(setDetailsPayloadSave({...DetailspayloadSave,['smartItemId'] : smartItemOptionSelected?.id}))
 		}
@@ -146,7 +161,7 @@ const details = (props: any) => {
 			setTimeAddedOptions(addLinksOptionsCopy);
 			setTimeAdded('');
 		}
-	}, [smartItemOptionSelected]);
+	}, [smartItemOptionSelected]); 
 
 	const handleMenu = (e: any) => {
 		AppList_PostMessage(e)
@@ -392,7 +407,7 @@ const details = (props: any) => {
 					<span className='timelog-info-tile'>
 						<div className='timelog-info-label'>Phase</div>
 						<div className='timelog-info-data-box'>
-	
+									
 							<SmartDropDown
 								LeftIcon={<div className="common-icon-phase"></div>}
 								options={phaseDropDownOptions || []}
@@ -411,6 +426,7 @@ const details = (props: any) => {
 								showIconInOptionsAtRight={true}
 								disabled={details?.status == 2 ? true :false}
 							/>
+							
 						</div>
 					</span>
 				</div>

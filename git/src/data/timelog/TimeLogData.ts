@@ -19,7 +19,10 @@ export const timelogList = {
 			},
 			"location": null,
 			"sbs": null,
-			"sbsPhase": null,
+			sbsPhase: {
+				id: "e2ae03bd-f828-4da2-9d71-edfe9abd520b",
+				name: "Pre Construction"
+			},
 			"createdBy": {
 					"ID": "5b7f3eb7-9161-434d-b43d-0524d92842ff",
 					"firstName": "Premkumar",
@@ -70,6 +73,23 @@ export const timelogList = {
 					"createdOn": "2024-01-19T10:46:56.903",
 					"objectId": 2288057,
 					"id": "8049d1ce-05c3-44cf-af03-01dcb8823810",
+					"thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/a1ec16cd64194fb8a28a3c58e4f9d8de",
+				},
+				{
+					"sbsId": 2,
+					"name": "WI-2037",
+					"stage": "Approval",
+					"stageColor": "4A148C",
+					"type": null,
+					"linkType": "CASymbols",
+					"description": "",
+					"createdBy": {
+						"id": null,
+						"name": "Mani, Vimal Raj"
+					},
+					"createdOn": "2024-01-19T10:46:56.903",
+					"objectId": 2288057,
+					"id": "8049d1ce-05c3-44cf-af03-01dcb8823811",
 					"thumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/a1ec16cd64194fb8a28a3c58e4f9d8de",
 				},
 			],
@@ -166,7 +186,7 @@ export const timelogList = {
 		"name": "test 29 "
 	},
 	sbsPhase:{
-		id:1,
+		id:"fe20f93a-0b8b-40af-8980-d8b74922c407",
 		name: "In Construction"
 	},
 	team: {
@@ -230,7 +250,7 @@ location: {
 		"name": "test 29 "
 	},
 	sbsPhase:{
-		id:1,
+		id:"fe20f93a-0b8b-40af-8980-d8b74922c407",
 		name: "In Construction"
 	},
 	team: {
@@ -291,7 +311,7 @@ location: {
 		"name": "test 29 "
 	},
 	sbsPhase:{
-		id:1,
+		id:"fe20f93a-0b8b-40af-8980-d8b74922c407",
 		name: "In Construction"
 	},
 	team: {
@@ -411,7 +431,7 @@ location: {
 },
 	sbs: null,
 	sbsPhase:{
-		id:1,
+		id:"fe20f93a-0b8b-40af-8980-d8b74922c407",
 		name: "In Construction"
 	},
 	team: {
@@ -463,7 +483,7 @@ location: {
     "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
 },
 sbsPhase:{
-	id:1,
+	id:"fe20f93a-0b8b-40af-8980-d8b74922c407",
 	name: "In Construction"
 },
 team: {
@@ -533,7 +553,7 @@ location: {
 			"name": "test 29 "
 		},
 		sbsPhase:{
-			id:1,
+			id:"fe20f93a-0b8b-40af-8980-d8b74922c407",
 			name: "In Construction"
 		},
 		team: {

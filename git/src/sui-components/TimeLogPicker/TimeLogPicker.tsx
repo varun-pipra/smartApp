@@ -243,6 +243,7 @@ const TimeLogPicker = (props: any) => {
             placeholder={"HH:MM"}
             // actions={[]}
             ampmInClock={true}
+            focus={true}
           ></SUIClock>
         </div>
         <div className="time-field">

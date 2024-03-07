@@ -70,6 +70,7 @@ const filterOptions = [
 ]
 
 const Links = () => {
+	const iFrameId = 'timelogIframe', appType = 'TimeLog';
 	const dispatch = useAppDispatch();
 	var tinycolor = require('tinycolor2');
 	const appInfo = useAppSelector(getServer);
@@ -82,7 +83,7 @@ const Links = () => {
 
 	const [addLinksOptions, setAddLinksOptions] = React.useState<any>(linksOptions)
 	const [linksData, setLinksData] = useState<any>([])
-
+	const [addlinksSelected,setAddlinksSelected] = useState<any>('');
 	const [gridData, setGridData] = useState<any>([]);
 	const [filters, setFilters] = React.useState<any>(filterOptions);
 	const [searchText, setSearchText] = useState<any>();
@@ -102,18 +103,21 @@ const Links = () => {
 
 			const uniqueTypes = new Set();
 			const linkType_array = linksData?.reduce((acc: any, item: any) => {
-				if (!uniqueTypes.has(item.linkType)) {
-					uniqueTypes.add(item.linkType);
-					acc.push({ text: item.linkType, id: item.linkType, key: item.linkType, value: item.linkType, });
-				}
-				return acc;
+					if(item.type != null){
+						if (!uniqueTypes.has(item.type)) {
+							uniqueTypes.add(item.type);
+							acc.push({ text: item.type, id: item.type, key: item.type, value: item.type, });
+						}	
+					}
+					return acc;
 			}, []);
 			const SmartItemTypes = new Set();
 			const smartItem_array = linksData?.reduce((acc: any, item: any) => {
+				if(item.name != null){
 				if (!SmartItemTypes.has(item.name)) {
-					SmartItemTypes.add(item.linkType);
+					SmartItemTypes.add(item.name);
 					acc.push({ text: item.name, id: item.name, key: item.name, value: item.name, });
-				}
+				}}
 				return acc;
 			}, []);
 			FileType.children.items = linkType_array;
@@ -273,15 +277,17 @@ const Links = () => {
 	const projectFileUpload = (folderType: string) => {
 		useDriveFileBrowser({ iframeId: 'vendorContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorContracts', folderType: folderType });
 	};
-
+	const saveLinks = (id:any) =>{
+		const payload = [{itemId : id}]
+		saveLinksData(selectedTimeLogDetails?.id,payload, (response: any) => {
+			console.log('response',response)
+			dispatch(setSelectedTimeLogDetails(response));
+			dispatch(setSmartItemOptionSelected({}));
+		});
+	}
 	useEffect(()=>{
-		if(!_.isEmpty(smartItemOptionSelected)){
-			const payload = [{itemId : smartItemOptionSelected?.id}]
-			saveLinksData(selectedTimeLogDetails?.id,payload, (response: any) => {
-					console.log('response',response)
-					dispatch(setSelectedTimeLogDetails(response));
-					dispatch(setSmartItemOptionSelected({}));
-			});
+		if(!_.isEmpty(smartItemOptionSelected) && addlinksSelected !=''){ 
+			saveLinks(smartItemOptionSelected?.id);
 		}
 	},[smartItemOptionSelected]);
 
@@ -313,10 +319,9 @@ const Links = () => {
 
 	const openDrive = () => {
     let params: any = {
-      iframeId: '',
+      iframeId: iFrameId,
       roomId: appInfo && appInfo.presenceRoomId,
-      appType: '',
-      multiSelect: false,
+      appType: appType,
     };
     postMessage({
       event: "getdrivefiles",
@@ -326,6 +331,7 @@ const Links = () => {
 	
 	const AddLinks = (e:any) =>{
 		console.log('e',e)
+		setAddlinksSelected(e)
 		if(e == 'Select from Drive'){
 			openDrive();
 		}
@@ -345,6 +351,7 @@ const Links = () => {
 		event.preventDefault();
 		useLocalFileUpload(appInfo, data).then((res) => {
 			console.log('res',res)
+			saveLinks(res[0]['id']);
     });
 		event.target.value = null;
 	};
@@ -384,7 +391,7 @@ const Links = () => {
 						</IQTooltip>
 					</div>
 					<input
-						multiple
+						multiple={false}
 						style={{ display: "none" }}
 						ref={inputRef}
 						type="file"
@@ -396,7 +403,6 @@ const Links = () => {
 						placeholder={'Search'}
 						filters={filters}
 						filterHeader=''
-						//defaultFilters={activeMainGridDefaultFilters}
 						showGroups={false}
 						onSearchChange={(text: string) => { setSearchText(text) }}
 						onFilterChange={(filters: any) => { setFilterKeyValue(filters) }}

@@ -168,3 +168,14 @@ export const saveLinksData = async (timeLogId:any,payload: any, callback: any) =
 		callback && callback(response);
 	}
 };
+export const fetchSSRTimeLofGridDataList = async (payload: any, callback: any) => {
+	let response: any;
+	if (isLocalhost) response = await fetch(`https://5ba09a787d0a4ea1bc0f0c1420152d1c.smartappbeta.com/EnterpriseDesktop/api/v2/timelog/6e83792a-3e66-49d6-9442-c6a1e918b48f/segments/all?sessionId=a6e545eec27d482aa3e2109959a711bb`, {
+		method: 'POST',
+		headers: { 'content-type': 'application/json' },
+		body: JSON.stringify(payload)
+	});
+
+	const responseData = await response.json();
+	callback && callback(responseData.segments, responseData?.count);
+};

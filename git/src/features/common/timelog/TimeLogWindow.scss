@@ -18,6 +18,9 @@
                     padding-right: 0.2em;
                 }
             }
+            .base-custom-img {
+                //padding: 2px;
+            }
         }
     }
     .tl-toolbar-btn {
@@ -92,12 +95,16 @@
             font-weight: bold;
         }
     }
-    .ag-full-width-container .ag-row-group-expanded .ag-cell-wrapper.ag-row-group {
-        background: #fff !important;
-        padding-left: 8px;
-        font-weight: bold;
-        .custom-group-header-label-cls {
-            font-size: 14px;
+    .ag-full-width-container {
+        .ag-row-group-expanded {
+            .ag-cell-wrapper.ag-row-group {
+                background: #fff !important;
+                padding-left: 8px;
+                font-weight: bold;
+                .custom-group-header-label-cls {
+                    font-size: 14px;
+                }
+            }
         }
     }
 }

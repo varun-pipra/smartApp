@@ -189,7 +189,8 @@ const AddTimeLogForm = (props: any) => {
 	 	  if(record.resource == 'workteam' || record.resource == 'mycompany' ){
 				setAddDisabled(record.workers > 0 ? false : true)
 			}
-			else if (timelogForm?.resource == 'Me' || timelogForm.resource == 'adhocUser') {
+			else if (record?.resource == 'Me' || record.resource == 'adhocUser') {
+				console.log('else if')
 				if(!_.isEmpty(record?.time)){
 					if (record?.time[0]['startTime'] !='' && record?.time[0]['endTime'] !='') setAddDisabled(false);
 					else setAddDisabled(true);
@@ -199,46 +200,49 @@ const AddTimeLogForm = (props: any) => {
 	}; 
 
 	const handleAdd = () => {
-		const timeEntries = timelogForm?.time?.map((obj:any) => {
-			let startDate = addTimeToDate(timelogForm?.date,obj.startTime);
-			let endDate = addTimeToDate(timelogForm?.date, obj?.endTime);
-			if(timelogForm?.resource == "workteam" || timelogForm?.resource == "mycompany" ){
-				return {
-					startTime: obj?.startTime ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
+        const timeEntries = timelogForm?.time?.map((obj:any) => {
+            if(timelogForm?.resource == "workteam" || timelogForm?.resource == "mycompany" ){
+                let modifyStartTime:any = getTime(obj.startTime);
+                let modifyEndTime:any = getTime(obj.endTime);
+                let startDate = addTimeToDate(timelogForm?.date,modifyStartTime);
+                let endDate = addTimeToDate(timelogForm?.date, modifyEndTime);
+                return {
+                    startTime: obj?.startTime ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
                     endTime: obj?.endTime ? moment(endDate).format("MM/DD/yyyy h:mm A") : '',
-					// startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
-					// endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
-					userId:obj.userId,
-					notes : obj.notes
-				}
-			}else{
-				return {
-					startTime: obj?.startTime ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
-					endTime: obj?.endTime ? moment(endDate).format("MM/DD/yyyy h:mm A"): '',
-					userId: timelogForm?.resource == 'Me' ? appInfo?.currentUserInfo?.userid : '',
-					notes : obj.notes
-				}
-			}
-			
-		})
-		const payload = {
-			smartItemId : timelogForm?.smartItems,
-			workTeamId : '',
-			source: 0,
-			segments: [...timeEntries]
-		};
-		console.log('payload',payload);
-		// setTimeLogForm(defaultValues);
-		// setSelectedSmartItem('');
-		setAddDisabled(true);
-    //setClearTimeLogPickerData(true)
-		addTimeLog(payload, (resp:any) => {
-			dispatch(setSmartItemOptionSelected({}));
-			dispatch(setToast('Time Logged Successfully.'));
-			dispatch(getTimeLogList({}));
-		});		
-
-	};
+                    // startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
+                    // endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
+                    userId:obj.userId,
+                    notes : obj.notes
+                }
+            }else{
+                let startDate = addTimeToDate(timelogForm?.date,obj.startTime)
+                let endDate = addTimeToDate(timelogForm?.date, obj.endTime)
+                return {
+                    startTime: obj?.startTime ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
+                    endTime: obj?.endTime ? moment(endDate).format("MM/DD/yyyy h:mm A"): '',
+                    userId: timelogForm?.resource == 'Me' ? appInfo?.currentUserInfo?.userid : '',
+                    notes : obj.notes
+                }
+            }
+            
+        })
+        const payload = {
+            smartItemId : timelogForm?.smartItems,
+            source: 0,
+			segments: [...timeEntries],
+			// ...timelogForm?.resource == "workteam" && {team: ''}
+        };
+        console.log('payload',payload);
+        // setTimeLogForm(defaultValues);
+        // setSelectedSmartItem('');
+        setAddDisabled(true);
+    	 //setClearTimeLogPickerData(true)
+        addTimeLog(payload, (resp:any) => {
+            //dispatch(setSmartItemOptionSelected({}));
+            dispatch(setToast('Time Logged Successfully.'));
+            dispatch(getTimeLogList({}));
+        }); 
+    };
 
 	const smartItemOnClick = (e: any) => {
 		AppList_PostMessage(e);

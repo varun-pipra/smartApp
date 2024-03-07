@@ -42,6 +42,7 @@ import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuild
 import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { blockchainStates,checkBlockchainStatus } from 'app/common/blockchain/BlockchainSlice';
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
+import { fetchdefaultdrodown } from 'features/budgetmanager/operations/settingsSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVPAStatusFilter: any = [];
@@ -198,6 +199,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 			dispatch(fetchCompanyList(appInfo));
 			dispatch(getVendorPayAppsLst(appInfo));
 			dispatch(fetchConnectors(appInfo));
+			dispatch(fetchdefaultdrodown(appInfo));	
 		}
 	}, [appInfo]);
 

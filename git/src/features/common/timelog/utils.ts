@@ -271,3 +271,8 @@ export const generateSplitEntryData  = (row:any) => {
 	});
 	return data;
 };
+
+export const checkGUID = (segmentId:any)  => {
+		const containsOnlyZeros =/^[0-9-]*$/.test(segmentId);
+		return !containsOnlyZeros;
+}

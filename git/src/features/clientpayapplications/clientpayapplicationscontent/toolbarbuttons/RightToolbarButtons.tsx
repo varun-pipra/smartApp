@@ -15,12 +15,16 @@ import {getServer, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/
 import {doBlockchainAction, moduleType} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 import SapButton from 'sui-components/SAPButton/SAPButton';
+import SmartDropDown from 'components/smartDropdown';
+import { postClientPayAppsToConnector } from 'features/clientpayapplications/stores/GridAPI';
+import { getConnectorType } from 'utilities/commonutills';
 
 // Component definition
 const ClientPayAppToolbarRightButtons = () => {
 	const dispatch = useAppDispatch();
 	const tableViewType = useAppSelector(getTableViewType);
 	const { connectors } = useAppSelector((state) => state.gridData);
+	const { defaultData } = useAppSelector(state => state.settings);			
 
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
@@ -42,11 +46,18 @@ const ClientPayAppToolbarRightButtons = () => {
 		// blockchainAction(event.target.checked, typeValue);
 		dispatch(doBlockchainAction({ enable: event.target.checked, typeString: 'ClientPayApplication' }));		
 	};
+	const handlePostTo = () => {
+		console.log("dataa")
+		const type = getConnectorType(connectors?.[0]?.name)
+		postClientPayAppsToConnector(appInfo, type, (response:any) => {
+			console.log("client pay apps connector resp", response);
+		})
+	}
 
 	return <>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 			{<ReportAndAnalyticsToggle />}
-			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={() => handlePostTo()}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}
@@ -137,6 +148,21 @@ const ClientPayAppToolbarRightButtons = () => {
 									</ListItemIcon>
 								</ListItem>}
 							</List>
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
+							<SmartDropDown
+								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								dropDownLabel="Client Pay Invoices"
+								isSearchField
+								required={false}
+								useNestedOptions
+								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								isFullWidth
+								ignoreSorting={true}
+								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								variant={'outlined'}
+								optionImage={true}
+								// menuProps={classes3.menuPaper}
+							/>	
 						</Stack>
 					</Stack>
 				</Box>

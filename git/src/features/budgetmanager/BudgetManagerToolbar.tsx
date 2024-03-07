@@ -32,7 +32,7 @@ import { useAppSelector, useAppDispatch } from "app/hooks";
 import ImportCSVData from "components/importcsv/ImportCSVData";
 import BudgetTransferPanel from "./budgettransferpanel/BudgetTransferPanel";
 import { fetchGridData, setSelectedGroupKey, setSelectedFilters, setSearchText } from "./operations/gridSlice";
-import { deleteBudgetLineItem } from "./operations/gridAPI";
+import { deleteBudgetLineItem, postBudgetsToConnector } from "./operations/gridAPI";
 import { getServer, getCostCodeDivisionList, getCostTypeList } from "app/common/appInfoSlice";
 
 import { lockAndUnlockBudget } from "./operations/tableColumnsAPI";
@@ -57,6 +57,7 @@ import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
 import _ from 'lodash';
 import BudgetImporter from "./import/BudgetImporter";
 import ShortcutSharpIcon from '@mui/icons-material/ShortcutSharp';
+import { getConnectorType } from "utilities/commonutills";
 
 const BudgetManagerToolbar = (props: any) => {
 	const modName = 'budgetmanager';
@@ -489,6 +490,13 @@ const BudgetManagerToolbar = (props: any) => {
 			}
 		});
 	};
+	const handlePostTo = () => {
+		const type = getConnectorType(connectors?.[0]?.name)
+		postBudgetsToConnector(appInfo, type, (response:any) => {
+			console.log("budget connector resp", response);
+		})
+	}
+
 	return (
 		<Stack direction={"row"} className={"toolbar-root-container-budgetmanger"}>
 			<div key="toolbar-buttons" className="toolbar-item-wrapper options-wrapper">
@@ -582,7 +590,7 @@ const BudgetManagerToolbar = (props: any) => {
 					variant="outlined"
 					startIcon={<span className='common-icon-share-new' />}
 					className="sap-button"
-					// onClick={handleLockBudget}
+					onClick={handlePostTo}
 				>
 					<span className='postto'>Post to</span>
 					<img

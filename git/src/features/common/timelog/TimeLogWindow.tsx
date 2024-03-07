@@ -11,8 +11,7 @@ import { appInfoData } from 'data/appInfo';
 import _ from 'lodash';
 import { memo, useMemo, useEffect, useState, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import convertDateToDisplayFormat , { triggerEvent } from 'utilities/commonFunctions';
-import { formatDate, getTime } from 'utilities/datetime/DateTimeUtils';
+import convertDateToDisplayFormat , { convertDateToDisplayFormat2, triggerEvent } from 'utilities/commonFunctions';
 import SUIAlert from 'sui-components/Alert/Alert';
 import AddTimeLogForm from './AddTimeLogForm';
 import { timelogStatusMap ,timelogSourceMap} from './TimeLogConstants';
@@ -31,12 +30,15 @@ import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import SplitTimeSegmentDialog from './timeSplitSegment/SplitTimeSegmentDialog';
-import { getPickerDefaultTime ,getDuration,dateFunctionalities,dateFormat } from './utils';
+import { getPickerDefaultTime ,getDuration,dateFunctionalities,dateFormat ,checkGUID} from './utils';
 import ManageWorkers from './workerDailog/addManageWorkers/ManageWorkers';
 import {workTeamData} from "data/timelog/TimeLogData";
 import CompanyIcon from "resources/images/Comapany.svg";
 import  {fetchWorkTeamsData,fetchCompaniesData} from 'features/projectsettings/projectteam/operations/ptDataSlice';
 import {fetchLocationswithOutIdData} from '../locationfield/LocationStore';
+import { fetchSSRTimeLofGridDataList } from './stores/TimeLogAPI';
+import { updateTimeLogDetails,addTimeLog } from './stores/TimeLogAPI';
+import { addTimeToDate, formatDate, getTime } from 'utilities/datetime/DateTimeUtils';
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -86,7 +88,62 @@ const TimeLogWindow = (props: any) => {
 	const isFromSafety = window.location.href?.includes('safety');
 	const isFromField = window.location.href?.includes('field');
 	const { locationsdata = [] } = useAppSelector(state => state.location);
-
+	/* Creating the datasource to render serverside row model */
+	const [gridApi, setGridApi] = useState<any>();
+	const [enableSsR, setEnableSsR] = useState(false);
+	const dataSource = {
+		getRows(params: any) {
+		  console.log("[Datasource] - rows requested by grid: ", params.request);
+		  const { startRow, endRow } = params.request;
+		  const groupByValueKey = groupKeyValue.current?.length
+			? params.request.groupKeys.length
+			  ? [
+				  {
+					name: params.request.groupKeys[0],
+				  },
+				]
+			  : ""
+			: "";
+		  let payload = {
+			projectId: isLocalhost
+			  ? "6e83792a-3e66-49d6-9442-c6a1e918b48f"
+			  : appInfo?.gblConfig?.currentProjectInfo?.projectUniqueId,
+			...selectedFilters2,
+			rows: 50,
+			offset: startRow,
+			sortBy: params?.request?.sortModel?.[0]?.colId ?? "startDate",
+			sortModel: [
+			  {
+				sortBy: params?.request?.sortModel?.[0]?.colId ?? "startDate",
+				sortDirection: params?.request?.sortModel?.[0]?.sort ?? "desc",
+			  },
+			],
+			searchText: search,
+			sortDirection: params?.sortModel?.[0]?.sort.toUpperCase() ?? "DESC",
+		  };
+		  fetchSSRTimeLofGridDataList(payload, (response: any, totalCount: any) => {
+			if (!!response) {
+			  params.successCallback(response, totalCount);
+			  if (totalCount == "0") {
+				gridRef?.current?.api?.showNoRowsOverlay();
+			  }
+			} else {
+			  // inform grid request failed
+			  params.fail();
+			  gridRef.current?.api?.retryServerSideLoads();
+			}
+		  });
+		},
+	  };
+	  useEffect(() => {
+		if (gridApi && appInfo && enableSsR) {
+			// gridApi.refreshCells();
+			// gridApi.redrawRows();
+			// gridApi.refreshServerSide();
+			// gridApi.refreshServerSideStore();
+		  	gridApi?.setServerSideDatasource(dataSource);
+		}
+	  }, [gridApi, appInfo, search, selectedFilters2, enableSsR]);
 	const groupOptions = [{
 			text: 'Time Entry For', value: 'user', iconCls: 'common-icon-work-team'
 		}, {
@@ -545,8 +602,10 @@ const TimeLogWindow = (props: any) => {
 		dispatch(setCustomDatesRange(datesRef.current));
 	};
 
-	const onDataChange = (fieldName: string, time: any, rowIndex?: any) => {
-
+	const onDataChange = (fieldName: string, time: any, params: any) => {
+		console.log("onDataChange", fieldName, time, params?.data);
+		const dateAndTime = moment.utc(params?.data?.[fieldName])?.format('MM/DD/YYYY') + ` ${time}` 
+		updateTimeLogDetails(params?.data?.id, {[fieldName]: dateAndTime}, (response:any) => {dispatch(getTimeLogList({}))})
 	};
 
 	const handelAddSelect = (isOpen: boolean) => {
@@ -590,7 +649,7 @@ const TimeLogWindow = (props: any) => {
 							<span className='common-icon-exclamation hand-pointer' style={{ color: 'red', fontSize: '1.8em' }} />
 						</IQTooltip>}
 
-						{ data?.hasOwnProperty('splitFromSegmentId') && data?.splitFromSegmentId !== null ?
+						{ data?.hasOwnProperty('splitFromSegmentId') && data?.splitFromSegmentId !== null && checkGUID(data?.splitFromSegmentId) ?
 							<IQTooltip
 								title={
 									<Stack direction='row' className='tooltipcontent'>
@@ -745,7 +804,7 @@ const TimeLogWindow = (props: any) => {
 				return params?.data ? (
 					<SUIClock
 						onTimeSelection={(value: any) => {
-							onDataChange("startTime", getTime(value));
+							onDataChange("startTime", getTime(value), params);
 						}}
 						disabled={(status.includes(params?.data?.status?.toString()))}
 						defaultTime={getTime(params?.data?.startTime) || ""}
@@ -764,7 +823,7 @@ const TimeLogWindow = (props: any) => {
 				return params?.data ? (
 					<SUIClock
 						onTimeSelection={(value: any) => {
-							onDataChange("endTime", getTime(value));
+							onDataChange("endTime", getTime(value), params);
 						}}
 						disabled={(status.includes(params?.data?.status?.toString()))}
 						defaultTime={getTime(params?.data?.endTime) || ''}
@@ -827,7 +886,7 @@ const TimeLogWindow = (props: any) => {
 			cellRenderer: (params: any) => {
 				const phase = params.data?.sbsPhase?.name;
 				const buttonStyle = {
-					backgroundColor: "blue",
+					backgroundColor: "#39a0c9",
 					color: "#fff",
 					alignItems: "center",
 				};
@@ -1176,19 +1235,25 @@ const TimeLogWindow = (props: any) => {
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
 	const handleSplit = (data:any) => {
-		let segments:any = [];
-		(Object.values(data)?.filter((x:any) => typeof(x) !== 'string') || [])?.forEach((element:any) => {
-				segments.push({
-					startTime : element.startTime,
-					endTime : element.endTime,
-					userId : ''
-				})
+		const splitEntries = data?.timeEntries?.map((entry:any) => {
+			let startDate = addTimeToDate(selectedRowData[0]?.startTime,entry?.startTime);
+			let endDate = addTimeToDate(selectedRowData[0]?.endTime, entry?.endTime);
+			return {
+				startTime: startDate ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
+				endTime: endDate ? moment(endDate).format("MM/DD/yyyy h:mm A"): '',
+				userId:selectedRowData[0]['user']['ID']
+			}
 		});
-		let payload = {
-			segments : segments,
-			splitSegmentId : ''
-		};
-		console.log("Split Time Log Data", payload);
+		const payload = {
+			splitFromSegmentId: selectedRowData[0]['id'],
+			segments: [...splitEntries],
+			reason: data?.description
+		}
+		console.log('payload',payload)
+		addTimeLog(payload, (response:any) => {
+			console.log('response',response);
+			dispatch(getTimeLogList({}));
+		});
 	};
 
 	const saveSmartItemLink = (smartData: any) => {
@@ -1209,7 +1274,9 @@ const TimeLogWindow = (props: any) => {
 			saveSmartItemLink(smartItemLink);
 		}
 	}, [smartItemLink]);
-	
+	const isServerSideGroupOpenByDefault = (params: any) => {
+		const rowNode = params.rowNode;
+	  };
 	return (
 		server && <> <GridWindow
 			open={true}
@@ -1309,18 +1376,22 @@ const TimeLogWindow = (props: any) => {
 						nowRowsMsg: '<div>create new time log entries from above</div>',
 						groupRowRendererParams: groupRowRendererParams,
 						onFirstDataRendered: onFirstDataRendered,
-						groupIncludeTotalFooter: true,
 						groupIncludeFooter: true,
 						groupSelectsChildren: true,
 						rowSelection: "multiple",
 						groupDefaultExpanded: 1,
-						grouped: true
+						groupIncludeTotalFooter: true,
+						grouped: true,
+						enableSsr: enableSsR,
+						rowModelType: enableSsR ? 'serverSide' : 'clientSide',
+						tableref: (val: any) => setGridApi(val),
+						isServerSideGroupOpenByDefault: isServerSideGroupOpenByDefault
 					}
 				}
 			}}
 		/>
 		{splitTimeSegmentBtn && (
-			<SplitTimeSegmentDialog defaultRowData= {generateSplitEntryData(selectedRowData?.[0])} data={selectedRowData?.[0]} handleSubmit={(data:any) => handleSplit(data)}onClose={() => dispatch(setSplitTimeSegmentBtn(false))} />
+			<SplitTimeSegmentDialog defaultRowData= {generateSplitEntryData(selectedRowData?.[0])} data={selectedRowData?.[0]} handleSubmit={(data:any) => handleSplit(data)} onClose={() => dispatch(setSplitTimeSegmentBtn(false))} />
 		)}
 		{openManageWorkers ? (
 			<ManageWorkers

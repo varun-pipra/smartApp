@@ -101,3 +101,26 @@ export const fetchCompanyFilters = async (appInfo: any, name: any) => {
 
 	return CompanyFiltersData?.listValues;
 };
+
+export const fetchBidderCompanyData = async (appInfo: any, payload:any) => {
+	let response;
+	if(!isLocalhost) response =await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/bids/${appInfo.uniqueId}/vendors?search=&sessionId=${appInfo?.sessionId}`, {
+		method: 'POST',
+		headers: {'content-type': 'application/json'},
+		body: JSON.stringify(payload),
+	});
+	else {
+		response =await fetch(`https://5ba09a787d0a4ea1bc0f0c1420152d1c.smartappbeta.com/EnterpriseDesktop/api/v2/bids/6e83792a-3e66-49d6-9442-c6a1e918b48f/vendors?search=&sessionId=eaef4db95419497dba930a4deaef8380`, {
+			method: 'POST',
+			headers: {'content-type': 'application/json'},
+			body: JSON.stringify(payload),
+		});
+	}
+	if(!response.ok) {
+		const message = `API Request Error (${moduleName}): ${response.status}`;
+		throw new Error(message);
+	}
+	const responseData = await response.json();
+
+	return responseData;
+};

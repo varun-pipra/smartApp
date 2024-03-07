@@ -503,12 +503,12 @@ const HeaderContent = memo((props: any) => {
 				<span className='budgetid-label grey-font'>Change Order ID:</span>		
 					<span className='changevent-content'>
 						<span className='grey-fontt'>{changeRequestDetails?.code || ''}</span>
-							{connectors?.length ? <img
+							{connectors?.length && changeRequestDetails?.connectorItemData ? <img
 								className="sapnumber"
 								src={connectors?.[0]?.primaryIconUrl}
 								alt="connector Image"
 							/> : ''}
-							{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.changeEvents && window.open(sapLinksObj?.changeEvents)}}>{changeRequestDetails?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+							{connectors?.length && changeRequestDetails?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{changeRequestDetails?.connectorItemData?.url && window.open(changeRequestDetails?.connectorItemData?.url)}}>{changeRequestDetails?.connectorItemData?.name}</span> : ''}
 				</span>
 				<span className='budgetid-label grey-font'>Status:</span>
 				<span className='status-pill' style={{ backgroundColor: stateObject?.lightColor, color: stateObject?.bgColor }}>

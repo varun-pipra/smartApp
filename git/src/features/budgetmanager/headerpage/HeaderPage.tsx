@@ -204,7 +204,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 		// 		cost: true
 		// 	});
 		// } else {
-			headerPageData?.costType == 'E - Equipment' && postMessage({
+			['E - Equipment', 'M - Materials']?.includes(headerPageData?.costType) && postMessage({
 				event: 'opencatalog',
 				body: {
 					data: {
@@ -379,8 +379,8 @@ const HeaderPage = (props: HeaderPageProps) => {
 					onBlur={(value) => handleOnChange(value, 'originalBudgetAmount')}
 					readOnly={false}
 					disabled={isBudgetLocked}
-					showCatalogBtn={headerPageData?.costType === 'E - Equipment'}
-					showLaborBtn={headerPageData?.costType === 'L - Labor'}					
+					showCatalogBtn={['E - Equipment', 'M - Materials']?.includes(headerPageData?.costType)}
+					showLaborBtn={headerPageData?.costType === 'L - Labor'}				
 					handleCatalogSubmit={() => handleCatalogSubmit()}
 					data={originalBudgetCatalogData}
 					textFieldReadonly={originalBudgetCatalogReadOnly}

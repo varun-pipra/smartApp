@@ -66,3 +66,15 @@ export const patchClientPayAppDetails = async (appInfo: any, body:any, payAppId:
 		callback && callback(response);
     }
 };
+
+export const postClientPayAppsToConnector = async (appInfo: any, type: any, callback?: any) => {
+	console.log('type', type)
+    const options = {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+    }
+	if (!isLocalhost) {
+		const response = await clientPayAppsRequest(appInfo, `/postToConnector?connectorType=${type}`, options);
+		callback && callback(response);
+	}
+};

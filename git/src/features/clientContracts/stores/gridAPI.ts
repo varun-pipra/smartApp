@@ -61,3 +61,14 @@ export const deleteClientContract = async (appInfo: any, contractId: string, cal
 		callback && callback(response);
 	}
 };
+
+export const postClientContractsToConnector = async (appInfo: any, type: any, callback?: any) => {
+	const options = {
+		method: 'POST',
+		headers: {'content-type': 'application/json'},
+	};
+	if(!isLocalhost) {
+		const response = await clientRequest(appInfo, `/postToConnector?connectorType=${type}`, options);
+		callback && callback(response);
+	}
+};

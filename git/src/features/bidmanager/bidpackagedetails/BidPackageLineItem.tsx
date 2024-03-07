@@ -333,12 +333,12 @@ const BidPackageLineItem = (props: any) => {
 							<span className='bid-id-label'>Bid ID:</span>
 								<span className='bid-content'>
 									<span className='bid-id'>{bidLineItem?.displayId}</span>
-									{connectors?.length ? <img
+									{connectors?.length && bidLineItem?.connectorItemData ? <img
 										className="sapnumber"
 										src={connectors?.[0]?.primaryIconUrl}
 										alt="connector Image"
 									/> : ''}
-									{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.bidManager && window.open(sapLinksObj?.bidManager)}}>{bidLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+									{connectors?.length && bidLineItem?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{bidLineItem?.connectorItemData?.url && window.open(bidLineItem?.connectorItemData?.url)}}>{bidLineItem?.connectorItemData?.name}</span> : ''}
 							</span>
 						</p>
 						{collapsed === false ? <p className='head-info-box'>

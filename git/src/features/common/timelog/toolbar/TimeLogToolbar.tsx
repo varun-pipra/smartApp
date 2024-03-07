@@ -37,7 +37,7 @@ export const TLLeftButtons = memo(() => {
 		}
 	}
 
-	useMemo(() => {
+	useEffect(() => {
 		//Accept and SendBack Button enable and disable
 		if (selectedRowData.length > 0){
 			let array: any = selectedRowData?.map((value: any) => getTimeLogStatus(value.status));
@@ -56,7 +56,7 @@ export const TLLeftButtons = memo(() => {
 		}
 	}, [selectedRowData]);
 
-	useMemo(() => {
+	useEffect(() => {
 		//Split Button enable and disable
 		if (selectedRowData.length > 0 && selectedRowData.length < 2){
 			let array: any = selectedRowData?.map((value: any) => getTimeLogStatus(value.status));
@@ -66,7 +66,7 @@ export const TLLeftButtons = memo(() => {
 		else setSplitBtn(true);
 	}, [selectedRowData]);
 
-	useMemo(() => {
+	useEffect(() => {
 		//Delete Button enable and disable
 		if (selectedRowData.length > 0){
 			//enableArray 'Reported', 'Planned','Sent Back' , disableArray 'In Progress','Accepted','Unavailable';
@@ -131,13 +131,6 @@ export const TLLeftButtons = memo(() => {
 		setSendBackClick(false);
 	}
 
-	const handleSplit = (data:any) => {
-		const payload = {
-			splitFromSegmentId: selectedTimeLogDetails?.id,
-			segments: []
-		}
-		addTimeLog(payload, (response:any) => {});
-	}
 
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>
@@ -193,7 +186,7 @@ export const TLLeftButtons = memo(() => {
 // Component definition
 export const TLRightButtons = memo(() => {
 	const dispatch = useAppDispatch();
-
+	
 	const handleView = (event: React.MouseEvent<HTMLElement>, value: string) => {
 		if (value !== null) {
 			// dispatch(setShowTableViewType(value));

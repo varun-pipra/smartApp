@@ -267,7 +267,20 @@ const GeneralSettings = (props: any) => {
 					/>
 				</Stack>
 			</Stack>
-			<Divider />
+			<Stack className='generalSettings-Sections'>
+				<Typography variant="h6" component="h6" className='budgetSetting-heading'>WBS Structure</Typography>
+				<RadioGroup
+					row
+					aria-labelledby="demo-row-radio-buttons-group-label"
+					name="row-radio-buttons-group"
+					// value={formData?.isBillable?.toString()}
+        			// onChange={(e) => { handleInputChange(e.target.value == 'true' ? true : false, 'isBillable') }}
+				>
+					<FormControlLabel value={'segment'} control={<Radio />} label="Segment Structure" />
+					<FormControlLabel value={'flat'} control={<Radio />} label="Flat Structure" />
+				</RadioGroup>
+			</Stack>
+			{/* <Divider />
 			<Stack className='BudgetSettings-Sections2'>
 				<Stack className='BudgetSettings-list2'>
 					<SmartDropDown
@@ -483,7 +496,7 @@ const GeneralSettings = (props: any) => {
 						</ListItemIcon>
 					</ListItem>
 				</List>
-			</Stack>
+			</Stack> */}
 			<SUIAlert open={openAlert} contentText={<span>The existing budget line items will have to be updated to the new values.<br /><br /> Are you sure want to continue?</span>}
 
 				title={'Confirmation'} onAction={(e: any, type: string) => handleListChanges(type)} />

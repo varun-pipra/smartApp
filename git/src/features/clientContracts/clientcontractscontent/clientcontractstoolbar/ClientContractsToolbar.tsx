@@ -30,9 +30,9 @@ import { deleteBidPackages } from 'features/bidmanager/stores/gridAPI';
 import SUIAlert from 'sui-components/Alert/Alert';
 import GridIcon from "resources/images/common/Grid.svg";
 import { getClientContractsList, setActiveMainGridDefaultFilters, setActiveMainGridFilters, setActiveMainGridGroupKey, setGridData, setMainGridSearchText } from "../../stores/gridSlice";
-import { isUserGC } from 'utilities/commonutills';
+import { getConnectorType, isUserGC } from 'utilities/commonutills';
 import { setShowTableViewType, getTableViewType } from 'features/budgetmanager/operations/tableColumnsSlice';
-import { deleteClientContract } from 'features/clientContracts/stores/gridAPI';
+import { deleteClientContract, postClientContractsToConnector } from 'features/clientContracts/stores/gridAPI';
 import { getClientCompanies, setToastMessage, setSelectedRecord } from 'features/clientContracts/stores/ClientContractsSlice';
 import { vendorContractsResponseStatusFilterOptions, vendorContractsStatusFilterOptions } from 'utilities/vendorContracts/enums';
 import { isUserGCForCC } from 'features/clientContracts/utils';
@@ -51,6 +51,7 @@ import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
 import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
 import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
 import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
+import SmartDropDown from 'components/smartDropdown';
 
 const ClientContractsToolbar = (props: any) => {
 	const modName = 'clientcontract';
@@ -76,6 +77,7 @@ const ClientContractsToolbar = (props: any) => {
 		{ text: "Client Company", value: "client.name" },
 		{ text: appInfo && isUserGCForCC(appInfo) ? "Status" : 'Response Status', value: "status" },
 	];
+	const { defaultData } = useAppSelector(state => state.settings);		
 
 	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);	
 	console.log("IsBlockChainEnabled", blockchainEnabled, (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled)		
@@ -263,6 +265,13 @@ const ClientContractsToolbar = (props: any) => {
 		dispatch(getClientContractsList(appInfo));
 	}
 
+	const handlePostTo = () => {
+		const type = getConnectorType(connectors?.[0]?.name)
+		postClientContractsToConnector(appInfo, type, (response:any) => {
+			console.log("client contracts connector resp", response);
+		})
+	}
+
 	return <Stack direction='row' className='toolbar-root-container-client-contracts'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -372,7 +381,7 @@ const ClientContractsToolbar = (props: any) => {
 		</div>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 			{<ReportAndAnalyticsToggle />}
-			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={handlePostTo}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}
@@ -463,6 +472,21 @@ const ClientContractsToolbar = (props: any) => {
 									</ListItemIcon>
 								</ListItem >}
 							</List >
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
+							<SmartDropDown
+								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								dropDownLabel="Client Contract"
+								isSearchField
+								required={false}
+								useNestedOptions
+								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								isFullWidth
+								ignoreSorting={true}
+								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								variant={'outlined'}
+								optionImage={true}
+								// menuProps={classes3.menuPaper}
+							/>	
 						</Stack >
 					</Stack >
 				</Box >

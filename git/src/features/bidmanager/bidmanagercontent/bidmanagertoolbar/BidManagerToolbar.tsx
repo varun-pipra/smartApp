@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks';
 import IQSearch from 'components/iqsearchfield/IQSearchField';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import { fetchBudgetLineItems, setToastMessage } from 'features/bidmanager/stores/BidManagerSlice';
-import { deleteBidPackages, patchBidPackage } from 'features/bidmanager/stores/gridAPI';
+import { deleteBidPackages, patchBidPackage, postBidsToConnector } from 'features/bidmanager/stores/gridAPI';
 import {
 	fetchGridData, setActiveMainGridFilters, setActiveMainGridGroupKey, setMainGridSearchText, setRefreshed
 } from 'features/bidmanager/stores/gridSlice';
@@ -30,6 +30,8 @@ import IQToggle from 'components/iqtoggle/IQToggle';
 import { blockchainAction } from 'app/common/blockchain/BlockchainAPI';
 import { doBlockchainAction, moduleType, setShowBlockchainDialog, blockchainStates } from 'app/common/blockchain/BlockchainSlice';
 import SapButton from 'sui-components/SAPButton/SAPButton';
+import SmartDropDown from 'components/smartDropdown';
+import { getConnectorType } from 'utilities/commonutills';
 
 const BidManagerToolbar = (props: any) => {
 	const modName = 'bidmanager';
@@ -42,6 +44,7 @@ const BidManagerToolbar = (props: any) => {
 	const { connectors } = useAppSelector((state) => state.gridData);
 	const { selectedRecord } = useAppSelector((state) => state.bidManager);
 	const { blockchainEnabled } = useAppSelector((state) => state.blockchain);
+	const { defaultData } = useAppSelector(state => state.settings);					
 
 	const appInfo = useAppSelector(getServer);
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
@@ -299,6 +302,12 @@ const BidManagerToolbar = (props: any) => {
 			}
 		});
 	};
+	const handlePostTo = () => {
+		const type = getConnectorType(connectors?.[0]?.name)
+		postBidsToConnector(appInfo, type, (response:any) => {
+			console.log("bids connector resp", response);
+		})
+	}
 	return <Stack direction='row' className='toolbar-root-container-bidmanager'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -446,7 +455,7 @@ const BidManagerToolbar = (props: any) => {
 		</div>
 		<div key='spacer' className='toolbar-item-wrapper toolbar-group-button-wrapper'>
 			{<ReportAndAnalyticsToggle />}
-			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={handlePostTo}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}
@@ -528,6 +537,21 @@ const BidManagerToolbar = (props: any) => {
 									</ListItemIcon>
 								</ListItem>}
 							</List>
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
+							<SmartDropDown
+								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								dropDownLabel="Bid Manager"
+								isSearchField
+								required={false}
+								useNestedOptions
+								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								isFullWidth
+								ignoreSorting={true}
+								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								variant={'outlined'}
+								optionImage={true}
+								// menuProps={classes3.menuPaper}
+							/>
 						</Stack>
 					</Stack>
 				</Box>

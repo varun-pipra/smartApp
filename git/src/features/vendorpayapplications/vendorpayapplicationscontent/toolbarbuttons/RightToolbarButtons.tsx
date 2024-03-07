@@ -15,11 +15,15 @@ import {getServer, getShowSettingsPanel, setShowSettingsPanel} from 'app/common/
 import {doBlockchainAction, moduleType} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 import SapButton from 'sui-components/SAPButton/SAPButton';
+import SmartDropDown from 'components/smartDropdown';
+import { getConnectorType } from 'utilities/commonutills';
+import { postVendorPayAppsToConnector } from 'features/vendorpayapplications/stores/gridApi';
 
 // Component definition
 const VendorPayAppToolbarRightButtons = () => {
 	const dispatch = useAppDispatch();
 	const tableViewType = useAppSelector(getTableViewType);
+	const { defaultData } = useAppSelector(state => state.settings);				
 
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
@@ -44,6 +48,14 @@ const VendorPayAppToolbarRightButtons = () => {
 		// blockchainAction(event.target.checked, typeValue);
 		dispatch(doBlockchainAction({ enable: event.target.checked, typeString: 'VendorPayApplication' }));				
 	};
+
+	const handlePostTo = () => {
+		console.log("connector")
+		const type = getConnectorType(connectors?.[0]?.name)
+		postVendorPayAppsToConnector(appInfo, type, (response:any) => {
+			console.log("vendor pay apps connectors resp", response);
+		})
+	}
 
 	return <>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
@@ -72,7 +84,7 @@ const VendorPayAppToolbarRightButtons = () => {
 				>
 					{'Lock Contract'}
 				</Button> */}
-			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={() => handlePostTo()}/> : <></>}
 			<IQTooltip title="Settings" placement={"bottom"}>
 				<IconButton
 					className='settings-button'
@@ -139,6 +151,21 @@ const VendorPayAppToolbarRightButtons = () => {
 									</ListItemIcon>
 								</ListItem>}
 							</List>
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
+							<SmartDropDown
+								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								dropDownLabel="Vendor Pay Invoices"
+								isSearchField
+								required={false}
+								useNestedOptions
+								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								isFullWidth
+								ignoreSorting={true}
+								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								variant={'outlined'}
+								optionImage={true}
+								// menuProps={classes3.menuPaper}
+							/>
 						</Stack>
 					</Stack>
 				</Box>

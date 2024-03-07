@@ -1,26 +1,25 @@
 .report-analytics-cls {
-    // margin-right: 20px;
-    //box-shadow: 0px 0px 2px #999;
-    //border: 2px solid #ee7433;
     border-radius: 18px !important;
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.15);
     margin-right: 10px;
+    height: 2.1rem !important;
     .ra-btn-cls {
         background-color: #fff !important;
         border: none;
         color: #ee7433 !important;
         font-size: 14px;
-        min-width: 46px;
+        min-width: 45px;
         padding: 6px 5px;
         text-transform: none;
         border-radius: 20px;
         border: 2px solid #ee7433;
         .common-icon-doc:before {
-            font-size: 23px; // margin-right: 6px;
-            line-height: 0.8;
+            line-height: 1;
+            font-size: 18px;
         }
         .common-icon-chart:before {
-            font-size: 23px; // margin-right: 5px;
+            line-height: 1;
+            font-size: 18px;
         }
         &:hover {
             background-color: #ee7433 !important;
@@ -30,13 +29,13 @@
         }
     }
     .first {
-        border-right: 2px solid #ee7433; //border-right: 0px;
+        border-right: 2px solid #ee7433;
     }
     .MuiToggleButton-root {
         &.Mui-selected {
             color: #fff !important;
             background-color: #e55000 !important;
-            border-color: #e55000 !important; // border: 2px solid #ee7433;
+            border-color: #e55000 !important;
             border-top-right-radius: 18px;
             border-bottom-right-radius: 18px;
             border-top-left-radius: 18px;
@@ -44,7 +43,6 @@
         }
     }
     .ra-btn-cls.MuiToggleButtonGroup-grouped:not(:first-of-type) {
-        // border-left: 1px solid #fff !important;
         margin-left: -1px;
         border-left: 1px solid #ee7433;
     }

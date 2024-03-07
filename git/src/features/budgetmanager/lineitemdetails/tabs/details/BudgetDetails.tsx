@@ -677,7 +677,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						/>}
 					</div>
 				</span>
-				{formData?.costType?.toLowerCase()?.includes("equipment") && (
+				{['E - Equipment', 'M - Materials']?.includes(formData?.costType) && (
 					<>
 						<div className="budget-info-subheader">
 							Associate Manufacturer and Model

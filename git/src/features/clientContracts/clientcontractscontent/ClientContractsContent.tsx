@@ -26,7 +26,7 @@ import Toast from 'components/toast/Toast';
 import {isUserGCForCC} from '../utils';
 import {SUIToast} from 'sui-components/Toast/Suitoast';
 import {getCCChangeEventsList} from 'features/clientContracts/stores/CCChangeEventsSlice';
-import {fetchSettings} from 'features/budgetmanager/operations/settingsSlice';
+import {fetchdefaultdrodown, fetchSettings} from 'features/budgetmanager/operations/settingsSlice';
 import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
 
@@ -95,6 +95,7 @@ const ClientContractsContent = (props: any) => {
 		dispatch(getClientCompanies(appInfo));
 		dispatch(getClientContractsList(appInfo));
 		dispatch(fetchConnectors(appInfo));
+		dispatch(fetchdefaultdrodown(appInfo));		
 		// dispatch(fetchTeammembersByProject(appInfo));
 
 	}, []);

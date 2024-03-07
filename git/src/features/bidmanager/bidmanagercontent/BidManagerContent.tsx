@@ -34,6 +34,7 @@ import BidManagerGrid from './bidmanagergrid/BidManagerGrid';
 import BidToolbar from './bidmanagertoolbar/BidManagerToolbar';
 import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
+import { fetchdefaultdrodown } from 'features/budgetmanager/operations/settingsSlice';
 
 const BidManagerContent = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -96,6 +97,7 @@ const BidManagerContent = (props: any) => {
 		dispatch(fetchTeammembersByProject(appInfo));
 		dispatch(getCompanyFilters({appInfo: appInfo, name: 'Diverse Supplier Categories'}));
 		dispatch(fetchConnectors(appInfo));
+		dispatch(fetchdefaultdrodown(appInfo));
 		// Real time
 		// if (gridRT.current) return;
 		// else {

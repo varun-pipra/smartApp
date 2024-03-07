@@ -8,7 +8,7 @@ const SapButton = (props:any) =>{
 					variant="outlined"
 					startIcon={<span className='common-icon-share-new' />}
 					className="sap-button"
-					// onClick={handleLockBudget}
+					onClick={() => {props?.onClick && props?.onClick()}}
 				>
 					<span className='postto'>Post to</span>
 					<img

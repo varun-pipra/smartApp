@@ -128,3 +128,22 @@ export const deleteContract = async (appInfo: any, contractId: any) => {
 		}
 	}
 };
+
+
+export const postVendorContractsToConnector = async (appInfo: any, type: any, callback?:any) => {
+	let response: any;
+	if (!isLocalhost) {
+		response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/projects/${appInfo?.uniqueId}/finance/vendorcontracts/postToConnector?connectorType=${type}&sessionId=${appInfo?.sessionId}`, {
+			method: 'POST',
+			headers: { 'content-type': 'application/json' },
+
+		});
+		if (!response.ok) {
+			const message = `API Request Error (${moduleName}): ${response.status}`;
+			return response							
+			throw new Error(message);
+		}
+		const data = await response.json();
+		callback && callback(data);
+	}
+};

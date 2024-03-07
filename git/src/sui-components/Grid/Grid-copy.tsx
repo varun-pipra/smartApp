@@ -80,10 +80,12 @@ export interface TableGridProps extends AgGridReactProps {
 	selectedRecord?: any;
 	componentPropsChanged?:any;
 	activeTab?: any;
+	enableSsr?:boolean;
+	maxBlocksInCache?:any;
 }
 
 const SUIGrid = (props: TableGridProps) => {
-	const {headers, data, grouped = false, headerHeight = 36, groupHeaderHeight = 36, rowSelection = 'multiple', suppressRowClickSelection = false, groupIncludeFooter = true,
+	const {maxBlocksInCache, enableSsr = false, headers, data, grouped = false, headerHeight = 36, groupHeaderHeight = 36, rowSelection = 'multiple', suppressRowClickSelection = false, groupIncludeFooter = true,
 		rowSelected = () => {}, autoGroupColumnDef = () => {}, onRowDoubleClicked = () => {}, onBodyScrollEnd = () => {}, nowRowsMsg,
 		onRowClicked = () => {}, pinnedBottomRowData, rowModelType = "clientSide", groupIncludeTotalFooter = true, groupDisplayType, groupRowRendererParams, suppressContextMenu = false, onCellEditRequest,
 		masterDetail = false, detailCellRendererParams = () => {}, onSelectionChanged = () => {}, onFirstDataRendered = () => {}, isRowMaster = () => {return false;}, groupDefaultExpanded = -1, gridRef, rowHeight = null,
@@ -108,8 +110,7 @@ const SUIGrid = (props: TableGridProps) => {
 	const gridTooltipRef = useRef<any>();
 	const isAppMaximized = useAppSelector((state)=> state.appInfo.isAppMaximized)
 	const tooltipTimerRef = useRef<any>();
-
-
+	
 	useEffect(() => {
 		if(rightPannel && selectedRow?.id === updateData?.id) {
 			console.log("Forecast Data in Grid", updateData);
@@ -257,6 +258,7 @@ const SUIGrid = (props: TableGridProps) => {
 		defaultProps.rowModelType = 'serverSide';
 		defaultProps.serverSideInfiniteScroll = true;
 		defaultProps.cacheBlockSize = 50;
+		defaultProps.maxBlocksInCache = 10;
 		// defaultProps.getChildCount = getChildCount;
 		// defaultProps.paginationAutoPageSize = true;
 		// defaultProps.onPaginationChanged = onPaginationChanged;
@@ -272,9 +274,9 @@ const SUIGrid = (props: TableGridProps) => {
 	const defaultGroupProps: GridOptions = {
 		groupHeaderHeight: groupHeaderHeight,
 		suppressAggFuncInHeader: true,
-		groupDefaultExpanded: groupDefaultExpanded,
+		groupDefaultExpanded: enableSsr ? undefined : 1,
 		groupIncludeFooter: groupIncludeFooter,
-		groupIncludeTotalFooter: groupIncludeTotalFooter,
+		groupIncludeTotalFooter: enableSsr ?  false : true,
 		groupDisplayType: groupDisplayType || 'multipleColumns',
 		groupRowRendererParams: groupRowRendererParams
 	};
@@ -731,6 +733,7 @@ const SUIGrid = (props: TableGridProps) => {
 				suppressScrollOnNewData={suppressScrollOnNewData}
 				getRowHeight={getRowHeight}
 				onSortChanged={onSortChanged}
+				maxBlocksInCache={maxBlocksInCache}
 			></AgGridReact>
 			<div ref={gridTooltipRef} className="sui-grid-cell-ellipisis-tooltip" style={{ display: 'none' }}></div>
 			{/* :

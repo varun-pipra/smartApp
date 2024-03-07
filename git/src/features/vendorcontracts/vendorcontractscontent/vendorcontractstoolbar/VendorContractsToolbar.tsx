@@ -17,9 +17,9 @@ import IQSearch from "components/iqsearchfield/IQSearchField";
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import SUIAlert from 'sui-components/Alert/Alert';
 import { getVendorContractsList, setGridData, setActiveMainGridGroupKey, setActiveMainGridFilters, setSelectedRows, setMainGridSearchText } from "../../stores/gridSlice";
-import { errorMsg, errorStatus, isUserGC } from 'utilities/commonutills';
+import { errorMsg, errorStatus, getConnectorType, isUserGC } from 'utilities/commonutills';
 import { setShowTableViewType, getTableViewType } from 'features/budgetmanager/operations/tableColumnsSlice';
-import { deleteContract } from 'features/vendorcontracts/stores/gridAPI';
+import { deleteContract, postVendorContractsToConnector } from 'features/vendorcontracts/stores/gridAPI';
 import { vendorContractsResponseStatusFilterOptions, vendorContractsStatusFilterOptions } from 'utilities/vendorContracts/enums';
 import { activateContract } from '../../stores/VCButtonActionsAPI';
 import { fetchCompanyList, getBidLookup, setToastMessage, setSelectedRecord } from 'features/vendorcontracts/stores/VendorContractsSlice';
@@ -36,6 +36,7 @@ import IQToggle from 'components/iqtoggle/IQToggle';
 import {moduleType, blockchainStates, setShowBlockchainDialog, doBlockchainAction} from 'app/common/blockchain/BlockchainSlice';
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 import SapButton from 'sui-components/SAPButton/SAPButton';
+import SmartDropDown from 'components/smartDropdown';
 
 const VendorContractsToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -53,6 +54,7 @@ const VendorContractsToolbar = (props: any) => {
 	const { selectedNode, selectedRecord, selectedTabName, selectedVendorInCreateForm } = useAppSelector((state) => state.vendorContracts);
 
 	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
+	const { defaultData } = useAppSelector(state => state.settings);	
 
 	const [showAlertForPendingCompliance, setShowAlertForPendingCompliance] = React.useState<any>({ show: false, message: '', type: '' })
 
@@ -296,6 +298,14 @@ const VendorContractsToolbar = (props: any) => {
 		});
 	};
 
+	const handlePostTo = () => {
+		console.log("connector")
+		const type = getConnectorType(connectors?.[0]?.name)
+		postVendorContractsToConnector(appInfo, type, (response:any) => {
+			console.log("vendor contracts connectors resp", response);
+		})
+	}
+
 	return <Stack direction='row' className='toolbar-root-container-vendor-contracts'>
 		<div key='toolbar-buttons' className='toolbar-item-wrapper options-wrapper'>
 			<>
@@ -462,7 +472,7 @@ const VendorContractsToolbar = (props: any) => {
 		</div>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 			{<ReportAndAnalyticsToggle />}
-			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
+			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={() =>handlePostTo()}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}
@@ -553,6 +563,21 @@ const VendorContractsToolbar = (props: any) => {
 									</ListItemIcon>
 								</ListItem>}
 							</List>
+							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
+							<SmartDropDown
+								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								dropDownLabel="Vendor Contract"
+								isSearchField
+								required={false}
+								useNestedOptions
+								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								isFullWidth
+								ignoreSorting={true}
+								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								variant={'outlined'}
+								optionImage={true}
+								// menuProps={classes3.menuPaper}
+							/>						
 						</Stack>
 					</Stack>
 				</Box>

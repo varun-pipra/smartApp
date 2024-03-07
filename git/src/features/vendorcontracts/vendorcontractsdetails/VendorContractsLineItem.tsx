@@ -341,12 +341,12 @@ const VendorContractsLineItem = (props: headerprops) => {
 							<span className='budgetid-label grey-font'>Contract ID:</span>
 								<span className='vendor-content'>
 									<span className='grey-fontt'>{vendorLineItem?.code}</span>
-									{connectors?.length ? <img
+									{connectors?.length && vendorLineItem?.connectorItemData ? <img
 										className="sapnumber"
 										src={connectors?.[0]?.primaryIconUrl}
 										alt="connector Image"
 									/> : ''}
-									{connectors?.length ? <span className='sapnumber hot-link' onClick={()=>{sapLinksObj?.vendorContracts && window.open(sapLinksObj?.vendorContracts)}}>{vendorLineItem?.id?.substring(0, 10)?.toUpperCase()}</span> : ''}
+									{connectors?.length && vendorLineItem?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{vendorLineItem?.connectorItemData?.url && window.open(vendorLineItem?.connectorItemData?.url)}}>{vendorLineItem?.connectorItemData?.name}</span> : ''}
 								</span>
 							<span className='budgetid-label grey-font'>Status:</span>
 

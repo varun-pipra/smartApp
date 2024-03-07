@@ -81,3 +81,13 @@ export const measurementSymbols:any = {
 	"CentiMeters": 'cm',
 	"MilliMeters": 'mm',
 }
+
+export const connectorsObj:any = {
+	"SAP Connector": 0,
+	"Procore Connector": 1,
+	"CMiC Connector": 2,
+}
+
+export const getConnectorType:any = (name:any) => {
+	return name?.toLowerCase()?.includes('sap') ? 0 : name?.toLowerCase()?.includes('procore') ? 1 : 2;
+}
