@@ -202,8 +202,6 @@ const AddTimeLogForm = (props: any) => {
 	}; 
 
 	const handleAdd = () => {
-		// dispatch(setScrollToNewRowId('5ea8a376-76ca-4c91-9652-34a386845a42'));
-		store.dispatch(setScrollToNewRowId('5ea8a376-76ca-4c91-9652-34a386845a42'));
         const timeEntries = timelogForm?.time?.map((obj:any) => {
             if(timelogForm?.resource == "workteam" || timelogForm?.resource == "mycompany" ){
                 let modifyStartTime:any = getTime(obj.startTime);
@@ -390,7 +388,7 @@ const AddTimeLogForm = (props: any) => {
 					<IQButton
 						color="orange"
 						sx={{ height: "2.5em", width: "fit-content" }}
-						// disabled={isAddDisabled}
+						disabled={isAddDisabled}
 						onClick={handleAdd}
 					>
 						+ ADD

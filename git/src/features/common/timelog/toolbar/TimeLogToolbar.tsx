@@ -19,7 +19,8 @@ export const TLLeftButtons = memo(() => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 
-	const { selectedRowData, TimeLogGridList , selectedTimeLogDetails , gridFilters} = useAppSelector(state => state.timeLogRequest);
+	const { selectedRowData, TimeLogGridList ,gridRef , gridFilters} = useAppSelector(state => state.timeLogRequest);
+	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
 
 	const [sendBackClick, setSendBackClick] = useState<boolean>(false);
 	const [acceptClick, setacceptClick] = useState<boolean>(false);
@@ -107,6 +108,7 @@ export const TLLeftButtons = memo(() => {
 		})?.filter((element:any) => {return element !== undefined});
 	}
 	const afterItemAction = (response: any) => {
+		gridcolumnUncheck()
 		dispatch(getTimeLogList(gridFilters));
 	};
 	
@@ -120,7 +122,6 @@ export const TLLeftButtons = memo(() => {
 
 	const handleSendback = (data:any) => {
 		const ids = getIds(selectedRowData);		
-		console.log("handleSendback data in toolbar", data, ids)
 		const payload = {
 			timeSegmentIds:[...ids],
 			reason:data?.reason,
@@ -130,6 +131,13 @@ export const TLLeftButtons = memo(() => {
 		setSendBackClick(false);
 	}
 
+	const gridcolumnUncheck = () =>{
+		if(	gridRef.current){
+			gridRef.current.api.forEachNode((node:any) => {
+				node.setSelected(false);
+			});
+		}
+	}
 
 	return <>
 		<IQTooltip title='Refresh' placement='bottom'>

@@ -277,8 +277,7 @@ const Links = () => {
 	const projectFileUpload = (folderType: string) => {
 		useDriveFileBrowser({ iframeId: 'vendorContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'VendorContracts', folderType: folderType });
 	};
-	const saveLinks = (id:any) =>{
-		const payload = [{itemId : id}]
+	const saveLinks = (payload:any) =>{
 		saveLinksData(selectedTimeLogDetails?.id,payload, (response: any) => {
 			console.log('response',response)
 			dispatch(setSelectedTimeLogDetails(response));
@@ -287,7 +286,8 @@ const Links = () => {
 	}
 	useEffect(()=>{
 		if(!_.isEmpty(smartItemOptionSelected) && addlinksSelected !=''){ 
-			saveLinks(smartItemOptionSelected?.id);
+			const payload = [{itemId : smartItemOptionSelected?.id}]
+			saveLinks(payload);
 		}
 	},[smartItemOptionSelected]);
 
@@ -347,18 +347,22 @@ const Links = () => {
 	}
 	const LocalFileUpload = (event: any) => {
 		const data = event?.target?.files
-		console.log('event',data);
 		event.preventDefault();
 		useLocalFileUpload(appInfo, data).then((res) => {
-			console.log('res',res)
-			saveLinks(res[0]['id']);
+			const payload = [{itemId : res[0]['id']}]
+			saveLinks(payload);
     });
 		event.target.value = null;
 	};
 	
 	useEffect(() => {
     if (driveFile) {
-      console.log('driveFile',driveFile)
+			console.log('driveFile',driveFile)
+			const payload = driveFile.map((data:any)=>{
+				return {itemId : data?.id}
+			})
+			console.log('payload',payload)
+			saveLinks(payload);
     }
 	}, [driveFile]);
 	

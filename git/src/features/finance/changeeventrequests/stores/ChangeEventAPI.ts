@@ -50,7 +50,7 @@ export const addChangeEvent = async (payload: any, callback: any) => {
 export const fetchChangeEvents = async () => {
 	const server: any = getServerInfo();
 	if (!isLocalhost) {
-		const response = await changeEventsRequest(server, '?offset=0&limit=10000', {});
+		const response = await changeEventsRequest(server, '?offset=0&limit=20000', {});
 		return response?.data;
 	}
 	return changeEvents?.data;

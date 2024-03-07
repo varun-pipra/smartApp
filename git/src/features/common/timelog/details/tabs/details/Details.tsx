@@ -15,7 +15,7 @@ import SUIClock from 'sui-components/Clock/Clock';
 import { getTime ,addTimeToDate} from 'utilities/datetime/DateTimeUtils';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import {setDetailsPayloadSave,setSaveButtonEnable} from '../../../stores/TimeLogSlice';
-import _ from "lodash";
+import _, { valuesIn } from "lodash";
 import moment from "moment";
 
 
@@ -73,11 +73,9 @@ const details = (props: any) => {
     const startTimeDate = new Date(startTime);
 		const endTimeDate = new Date(endTime);
     if ((endTimeDate < startTimeDate) || (startTimeDate > endTimeDate)) {
-				console.log('if');
 				dispatch(setSaveButtonEnable(true));
 		}
 		else{
-			console.log('else');
 			dispatch(setSaveButtonEnable(false));
 		}
 	}
@@ -106,8 +104,9 @@ const details = (props: any) => {
             data = { ...details,...payload,['endDate']: endTime};
 				}
         else if(name == 'sbs'){
-            APIpayload = {['sbsId'] : value}
-            data = { ...details ,[name] : {id : value}}
+						const payload = value.map((data:any)=>{ return { Id : data.value , Name:data.label}})
+            APIpayload = {['sbs'] : payload}
+            data = { ...details ,[name] : value}
         }
         else if(name == 'sbsPhase'){
             APIpayload = {['sbsPhaseId'] : value?.uniqueId}
@@ -118,7 +117,6 @@ const details = (props: any) => {
              APIpayload = payload
             data = { ...details, ...payload };
 				}
-				console.log('data',data)
 				checkTimeValidation(data.startTime,data.endTime);
         setDetails(data);
         dispatch(setDetailsPayloadSave({...DetailspayloadSave,...APIpayload}))
@@ -141,10 +139,10 @@ const details = (props: any) => {
 		newValues?.map((obj: any) => {
 			!locations?.map((a: any) => a?.id)?.includes(obj?.id) && locations.push(obj);
 		});
-		
 		if (locations?.length > 0 ) {
-				setdefaultlocation([locations[0]]);
-				dispatch(setDetailsPayloadSave({...DetailspayloadSave,['locationId'] : locations[0]['uniqueId']}))
+				setdefaultlocation(locations);
+				const payload = locations.map((value:any)=>{ return { Id : value.uniqueId , Name:value.text}})
+				dispatch(setDetailsPayloadSave({...DetailspayloadSave,['location'] : payload}))
 		}
 	};
 
@@ -392,14 +390,17 @@ const details = (props: any) => {
 							<SmartDropDown
 								name='resource'
 								LeftIcon={<span className='common-icon-system-breakdown iconmodify'> </span>}
-								options={sbsOptions}
+								options={sbsOptions ? sbsOptions : []}
 								outSideOfGrid={true}
 								isSearchField={false}
 								isFullWidth
 								Placeholder={'Select'}
-								selectedValue={[details?.sbs?.id]}
-								isMultiple={false}
-								handleChange={(value: any) => handleFieldChange(value[0], 'sbs')}
+								selectedValue={details?.sbs?.map((item:any) => {return item?.id})}
+								isMultiple={true}
+								handleChange={(value: any) => {
+									const filtered = sbsOptions.filter((item:any) => value.some((id:any) => id === item.id));
+									handleFieldChange(filtered, 'sbs');
+								}}
 								disabled={details?.status == 2 ? true :false}
 							/>
 						</div>
@@ -410,7 +411,7 @@ const details = (props: any) => {
 									
 							<SmartDropDown
 								LeftIcon={<div className="common-icon-phase"></div>}
-								options={phaseDropDownOptions || []}
+								options={phaseDropDownOptions ? phaseDropDownOptions : []}
 								outSideOfGrid={true}
 								isSearchField={true}
 								isFullWidth

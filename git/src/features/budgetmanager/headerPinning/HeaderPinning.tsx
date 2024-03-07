@@ -17,7 +17,7 @@ import { fetchVendorData } from '../operations/vendorInfoSlice';
 import { isLocalhost, postMessage } from 'app/utils';
 import { fetchRollupTaskData, setOpenBudgetTransferForm, setOpenCostForm } from 'features/budgetmanager/operations/rightPanelSlice';
 import {
-	showRightPannel, setRightPannel, setLineItemDescription, setShowSettingPopup2, getShowSettingPopup2, getTemplateForBudget
+	showRightPannel, setRightPannel, setLineItemDescription, setShowSettingPopup2, getShowSettingPopup2, getTemplateForBudget, fetchBudgetLock
 } from '../operations/tableColumnsSlice';
 
 import LineItemDetails from '../lineitemdetails/LineItemDetails';
@@ -89,6 +89,7 @@ const HeaderPinning = (props: any) => {
 		dispatch(getSBSGridList());
 		dispatch(fetchRollupTaskData({ 'appInfo': appInfo }));
 		dispatch(getLocationSegmentsData());
+		dispatch(fetchBudgetLock(appInfo));
 		// dispatch(getTemplateForBudget(appInfo))	;
 		return () => { };
 	}, []);

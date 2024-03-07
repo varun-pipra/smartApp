@@ -228,7 +228,7 @@ const AppRoutes = () => {
 				<Route path='tabbedWindow' element={<TabbedWindowExample />} />
 				<Route path='phases-color-picker' element={<PhasesColorPickerExample />} />
 				<Route path='phases-grid-list' element={<PhasesGridListExample />} />
-				{/* <Route path='tree-view' element={<MultiSelectTreeView />} /> */}
+				<Route path='tree-view' element={<MultiSelectTreeView />} />
 			</Route>
 			<Route path='ViewBuilderExample' element={<ViewBuilderExample />} />
 			

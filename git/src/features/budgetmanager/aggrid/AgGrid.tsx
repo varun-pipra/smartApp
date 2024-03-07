@@ -107,10 +107,6 @@ const TableGrid = (props: TableGridProps) => {
 	const [viewBuilderColumns, setViewBuilderColumns] = React.useState<any>([]);
 	const selectedRecord = useAppSelector((state) => state.rightPanel.selectedRow);
 	const scrollToNewRowId = useAppSelector((state)=> state.gridData?.scrollToNewRowId);
-
-	useEffect(()=>{
-		console.log(scrollToNewRowId , 'scrollToNewRowId')
-	},[scrollToNewRowId])
 	const RemoveDuplicates = (array: any, key: any) => {
 		let unique: any = [];
 		array.map((x: any) => unique.filter((a: any) => a[key] === x[key]).length > 0 ? null : unique.push(x));
@@ -484,7 +480,7 @@ const TableGrid = (props: TableGridProps) => {
 			aggFunc: 'sum',
 			minWidth: 250,
 			type: 'rightAligned',
-			editable: true,
+			// editable: true,
 			hide: false,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
@@ -1220,7 +1216,7 @@ const TableGrid = (props: TableGridProps) => {
 						let newColumnDef = {
 							...cDef,
 							...viewItem,
-							editable: !isReadOnly,
+							editable: isReadOnly ? false : cDef?.editable ? cDef?.editable : false,
 							hide: viewItem.field == 'markupFee' ? !settingsData?.allowMarkupFee : viewItem?.hide
 						};
 						updatedColumndDefList.push(newColumnDef);
@@ -1274,7 +1270,7 @@ const TableGrid = (props: TableGridProps) => {
 				dispatch(setColumnDefsHeaders(columnDefs));
 				setIsReadOnly(isBudgetLocked);
 			if (isBudgetLocked) {
-				const array = ['costCode', 'costType', 'curve', 'estimatedStart', 'estimatedEnd'];
+				const array = ['costCode', 'costType', 'curve', 'estimatedStart', 'estimatedEnd', 'description'];
 				let updatedColumndDefList: any = columnDefs.map((cDef: any) => {
 					if (cDef.hasOwnProperty('editable') && isBudgetLocked) {
 						return { ...cDef, editable: !isBudgetLocked };

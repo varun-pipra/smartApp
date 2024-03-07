@@ -26,12 +26,20 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
 	const { server } = useAppSelector(state => state.appInfo);
 	const appInfo = useAppSelector(getServer);
-	const { selectedTimeLogDetails ,DetailspayloadSave, TimeLogGridList,saveButtonEnable , gridFilters} = useAppSelector(state => state.timeLogRequest);
+	const { selectedTimeLogDetails ,DetailspayloadSave, TimeLogGridList,saveButtonEnable,gridFilters ,gridRef} = useAppSelector(state => state.timeLogRequest);
 	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status?.toString());
 	const [closeSubtitle, setCloseSubtitle] = React.useState<any>(true)
 	const [openSendBack, setOpenSendBack] = React.useState<any>(false)
 	const [openSplit, setOpenSplit] = React.useState<any>(false)
 	
+	const gridcolumnUncheck = () =>{
+		if(	gridRef.current){
+			gridRef.current.api.forEachNode((node:any) => {
+				node.setSelected(false);
+			});
+		}
+	}
+
 	useEffect(() => {
 		if (selectedTimeLogDetails?.id) {
 			const subtitleEnable: any = (selectedTimeLogDetails?.hasOwnProperty('splitFromSegmentId') && selectedTimeLogDetails?.splitFromSegmentId !== null && checkGUID(selectedTimeLogDetails?.splitFromSegmentId))  || selectedTimeLogDetails?.hasTimeOverlap || selectedTimeLogDetails?.hasLocationConflict;
@@ -57,6 +65,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 			});
 	}
 	const afterItemAction = (response: any) => {
+		gridcolumnUncheck();
 		dispatch(getTimeLogDetails(selectedTimeLogDetails?.id))
 		dispatch(getTimeLogList(gridFilters));
 	};
@@ -91,7 +100,6 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 			segments: [...splitEntries],
 			reason: data?.description
 		}
-		console.log('payload',payload)
 		addTimeLog(payload,afterItemAction)
 	}
 

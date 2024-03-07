@@ -7,17 +7,17 @@ import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { SvgIconProps } from "@mui/material/SvgIcon";
-// import { TreeView } from "@mui/x-tree-view/TreeView";
-// import {
-//   TreeItem,
-//   TreeItemProps,
-// } from "@mui/x-tree-view/TreeItem";
+import { TreeView } from "@mui/x-tree-view/TreeView";
+import {
+  TreeItem,
+  TreeItemProps,
+} from "@mui/x-tree-view/TreeItem";
 import { hideLoadMask } from "app/hooks";
 
-// type StyledTreeItemProps = TreeItemProps & {
-//   labelIcon: React.ElementType<SvgIconProps>;
-//   labelText: string;
-// };
+type StyledTreeItemProps = TreeItemProps & {
+  labelIcon: React.ElementType<SvgIconProps>;
+  labelText: string;
+};
 const treeData = [
   {
     nodeId: '1',
@@ -57,40 +57,40 @@ const treeData = [
   },
 ];
 
-// const StyledTreeItem = (props: StyledTreeItemProps) => {
-//   const { nodeId, labelIcon: LabelIcon, labelText, ...other } = props;
-//   console.log("ddsufuidsf", props);
-//   const handleChange= (e:any, id:any) => {};
-//   // return (
-//   //   <TreeItem 
-//   //     // sx={{background : ['1', '2','6','7'].includes(nodeId) ? '#fff9cc' : '#fff'}}
-//   //     nodeId={nodeId}
-//   //     label={
-//   //       <Box
-//   //         sx={{   
-//   //           display: "flex",
-//   //           alignItems: "center",
-//   //           p: 0.5,
-//   //           pr: 0,
-//   //         }}
-//   //       >
-//   //         <Checkbox size="small" checked={['1', '2','6','7'].includes(nodeId)} onChange={(e:any) => handleChange(e, nodeId)}/>
-//   //         <Box 
-//   //         component={LabelIcon}
+const StyledTreeItem = (props: StyledTreeItemProps) => {
+  const { nodeId, labelIcon: LabelIcon, labelText, ...other } = props;
+  console.log("ddsufuidsf", props);
+  const handleChange= (e:any, id:any) => {};
+  return (
+    <TreeItem 
+      // sx={{background : ['1', '2','6','7'].includes(nodeId) ? '#fff9cc' : '#fff'}}
+      nodeId={nodeId}
+      label={
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            p: 0.5,
+            pr: 0,
+          }}
+        >
+          <Checkbox size="small" checked={['1', '2','6','7'].includes(nodeId)} onChange={(e:any) => handleChange(e, nodeId)}/>
+          <Box 
+          component={LabelIcon}
            
-//   //          color="inherit" sx={{ mr: 1 }} />
-//   //         <Typography
-//   //           variant="body2"
-//   //           sx={{ fontWeight: "inherit", flexGrow: 1 }}
-//   //         >
-//   //           {labelText}
-//   //         </Typography>
-//   //       </Box>
-//   //     }
-//   //     {...other}
-//   //   />
-//   // );
-// };
+           color="inherit" sx={{ mr: 1 }} />
+          <Typography
+            variant="body2"
+            sx={{ fontWeight: "inherit", flexGrow: 1 }}
+          >
+            {labelText}
+          </Typography>
+        </Box>
+      }
+      {...other}
+    />
+  );
+};
 
 const MultiSelectTreeView = () => {
   const [selected, setSelected] = React.useState([]);
@@ -104,30 +104,30 @@ const MultiSelectTreeView = () => {
       if (treeItemData.children && treeItemData.children.length > 0) {
         children = getTreeItemsFromData(treeItemData.children);
       }
-      // return (
-      //   <StyledTreeItem
-      //     nodeId={treeItemData?.nodeId}
-      //     labelText={treeItemData?.nodeName}
-      //     labelIcon={index % 2 == 0 ? MailIcon : DeleteIcon}
-      //     children={children}
-      //   ></StyledTreeItem>
-      // );
+      return (
+        <StyledTreeItem
+          nodeId={treeItemData?.nodeId}
+          labelText={treeItemData?.nodeName}
+          labelIcon={index % 2 == 0 ? MailIcon : DeleteIcon}
+          children={children}
+        ></StyledTreeItem>
+      );
     });
   };
-  // return (
-  //   <TreeView
-  //     aria-label="gmail"
-  //     defaultExpanded={['1', '2','6','7']}
-  //     defaultCollapseIcon={<ArrowDropDownIcon />}
-  //     defaultExpandIcon={<ArrowRightIcon />}
-  //     defaultEndIcon={<div style={{ width: 24 }} />}
-  //     multiSelect
-  //     selected={selected}
-  //     sx={{ height: 264, flexGrow: 1, maxWidth: 210, overflowY: "auto" }}
-  //   >
-  //     {getTreeItemsFromData(treeData)}
-  //   </TreeView>
-  // );
+  return (
+    <TreeView
+      aria-label="gmail"
+      defaultExpanded={['1', '2','6','7']}
+      defaultCollapseIcon={<ArrowDropDownIcon />}
+      defaultExpandIcon={<ArrowRightIcon />}
+      defaultEndIcon={<div style={{ width: 24 }} />}
+      multiSelect
+      selected={selected}
+      sx={{ height: 264, flexGrow: 1, maxWidth: 210, overflowY: "auto" }}
+    >
+      {getTreeItemsFromData(treeData)}
+    </TreeView>
+  );
 };
 
 export default MultiSelectTreeView;

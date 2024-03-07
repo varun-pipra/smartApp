@@ -99,6 +99,9 @@
     .MuiDialogActions-root {
         .MuiButton-root {
             background-color: #059cdf;
+            &.Mui-disabled {
+                background-color: rgb(102, 102, 102, 0.5);
+            }
             &:hover {
                 background-color: #01affc;
             }

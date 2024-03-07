@@ -522,7 +522,7 @@ const BudgetManagerRO = (props: BudgetManagerROProps) => {
 				type: "checkbox",
 				items: [
 					{ text: "Billable", id: '1', value: 'true', key: '1' },
-					{ text: "NonBillable", id: '2', value: 'false', key: '0' },
+					{ text: "Non-Billable", id: '2', value: 'false', key: '0' },
 				]
 			},
 		},

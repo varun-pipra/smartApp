@@ -301,7 +301,7 @@ const BudgetManagerToolbar = (props: any) => {
 				type: "checkbox",
 				items: [
 					{ text: "Billable", id: '1', value: "true", key: true },
-					{ text: "NonBillable", id: '2', value: "false", key: false },
+					{ text: "Non-Billable", id: '2', value: "false", key: false },
 				]
 			},
 		}

@@ -24,7 +24,7 @@ import { generateSplitEntryData, GetUniqueList } from 'features/common/timelog/u
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList,getSBSGridList,getPhaseDropdownValues} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
-import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile, setGridFilters } from './stores/TimeLogSlice';
+import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile,setGridFilters , setGridRef } from './stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
@@ -39,7 +39,6 @@ import {fetchLocationswithOutIdData} from '../locationfield/LocationStore';
 import { fetchSSRTimeLofGridDataList } from './stores/TimeLogAPI';
 import { updateTimeLogDetails,addTimeLog } from './stores/TimeLogAPI';
 import { addTimeToDate, formatDate, getTime } from 'utilities/datetime/DateTimeUtils';
-import { setScrollToNewRowId } from 'features/budgetmanager/operations/gridSlice';
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -144,7 +143,8 @@ const TimeLogWindow = (props: any) => {
 			// gridApi.refreshServerSideStore();
 		  	gridApi?.setServerSideDatasource(dataSource);
 		}
-	  }, [gridApi, appInfo, search, selectedFilters2, enableSsR]);
+		}, [gridApi, appInfo, search, selectedFilters2, enableSsR]);
+		
 	const groupOptions = [{
 			text: 'Time Entry For', value: 'user', iconCls: 'common-icon-work-team'
 		}, {
@@ -202,7 +202,6 @@ const TimeLogWindow = (props: any) => {
 	}, [toast]);
 
 	const userImageHandleOver = useCallback((e: any, params: any) => {
-        console.log(params , 'userImageHandleOver')
         const { pageX, pageY } = e;
         const { data } = params;
         const str = data?.user?.globalId.toString();
@@ -245,6 +244,7 @@ const TimeLogWindow = (props: any) => {
 			dispatch(fetchCompaniesData(server));
 			dispatch(fetchLocationswithOutIdData());
 			dispatch(getPhaseDropdownValues());
+		
 		}
 	}, [server]);
 
@@ -279,11 +279,9 @@ const TimeLogWindow = (props: any) => {
 								}
 								break;
 							case 'updateparticipants':
-								// console.log('updateparticipants', data)
 								triggerEvent('updateparticipants', { data: data.data, appType: data.appType });
 								break;
 							case 'updatecommentbadge':
-								// console.log('updatecommentbadge', data)
 								triggerEvent('updatecommentbadge', { data: data.data, appType: data.appType });
 								break;
 							case 'updatechildparticipants':
@@ -431,6 +429,7 @@ const TimeLogWindow = (props: any) => {
 	},[selectedFilters2])
 
 	const onFilterChange = (filterValues: any, type?: string) => {
+
 		if(!_.isEqual(selectedFilters2,filterValues)){
 			if (Object.keys(filterValues).length !== 0) {
 				let filterObj = filterValues;
@@ -607,7 +606,6 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const onDataChange = (fieldName: string, time: any, params: any) => {
-		console.log("onDataChange", fieldName, time, params?.data);
 		const dateAndTime = moment.utc(params?.data?.[fieldName])?.format('MM/DD/YYYY') + ` ${time}` 
 		updateTimeLogDetails(params?.data?.id, {[fieldName]: dateAndTime}, (response:any) => {dispatch(getTimeLogList({}))})
 	};
@@ -970,13 +968,6 @@ const TimeLogWindow = (props: any) => {
 			keyValue: 'createdBy',
 			children: { type: "checkbox", items: [] }
 		},
-		// {
-		// 	text: 'Users',
-		// 	value: 'user',
-		// 	key: 'user',
-		// 	keyValue: 'user',
-		// 	children: { type: "checkbox", items: [] }
-		// },
 		 {
 			text: 'Conflicting Time Entries',
 			value: 'conflicting',
@@ -1106,7 +1097,6 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const rowSelected = (rowNodes: any) => {
-		dispatch(setScrollToNewRowId('5ea8a376-76ca-4c91-9652-34a386845a42'));
 		dispatch(setSelectedRowData(rowNodes));
 	};
 
@@ -1116,6 +1106,7 @@ const TimeLogWindow = (props: any) => {
 
 	const onFirstDataRendered = useCallback((params: any) => {
 		gridRef.current = params;
+		dispatch(setGridRef(gridRef))
 		setColumns(headers);
 	}, []);
 
@@ -1254,9 +1245,12 @@ const TimeLogWindow = (props: any) => {
 			segments: [...splitEntries],
 			reason: data?.description
 		}
-		console.log('payload',payload)
 		addTimeLog(payload, (response:any) => {
-			console.log('response',response);
+			if(	gridRef.current){
+				gridRef.current.api.forEachNode((node:any) => {
+					node.setSelected(false);
+				});
+			}
             dispatch(getTimeLogList(gridFilters));
 		});
 	};
@@ -1268,20 +1262,20 @@ const TimeLogWindow = (props: any) => {
 				value: smartData?.smartItemId,	
 				name: smartname,
 			}
-			console.log('details',details)
 			dispatch(setSmartItemOptionSelected(details));
 			setSmartItemLink({});
 	};
 	
 	useEffect(() => {
 		if (Object.keys(smartItemLink).length) {
-			console.log('smartItemLink',smartItemLink)
 			saveSmartItemLink(smartItemLink);
 		}
 	}, [smartItemLink]);
+
 	const isServerSideGroupOpenByDefault = (params: any) => {
 		const rowNode = params.rowNode;
-	  };
+		};
+		
 	return (
 		server && <> <GridWindow
 			open={true}

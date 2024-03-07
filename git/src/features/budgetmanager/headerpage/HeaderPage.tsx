@@ -48,10 +48,10 @@ const defaultData = {
 	}
 }
 export const curveList = [
-	{ label: "Back Loaded", value: 0 },
-	{ label: "Front Loaded", value: 1 },
-	{ label: "Linear", value: 2 },
-	// { label: "Bell", value: 3 },
+	{ label: "Back Loaded", value: 0, id:0 },
+	{ label: "Front Loaded", value: 1, id: 1 },
+	{ label: "Linear", value: 2, id: 2 },
+	// { label: "Bell", value: 3, id: 3 },
 ];
 
 const useStyles: any = makeStyles((theme: any) =>
@@ -204,7 +204,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 		// 		cost: true
 		// 	});
 		// } else {
-			['E - Equipment', 'M - Materials']?.includes(headerPageData?.costType) && postMessage({
+			['E - Equipment', 'M - Materials', 'M - Material']?.includes(headerPageData?.costType) && postMessage({
 				event: 'opencatalog',
 				body: {
 					data: {
@@ -379,7 +379,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 					onBlur={(value) => handleOnChange(value, 'originalBudgetAmount')}
 					readOnly={false}
 					disabled={isBudgetLocked}
-					showCatalogBtn={['E - Equipment', 'M - Materials']?.includes(headerPageData?.costType)}
+					showCatalogBtn={['E - Equipment', 'M - Materials', 'M - Material']?.includes(headerPageData?.costType)}
 					showLaborBtn={headerPageData?.costType === 'L - Labor'}				
 					handleCatalogSubmit={() => handleCatalogSubmit()}
 					data={originalBudgetCatalogData}

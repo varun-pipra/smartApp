@@ -2357,7 +2357,7 @@ const ProjectTeamWindow = (props: any) => {
 				if (activeToggle === "rtls" && (rtlsConnectorType == 1 || rtlsConnectorType == 3) && params?.data?.activityColor) {
 					hasRTLSIcon = true;
 				};
-				const StrLength = params.data.firstName.length;
+				const StrLength = params?.data?.firstName?.length;
 				if (params?.data?.firstName ?? false) {
 					if ((hasSafetyIcon || hasRTLSIcon)) {
 						return StrLength > 11 ? params.data.firstName : null;
@@ -2382,7 +2382,7 @@ const ProjectTeamWindow = (props: any) => {
 				}
 				return (
 					<>
-						{!params.data.showFirstNameEditor && (
+						{!params?.data?.showFirstNameEditor && (
 							<>
 								<span
 									className="projectteam_gridColumn"
@@ -2403,7 +2403,7 @@ const ProjectTeamWindow = (props: any) => {
 										} else {
 											if (canEdit) {
 												firstNameCellOldValRef.current = params.data.firstName;
-												params.node.setData({
+												params?.node?.setData({
 													...params.node.data,
 													showFirstNameEditor: true,
 												});
@@ -2445,29 +2445,29 @@ const ProjectTeamWindow = (props: any) => {
 								)}
 							</>
 						)}{" "}
-						{params.data.showFirstNameEditor && (
+						{params?.data?.showFirstNameEditor && (
 							<div className="pt-first-name_editor-cls">
 								<TextField
 									inputRef={firstNameTextFieldRef}
-									defaultValue={params.data?.firstName}
+									defaultValue={params?.data?.firstName}
 									onBlur={() => {
 										//Check for value changed or not - hit api only when there is a change
-										if (firstNameCellOldValRef.current !== params.data.firstName) {
+										if (firstNameCellOldValRef.current !== params?.data?.firstName) {
 											validateAndPreparePayload('firtsName', params, {
 												...params.node.data,
 												showFirstNameEditor: false
 											});
 										} else {
-											params.node.setData({
-												...params.node.data,
+											params?.node?.setData({
+												...params?.node?.data,
 												showFirstNameEditor: false
 											})
 										}
 										firstNameCellOldValRef.current = '';
 									}}
 									onChange={(e: any) => {
-										params.node.setData({
-											...params.node.data,
+										params?.node?.setData({
+											...params?.node?.data,
 											firstName: e.target.value
 										});
 									}}
@@ -2487,7 +2487,7 @@ const ProjectTeamWindow = (props: any) => {
 			minWidth: 100,
 			tooltipComponent: CustomTooltip,
 			tooltipValueGetter: (params: any) => {
-				return params.data.lastName && params.data.lastName.length > 20 ? params.data.lastName : null;
+				return params?.data?.lastName && params?.data?.lastName?.length > 20 ? params?.data?.lastName : null;
 			},
 			// sort: 'asc',
 			editable: isCellEditable,

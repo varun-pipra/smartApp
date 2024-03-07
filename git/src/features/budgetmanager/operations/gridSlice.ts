@@ -158,7 +158,6 @@ export const gridDataSlice = createSlice({
 			state.searchText = action.payload;
 		},
 		setScrollToNewRowId: (state, action: PayloadAction<any>) => {
-			console.log('action.payload', action.payload)
 			state.scrollToNewRowId = action.payload;
 		},
 	},

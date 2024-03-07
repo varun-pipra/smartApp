@@ -10,7 +10,7 @@ export const fetchPaymentLedgerList = async (appInfo: any, contractId:any) => {
 	console.log("payAppsRequestpayAppsRequest", appInfo)
 	if (!isLocalhost) {
 		if(contractId) {
-			const response = await payAppsRequest(appInfo, `?vendorcontractid=${contractId}&offset=0&limit=10000`, {});
+			const response = await payAppsRequest(appInfo, `?vendorcontractid=${contractId}&offset=0&limit=20000`, {});
 			return response?.data
 			}
 		}
@@ -21,7 +21,7 @@ export const fetchVendorContractChangeEvents = async (appInfo: any, contractId:s
 	let response;
 	if (!isLocalhost) {
 		if(contractId) {
-			response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/projects/${appInfo.uniqueId}/finance/vendorcontracts/${contractId}/changeevents?offset=0&limit=10000&sessionId=${appInfo?.sessionId}`);
+			response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/projects/${appInfo.uniqueId}/finance/vendorcontracts/${contractId}/changeevents?offset=0&limit=20000&sessionId=${appInfo?.sessionId}`);
 			if (!response?.ok) {
 				const message = `API Request Error (${moduleName}): ${response?.status}`;
 				// return response							

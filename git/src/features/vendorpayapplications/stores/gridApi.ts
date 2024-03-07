@@ -21,7 +21,7 @@ export const createVendorPayApps = async (appInfo: any, body: any, callback?: an
 
 export const fetchVendorPayApps = async (appInfo: any) => {
 	if (!isLocalhost) {
-		const response = await payAppsRequest(appInfo, '?offset=0&limit=10000', {});
+		const response = await payAppsRequest(appInfo, '?offset=0&limit=20000', {});
 		return response?.data
 	}
 	return vendorPayAppsGridData?.data

@@ -26,7 +26,7 @@ export const addTimeLog = async (payload: any, callback: any) => {
 
 export const fetchTimeLog = async (payload:any) => {
   const server: any = getServerInfo();
-  const body = {"offset": 0,"rows": 10000 ,...payload};
+  const body = {"offset": 0,"rows": 20000 ,...payload};
   console.log('body',body);
   const options = {
     method: 'POST',
