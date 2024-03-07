@@ -107,6 +107,10 @@ const TableGrid = (props: TableGridProps) => {
 	const [viewBuilderColumns, setViewBuilderColumns] = React.useState<any>([]);
 	const selectedRecord = useAppSelector((state) => state.rightPanel.selectedRow);
 	const scrollToNewRowId = useAppSelector((state)=> state.gridData?.scrollToNewRowId);
+
+	useEffect(()=>{
+		console.log(scrollToNewRowId , 'scrollToNewRowId')
+	},[scrollToNewRowId])
 	const RemoveDuplicates = (array: any, key: any) => {
 		let unique: any = [];
 		array.map((x: any) => unique.filter((a: any) => a[key] === x[key]).length > 0 ? null : unique.push(x));

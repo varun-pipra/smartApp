@@ -20,6 +20,8 @@ import { addTimeToDate, getTime } from 'utilities/datetime/DateTimeUtils';
 import { addTimeLog } from './stores/TimeLogAPI';
 import { canManageTimeForCompany, canManageTimeForWorkTeam, isWorker, canManageTimeForProject } from 'app/common/userLoginUtils';
 import moment from 'moment';
+import { setScrollToNewRowId } from 'features/budgetmanager/operations/gridSlice';
+import { store } from 'app/store';
 
 interface TimeLogFormProps {
 	resource?: string;
@@ -46,7 +48,7 @@ const AddTimeLogForm = (props: any) => {
 	const appInfo = useAppSelector(getServer);
 	const classes = useStyles();
 	const { appsList } = useAppSelector(state => state.sbsManager);
-	const { access ,smartItemOptionSelected , WorkTeamDataFromExt} = useAppSelector(state => state.timeLogRequest);
+	const { access ,smartItemOptionSelected , WorkTeamDataFromExt , gridFilters} = useAppSelector(state => state.timeLogRequest);
 	const defaultValues: TimeLogFormProps = useMemo(() => {
 		return {
 			resource: isWorker() ? "Me" : "",
@@ -200,6 +202,8 @@ const AddTimeLogForm = (props: any) => {
 	}; 
 
 	const handleAdd = () => {
+		// dispatch(setScrollToNewRowId('5ea8a376-76ca-4c91-9652-34a386845a42'));
+		store.dispatch(setScrollToNewRowId('5ea8a376-76ca-4c91-9652-34a386845a42'));
         const timeEntries = timelogForm?.time?.map((obj:any) => {
             if(timelogForm?.resource == "workteam" || timelogForm?.resource == "mycompany" ){
                 let modifyStartTime:any = getTime(obj.startTime);
@@ -238,9 +242,10 @@ const AddTimeLogForm = (props: any) => {
         setAddDisabled(true);
     	 //setClearTimeLogPickerData(true)
         addTimeLog(payload, (resp:any) => {
+			dispatch(setScrollToNewRowId(resp[0]));
             //dispatch(setSmartItemOptionSelected({}));
             dispatch(setToast('Time Logged Successfully.'));
-            dispatch(getTimeLogList({}));
+            dispatch(getTimeLogList(gridFilters));
         }); 
     };
 
@@ -385,7 +390,7 @@ const AddTimeLogForm = (props: any) => {
 					<IQButton
 						color="orange"
 						sx={{ height: "2.5em", width: "fit-content" }}
-						disabled={isAddDisabled}
+						// disabled={isAddDisabled}
 						onClick={handleAdd}
 					>
 						+ ADD

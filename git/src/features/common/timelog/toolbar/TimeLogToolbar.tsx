@@ -19,8 +19,7 @@ export const TLLeftButtons = memo(() => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 
-	const { selectedRowData, TimeLogGridList } = useAppSelector(state => state.timeLogRequest);
-	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
+	const { selectedRowData, TimeLogGridList , selectedTimeLogDetails , gridFilters} = useAppSelector(state => state.timeLogRequest);
 
 	const [sendBackClick, setSendBackClick] = useState<boolean>(false);
 	const [acceptClick, setacceptClick] = useState<boolean>(false);
@@ -88,7 +87,7 @@ export const TLLeftButtons = memo(() => {
 			await Promise.all(selectedRowData.map((record:any) => {
 					deleteTimeLogData(record?.id, (response:any) => {
 						if(response) {
-							dispatch(getTimeLogList({}));
+							dispatch(getTimeLogList(gridFilters));
 							dispatch(setToast('Deleted TimeLog Successfully.'));
 						}
 					});
@@ -100,7 +99,7 @@ export const TLLeftButtons = memo(() => {
 	
 	}
 	const refresh = () =>{
-		dispatch(getTimeLogList({}));
+		dispatch(getTimeLogList(gridFilters));
 	}
 	const getIds = (selectedRecords:any) => {
 		return selectedRecords?.map((obj:any) => {
@@ -108,7 +107,7 @@ export const TLLeftButtons = memo(() => {
 		})?.filter((element:any) => {return element !== undefined});
 	}
 	const afterItemAction = (response: any) => {
-		dispatch(getTimeLogList({}));
+		dispatch(getTimeLogList(gridFilters));
 	};
 	
 	const handleAccept = () => {

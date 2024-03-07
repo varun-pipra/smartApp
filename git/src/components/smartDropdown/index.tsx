@@ -17,8 +17,8 @@ import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/us
 
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import { TreeView } from "@mui/x-tree-view/TreeView";
-import {TreeItem,TreeItemProps,treeItemClasses} from "@mui/x-tree-view/TreeItem";
+// import { TreeView } from "@mui/x-tree-view/TreeView";
+// import {TreeItem,TreeItemProps,treeItemClasses} from "@mui/x-tree-view/TreeItem";
 import { PopoverSelect } from "components/iqsearchfield/iqiconbuttonmenu/IQIconButtonMenu";
 type TOption = {
 	id?: any,
@@ -30,11 +30,11 @@ type TOption = {
 	color?:string,
 	options?: Array<{ label: string, value: string | number, colVal?: string | number, description?: string; }>;
 };
-type StyledTreeItemProps = TreeItemProps & {
-	nodeId:any;
-	labelIcon: React.ReactElement;
-	labelText: string;
-  };
+// type StyledTreeItemProps = TreeItemProps & {
+// 	nodeId:any;
+// 	labelIcon: React.ReactElement;
+// 	labelText: string;
+//   };
 export interface ISmartDropDown {
 	name?: string | unknown;
 	required?: boolean;
@@ -772,91 +772,91 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 		return array.indexOf(value) === index;
 	};
 	let allNodeIds = getNodeIds(treeDataOptions);
-	const StyledTreeItem = (props: StyledTreeItemProps) => {
-    const { nodeId, labelIcon: LabelIcon, labelText, ...other } = props;
-    const handleMultipleTreeView = (event: any, nodeIds: any) => {
-      event.stopPropagation();
-      const allChild = getAllChildNodes(nodeIds);
-      const allParent = getAllParentNodes(nodeIds);	 
-	const keys = getAllChildLabels(bfsSearch(treeDataOptions, nodeIds));
-	if(selectedOption.length === 1 && selectedOption?.[0] == '') {
-			delete selectedOption[0];
-	};
-	  let nodes:any;
-	  let labels:any;
-      if (selectedNodes.includes(nodeIds)) {
-		nodes = [...selectedNodes].filter((id: any) => !allChild.concat(allParent).includes(id));
-		labels = [...selectedOption].filter((id: any) => !keys.includes(id));
-      } else {
-        const ToBeChecked = allChild;
-        for (let i = 0; i < allParent.length; i++) {
-          if (isAllChildrenChecked(bfsSearch(treeDataOptions, allParent[i]),ToBeChecked)) {
-            ToBeChecked.push(allParent[i]);
-          }
-        }
-		nodes = [...selectedNodes].concat(ToBeChecked);
-		labels = selectedOption.concat(keys);
-      };
-	  if(nodes.length) {
-			labels = labels.filter(onlyUnique);
-			nodes = nodes.filter(onlyUnique);
-		  	setSelectedOption(labels);
-    	  	if (handleChange) handleChange(labels, nodes);
-	  } else if(nodes.length === 0) {
-			setSelectedOption([]);
-			if (handleChange) handleChange([], nodes);
-	  }
-    };
-    return (
-      <TreeItem
-        nodeId={nodeId}
-        label={
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              p: 0.5,
-              pr: 0,
-            }}
-          >
-            {isTreeMultiSelect && (
-              <Checkbox
-                size="small"
-                checked={selectedNodes.indexOf(nodeId) !== -1}
-                tabIndex={-1}
-                disableRipple
-                onClick={(event) => isTreeMultiSelect ? handleMultipleTreeView(event, nodeId) : null}
-              />
-            )}
-            {showCustomTreeIcon && (
-				<InputAdornment position="start">{LabelIcon}</InputAdornment>
-            )}
-            <Typography
-              variant="body2"
-              sx={{ fontWeight: "inherit", flexGrow: 1 }}
-            >
-              {labelText}
-            </Typography>
-          </Box>
-        }
-        {...other}
-      	/>
-    	   );
-  	  };  
+	// const StyledTreeItem = (props: StyledTreeItemProps) => {
+    // const { nodeId, labelIcon: LabelIcon, labelText, ...other } = props;
+    // const handleMultipleTreeView = (event: any, nodeIds: any) => {
+    //   event.stopPropagation();
+    //   const allChild = getAllChildNodes(nodeIds);
+    //   const allParent = getAllParentNodes(nodeIds);	 
+	// const keys = getAllChildLabels(bfsSearch(treeDataOptions, nodeIds));
+	// if(selectedOption.length === 1 && selectedOption?.[0] == '') {
+	// 		delete selectedOption[0];
+	// };
+	//   let nodes:any;
+	//   let labels:any;
+    //   if (selectedNodes.includes(nodeIds)) {
+	// 	nodes = [...selectedNodes].filter((id: any) => !allChild.concat(allParent).includes(id));
+	// 	labels = [...selectedOption].filter((id: any) => !keys.includes(id));
+    //   } else {
+    //     const ToBeChecked = allChild;
+    //     for (let i = 0; i < allParent.length; i++) {
+    //       if (isAllChildrenChecked(bfsSearch(treeDataOptions, allParent[i]),ToBeChecked)) {
+    //         ToBeChecked.push(allParent[i]);
+    //       }
+    //     }
+	// 	nodes = [...selectedNodes].concat(ToBeChecked);
+	// 	labels = selectedOption.concat(keys);
+    //   };
+	//   if(nodes.length) {
+	// 		labels = labels.filter(onlyUnique);
+	// 		nodes = nodes.filter(onlyUnique);
+	// 	  	setSelectedOption(labels);
+    // 	  	if (handleChange) handleChange(labels, nodes);
+	//   } else if(nodes.length === 0) {
+	// 		setSelectedOption([]);
+	// 		if (handleChange) handleChange([], nodes);
+	//   }
+    // };
+    // // return (
+    // //   <TreeItem
+    // //     nodeId={nodeId}
+    // //     label={
+    // //       <Box
+    // //         sx={{
+    // //           display: "flex",
+    // //           alignItems: "center",
+    // //           p: 0.5,
+    // //           pr: 0,
+    // //         }}
+    // //       >
+    // //         {isTreeMultiSelect && (
+    // //           <Checkbox
+    // //             size="small"
+    // //             checked={selectedNodes.indexOf(nodeId) !== -1}
+    // //             tabIndex={-1}
+    // //             disableRipple
+    // //             onClick={(event) => isTreeMultiSelect ? handleMultipleTreeView(event, nodeId) : null}
+    // //           />
+    // //         )}
+    // //         {showCustomTreeIcon && (
+	// // 			<InputAdornment position="start">{LabelIcon}</InputAdornment>
+    // //         )}
+    // //         <Typography
+    // //           variant="body2"
+    // //           sx={{ fontWeight: "inherit", flexGrow: 1 }}
+    // //         >
+    // //           {labelText}
+    // //         </Typography>
+    // //       </Box>
+    // //     }
+    // //     {...other}
+    // //   	/>
+    // // 	   );
+  	//   };  
 	  const renderTree = (treeItems: any) => {
 		return (treeItems || []).map((treeItemData: any) => {
       let children = undefined;
       if (treeItemData.children && treeItemData.children.length > 0) {
         children = renderTree(treeItemData.children);
       }
-      return (
-        <StyledTreeItem
-          nodeId={treeItemData?.nodeId}
-          labelText={treeItemData?.label}
-          labelIcon={TreeIcon}
-          children={children}
-        />
-      );
+    //   return (
+    //     <StyledTreeItem
+    //       nodeId={treeItemData?.nodeId}
+    //       labelText={treeItemData?.label}
+    //       labelIcon={TreeIcon}
+    //       children={children}
+    //     />
+    //   );
     });
 	  };
 	  const handleSingleTreeView = (event: any, nodeIds: any) => {
@@ -1398,21 +1398,22 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 								}
 								)
 							) :
-							isTreeView ? (
-								<TreeView
-									aria-label="gmail"
-									defaultExpanded={allNodeIds || []}
-									defaultCollapseIcon={<ArrowDropDownIcon />}
-									defaultExpandIcon={<ArrowRightIcon />}
-									defaultEndIcon={<div style={{ width: 24 }} />}
-									multiSelect={isTreeMultiSelect}
-									onNodeSelect={!isTreeMultiSelect ? handleSingleTreeView : undefined}
-									selected={selectedNodes || []}
-								>
-										{renderTree(treeDataOptions)}
-								</TreeView>
-							)
-							: !hideNoRecordMenuItem && (<div className="base-no-data">{noDataFoundMsg}</div>)
+							<></>
+							// isTreeView ? (
+							// 	<TreeView
+							// 		aria-label="gmail"
+							// 		defaultExpanded={allNodeIds || []}
+							// 		defaultCollapseIcon={<ArrowDropDownIcon />}
+							// 		defaultExpandIcon={<ArrowRightIcon />}
+							// 		defaultEndIcon={<div style={{ width: 24 }} />}
+							// 		multiSelect={isTreeMultiSelect}
+							// 		onNodeSelect={!isTreeMultiSelect ? handleSingleTreeView : undefined}
+							// 		selected={selectedNodes || []}
+							// 	>
+							// 			{renderTree(treeDataOptions)}
+							// 	</TreeView>
+							// )
+							// : !hideNoRecordMenuItem && (<div className="base-no-data">{noDataFoundMsg}</div>)
 					}
 				</Select>
 			</IQTooltip>

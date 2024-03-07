@@ -24,7 +24,7 @@ import { generateSplitEntryData, GetUniqueList } from 'features/common/timelog/u
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList,getSBSGridList,getPhaseDropdownValues} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
-import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile } from './stores/TimeLogSlice';
+import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile, setGridFilters } from './stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
@@ -39,6 +39,7 @@ import {fetchLocationswithOutIdData} from '../locationfield/LocationStore';
 import { fetchSSRTimeLofGridDataList } from './stores/TimeLogAPI';
 import { updateTimeLogDetails,addTimeLog } from './stores/TimeLogAPI';
 import { addTimeToDate, formatDate, getTime } from 'utilities/datetime/DateTimeUtils';
+import { setScrollToNewRowId } from 'features/budgetmanager/operations/gridSlice';
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -82,7 +83,7 @@ const TimeLogWindow = (props: any) => {
 	});
 	const selectedFiltersRef = useRef<any>({});
 	const isFromOrg = window.location.href?.includes('fromOrg');
-	const { splitTimeSegmentBtn } = useAppSelector(state => state.timeLogRequest);
+	const { splitTimeSegmentBtn , gridFilters} = useAppSelector(state => state.timeLogRequest);
 	const isFromPlanner = window.location.href?.includes('planner');
 	const isFromFinance = window.location.href?.includes('finance');
 	const isFromSafety = window.location.href?.includes('safety');
@@ -425,8 +426,11 @@ const TimeLogWindow = (props: any) => {
 		gridRef?.current?.api?.setColumnDefs(newDefs);
 	}, []);
 
-	const onFilterChange = (filterValues: any, type?: string) => {
+	useEffect(()=>{
+		if(selectedFilters2) dispatch(setGridFilters(selectedFilters2))
+	},[selectedFilters2])
 
+	const onFilterChange = (filterValues: any, type?: string) => {
 		if(!_.isEqual(selectedFilters2,filterValues)){
 			if (Object.keys(filterValues).length !== 0) {
 				let filterObj = filterValues;
@@ -1102,6 +1106,7 @@ const TimeLogWindow = (props: any) => {
 	};
 
 	const rowSelected = (rowNodes: any) => {
+		dispatch(setScrollToNewRowId('5ea8a376-76ca-4c91-9652-34a386845a42'));
 		dispatch(setSelectedRowData(rowNodes));
 	};
 
@@ -1252,7 +1257,7 @@ const TimeLogWindow = (props: any) => {
 		console.log('payload',payload)
 		addTimeLog(payload, (response:any) => {
 			console.log('response',response);
-			dispatch(getTimeLogList({}));
+            dispatch(getTimeLogList(gridFilters));
 		});
 	};
 

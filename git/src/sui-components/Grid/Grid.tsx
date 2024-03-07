@@ -693,6 +693,7 @@ const SUIGrid = (props: TableGridProps) => {
 	useEffect(()=> {
 		if (scrollToNewRowId) {
 			setTimeout(()=> {
+				console.log(scrollToNewRowId , 'scrollToNewRowId')
 				const dataArr: any = tableRef.current?.api?.clientSideRowModel?.rowsToDisplay || [];
 				const rowNode: any = dataArr.find((rec: any)=> rec?.data?.id === scrollToNewRowId);
 				if ((window?.parent as any)?.GBL?.config?.currentUserID === rowNode?.data?.createdBy?.uniqueId) {

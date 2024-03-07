@@ -19,6 +19,7 @@ export interface TimeLogRequestState {
 	WorkTeamDataFromExt:any;
 	driveFile:any;
 	saveButtonEnable:boolean;
+	gridFilters:any;
 };
 const initialState: TimeLogRequestState = {
 	loading: false,
@@ -35,7 +36,8 @@ const initialState: TimeLogRequestState = {
 	smartItemOptionSelected:{},
 	WorkTeamDataFromExt:[],
 	driveFile:'',
-	saveButtonEnable:false
+	saveButtonEnable:false,
+	gridFilters:{}
 }
 
 
@@ -137,6 +139,9 @@ export const timeLogRequest = createSlice({
 		setSaveButtonEnable : (state,action:PayloadAction<boolean>)=>{
 			state.saveButtonEnable = action.payload;
 		},
+		setGridFilters: (state,action:PayloadAction<boolean>)=>{
+			state.gridFilters = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -186,5 +191,5 @@ export const timeLogRequest = createSlice({
 });
 
 export const { setSelectedTimeLogDetails,setSelectedRowData,setSourceList, setToast, setAccess, setSplitTimeSegmentBtn,setDetailsPayloadSave,
-							setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile,setSaveButtonEnable} = timeLogRequest.actions;
+							setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile,setSaveButtonEnable,setGridFilters} = timeLogRequest.actions;
 export default timeLogRequest.reducer;
