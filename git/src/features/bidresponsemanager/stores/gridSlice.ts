@@ -14,6 +14,7 @@ export interface BidResponseManagerGridProps {
 	mainGridSearchText: any;
 	searchText: any;
 	selectedFilters: any;
+	bidRespIframeActive: boolean;
 };
 
 const initialState: BidResponseManagerGridProps = {
@@ -27,7 +28,8 @@ const initialState: BidResponseManagerGridProps = {
 	activeMainGridDefaultFilters: {},
 	mainGridSearchText: '',
 	searchText: undefined,
-	selectedFilters: {}
+	selectedFilters: {},
+	bidRespIframeActive: false,
 };
 
 export const fetchBidResponseGridData = createAsyncThunk<any, any>(
@@ -84,6 +86,9 @@ export const bidResponseManagerGridSlice = createSlice({
 		},
 		setSearchText: (state, action: PayloadAction<any>) => {
 			state.searchText = action.payload;
+		},
+		setBidRespIframeActive: (state, action: PayloadAction<any>) => {
+			state.bidRespIframeActive = action.payload;
 		}
 	},
 	extraReducers: (builder) => {
@@ -107,7 +112,7 @@ export const getBidResponseData = (state: RootState) => state.bidResponseManager
 
 export const {setBidResponseGridData, setSelectedRows, setLiveData,
 	setActiveMainGridFilters, setActiveMainGridGroupKey, setMainGridSearchText,
-	setActiveMainGridDefaultFilters, setSearchText, setSelectedFilters} = bidResponseManagerGridSlice.actions;
+	setActiveMainGridDefaultFilters, setSearchText, setSelectedFilters, setBidRespIframeActive} = bidResponseManagerGridSlice.actions;
 
 
 export default bidResponseManagerGridSlice.reducer;

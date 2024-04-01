@@ -57,12 +57,12 @@ const VendorContractFiles = ({ readOnly }: VendorContractFilesProps) => {
 					id, fileName: name, thumbnail
 				}
 			});
-
 			openPreview(formattedFileList, index);
 		}
 	}, [selectedStandardFile]);
 
 	const onImagePreview = (event: any) => {
+		console.log('onImagePreview',event)
 		const { data } = event;
 		setSelectedStandardFile(data);
 	};
@@ -145,6 +145,7 @@ const VendorContractFiles = ({ readOnly }: VendorContractFilesProps) => {
 	};
 
 	const openPreview = (files: Array<any>, index: number) => {
+		setSelectedStandardFile(null);
 		useFilePreview('vendorContractsIframe', appInfo, 'VendorContracts', files, index);
 	};
 

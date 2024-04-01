@@ -170,7 +170,12 @@ const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
 										let value = undefined;
 										if(el.value !== 'none') value = el.value;
 										setSelectionKeys(value);
-										props.onChange && props.onChange(value, el);
+										if(el.hasOwnProperty('disabled')) {
+											el?.disabled == true ? '' : props.onChange && props.onChange(value, el);
+										}
+										else{
+											props.onChange && props.onChange(value, el);
+										}
 									}
 									handleClick();
 								}
@@ -217,7 +222,7 @@ const IQIconButtonMenu = (props: IQIconButtonMenuProps) => {
 
 export default IQIconButtonMenu;
 
-const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, selected?: any, changeHandler?:any, isSearchField?: boolean): ReactNode => {
+const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, selected?: any, changeHandler?:any, isSearchField?: boolean, moduleName?:String): ReactNode => {
 	let subMenuNodes: ReactNode = <></>;
 
 	switch(child.type ?? name) {
@@ -234,30 +239,86 @@ const getSubMenuNodeByType = (name: any, child: IQIconButtonMenuChildren | any, 
 			subMenuNodes =  <RadioListMenu name={name} items={child.items} selection={selected} onChange={changeHandler} isSearchField={isSearchField} />;;
 			break;
 		default:
-			subMenuNodes = <MultipleSubMenu name={name} childItems={child} selection={selected} onChange={changeHandler} />;
+			subMenuNodes = <MultipleSubMenu name={name} childItems={child} selection={selected} onChange={changeHandler} isSearchField={isSearchField} moduleName={moduleName} />;
 	}
 	return subMenuNodes;
 };
 
 export const MultipleSubMenu = (props: any) => {
-	const {name, childItems, ...rest} = props;
+	const {name, childItems, isSearchField = false,moduleName, ...rest} = props;
 	const [selection, setSelection] = useState({});
+	const [childMenuItems, setChildMenuItems] = React.useState(childItems);
+	const searchRef = React.useRef<any>('');
+	const [searchValue, setSearchValue] = React.useState("");
 	const onItemClick = (e: any, selectedItem: any) => {
 		setSelection(selectedItem);
 	};
 
 	useEffect(() => {
 		if(Object.keys(selection)?.length !== 0) {
-			props.onChange && props.onChange(selection, (name ?? ""));
+			if(moduleName === 'others') {
+				props?.onChange && props.onChange(selection, (name ?? ""));
+			} else {
+				props?.onChange && props.onChange({[name]: selection});
+			};
 		}
 	}, [selection]);
-
+	const handleSearch = (e:any) => {
+		let keyword = e?.target?.value;
+		setSearchValue(keyword);
+		searchRef.current = keyword;
+		const res = JSON.parse(JSON.stringify(childItems)).filter((obj: any) => {
+			return obj.value && JSON.stringify(obj.value)?.toLowerCase()?.includes(keyword);
+		});
+		setChildMenuItems(res);
+	};
+	const handleSearchClear = () => {
+		setSearchValue("");
+		searchRef.current = '';
+	};
 	return (
-		(childItems?.length ?? false) && (
-			<MenuList>
-				{childItems?.map((item: any, index: any) => {
+		<div>
+				{(isSearchField) && (
+				<MenuList className={`user-menu-items`}>
+						<ListSubheader sx={{ padding: '0px' }} className="search-wrapper-main-cls">
+							<Box className="search-wrapper skill-search">
+								<TextField
+									variant={"outlined"}
+									autoFocus
+									value={searchValue}
+									onChange={handleSearch}
+									size="small"
+									fullWidth
+									tabIndex={1}
+									className={"smart-dropdown-search-box search-field "}
+									onKeyDown={(e: any) => {
+									if (e.key !== "Escape") {
+										e.stopPropagation();
+									}
+									}}
+									placeholder={"Search"}
+									InputProps={{
+									endAdornment: (
+										<InputAdornment position="start">
+										{searchValue == "" ? (
+											<SearchIcon />
+										) : (
+											<ClearIcon
+											onClick={handleSearchClear}
+											style={{ cursor: "pointer" }}
+											/>
+										)}
+										</InputAdornment>
+									),
+									}}
+								/>
+							</Box>
+						</ListSubheader>
+				</MenuList>
+				)}
+				{(childMenuItems || [])?.map((item: any, index: any) => {
 					return (
-						<div key={`listitem-${item?.value}-${index}`}>
+						<div key={`listitem-${item?.value}-${index}`} style={{backgroundColor : props?.selection?.indexOf(item?.value) > -1 ? "#fffad2": "white"}}>
 							{
 								!item.hidden &&
 								(<ListItem
@@ -292,8 +353,7 @@ export const MultipleSubMenu = (props: any) => {
 						</div>
 					);
 				})}
-			</MenuList>
-		)
+		</div>
 	);
 };
 
@@ -605,11 +665,11 @@ export const RadioListMenu = (props: {name: string, selection: any, items: Array
 };
 
 export const PopoverSelect = (props: any) => {
-	const {open, options,className, ...rest} = props;
+	const {open, options, className, isSearchField = false, moduleName="others", ...rest} = props;
 	const [anchor, setAnchor] = useState();
 	let popperSx = {zIndex: 9999};
 	if(props.menuProps?.sx) popperSx = Object.assign(popperSx, props.menuProps.sx);
-	const selection: any = props.allowSubMenu ? _.findKey(props.defaultValue, function (value) {return value.length > 0;}) : _.keys(props.defaultValue);
+	const selection: any = props.allowSubMenu ? _.findKey(props?.defaultValue, function (value) {return value.length > 0;}) : _.keys(props?.defaultValue);
 
 	const handleChange = (value: any) => {
 		props.onChange && props.onChange(value);
@@ -623,7 +683,7 @@ export const PopoverSelect = (props: any) => {
 		<MenuList className={`user-menu-items${className ? ` ${className}` : ''}`}>
 			{options?.map((el: any, index: number) => {
 				const hasSubMenu = props.allowSubMenu && (el.children?.items?.length > 0 || el.children?.length > 0);
-				const subMenuNode = hasSubMenu ? getSubMenuNodeByType(el.value, el.children, props.defaultValue[(el.value)], handleChange) : undefined;
+				const subMenuNode = hasSubMenu ? getSubMenuNodeByType(el.value, el.children, props?.defaultValue[(el.value)], handleChange, isSearchField, moduleName) : undefined;
 				const MenuListItem = hasSubMenu ? IQMenuListItem : ListItem;
 				const secondaryActionProp = hasSubMenu ? {
 					menu: subMenuNode,
@@ -649,7 +709,7 @@ export const PopoverSelect = (props: any) => {
 					<MenuListItem
 						key={`iqmenu-item-${el.value}-${index}`}
 						className={
-							selection && selection.indexOf(el.value) > -1
+							selection && selection?.indexOf(el.value) > -1
 								? "menu-selected"
 								: ""
 						}

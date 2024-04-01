@@ -9,12 +9,14 @@ export interface VendorContractsGridProps {
 	gridOriginalData: any;
 	selectedRows: any;
 	budgetItems: any;
+	budgetItemsGetCall:boolean;
 	liveData: any;
 	activeMainGridGroupKey: any;
 	activeMainGridFilters: any;
 	vendorsList: any;
 	activeMainGridDefaultFilters: any;
 	mainGridSearchText: any;
+	vcIframeActive:boolean;
 };
 
 const initialState: VendorContractsGridProps = {
@@ -22,6 +24,7 @@ const initialState: VendorContractsGridProps = {
 	gridData: [],
 	gridOriginalData: [],
 	budgetItems: [],
+	budgetItemsGetCall: false,
 	selectedRows: [],
 	liveData: {},
 	activeMainGridGroupKey: 'None',
@@ -29,6 +32,7 @@ const initialState: VendorContractsGridProps = {
 	vendorsList: [],
 	activeMainGridDefaultFilters: {},
 	mainGridSearchText: '',
+	vcIframeActive: false
 };
 
 export const getVendorContractsList = createAsyncThunk<any, any>(
@@ -57,6 +61,9 @@ export const vendorContractsGridSlice = createSlice({
 		},
 		setLiveData: (state, action: PayloadAction<any>) => {
 			state.liveData = action.payload;
+		},
+		setBudgetItemsGetCall: (state, action: PayloadAction<any>) => {
+			state.budgetItemsGetCall = action.payload;
 		},
 		setSelectedRows: (state, action: PayloadAction<any>) => {
 			const selectedRowData = action.payload?.data;
@@ -93,6 +100,9 @@ export const vendorContractsGridSlice = createSlice({
 		setMainGridSearchText: (state, action: PayloadAction<any>) => {
 			state.mainGridSearchText = action.payload;
 		},
+		setVCIframeActive: (state, action: PayloadAction<any>) => {
+			state.vcIframeActive=action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -110,18 +120,21 @@ export const vendorContractsGridSlice = createSlice({
 			})
 			.addCase(getBudgetItemsByPackage.pending, (state) => {
 				state.loading = true;
+				state.budgetItemsGetCall = false;
 			})
 			.addCase(getBudgetItemsByPackage.fulfilled, (state, action) => {
 				state.loading = false;
 				state.budgetItems = action.payload
+				state.budgetItemsGetCall = true;				
 			})
 			.addCase(getBudgetItemsByPackage.rejected, (state) => {
 				state.loading = false;
+				state.budgetItemsGetCall = false;				
 			})
 	}
 
 });
 
-export const { setGridData, setLiveData, setSelectedRows, setActiveMainGridGroupKey, setActiveMainGridFilters, setVendorsList, setActiveMainGridDefaultFilters, setMainGridSearchText } = vendorContractsGridSlice.actions;
+export const { setGridData, setLiveData, setSelectedRows, setActiveMainGridGroupKey, setActiveMainGridFilters, setVendorsList, setActiveMainGridDefaultFilters, setMainGridSearchText, setBudgetItemsGetCall, setVCIframeActive } = vendorContractsGridSlice.actions;
 
 export default vendorContractsGridSlice.reducer;

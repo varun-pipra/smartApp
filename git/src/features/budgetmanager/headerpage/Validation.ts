@@ -1,4 +1,5 @@
 export const validate = (formData: any) => {
+	console.log('formData',formData)
 	const requiredFields: any = {
 		costCode: true,
 		costType: true,
@@ -11,7 +12,7 @@ export const validate = (formData: any) => {
 	const arr: boolean[] = []
 	Object.keys(requiredFields).map((key: string) => {
 		if (requiredFields[key] === true) {
-			arr.push(formData[key] === '' || formData.originalBudgetAmount.amount === '' ? true : false)
+			arr.push(formData[key] === '' || formData.originalBudgetAmount.amount === '' || formData.originalBudgetAmount.amount === '0'  ? true : false)
 		}
 	})
 

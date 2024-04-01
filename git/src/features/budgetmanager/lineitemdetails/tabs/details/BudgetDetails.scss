@@ -158,7 +158,11 @@
                     color: #059cdf;
                     height: 31px;
                     line-height: 0.8;
+                    width: fit-content;
                     border-radius: 3px;
+                    &.Mui-disabled {
+                        opacity: 0.4;
+                    }
                 }
                 .from-catalog-btn:hover {
                     background-color: #059cdf;
@@ -332,4 +336,10 @@
             padding: 1em 0;
         }
     }
+}
+
+.labor-sheet-4column {
+    grid-column: span 3;
+    display: flex;
+    justify-content: space-between;
 }

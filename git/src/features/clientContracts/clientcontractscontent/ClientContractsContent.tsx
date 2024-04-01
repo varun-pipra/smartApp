@@ -95,7 +95,8 @@ const ClientContractsContent = (props: any) => {
 		dispatch(getClientCompanies(appInfo));
 		dispatch(getClientContractsList(appInfo));
 		dispatch(fetchConnectors(appInfo));
-		dispatch(fetchdefaultdrodown(appInfo));		
+		dispatch(fetchdefaultdrodown(appInfo));	
+		dispatch(fetchSettings(appInfo));	
 		// dispatch(fetchTeammembersByProject(appInfo));
 
 	}, []);

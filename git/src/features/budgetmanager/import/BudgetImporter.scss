@@ -216,13 +216,34 @@
     }
     .not-import-text {
         color: #e95a16;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: bold;
         margin-top: 20px;
+        margin-bottom: 4px;
     }
     .import-file-text {
-        color: #e95a16;
-        font-size: 14px;
+        font-size: 16px;
         margin-bottom: 6px;
+        font-weight: bold;
+        color: #333;
+    }
+    .common-icon-column-names:before {
+        font-size: 18px;
+        color: #e95a16;
+        margin-right: 2px;
+    }
+    .column-wrap-cls {
+        display: flex;
+        justify-content: center;
+        text-align: left;
+        margin-bottom: 20px;
+        .column-title-cls {
+            padding: 0px 5px;
+            font-style: italic;
+            color: #999;
+            span {
+                color: #666;
+            }
+        }
     }
 }

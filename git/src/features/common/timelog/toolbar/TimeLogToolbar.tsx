@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'app/hooks';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import { memo, useEffect, useState, useMemo } from 'react';
 import SUIAlert from 'sui-components/Alert/Alert';
-
+import {canManageTimeForCompany,canManageTimeForProject, isWorker} from 'app/common/userLoginUtils';
 import { Gavel, GridOn, Refresh, TableRows } from '@mui/icons-material';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import { Button, IconButton, ToggleButton, ToggleButtonGroup } from '@mui/material';
@@ -19,7 +19,7 @@ export const TLLeftButtons = memo(() => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 
-	const { selectedRowData, TimeLogGridList ,gridRef , gridFilters} = useAppSelector(state => state.timeLogRequest);
+	const { selectedRowData, TimeLogGridList ,gridRef, gridFilters} = useAppSelector(state => state.timeLogRequest);
 	const { selectedTimeLogDetails } = useAppSelector(state => state.timeLogRequest);
 
 	const [sendBackClick, setSendBackClick] = useState<boolean>(false);
@@ -58,7 +58,7 @@ export const TLLeftButtons = memo(() => {
 
 	useEffect(() => {
 		//Split Button enable and disable
-		if (selectedRowData.length > 0 && selectedRowData.length < 2){
+		if (selectedRowData.length > 0 && selectedRowData.length < 2 &&  !isWorker()){
 			let array: any = selectedRowData?.map((value: any) => getTimeLogStatus(value.status));
 			if (array.includes('Reported') && !array.includes('In Progress') && !array.includes('Accepted') && !array.includes('Planned') && !array.includes('Unavailable') && !array.includes('Sent Back')) setSplitBtn(false)
 			else setSplitBtn(true);
@@ -158,15 +158,19 @@ export const TLLeftButtons = memo(() => {
 		</IQTooltip>
 		<IconButton className='divider-line-cls'>
 		</IconButton>
-		<Button className={`tl-toolbar-btn  ${!acceptBtn ? 'accept-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-accept'></span>} disabled={acceptBtn} onClick={() => { setacceptClick(true) }}>
-			Accept
-		</Button>
+		{ !isWorker() &&
+			<Button className={`tl-toolbar-btn  ${!acceptBtn ? 'accept-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-accept'></span>} disabled={acceptBtn} onClick={() => { setacceptClick(true) }}>
+				Accept
+			</Button>
+		}
 		<Button className={`tl-toolbar-btn  ${!splitBtn ? '' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} disabled={splitBtn} onClick={() => { dispatch(setSplitTimeSegmentBtn(true)) }}>
 			Split
 		</Button>
-		<Button className={`tl-toolbar-btn  ${!sendBackBtn ? 'sendBack-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} disabled={sendBackBtn} onClick={() => { setSendBackClick(true) }}>
-			Send Back
-		</Button>
+		{ !isWorker() &&
+			<Button className={`tl-toolbar-btn  ${!sendBackBtn ? 'sendBack-btn' : 'btn-disable'}`} variant="outlined" startIcon={<span className='common-icon-send-back1'></span>} disabled={sendBackBtn} onClick={() => { setSendBackClick(true) }}>
+				Send Back
+			</Button>
+		}
 
 		{
 			sendBackClick && <SendBackModel data={[...selectedRowData]} onClose={(value: any) => { setSendBackClick(value) }} onSubmit={(obj: any) => { handleSendback(obj) }} />

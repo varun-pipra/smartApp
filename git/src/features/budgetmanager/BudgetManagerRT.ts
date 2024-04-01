@@ -25,10 +25,10 @@ export const budgetManagerMainGridRTListener = (path: any, event: any) => {
 			const updateIdList = update.map((el: any) => el.id);
 			const {selectedRow} = rootState?.rightPanel;
 			//let dataList: any = [...gridData];
-			dataList.forEach((item: any) => {
+			dataList.forEach((item: any, index: any) => {
 				if(updateIdList.indexOf(item.id) !== -1) {
 					diffObject[item.id] = objDiff(item, update.find((el: any) => el.id === item.id));
-					item = {...update};
+					dataList[index] = {...update[0]};
 				}
 			});
 			//dataList = filteredArray.concat(update);

@@ -70,7 +70,9 @@ export const AddDescription = ({ value, showicon = true,disabled=false }: AddDes
 				isBillable: selectedRow?.isBillable,
 				sourceType: selectedRow?.sourceType,
 				sbsIds: selectedRow?.sbs?.length ? selectedRow?.sbs?.map((item:any) => { return item?.id }) : [],
-				sbsPhaseId: selectedRow?.sbsPhaseId ? selectedRow?.sbsPhaseId : null		
+				sbsPhaseId: selectedRow?.sbsPhaseId ? selectedRow?.sbsPhaseId : null,
+				workplannerCategoryId: selectedRow?.workplannerCategoryId,
+				tradeId: selectedRow?.tradeId,		
 			}
 
 			updateBudgetLineItem(appInfo, selectedRow.id, payload, (response: any) => {

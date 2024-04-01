@@ -154,17 +154,27 @@ export const fetchPostToConnector = async (appInfo: any) => {
 
 export const fetchWorkPlannerCategories = async (appInfo: any) => {
 	if(!isLocalhost) {
-		if(appInfo) {			
-			let response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/Scheduling/WorkPlannerCategories.iapi/Categories?sessionId=${appInfo?.sessionId}`);
+		if(appInfo) {
+			let response = await fetch(`${appInfo?.hostUrl}/enterprisedesktop/api/v2/budgets/${appInfo?.uniqueId}/lineitems/workplannercategories?sessionId=${appInfo?.sessionId}`);
 			if(!response.ok) {
 				const message = `API Request Error (${moduleName}): ${response.status}`;
 				throw new Error(message);
 			}
 			const result = await response.json();
-			return result.values;
+			return result.values?.map((category:any) => {
+				const tradesList = category?.trades?.map((trade:any) => {
+					return {...trade, categoryId: category?.id, workplannerCategoryName: category?.name, tradeName: trade?.name, hourlyRate: trade?.defaultHourlyRate }
+				})
+				return {...category, trades: [...tradesList]}
+			});
 		}
 	}
-	else return laborSheet?.values;
+	else return laborSheet?.values?.map((category:any) => {
+		const tradesList = category?.trades?.map((trade:any) => {
+			return {...trade, categoryId: category?.id}
+		})
+		return {...category, trades: [...tradesList]}
+	});
 };
 
 // {{protocol}}://{{zonedns}}/EnterpriseDesktop/api/v2/budgets/{{projectguid}}/postToConnector?connectorType=1&sessionId={{sessionId}}

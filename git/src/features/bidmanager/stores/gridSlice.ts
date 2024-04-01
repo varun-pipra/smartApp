@@ -17,6 +17,7 @@ export interface BidManagerGridProps {
 	activeCompaniesList: any;
 	selectedFilters: any;
 	searchText: any;
+	bidIframeActive: boolean;
 };
 
 const initialState: BidManagerGridProps = {
@@ -33,7 +34,8 @@ const initialState: BidManagerGridProps = {
 	mainGridSearchText: '',
 	activeCompaniesList: [],
 	selectedFilters: {},
-	searchText: undefined
+	searchText: undefined,
+	bidIframeActive: false,
 };
 
 export const fetchGridData = createAsyncThunk<any, any>(
@@ -98,6 +100,9 @@ export const bidManagerGridSlice = createSlice({
 		},
 		setSearchText: (state, action: PayloadAction<any>) => {
 			state.searchText = action.payload;
+		},
+		setBidIframeActive: (state, action: PayloadAction<any>) => {
+			state.bidIframeActive = action.payload;
 		}
 	},
 	extraReducers: (builder) => {
@@ -116,6 +121,6 @@ export const bidManagerGridSlice = createSlice({
 export const getBidGridData = (state: RootState) => state.bidManagerGrid.gridData;
 export const { setToastMessage, setSelectedRows, setGridData, setLiveData, setRefreshed, setActiveMainGridFilters,
 	setActiveMainGridGroupKey, setActiveMainGridDefaultFilters, setMainGridSearchText,
-	setActiveCompaniesList, setSelectedFilters, setSearchText } = bidManagerGridSlice.actions;
+	setActiveCompaniesList, setSelectedFilters, setSearchText, setBidIframeActive } = bidManagerGridSlice.actions;
 
 export default bidManagerGridSlice.reducer;

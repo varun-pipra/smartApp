@@ -24,7 +24,8 @@ import { generateSplitEntryData, GetUniqueList } from 'features/common/timelog/u
 import moment from "moment";
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
 import { getAppsList,getSBSGridList,getPhaseDropdownValues} from 'features/safety/sbsmanager/operations/sbsManagerSlice';
-import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile,setGridFilters , setGridRef } from './stores/TimeLogSlice';
+import { setSelectedRowData, setToast, setAccess, setSplitTimeSegmentBtn, getTimeLogList,setSmartItemOptionSelected , 
+	setWorkTeamFromExt,setDriveFile, setGridFilters , setGridRef,getTimelogAppsList } from './stores/TimeLogSlice';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import CustomDateRangeFilterComp from 'components/daterange/DateRange';
 import SUIClock from 'sui-components/Clock/Clock';
@@ -36,9 +37,10 @@ import {workTeamData} from "data/timelog/TimeLogData";
 import CompanyIcon from "resources/images/Comapany.svg";
 import  {fetchWorkTeamsData,fetchCompaniesData} from 'features/projectsettings/projectteam/operations/ptDataSlice';
 import {fetchLocationswithOutIdData} from '../locationfield/LocationStore';
-import { fetchSSRTimeLofGridDataList } from './stores/TimeLogAPI';
+import { fetchSSRTimeLofGridDataList} from './stores/TimeLogAPI';
 import { updateTimeLogDetails,addTimeLog } from './stores/TimeLogAPI';
 import { addTimeToDate, formatDate, getTime } from 'utilities/datetime/DateTimeUtils';
+
 
 const TimeLogWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -54,7 +56,7 @@ const TimeLogWindow = (props: any) => {
 	const {companiesData,workTeams} = useAppSelector((state)=>state.projectTeamData);
 
 	const appInfo = useAppSelector(getServer);
-	const { toast, TimeLogGridList ,selectedRowData} = useAppSelector((state) => state.timeLogRequest);
+	const { toast, TimeLogGridList ,selectedRowData, gridFilters} = useAppSelector((state) => state.timeLogRequest);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
 	const [isMaxByDefault, setMaxByDefault] = useState(false);
@@ -82,12 +84,13 @@ const TimeLogWindow = (props: any) => {
 	});
 	const selectedFiltersRef = useRef<any>({});
 	const isFromOrg = window.location.href?.includes('fromOrg');
-	const { splitTimeSegmentBtn , gridFilters} = useAppSelector(state => state.timeLogRequest);
+	const { splitTimeSegmentBtn } = useAppSelector(state => state.timeLogRequest);
 	const isFromPlanner = window.location.href?.includes('planner');
 	const isFromFinance = window.location.href?.includes('finance');
 	const isFromSafety = window.location.href?.includes('safety');
 	const isFromField = window.location.href?.includes('field');
 	const { locationsdata = [] } = useAppSelector(state => state.location);
+	const scrollToNewRowId = useAppSelector((state)=> state.gridData?.scrollToNewRowId);
 	/* Creating the datasource to render serverside row model */
 	const [gridApi, setGridApi] = useState<any>();
 	const [enableSsR, setEnableSsR] = useState(false);
@@ -144,6 +147,10 @@ const TimeLogWindow = (props: any) => {
 		  	gridApi?.setServerSideDatasource(dataSource);
 		}
 		}, [gridApi, appInfo, search, selectedFilters2, enableSsR]);
+
+	useEffect(()=>{
+		if(selectedFilters2) dispatch(setGridFilters(selectedFilters2))
+	},[selectedFilters2])
 		
 	const groupOptions = [{
 			text: 'Time Entry For', value: 'user', iconCls: 'common-icon-work-team'
@@ -237,6 +244,7 @@ const TimeLogWindow = (props: any) => {
 	 */
 	useEffect(() => {
 		if (server) {
+			dispatch(getTimelogAppsList());
 			dispatch(getAppsList());
 			dispatch(getTimeLogList({}));
 			dispatch(getSBSGridList());
@@ -423,10 +431,6 @@ const TimeLogWindow = (props: any) => {
 		});
 		gridRef?.current?.api?.setColumnDefs(newDefs);
 	}, []);
-
-	useEffect(()=>{
-		if(selectedFilters2) dispatch(setGridFilters(selectedFilters2))
-	},[selectedFilters2])
 
 	const onFilterChange = (filterValues: any, type?: string) => {
 
@@ -660,7 +664,7 @@ const TimeLogWindow = (props: any) => {
 								placement={'bottom'}
 								arrow={true}
 							>
-								<span className='common-icon-sku hand-pointer' style={{ color: '#fa8b59', fontSize: '1.8em' }} />
+								<span className='common-icon-sku hand-pointer' style={{ color: '#fa8b59', fontSize: '1.6em' }} />
 							</IQTooltip> : <></>
 						}
 
@@ -696,7 +700,7 @@ const TimeLogWindow = (props: any) => {
 			headerName: 'Time Segment ID',
 			field: 'timeSegmentId',
 			pinned: 'left',
-			width: 220,
+			width: 228,
 			suppressMenu: true,
 			checkboxSelection: (params: any) => {
 				if (!!params?.node?.footer) return false;
@@ -874,12 +878,27 @@ const TimeLogWindow = (props: any) => {
 		}, {
 			headerName: 'Location',
 			field: 'location',
-			valueGetter: (params: any) => params.data?.location?.name,
-			keyCreator: (params: any) => params.data?.location?.name || "None"
+			keyCreator: (params: any) => {
+				const { value } = params;
+				return (Array.isArray(value) && value?.length > 0) ? (value || [])?.map((location: any) => location?.name)?.join(', ') : 'NA';
+			},
+			cellRenderer: (params: any) => {
+				const { value } = params;
+				return Array.isArray(value) ? (value || [])?.map((location: any) => location?.name)?.join(', ') : '';
+			}
 		}, {
 			headerName: 'System Breakdown Structure',
 			field: 'sbs',
-			valueGetter: (params: any) => params.data?.sbs?.name,
+			valueGetter: (params: any) => {
+				if(params.data?.sbs?.length) {
+					let values: any = '';
+					params?.data?.sbs?.map((obj: any, index:number) => {
+						if(obj?.name) values = (`${values} ${obj?.name},`);
+					});
+					return values?.slice(0, -1);
+				}
+				return '';
+			}
 		}, {
 			headerName: 'Phase',
 			field: 'sbsPhase',
@@ -888,11 +907,11 @@ const TimeLogWindow = (props: any) => {
 			cellRenderer: (params: any) => {
 				const phase = params.data?.sbsPhase?.name;
 				const buttonStyle = {
-					backgroundColor: "#39a0c9",
+					backgroundColor: params.data?.sbsPhase?.color ? params.data?.sbsPhase?.color :"#39a0c9",
 					color: "#fff",
 					alignItems: "center",
 				};
-
+				
 				return (
 					<>
 						{phase ? (
@@ -1251,7 +1270,7 @@ const TimeLogWindow = (props: any) => {
 					node.setSelected(false);
 				});
 			}
-            dispatch(getTimeLogList(gridFilters));
+			dispatch(getTimeLogList(gridFilters));
 		});
 	};
 
@@ -1384,7 +1403,8 @@ const TimeLogWindow = (props: any) => {
 						enableSsr: enableSsR,
 						rowModelType: enableSsR ? 'serverSide' : 'clientSide',
 						tableref: (val: any) => setGridApi(val),
-						isServerSideGroupOpenByDefault: isServerSideGroupOpenByDefault
+						isServerSideGroupOpenByDefault: isServerSideGroupOpenByDefault,
+						scrollToNewRowId:scrollToNewRowId
 					}
 				}
 			}}

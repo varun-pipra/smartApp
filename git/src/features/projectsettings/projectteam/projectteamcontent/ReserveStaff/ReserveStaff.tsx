@@ -1,11 +1,12 @@
 import React from "react";
 import { makeStyles, createStyles } from "@mui/styles";
 import SmartDropDown from "components/smartDropdown";
-import { InputLabel } from "@mui/material";
+import { Avatar, InputLabel } from "@mui/material";
 import DatePickerComponent from "components/datepicker/DatePicker";
 import InputIcon from "react-multi-date-picker/components/input_icon";
 import convertDateToDisplayFormat from "utilities/commonFunctions";
 import './ReserveStaff.scss';
+import IQButton from "components/iqbutton/IQButton";
 const useStyles: any = makeStyles((theme: any) =>
   createStyles({
     menuPaper: {
@@ -16,25 +17,38 @@ const useStyles: any = makeStyles((theme: any) =>
 );
 const ReserveStaffContent = (props: any) => {
   const classes = useStyles();
-  const { data,projectData, isReadOnly = false,handleChange, ...rest } = props;
-  const [formData, setFormData] = React.useState<any>({
+  const { data,projectData, isReadOnly = false,handleChange, onSubmit= () => {}, ...rest } = props;
+  const defaultFormData = {
     startDate: "",
     endDate: "",
     projects : []
-  });
+  };
+  const [formData, setFormData] = React.useState<any>(defaultFormData);
+  const {startDate, endDate, projects} = formData;
   const handleOnChange = (key: any, value: any) => {
     let values = { ...formData, [key]: value };
     handleChange && handleChange(values);
     setFormData(values);
+  };
+  React.useEffect(() => {
+      if(data?.length > 0) {
+        const selectedProjects = [...data]?.map((item: any) => (item?.currentProjects || [])?.map((rec:any) => rec.id))?.flat();
+        setFormData({...formData, ['projects'] : selectedProjects})
+      }
+  },[data]);
+  const handleSubmit = () => {
+    onSubmit(formData);
+    setFormData(defaultFormData);
   };
   return (
     <div className="reserve-staff-container">
       <div className="reserve-staff-container_text">Reserved for</div>
       <div className="reserve-staff-container_content">
       {(data || [])?.map((item:any, index:any) => {
-        return <div key={index}>
-                  <img src={item?.thumbnailUrl} alt="Avatar" className="base-custom-img"/>
-                  <span>{item?.displayName}</span>
+        return <div key={index} className="reserve-staff-container_imgContainer">
+                  <Avatar src={item?.thumbnailUrl} className="base-custom-img" />
+                  {/* <img src={item?.thumbnailUrl} alt="Avatar" className="base-custom-img"/> */}
+                  <span className="reserve-text">{item?.displayName}</span>
               </div>
       })}
       </div>
@@ -42,7 +56,7 @@ const ReserveStaffContent = (props: any) => {
         <SmartDropDown
           options={projectData}
           LeftIcon={
-            <span className="common-icon-Approval-Role userdetails_icons userdetails_icon_Color" />
+            <span className="common-icon-staff-projects userdetails_icons userdetails_icon_Color" />
           }
           dropDownLabel="Projects"
           doTextSearch={false}
@@ -60,6 +74,7 @@ const ReserveStaffContent = (props: any) => {
           hideNoRecordMenuItem={true}
           reduceMenuHeight={true}
           isReadOnly={isReadOnly}
+          optionImage={false}
         />
       </div>
       <div className="reserve-staff-container_dates">
@@ -127,6 +142,14 @@ const ReserveStaffContent = (props: any) => {
             }
           />
         </div>
+      </div>
+      <div className="reserve-staff-container_btn">
+						<IQButton
+							disabled={!(startDate !== '' && endDate !=='' && projects?.length !== 0)}
+							onClick={handleSubmit}
+						>
+							RESERVE STAFF
+						</IQButton>
       </div>
     </div>
   );

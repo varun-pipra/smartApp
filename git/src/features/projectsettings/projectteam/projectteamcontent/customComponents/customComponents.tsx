@@ -31,7 +31,7 @@ export const CompanyTooltip = (props: any) => {
 	const Color = data?.company?.color;
 	return (
 		<div className='Pt-CompanyTooltip'>
-			<div style={{ background: Color.includes('#') == false ? `#${Color}` : Color }} className='left-section'></div>
+			<div style={{ background: Color?.includes('#') == false ? `#${Color}` : Color }} className='left-section'></div>
 			<div className='right-section'>
 				<div className='companyName CT-section'>{data?.company?.name}</div>
 				<div className='companyDetails CT-section'>

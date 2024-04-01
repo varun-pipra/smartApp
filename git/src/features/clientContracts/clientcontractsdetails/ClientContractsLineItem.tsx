@@ -20,7 +20,7 @@ import PaymentLedger from './tabs/paymentledger/CCPaymentLedger';
 import {vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons, vendorContractsResponseStatus, vendorContractsResponseStatusColors, vendorContractsResponseStatusIcons} from 'utilities/vendorContracts/enums';
 import {getClientContractDetails, getSelectedRecord, getUserRoleDetails, getClientCompanies} from 'features/clientContracts/stores/ClientContractsSlice';
 import ClientContractFiles from './tabs/clientcontractfiles/ClientContractFiles';
-import {getAmountAlignment} from 'utilities/commonutills';
+import {connectorImages, getAmountAlignment} from 'utilities/commonutills';
 import {updateClientContractDetails} from '../stores/gridAPI';
 import {stringToUSDateTime2} from 'utilities/commonFunctions';
 import {getClientContractsList} from '../stores/gridSlice';
@@ -338,7 +338,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 									<span className='grey-fontt'>{contractLineItem?.code}</span>
 									{connectors?.length && contractLineItem?.connectorItemData ? <img
 										className="sapnumber"
-										src={connectors?.[0]?.primaryIconUrl}
+										src={connectorImages?.[contractLineItem?.connectorItemData?.type]}
 										alt="connector Image"
 									/> : ''}
 									{connectors?.length && contractLineItem?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{contractLineItem?.connectorItemData?.url && window.open(contractLineItem?.connectorItemData?.url)}}>{contractLineItem?.connectorItemData?.name}</span> : ''}
@@ -357,6 +357,7 @@ const ClientContractsLineItem = (props: headerprops) => {
 									paddingLeft: '10px',
 									paddingRight: '10px',
 									minWidth: '50px',
+									height: '28px',
 									textOverflow: 'ellipsis',
 								}}>{isUserGCForCC(appInfo) ? vendorContractsStatus[contractLineItem?.status] : vendorContractsResponseStatus[contractLineItem?.status]}
 							</Button>

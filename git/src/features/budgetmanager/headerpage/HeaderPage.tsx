@@ -170,6 +170,8 @@ const HeaderPage = (props: HeaderPageProps) => {
 			equipmentManufacturerId: originalBudgetCatalogData?.equipmentManufacturerId,
 			equipmentModel: originalBudgetCatalogData?.equipmentModel,
 			equipmentCatalogId: originalBudgetCatalogData?.equipmentCatalogId,
+			workplannerCategoryId: originalBudgetCatalogData?.category,
+			tradeId: originalBudgetCatalogData?.trade,
 
 		}
 		console.log('dataAfterAdd', data)
@@ -187,6 +189,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 			setHeaderPageData(dataAfterAdd);
 			//if (props.onLineItemAdded) props.onLineItemAdded({ displayToast: true, message: 'Budget Line Item added successfully' });
 			dispatch(setToastMessage({ displayToast: true, message: 'Budget Line Item added successfully' }))
+			setOriginalBudgetCatalogData({});
 		});
 		dispatch(setLineItemDescription(''));
 	};
@@ -219,7 +222,7 @@ const HeaderPage = (props: HeaderPageProps) => {
 	};
 	const handleLaborSheet = (data:any) => {
 		setShowWorkersDialog(false);
-		setOriginalBudgetCatalogData({...originalBudgetCatalogData, ['cost'] : data?.defaultHourlyRate});
+		setOriginalBudgetCatalogData({...originalBudgetCatalogData, ['cost'] : data?.defaultHourlyRate, trade: data?.id, category: data?.categoryId});
 	};
 	useEffect(() => {
     	window.addEventListener("message",(event: any) => {

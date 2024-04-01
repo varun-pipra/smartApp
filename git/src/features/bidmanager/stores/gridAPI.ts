@@ -94,9 +94,9 @@ export const updateBidPackage = async (appInfo: any, packageId: any, body: any) 
 	return {};
 };
 
-export const deleteBidPackages = async (appInfo: any, packageIds: any) => {
+export const deleteBidPackages = async (appInfo: any, packageId: any) => {
 	if (!isLocalhost) {
-		let response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/bids/${appInfo?.uniqueId}/packages/${packageIds[0]}?sessionId=${appInfo?.sessionId}`,
+		let response = await fetch(`${appInfo?.hostUrl}/EnterpriseDesktop/api/v2/bids/${appInfo?.uniqueId}/packages/${packageId}?sessionId=${appInfo?.sessionId}`,
 			{
 				method: 'DELETE',
 				headers: { 'content-type': 'application/json' },

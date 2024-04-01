@@ -118,6 +118,7 @@ const GeneralSettings = (props: any) => {
 			allowMarkupFee: fromDataClone?.allowMarkupFee ? fromDataClone?.allowMarkupFee : false,	
 			providerSource: fromDataClone?.providerSource ? fromDataClone?.providerSource : 0,	
 			isBillable: fromDataClone?.isBillable,
+			wbsStructure: fromDataClone?.wbsStructure,
 			showBalance: fromDataClone?.showBalance ? fromDataClone?.showBalance : false,
 			showBudget: fromDataClone?.showBudget ? fromDataClone?.showBudget : false,
 			showCost: fromDataClone?.showCost ? fromDataClone?.showCost : false,
@@ -198,7 +199,7 @@ const GeneralSettings = (props: any) => {
 					</ListItem>
 				</List>
 			</Stack>
-			<Stack className='generalSettings-Sections'>
+			<Stack className='generalSettings-Sections provider-source-cls'>
 				<Typography variant="h6" component="h6" className='budgetSetting-heading'>Provider Source</Typography>
 				<RadioGroup
 					row
@@ -224,7 +225,6 @@ const GeneralSettings = (props: any) => {
 					<FormControlLabel value={false} control={<Radio />} label="Non-Billable" />
 				</RadioGroup>
 			</Stack>
-			<Divider />
 			<Stack className='BudgetSettings-Sections'>
 				<Typography variant="h6" component="h6" className='budgetSetting-heading '>Budget List Value Settings</Typography><br />
 				<Stack className='BudgetSettings-list'>
@@ -241,7 +241,7 @@ const GeneralSettings = (props: any) => {
 						variant={'outlined'}
 						sx={{
 							'& .MuiInputBase-input': {
-								padding: '4px 25px 4px 0px !important'
+								padding: '8px 25px 6px 4px !important'
 							}
 						}}
 						menuProps={classes.menuPaper}
@@ -260,7 +260,7 @@ const GeneralSettings = (props: any) => {
 						variant={'outlined'}
 						sx={{
 							'& .MuiInputBase-input': {
-								padding: '4px 25px 4px 0px !important'
+								padding: '8px 25px 6px 4px !important'
 							}
 						}}
 						menuProps={classes.menuPaper}
@@ -273,15 +273,15 @@ const GeneralSettings = (props: any) => {
 					row
 					aria-labelledby="demo-row-radio-buttons-group-label"
 					name="row-radio-buttons-group"
-					// value={formData?.isBillable?.toString()}
-        			// onChange={(e) => { handleInputChange(e.target.value == 'true' ? true : false, 'isBillable') }}
+					value={formData?.wbsStructure == 0 ? 'segment' : 'flat'}
+        			onChange={(e) => { handleInputChange(e.target.value == 'segment' ? 0 : 1, 'wbsStructure') }}
 				>
 					<FormControlLabel value={'segment'} control={<Radio />} label="Segment Structure" />
 					<FormControlLabel value={'flat'} control={<Radio />} label="Flat Structure" />
 				</RadioGroup>
 			</Stack>
-			{/* <Divider />
-			<Stack className='BudgetSettings-Sections2'>
+			{/* <Divider /> */}
+			{/* <Stack className='BudgetSettings-Sections2'>
 				<Stack className='BudgetSettings-list2'>
 					<SmartDropDown
 						LeftIcon={formData.changeOrderApp && formData.changeOrderApp.id ? <></> :
@@ -457,7 +457,7 @@ const GeneralSettings = (props: any) => {
 						menuProps={classes3.menuPaper}
 					/>
 				</Stack>
-			</Stack>
+			</Stack> */}
 			<Divider />
 			<Stack className='PlannerSettings-Sections'>
 				<Typography variant="h6" component="h6" className='budgetSetting-heading'>Planner Settings</Typography>
@@ -496,7 +496,7 @@ const GeneralSettings = (props: any) => {
 						</ListItemIcon>
 					</ListItem>
 				</List>
-			</Stack> */}
+			</Stack>
 			<SUIAlert open={openAlert} contentText={<span>The existing budget line items will have to be updated to the new values.<br /><br /> Are you sure want to continue?</span>}
 
 				title={'Confirmation'} onAction={(e: any, type: string) => handleListChanges(type)} />

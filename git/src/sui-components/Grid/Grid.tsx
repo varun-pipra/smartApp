@@ -109,7 +109,6 @@ const SUIGrid = (props: TableGridProps) => {
 	const isAppMaximized = useAppSelector((state) => state.appInfo.isAppMaximized);
 	const tooltipTimerRef = useRef<any>();
 
-
 	React.useEffect(() => {
 		if (rightPannel && selectedRow?.id === updateData?.id) {
 			// console.log('Forecast Data in Grid', updateData)
@@ -188,7 +187,9 @@ const SUIGrid = (props: TableGridProps) => {
 					isBillable: payloadObj?.isBillable,
 					sourceType: payloadObj?.sourceType,
 					sbsIds: payloadObj?.sbs?.length ? payloadObj?.sbs?.map((item:any) => { return item?.id }) : [],
-					sbsPhaseId: payloadObj?.sbsPhaseId ? payloadObj?.sbsPhaseId : null								
+					sbsPhaseId: payloadObj?.sbsPhaseId ? payloadObj?.sbsPhaseId : null,
+					workplannerCategoryId: payloadObj?.workplannerCategoryId,
+					tradeId: payloadObj?.tradeId,								
 				};
 				console.log('Payloaddd', payload);
 				updateBudgetLineItem(appInfo, payloadObj.id, payload, (response: any) => {
@@ -747,7 +748,8 @@ const SUIGrid = (props: TableGridProps) => {
 				onFirstDataRendered={onFirstDataRendered}
 				isRowMaster={isRowMaster}
 				// enabled this prop for temp
-				pinnedTopRowData={props?.moduleName == 'vendorContracts' ?  '': props.pinnedTopRowData}
+				pinnedTopRowData={props.pinnedTopRowData}
+				// {...(props?.moduleName == 'clientContracts' && {pinnedTopRowData: props?.pinnedTopRowData})}
 				rowHeight={rowHeight}
 				getRowClass={props?.getRowClass}
 				groupSelectsChildren={groupSelectsChildren}

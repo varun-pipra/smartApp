@@ -32,6 +32,7 @@ import { fetchTransactionsData } from 'features/budgetmanager/operations/transac
 import { fetchForecastData } from 'features/budgetmanager/operations/forecastSlice';
 import { fetchLineItemData } from '../operations/gridSlice';
 import { sapLinksObj } from 'utilities/sapLink';
+import { connectorImages } from 'utilities/commonutills';
 
 export interface headerprops {
 	image: any;
@@ -318,6 +319,8 @@ const LineItemDetails = (props: headerprops) => {
 		// }
 	];
 
+	console.log("connectors?.length && selectedRow?.connectorItemData", selectedRow, connectors?.length, selectedRow?.connectorItemData, connectorImages?.[selectedRow?.connectorItemData?.type]);
+
 	return (
 		<div className='budget-lineitem-detail-panel' ref={ref}>
 			<div className='details-header'>
@@ -343,9 +346,9 @@ const LineItemDetails = (props: headerprops) => {
 							<span className='budgetid-label grey-font'>Budget ID:</span>
 							<span className='grey-font budgetid-content'>
 								<span>{selectedRow?.name}</span>
-								{connectors?.length && selectedRow?.connectorItemData ? <img
+								{(connectors?.length && selectedRow?.connectorItemData) ? <img
 									className="sapnumber"
-									src={connectors?.[0]?.primaryIconUrl}
+									src={connectorImages?.[selectedRow?.connectorItemData?.type]}
 									alt="connector Image"
 								/> : ''}
 								{connectors?.length && selectedRow?.connectorItemData ? <span className='sapnumber hot-link' onClick={() =>{selectedRow?.connectorItemData?.url && window.open(selectedRow?.connectorItemData?.url)}}

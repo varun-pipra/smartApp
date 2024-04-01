@@ -171,6 +171,22 @@ export const tags = {
 	"Items": [
 		{
 			"type": "Location",
+			"text": "room1 - 1st Floor - Landscape",
+			"uniqueId": "41c6349d-64de-4962-9ee5-a60e15d63ff8",
+			"id": 374,
+			"parentId": "41c6349d-64de-4962-9ee5-a60e15d63ff8",
+			"tagData": null,
+			"isSet": false,
+			"isTagged": false,
+			"projectId": null,
+			"locationId": 374,
+			"childLevelId": 0,
+			"polygonPoints": null,
+			"polygonCentroid": null,
+			"isImportedFromOrg": false
+		},
+		{
+			"type": "Location",
 			"text": "1st Floor - SmartApp B1",
 			"uniqueId": "afab384e-5f0c-4d1a-95c8-3097d0baaec8",
 			"id": 3,

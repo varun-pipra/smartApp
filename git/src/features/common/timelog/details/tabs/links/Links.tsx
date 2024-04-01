@@ -14,7 +14,7 @@ import { postMessage } from "app/utils";
 import _ from 'lodash';
 import { AppList_PostMessage } from '../../../utils';
 import {deleteLinksData,saveLinksData} from '../../../stores/TimeLogAPI';
-import {getTimeLogDetails,setSmartItemOptionSelected,setSelectedTimeLogDetails} from '../../../stores/TimeLogSlice';
+import {getTimeLogDetails,setSmartItemOptionSelected,setSelectedTimeLogDetails,setDriveFile} from '../../../stores/TimeLogSlice';
 
 const linksOptions = [
 	{
@@ -48,14 +48,14 @@ const linksOptions = [
 		children: [],
 		iconCls: "common-icon-upload1",
 	},
-	{
-		"text": "Add External URL",
-		"value": "Add External URL",
-		"id": 2,
-		"type": "Custom",
-		children: [],
-		iconCls: "common-icon-add-external-url",
-	},
+	// {
+	// 	"text": "Add External URL",
+	// 	"value": "Add External URL",
+	// 	"id": 2,
+	// 	"type": "Custom",
+	// 	children: [],
+	// 	iconCls: "common-icon-add-external-url",
+	// },
 ];
 
 const filterOptions = [
@@ -218,11 +218,11 @@ const Links = () => {
 			cellRenderer: (params: any) => {
 				return params.data && (
 					<div className={`app-items-cell-contentt`}>
-						{params?.data?.thumbnail && <img
-							src={params?.data?.thumbnail || ''}
+						{params?.data?.fileThumbnail && <img
+							src={params?.data?.fileThumbnail || ''}
 							alt='Avatar'
-							style={{ width: '28px', height: '28px' }}
-							className='base-custom-img companyimg-cls'
+							style={{ width: '30px', height: '30px' }}
+							className='link-thumbnail'
 						/>}
 						<span className='link-name-tag' style={{ color: params.data?.smartAppId ? '#059CDF' : '' }}>{params.value}</span>
 					</div>
@@ -240,6 +240,8 @@ const Links = () => {
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
 				return (
+					<>
+					{params?.value != null ? 
 					<Button
 						variant='contained'
 						style={{
@@ -250,6 +252,8 @@ const Links = () => {
 					>
 						{params?.value}
 					</Button>
+					: 'NA'}
+					</>
 				)
 			}
 
@@ -279,9 +283,9 @@ const Links = () => {
 	};
 	const saveLinks = (payload:any) =>{
 		saveLinksData(selectedTimeLogDetails?.id,payload, (response: any) => {
-			console.log('response',response)
 			dispatch(setSelectedTimeLogDetails(response));
 			dispatch(setSmartItemOptionSelected({}));
+			dispatch(setDriveFile(''));
 		});
 	}
 	useEffect(()=>{
@@ -349,19 +353,22 @@ const Links = () => {
 		const data = event?.target?.files
 		event.preventDefault();
 		useLocalFileUpload(appInfo, data).then((res) => {
-			const payload = [{itemId : res[0]['id']}]
+			console.log('res',res)
+			const payload = res?.map((item: any) => {
+					return {itemId: item.id,name: item.name,linkType: 'Local',};
+			});
+			console.log('payload',payload)
 			saveLinks(payload);
     });
 		event.target.value = null;
 	};
 	
 	useEffect(() => {
+		//Select from Drive
     if (driveFile) {
-			console.log('driveFile',driveFile)
 			const payload = driveFile.map((data:any)=>{
 				return {itemId : data?.id}
 			})
-			console.log('payload',payload)
 			saveLinks(payload);
     }
 	}, [driveFile]);
@@ -395,7 +402,7 @@ const Links = () => {
 						</IQTooltip>
 					</div>
 					<input
-						multiple={false}
+						multiple={true}
 						style={{ display: "none" }}
 						ref={inputRef}
 						type="file"

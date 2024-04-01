@@ -32,6 +32,10 @@ import { doBlockchainAction, moduleType, setShowBlockchainDialog, blockchainStat
 import SapButton from 'sui-components/SAPButton/SAPButton';
 import SmartDropDown from 'components/smartDropdown';
 import { getConnectorType } from 'utilities/commonutills';
+import {settingsHelper} from 'utilities/commonFunctions';
+import { checkGUID } from 'features/common/timelog/utils';
+import { addSettings } from 'features/budgetmanager/operations/settingsAPI';
+import { fetchSettings } from 'features/budgetmanager/operations/settingsSlice';
 
 const BidManagerToolbar = (props: any) => {
 	const modName = 'bidmanager';
@@ -44,7 +48,7 @@ const BidManagerToolbar = (props: any) => {
 	const { connectors } = useAppSelector((state) => state.gridData);
 	const { selectedRecord } = useAppSelector((state) => state.bidManager);
 	const { blockchainEnabled } = useAppSelector((state) => state.blockchain);
-	const { defaultData } = useAppSelector(state => state.settings);					
+	const { defaultData, settingsData } = useAppSelector(state => state.settings);					
 
 	const appInfo = useAppSelector(getServer);
 	const [disableDelete, setDisableDelete] = useState<boolean>(true);
@@ -63,10 +67,10 @@ const BidManagerToolbar = (props: any) => {
 		method: ''
 	});
 	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);
-	console.log("disableBlockchainActionButtons in tool", disableBlockchainActionButtons)
-		
+
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
+	const isSingleSelected = selectedRows?.length === 1;
 	const groupOptions = [
 		{ text: "Status", value: "status" },
 		{ text: "Companies", value: "company" },
@@ -156,6 +160,33 @@ const BidManagerToolbar = (props: any) => {
 
 	const [filters, setFilters] = React.useState<any>(filterOptions);
 
+	const [workFlowDropDowOptions, setWorkFlowDropDowOptions] = React.useState<any>([]);
+	const [selectedOption, setSelectedOption] = React.useState((settingsData?.bidApp?.id && checkGUID(settingsData?.bidApp?.id)) ? settingsData?.bidApp?.name :'Built In');
+	let defaultSelection = (settingsData?.bidApp?.id && checkGUID(settingsData?.bidApp?.id)) ? {"Apps": [settingsData?.bidApp?.name]} : {"Built In": ['Built In']};
+
+	useEffect(() => {
+		const data = settingsHelper(defaultData);
+		setWorkFlowDropDowOptions(data);
+	},[defaultData]);
+
+	useEffect(() => {
+		setSelectedOption((settingsData?.bidApp?.id && checkGUID(settingsData?.bidApp?.id)) ? settingsData?.bidApp?.name :'Built In');
+		defaultSelection = (settingsData?.bidApp?.id && checkGUID(settingsData?.bidApp?.id)) ? {"Apps": [settingsData?.bidApp?.name]} : {"Built In": ['Built In']}
+		
+	}, [settingsData])
+
+	const handleInputChange = (value:any) => {
+		const Key = Object.keys(value);
+		if(Key?.length && !_.isString(value)) {
+			setSelectedOption(value[Key?.toString()].label);
+		} else {
+			setSelectedOption(value);
+		}
+		addSettings(appInfo, {...settingsData, bidApp: {id: value[Key?.toString()]?.id}}, (response: any) => {
+			dispatch(fetchSettings(appInfo));
+		});
+	};
+	
 	useEffect(() => {
 		if (selectedRows.length > 0) { setDisableDelete(false); setDisablePrint(false); }
 		else { setDisableDelete(true); setDisablePrint(true); }
@@ -212,12 +243,14 @@ const BidManagerToolbar = (props: any) => {
 		if (val == 'yes') {
 			const selectedRowIds = selectedRows.map((row: any) => row.id);
 			if (method == 'Delete') {
-				deleteBidPackages(appInfo, selectedRowIds).then(() => {
-					dispatch(fetchGridData(appInfo));
-					dispatch(fetchBudgetLineItems(appInfo));
-					dispatch(setToastMessage({ displayToast: true, message: `Selected Record Deleted Successfully` }));
-					setDisableDelete(true);
-				});
+				selectedRowIds?.map((id:any) => {
+					deleteBidPackages(appInfo, id).then(() => {
+						dispatch(fetchGridData(appInfo));
+						dispatch(fetchBudgetLineItems(appInfo));
+						dispatch(setToastMessage({ displayToast: true, message: `Selected Record Deleted Successfully` }));
+						setDisableDelete(true);
+					});
+				})
 			} else {
 				setDisablePause(true);
 				setDisableCancel(true);
@@ -363,7 +396,7 @@ const BidManagerToolbar = (props: any) => {
 					</IconButton>
 				</IQTooltip>
 
-				<Button variant="outlined" color={disablePostBid ? 'inherit' : 'success'} onClick={handlePostBid} startIcon={<Gavel />} disabled={disablePostBid || disableBlockchainActionButtons}>
+				<Button variant="outlined" color={disablePostBid ? 'inherit' : 'success'} onClick={handlePostBid} startIcon={<Gavel />} disabled={!isSingleSelected && (disablePostBid || disableBlockchainActionButtons)}>
 					Post Bid
 				</Button>
 			</>
@@ -498,12 +531,13 @@ const BidManagerToolbar = (props: any) => {
 					},
 				}}
 				anchor='right'
+				className='settings-rightpanel-cls'
 				variant='permanent'
 				elevation={8}
 				open={false}
 			>
 				<Box>
-					<Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
+					<Stack direction="row" sx={{ justifyContent: "end", height: "2em" }}>
 						<IconButton className="Close-btn" aria-label="Close Right Pane"
 							onClick={() => dispatch(setShowSettingsPanel(false))}
 						>
@@ -539,18 +573,27 @@ const BidManagerToolbar = (props: any) => {
 							</List>
 							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
 							<SmartDropDown
-								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								options={workFlowDropDowOptions || []}
 								dropDownLabel="Bid Manager"
 								isSearchField
 								required={false}
-								useNestedOptions
-								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								outSideOfGrid={true}
+								selectedValue={selectedOption}
 								isFullWidth
 								ignoreSorting={true}
-								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								handleChange={(value: any) => handleInputChange(value)}
 								variant={'outlined'}
+								sx={{
+									'& .MuiInputBase-input': {
+										padding: '8px 25px 6px 4px !important'
+									}
+								}}
 								optionImage={true}
-								// menuProps={classes3.menuPaper}
+								isSubMenuSearchField={true}
+								isDropdownSubMenu={true}
+								defaultSubMenuSelection={defaultSelection}
+								handleSearchProp={(items: any, key: any) => {}}
+								subMenuModuleName={'vendor-pay-application'}
 							/>
 						</Stack>
 					</Stack>

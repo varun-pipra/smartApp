@@ -16,6 +16,7 @@ import { getTime ,addTimeToDate} from 'utilities/datetime/DateTimeUtils';
 import { getSource, getTimeLogDateRange, getTimeLogStatus} from 'utilities/timeLog/enums';
 import {setDetailsPayloadSave,setSaveButtonEnable} from '../../../stores/TimeLogSlice';
 import _, { valuesIn } from "lodash";
+import { fetchAppsPermission} from '../../../stores/TimeLogAPI'
 import moment from "moment";
 
 
@@ -23,7 +24,7 @@ const details = (props: any) => {
 	const dispatch = useAppDispatch();
 
 	const [details, setDetails] = useState<any>({})
-	const { selectedTimeLogDetails,DetailspayloadSave,smartItemOptionSelected } = useAppSelector(state => state.timeLogRequest);
+	const { selectedTimeLogDetails,DetailspayloadSave,smartItemOptionSelected ,timelogAppsList} = useAppSelector(state => state.timeLogRequest);
 	const { sbsGridData, appsList,phaseDropDownOptions } = useAppSelector((state) => state.sbsManager);
 	const { levels = [], locations = [] } = useAppSelector(state => state.location);
 	var tinycolor = require('tinycolor2');
@@ -31,14 +32,16 @@ const details = (props: any) => {
 	const [sbsOptions, setSbsOptions] = useState<any>([]);
 	const [defaultlocation, setdefaultlocation] = useState<any>([]);
 	const [locationType, setLocationType] = useState<any>();
-	const [locationValue, setlocationValue] = useState<any>('');
+	const [locationValue, setLocationValue] = useState<any>('');
 	const [timeadded, setTimeAdded] = useState<any>('');
 	let statusbasedDisable = ['0','2']; // reported, Accepted
+	const [startTimeErrorMessage ,setStartTimeErrorMessage] = useState<any>({disable:false,msg:''});
+	const [endTimeErrorMessage ,setEndTimeErrorMessage] = useState<any>({disable:false,msg:''});
 
 	useMemo(() => {
-		const addLinksOptionsCopy = AppList(appsList);
+		const addLinksOptionsCopy = AppList(timelogAppsList);
 		setTimeAddedOptions(addLinksOptionsCopy);
-	}, [appsList]);
+	}, [timelogAppsList]);
 
 	useEffect(() => {
 		const options = sbsGridData?.map((item: any) => {
@@ -53,12 +56,12 @@ const details = (props: any) => {
 			userimage: selectedTimeLogDetails?.user && selectedTimeLogDetails?.user?.icon,
 			stage: selectedTimeLogDetails?.smartItem?.stage ?  selectedTimeLogDetails?.smartItem?.stage  : 'N/A',
 		}
-		console.log('data',data)
 		setDetails(data)
-		selectedTimeLogDetails?.location != null ? setdefaultlocation([selectedTimeLogDetails?.location]) : null;
-		// setLocation(rowLocations?.map((el: any) => {
-		// 	return { id: el.id, text: el.name };
-		// }) || []);
+		selectedTimeLogDetails?.location != null ?  
+			setdefaultlocation(selectedTimeLogDetails?.location?.map((el: any) => {
+				return { id: el.locationId, text: el.name };
+			}) || [])
+		: null;
 	}, [selectedTimeLogDetails])
 
 
@@ -74,11 +77,16 @@ const details = (props: any) => {
 		const endTimeDate = new Date(endTime);
     if ((endTimeDate < startTimeDate) || (startTimeDate > endTimeDate)) {
 				dispatch(setSaveButtonEnable(true));
+				setStartTimeErrorMessage({disable:true,msg:'Start time cannot be Greater than End Time'});
+				setEndTimeErrorMessage({disable:true,msg:'End time cannot be Lesser than Start Time'})
 		}
 		else{
 			dispatch(setSaveButtonEnable(false));
+			setStartTimeErrorMessage({disable:false,msg:''});
+			setEndTimeErrorMessage({disable:false,msg:''});
 		}
 	}
+
 	
 	const handleFieldChange = (value: any, name: any) => {
         let data;
@@ -104,7 +112,7 @@ const details = (props: any) => {
             data = { ...details,...payload,['endDate']: endTime};
 				}
         else if(name == 'sbs'){
-						const payload = value.map((data:any)=>{ return { Id : data.value , Name:data.label}})
+						const payload = value.map((data:any)=>{ return { id : data.value , name:data.label}})
             APIpayload = {['sbs'] : payload}
             data = { ...details ,[name] : value}
         }
@@ -125,23 +133,23 @@ const details = (props: any) => {
 	useEffect(() => {
 		const levelVal =
 			locationType ??
-			(selectedTimeLogDetails.locations && selectedTimeLogDetails.locations.length > 0
-				? (selectedTimeLogDetails.locations[0].levelId || selectedTimeLogDetails.locations[0].id)
+			(selectedTimeLogDetails.location && selectedTimeLogDetails.location.length > 0
+				? (selectedTimeLogDetails.location[0].levelId || selectedTimeLogDetails.location[0].id)
 				: levels.length > 0
 					? levels[levels.length - 1]?.levelId
 					: undefined);
-		setlocationValue(levelVal);
-		// dispatch(setDetailsPayloadSave({...DetailspayloadSave,['locationId'] : levelVal}))
-	}, [selectedTimeLogDetails?.locations, levels, locationType]);
+			setLocationValue(levelVal);
+	}, [selectedTimeLogDetails?.location, levels, locationType]);
 
 	const handleLocationChange = (newValues: any) => {
+		console.log('newValues',newValues)
 		const locations: any = [];
 		newValues?.map((obj: any) => {
 			!locations?.map((a: any) => a?.id)?.includes(obj?.id) && locations.push(obj);
 		});
 		if (locations?.length > 0 ) {
 				setdefaultlocation(locations);
-				const payload = locations.map((value:any)=>{ return { Id : value.uniqueId , Name:value.text}})
+				const payload = locations.map((value:any)=>{ return { id : value.uniqueId , name:value.text}})
 				dispatch(setDetailsPayloadSave({...DetailspayloadSave,['location'] : payload}))
 		}
 	};
@@ -149,20 +157,32 @@ const details = (props: any) => {
 	useMemo(() => {
 		if(!_.isEmpty(smartItemOptionSelected) ){
 			const duplicate = [{...smartItemOptionSelected}]
-			const addLinksOptions = AppList([...appsList,...duplicate]);
+			const addLinksOptions = AppList([...timelogAppsList,...duplicate]);
 			setTimeAddedOptions(addLinksOptions);
 			setTimeAdded(smartItemOptionSelected?.name);
 			dispatch(setDetailsPayloadSave({...DetailspayloadSave,['smartItemId'] : smartItemOptionSelected?.id}))
 		}
 		else{
-			const addLinksOptionsCopy = AppList([...appsList]);
+			const addLinksOptionsCopy = AppList([...timelogAppsList]);
 			setTimeAddedOptions(addLinksOptionsCopy);
 			setTimeAdded('');
 		}
 	}, [smartItemOptionSelected]); 
 
-	const handleMenu = (e: any) => {
-		AppList_PostMessage(e)
+	const handleMenu = async(e: any) => {
+		if(e?.isNew == true){
+			const data = await fetchAppsPermission(e?.id);
+			if(data.success == true && data.values == true){
+					AppList_PostMessage(e);
+			}
+			else{
+				console.log('not authorozed');
+				///you are not authorized to create an item
+			}
+		}
+		else{
+			AppList_PostMessage(e);
+		} 
 	};
 
 	return (
@@ -240,6 +260,7 @@ const details = (props: any) => {
 								defaultValue={details?.startDate ? convertDateToDisplayFormat(details?.startDate) : ''}
 								onChange={(val: any) => handleFieldChange(val, 'startDate')}
 								disabled={(statusbasedDisable.includes(details?.status?.toString()))}
+								maxDate={details?.endDate !== '' ? new Date(details?.endDate) : new Date('12/31/9999')}
 							/>
 						</div>
 					</span>
@@ -258,6 +279,7 @@ const details = (props: any) => {
 								defaultValue={details?.endDate ? convertDateToDisplayFormat(details?.endDate) : ''}
 								onChange={(val: any) => handleFieldChange(val, 'endDate')}
 								disabled={(statusbasedDisable.includes(details?.status?.toString()))}
+								minDate={new Date(details?.startDate)}
 							/>
 						</div>
 					</span>
@@ -275,6 +297,8 @@ const details = (props: any) => {
 								placeholder={"HH:MM"}
 								// actions={[]}
 								ampmInClock={true}
+								error={startTimeErrorMessage.disable}
+								errorText={startTimeErrorMessage.msg}
 							></SUIClock>
 
 						</div>
@@ -292,6 +316,8 @@ const details = (props: any) => {
 								placeholder={"HH:MM"}
 								// actions={[]}
 								ampmInClock={true}
+								error={endTimeErrorMessage.disable}
+								errorText={endTimeErrorMessage.msg}
 							></SUIClock>
 						</div>
 					</span>
@@ -458,10 +484,12 @@ const details = (props: any) => {
 								selectedValue={locationValue}
 								sx={{ fontSize: "18px" }}
 								handleChange={(value: string | undefined | string[]) => {
+									console.log('value',value)
 									setLocationType(value);
 								}}
 								disabled={details?.status == 2 ? true :false}
 							/>
+
 						</div>
 					</span>
 					<span className='timelog-info-tile'>

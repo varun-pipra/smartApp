@@ -1,45 +1,69 @@
 .reserve-staff-container {
-    padding: 10px;
-    width: 100%;
+    padding: 10px 20px;
+    width: 450px;
     &_text {
         display: inline-block;
         font-size: 14px;
         font-weight: 500;
     }
     &_content {
-        margin: 14px 0px;
+        margin: 10px 0px 14px 0px;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        div {
-            display:flex;
-            align-items:center;
-            justify-items:center; 
-            align-content:center; 
-            width : 50%;
-            margin-bottom: 8px;
-        }
-        img {
-            width: 24px; 
-            height: 24px; 
-            padding: 1px;
-        }
-        span {
+        max-height: 100px;
+        overflow: auto;
+        .reserve-text {
             font-size: 14px;
             color: #059cdf;
         }
     }
+    &_imgContainer {
+        display: flex;
+        align-items: center;
+        justify-items: center;
+        align-content: center;
+        width: 50%;
+        margin-bottom: 8px;
+        .MuiAvatar-root {
+            width: 28px;
+            height: 28px;
+            padding: 1px;
+            object-fit: cover;
+        }
+    }
     &_projects {
-        margin: 14px 0px;
+        margin: 18px 0px 26px 0px;
+        label {
+            font-size: 14px;
+        }
+        .common-icon-staff-projects:before {
+            font-size: 20px;
+            color: #ee7532;
+        }
+        .smart-dropdown-multi-select-count-cls {
+            margin-top: -2px;
+        }
     }
     &_dates {
         display: flex;
-        gap : 1em;
+        gap: 1em;
         justify-content: space-between;
         align-items: center;
-        margin: 14px 0px;
-
+        margin: 18px 0px;
+    }
+    &_btn {
+        display: flex;
+        justify-content: end;
+        margin: 2em 0em 1em 0em;
+        align-items: center;
+        .Mui-disabled {
+            opacity: 0.6;
+        }
+        .iq-button {
+            background-color: #059cdf !important;
+        }
     }
 }

@@ -3,7 +3,30 @@ import { isLocalhost, localServer } from 'app/utils';
  * This function fetches the list of Project Team Members
  */
 const moduleName = "Project Team: Data";
-
+export const fetchPaginationCompanies = async (appInfo: any, payload: any, callback: any) => {
+	let response;
+	if (!isLocalhost) {
+		response =await fetch(`${appInfo?.hostUrl}/admin/companies/GetCompaniesData?sessionId=${appInfo?.sessionId}`, {
+				method: 'POST',
+				headers: {'content-type': 'application/json'},
+				body: JSON.stringify(payload),
+		});
+	} 
+	else {
+		// response =await fetch(`https://76e0aa5a9d1444a39437783ac8388138.smartappbeta.com/EnterpriseDesktop/Safety/Flyer.iapi/GetCompaniesData?sessionId=a965c1efc2074571bdaffb8440a2df1c`, {
+		// 		method: 'POST',
+		// 		headers: {"access-control-allow-origin" : "*",'content-type': 'application/json'},
+		// 		body: JSON.stringify(payload),
+		// });
+		response = await fetch(`${localServer}projectteam/companies.json`);
+	};
+	if (!response.ok) {
+		const message = `API Request Error (${moduleName}): ${response.status}`;
+		throw new Error(message);
+	}
+	const responseData = await response.json();
+	callback && callback(responseData);
+};
 export const fetchRolesDataList = async (appInfo: any) => {
 	let response;
 	if (!isLocalhost) {
@@ -830,6 +853,29 @@ export const updatewarningstatus = async (appInfo: any, payload: any, callback: 
 		response = await fetch(`${localServer}projectteam/IsRTLSIdExists.json?dc=` + new Date().getTime(), {
 			method: 'POST',
 			body: JSON.stringify(payload?.request)
+		});
+	}
+	if (!response.ok) {
+		const message = `API Request Error (${moduleName}): ${response.status}`;
+		throw new Error(message);
+	}
+	const responseData = await response.json();
+
+	callback && callback(responseData);
+};
+
+export const UpdateUserOrgProjects = async (appInfo: any, payload: any, callback: any) => {
+	let response;
+	if (!isLocalhost) {
+		response = await fetch(`${appInfo?.hostUrl}/admin/users/UpdateUserOrgProjects?sessionId=${appInfo?.sessionId}`, {
+			method: 'POST',
+			body: JSON.stringify(payload),
+			headers: { 'content-type': 'application/json' }
+		});
+	} else {
+		response = await fetch(`${localServer}projectteam/IsRTLSIdExists.json?dc=` + new Date().getTime(), {
+			method: 'POST',
+			body: JSON.stringify(payload)
 		});
 	}
 	if (!response.ok) {

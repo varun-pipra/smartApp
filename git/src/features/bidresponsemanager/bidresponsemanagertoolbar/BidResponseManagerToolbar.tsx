@@ -50,7 +50,7 @@ const BidResponseManagerToolbar = (props: any) => {
 	const [declineBid, setDeclineBid] = useState<any>({ show: true, disable: false });
 	const [submitBid, setSubmitBid] = useState<any>({ show: false, disable: true });
 	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
-
+	const isSingleSelected = selectedRows?.length === 1;
 
 	const [alert, setAlert] = useState<any>({
 		open: false,
@@ -329,7 +329,7 @@ const BidResponseManagerToolbar = (props: any) => {
 							<span className="common-icon-delete"></span>
 						</IconButton>
 					</IQTooltip>
-					<Button variant="outlined" color={submitBid?.disable ? 'inherit' : 'success'} onClick={handleSubmitBidFormToolbar} startIcon={<Gavel />} disabled={submitBid?.disable}>
+					<Button variant="outlined" color={submitBid?.disable ? 'inherit' : 'success'} onClick={handleSubmitBidFormToolbar} startIcon={<Gavel />} disabled={!isSingleSelected && submitBid?.disable}>
 						Submit Bid
 					</Button>
 				</>

@@ -17,21 +17,21 @@
         }
     }
     .reserved-staff-cls {
+        position: absolute;
+        left: 10px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: #B873D7;
+        color: white;
+        font-size: 10px;
+        top: 18px;
+        span {
+            text-align: center;
             position: absolute;
-			left: 10px;
-			width: 16px;
-			height: 16px;
-			border-radius: 50%;
-			background-color: #B873D7;
-			color: white;
-			font-size: 10px;
-			top: 18px;
-            span {
-                text-align: center;
-				position: absolute;
-				left: 5px;
-				top: -11px;
-            }
+            left: 5px;
+            top: -11px;
+        }
     }
     .projectteam_gridColumn {
         color: #0590cd;
@@ -122,8 +122,8 @@
                 .common-icon-new-gear:before {
                     content: "\eaf9";
                 }
-                .common-icon-DateCalendar:before{
-                    font-size: 1.6rem; 
+                .common-icon-DateCalendar:before {
+                    font-size: 1.6rem;
                 }
             }
             .iq-border-button {
@@ -158,16 +158,34 @@
                 border-color: #377d22;
             }
             .iq-manager-button {
-                background-color: #fff;
-                color: #F4AE7D !important;
+                background-color: #fff !important;
+                color: #ed7632 !important;
                 font-weight: normal;
-                border-color: #F4AE7D;
+                border-color: #ed7632;
+                font-size: 14px !important;
+                border-radius: 14px;
+                padding: 3px 10px 3px 10px;
+                margin-left: 12px;
+                &.Mui-disabled {
+                    opacity: 0.6;
+                }
             }
-            .iq-reverse-button {
-                background-color: #fff;
-                color: #9CD9F2 !important;
+            .iq-reserve-button {
+                background-color: #fff !important;
+                color: #0f9fdd !important;
                 font-weight: normal;
-                border-color: #9CD9F2;
+                border-color: #0f9fdd;
+                font-size: 14px !important;
+                border-radius: 14px;
+                padding: 3px 10px 3px 10px;
+                &.Mui-disabled {
+                    opacity: 0.6;
+                }
+                .common-icon-reserve-staff:before {
+                    font-size: 17px;
+                    margin-left: -4px;
+                    margin-right: -2px;
+                }
             }
         }
         .search-wrapper {
@@ -294,6 +312,15 @@
             --ag-borders-critical: var(--ag-borders);
             --ag-borders: solid 1px;
             --ag-border-color: #333333;
+        }
+    }
+    .pt-currentProjects {
+        .common-icon-project-name:before {
+            content: "\e9ad";
+            font-family: "common-webfont";
+            vertical-align: bottom;
+            font-size: 18px;
+            margin-right: 4px;
         }
     }
     .pt-safetyStatus {
@@ -596,7 +623,14 @@
         border: 2px solid #059cdf !important;
     }
 }
+
 .reserve-Staff-dialog {
+    .MuiDialogTitle-root {
+        .title-text {
+            padding-left: 8px;
+            font-size: 16px;
+        }
+    }
     .title-tools .common-icon-close::before {
         font-size: 1em;
     }
@@ -610,5 +644,10 @@
     }
     .MuiDialogContent-root {
         border: none;
+    }
+    .MuiDialogActions-root {
+        .reserve-Staff-btn {
+            background-color: #059cdf;
+        }
     }
 }

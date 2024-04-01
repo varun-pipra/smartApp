@@ -28,7 +28,7 @@ import {getUploadQueue, setUploadQueue} from './stores/FilesSlice';
 import IQWindow from 'components/iqbasewindow/IQBaseWindow';
 import SUIAlert from 'sui-components/Alert/Alert';
 import {isBidResponseManager} from 'app/common/userLoginUtils';
-import { fetchBidResponseGridData } from './stores/gridSlice';
+import { fetchBidResponseGridData, setBidRespIframeActive } from './stores/gridSlice';
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
 
 const BidResponseManagerWindow = () => {
@@ -49,6 +49,8 @@ const BidResponseManagerWindow = () => {
 	const fileQueue = useAppSelector(getUploadQueue);
 	const [toastMessage, setToastMessage] = useState<any>({displayToast: false, message: ''});
 	const {selectedRecord} = useAppSelector((state) => state.bidResponseManager);
+	const {bidRespIframeActive} = useAppSelector((state) => state.bidResponseManagerGrid);
+	
 	const tabEnum: any = {
 		bidQuery: 'bid-queries',
 		bidResponse: 'bidResponse'
@@ -126,7 +128,7 @@ const BidResponseManagerWindow = () => {
 								break;
 							case "frame-active":
 								console.log("frame-active", data);
-								data?.data?.name == "bidresponses" && dispatch(fetchBidResponseGridData(appInfo));
+								data?.data?.name == "bidresponses" && dispatch(setBidRespIframeActive(true));
 								break;
 						}
 					}
@@ -148,6 +150,14 @@ const BidResponseManagerWindow = () => {
 	useEffect(() => {
 		dispatch(fetchConnectors(appInfo))
 	}, [appInfo]);
+
+	useEffect(() => {
+		if(bidRespIframeActive) {
+			console.log("bidRespIframeActive", bidRespIframeActive);			
+			dispatch(fetchBidResponseGridData(appInfo));
+			setTimeout(()=> {dispatch(setBidRespIframeActive(false))}, 5000)
+		}
+	}, [bidRespIframeActive])
 
 	const handleNewTab = () => {
 		postMessage({

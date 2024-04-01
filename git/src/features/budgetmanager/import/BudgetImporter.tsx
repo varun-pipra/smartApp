@@ -37,6 +37,8 @@ const BudgetImporter = (props: any) => {
 	const [importResponse, setImportResponse] = React.useState<any>({});
   const validationInterval = React.useRef<any>({});
   const statusInterval = React.useRef<any>();
+  const [errorClms , setErrorClms ] = React.useState('');
+
 	console.log("props?.noOfBudgetItems", props?.noOfBudgetItems, props?.noOfLevels)
 
 	React.useEffect(() => {props?.noOfBudgetItems == 0 ? setImportOption('new') : setImportOption('replace')}, [props?.noOfBudgetItems])
@@ -80,6 +82,8 @@ const BudgetImporter = (props: any) => {
             }, 3000);
             clearInterval(validationInterval.current);
           } else if (vldStatus?.Success && vldStatus?.IsDataValid === false) {
+            let failedKeys:any = Object.keys(vldStatus?.FailedValidations); 
+            setErrorClms(failedKeys.join(", "));
             setShowInProgress(false);
             setShowError(true);
             clearInterval(validationInterval.current);
@@ -215,7 +219,7 @@ const BudgetImporter = (props: any) => {
     >
       {showInProgress && <InProgressDialog />}
       {showSuccess && <SuccessDialog />}
-      {showError && <ErrorDialog />}
+      {showError && <ErrorDialog errorFields={errorClms}/>}
       {!showInProgress && !showSuccess && !showError && (
         <div className="import-wrap-cls">
           <Stack className="bm-type">

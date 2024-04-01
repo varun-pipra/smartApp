@@ -34,7 +34,7 @@ import {
 import { createStyles, makeStyles } from '@mui/styles';
 
 import { curveList } from '../../../headerpage/HeaderPage';
-import { updateBudgetLineItem } from '../../../operations/gridAPI';
+import { fetchWorkPlannerCategories, updateBudgetLineItem } from '../../../operations/gridAPI';
 import { addRollupTask } from '../../../operations/rightPanelAPI';
 import { setSelectedRowData } from "../../../operations/rightPanelSlice";
 import { fetchGridData } from '../../../operations/gridSlice';
@@ -52,6 +52,7 @@ var tinycolor = require('tinycolor2');
 import { postMessage } from "../../../../../app/utils";
 import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
 import { measurementSymbols } from 'utilities/commonutills';
+import { LaborSheetModel } from './laborSheet/LaborSheet';
 
 interface BudgetDetailsProps {
 	onFormSubmit?: (data: any) => void;
@@ -103,7 +104,8 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 	const [divisionDefaultFilters, setDivisionDefaultFilters] = React.useState<any>([]);
 	const [sbsOptions, setSbsOptions] = React.useState<any>([]);
 	const [selectedSegment, setSelectedSegment] = React.useState<any>(false);
-	
+	const [showWorkersDialog, setShowWorkersDialog] = React.useState<any>(false);
+	const [laborSheetData, setLaborSheetData] = React.useState<any>([]);	
 	
 
 	// const [wbsAddButton, setWbsAddButton] = useState<any>(false);
@@ -139,6 +141,16 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 		})
 		setSbsOptions([...options]);
 	}, [sbsGridData]);
+
+	React.useEffect(() => {
+		if(appInfo) {
+			fetchWorkPlannerCategories(appInfo).then((res: any) => {
+				setLaborSheetData(res);
+      		}).catch((error: any) => {
+        		console.log("error", error);
+      		});
+		}
+	},[appInfo]);
 
 	useEffect(() => {
 		if (formData?.costCode && costCodeDropdownData?.length > 0) {
@@ -196,7 +208,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 				return { id: el.id, text: el.name };
 			}) || []);
 		}
-	}, [selectedRow?.id]);
+	}, [selectedRow]);
 
 	useEffect(() => {
 		const levelVal =
@@ -285,7 +297,6 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 
 		}
 	}, [selectedLevel]);
-	console.log("locationConfig", locationConfig, selectedLevel)
 
 	const submitUpdate = () => {
 		const data = {
@@ -317,7 +328,9 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 			isBillable: formData?.isBillable,
 			sourceType: formData?.sourceType,			
 			sbsIds: formData?.sbs?.length ? formData?.sbs?.map((item:any) => { return item?.id }) : [],
-			sbsPhaseId: formData?.sbsPhaseId ? formData?.sbsPhaseId : null
+			sbsPhaseId: formData?.sbsPhaseId ? formData?.sbsPhaseId : null,
+			workplannerCategoryId: formData?.workplannerCategoryId,
+			tradeId: formData?.tradeId,	
 		};
 
 		console.log('data', data);
@@ -466,7 +479,11 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 										equipmentItemPrice: catObj.price,
 										referenceId: catObj.referenceId,
 										equipmentSKU: catObj.sku,
-										equipmentManufacturerName: catObj.manufacturer?.name
+										equipmentManufacturerName: catObj.manufacturer?.name,
+										unitQuantity: catObj.quantity,
+										unitCost: catObj.price,
+										originalAmount: getOriginalAmount(catObj?.quantity, catObj?.price),
+
 									});
 								} else {
 									const obj = companyDataRef.current.find((rec: any) => catObj?.distributorId === rec.objectId);									
@@ -480,7 +497,10 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 										referenceId: catObj.referenceId,
 										equipmentSKU: catObj.sku,
 										equipmentManufacturerName: catObj?.distributorName,
-										equipmentManufacturer: [obj]
+										equipmentManufacturer: [obj],
+										unitQuantity: catObj.quantity,
+										unitCost: catObj?.price,
+										originalAmount: getOriginalAmount(catObj?.quantity, catObj?.price),										
 									});
 								}
 
@@ -561,6 +581,15 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 			}
 		})
 	}
+	const getOriginalAmount = (qty:any, cost:any) => {
+		if(qty && cost) return Number(qty)*Number(cost)
+		if(cost) return Number(cost)
+	}
+	const handleLaborSheet = (data:any) => {
+		setShowWorkersDialog(false);
+		console.log("dataaaa", data)	
+		setFormData({...formData, workplannerCategoryId: data?.categoryId, workplannerCategoryName: data?.workplannerCategoryName, tradeName: data?.tradeName, tradeId: data?.id, hourlyRate: data?.hourlyRate, unitCost: data?.hourlyRate, ...formData?.unitQuantity && {originalAmount: getOriginalAmount(formData?.unitQuantity, data?.hourlyRate)}})
+	};
 
 	return (
 		<div className="budget-details-box">
@@ -763,13 +792,14 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 						</span>
 					</>
 				)}
-				<div className="budget-info-subheader">Labor Cost</div>
+				{ ['L - Labor']?.includes(formData?.costType) && <><div className="budget-info-subheader">Labor Cost</div>
+				<div className="labor-sheet-4column">
 				<span className="budget-info-tile">
 					<div className="budget-info-label">Work Category</div>
 					<div className="budget-info-data-box">
 						{gridIcon}
 						<span className="budget-info-data">
-							{formData?.category}
+							{formData?.workplannerCategoryName}
 						</span>
 					</div>
 				</span>
@@ -778,7 +808,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					<div className="budget-info-data-box">
 						{gridIcon}
 						<span className="budget-info-data">
-							{formData?.trade}
+							{formData?.tradeName}
 						</span>
 					</div>
 				</span>
@@ -787,10 +817,23 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					<div className="budget-info-data-box">
 						{gridIcon}
 						<span className="budget-info-data">
-							{formData?.defaultRate}
+							{formData?.hourlyRate}
 						</span>
 					</div>
 				</span>
+				<span className="budget-info-tile from-catalog-btn-tile">
+					<Button
+						variant={"outlined"}
+						startIcon={<span className="common-icon-from-catalog"></span>}
+						className="from-catalog-btn"
+						onClick={() => setShowWorkersDialog(true)}
+						disabled={isReadOnly || formData?.bidPackage || formData?.vendorContract || formData?.clientContract}
+					>
+						From Labor Sheet
+					</Button>
+				</span> </div> </>}
+				
+
 				{/* <span className='budget-info-tile span-2'>
 					<div className='budget-info-label'>Associate To?</div>
 					<div className='budget-info-data-box'>
@@ -1814,6 +1857,7 @@ const BudgetDetails = (props: BudgetDetailsProps) => {
 					showActions={alert?.type == 'Warning' ? false : true}
 				/>
 			)}
+			{showWorkersDialog && <LaborSheetModel data={laborSheetData} handleSubmit={(values:any) => handleLaborSheet(values)} onClose={() => setShowWorkersDialog(false)}/>}			
 		</div>
 	);
 };

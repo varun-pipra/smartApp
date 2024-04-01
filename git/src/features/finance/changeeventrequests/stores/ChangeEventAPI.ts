@@ -340,3 +340,15 @@ export const fetchLinks = async (changeEventId: string) => {
 	}
 	return LinkGriddata?.data;
 };
+
+export const postChangeEventsToConnector = async (type: any, callback: any) => {
+	const server: any = getServerInfo();
+	const options = {
+		method: 'POST',
+		headers: { 'content-type': 'application/json' },
+	};
+	if (!isLocalhost) {
+		const response = await changeEventsRequest(server, `/postToConnector?connectorType=${type}`, options);
+		callback && callback(response);
+	}
+};

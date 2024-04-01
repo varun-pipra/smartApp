@@ -37,7 +37,7 @@ const VendorContractsScheduleValues = (props: any) => {
 	const emptyObj = [{completionPercentage: "", payoutPercentage: "", payoutAmount: null, balanceAmount: null}];
 	const {currencySymbol} = useAppSelector((state) => state.appInfo);
 	const {selectedRecord, contractDetailsGetCall} = useAppSelector((state) => state.vendorContracts);
-	const {budgetItems} = useAppSelector((state) => state.vendorContractsGrid);
+	const {budgetItems, budgetItemsGetCall} = useAppSelector((state) => state.vendorContractsGrid);
 	const {loginUserData} = useAppSelector((state) => state.vendorContracts);
 	const {budgetManagerData} = useAppSelector(state => state.cCSov);
 
@@ -870,11 +870,11 @@ const VendorContractsScheduleValues = (props: any) => {
 			});
 		}
 		else {
-			//   console.log("elseeee scheduleOfValues", selectedRecord?.scheduleOfValues, budgetItems, contractDetailsGetCall)
-			selectedRecord?.scheduleOfValues == null && contractDetailsGetCall && budgetItems?.map((row: any) => {
-				// console.log("repeated call")
+			console.log("elseeee scheduleOfValues", selectedRecord?.scheduleOfValues, budgetItems, contractDetailsGetCall, budgetItemsGetCall)
+			selectedRecord?.scheduleOfValues == null && contractDetailsGetCall && budgetItemsGetCall && budgetItems?.length && budgetItems?.map((row: any) => {
+				console.log("budgetItems call", budgetItems, row, scheduleOfValuesGridData)
 				if(!Object.keys(scheduleOfValuesGridData)?.includes(row?.id)) {
-					//   console.log("scheduleOfValuesGridData in ", row?.id)
+					  console.log("scheduleOfValuesGridData in ", row?.id)
 					createScheduleOfValues(appInfo, selectedRecord?.id, row?.id, {type: 'PercentComplete'}, (response: any) => {
 						if(errorStatus?.includes(response?.status)) setToast({show: true, message: errorMsg});
 						else response?.scheduleOfValues?.map((obj: any) => {
@@ -882,7 +882,6 @@ const VendorContractsScheduleValues = (props: any) => {
 								scheduleOfValuesGridData = {...scheduleOfValuesGridData, [row?.id]: {...obj}};
 								setTableData(scheduleOfValuesGridData);
 							}
-
 						});
 					});
 				}
@@ -909,7 +908,7 @@ const VendorContractsScheduleValues = (props: any) => {
 	}, [tableData, selectedBudgetItem]);
 
 	const onSelectedTileChange = (tile: any) => {
-		// console.log("selected Tile", tile, activeTile?.type,tableData[selectedBudgetItem?.id]?.payIntervalFrequency );
+		console.log("selected Tile", tile, activeTile?.type,tableData[selectedBudgetItem?.id]?.payIntervalFrequency );
 		if(tableData[selectedBudgetItem?.id]?.payments?.length > 0 || (activeTile?.type == 'ThroughDate' && ['Monthly', 'Weekly', 'RealTime']?.includes(tableData[selectedBudgetItem?.id]?.payIntervalFrequency))) {
 			setShowAlert(true);
 		}

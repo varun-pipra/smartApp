@@ -5,6 +5,7 @@ import {
   workTeamData,
   workTeamGridData,
 } from "data/timelog/TimeLogData";
+import { timelogAppsData} from 'data/timelog/TimeLogAppsData';
 import { TimeLogRequest } from "../utils";
 const moduleName = "Time Log Requests:";
 
@@ -179,3 +180,39 @@ export const fetchSSRTimeLofGridDataList = async (payload: any, callback: any) =
 	const responseData = await response.json();
 	callback && callback(responseData.segments, responseData?.count);
 };
+
+//appslist calling 
+export const fetchTimelogAppsList = async () => {
+	let response;
+	const appInfo: any = getServerInfo();
+	if (!isLocalhost) {
+		response = await fetch(
+			`${appInfo?.hostUrl}/EnterpriseDesktop/AppGroups/AppGroups.iapi/SmartAppList?&projectId=${appInfo?.projectId}?sessionId=${appInfo?.sessionId}`
+		);
+		if (!response.ok) {
+			const message = `API Request Error (${moduleName}): ${response.status}`;
+			throw new Error(message);
+		}
+		const responseData = await response.json();
+		return responseData?.values || [];
+	}
+	return timelogAppsData?.values;
+};
+export const fetchAppsPermission = async(smartAppId:any) =>{
+  console.log('smartAppId',smartAppId)
+  let response;
+	const appInfo: any = getServerInfo();
+  if (!isLocalhost) {
+    response = await fetch(
+      `${appInfo?.hostUrl}/EnterpriseDesktop/AppZone/ZoneInfo.iapi/CanCreateItem?smartAppId=${smartAppId}&projectId=${appInfo?.projectId}?sessionId=${appInfo?.sessionId}`
+    );
+    if (!response.ok) {
+      const message = `API Request Error (${moduleName}): ${response.status}`;
+      throw new Error(message);
+    }
+    const responseData = await response.json();
+    console.log('responseData',responseData)
+    return responseData;
+  }
+  return {"success":true,"values":true};
+}

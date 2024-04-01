@@ -1,5 +1,5 @@
 import './BidResponseManagerGrid.scss';
-
+import _ from 'lodash';
 import { getCostCodeDivisionList, getServer } from 'app/common/appInfoSlice';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
@@ -20,6 +20,8 @@ import {
 import { setActiveMainGridFilters, setActiveMainGridGroupKey, setActiveMainGridDefaultFilters, setSelectedRows } from '../stores/gridSlice';
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
+import {clearObjectValues} from 'sui-components/ViewBuilder/utils';
+
 
 var tinycolor = require('tinycolor2');
 let defaultBRMStatusFilter: any = [];
@@ -45,7 +47,7 @@ const BidResponseManagerGrid = (props: any) => {
 
 	const [viewBuilderColumns, setViewBuilderColumns] = React.useState<any>([]);
 
-	if (statusFilter) defaultBRMStatusFilter = activeMainGridFilters.responseStatus;
+	
 
 	useEffect(() => {
 		gridRef?.current?.api?.applyTransaction(liveData);
@@ -316,9 +318,33 @@ const BidResponseManagerGrid = (props: any) => {
 				return <span style={{ color: '#059CDF' }}>{params.data?.queryCount} </span>;
 			}
 		}
-	], []);
+	], [defaultBRMStatusFilter, activeMainGridGroupKey]);
 
 	const [colDef, setColDef] = useState<any>([...headers]);
+
+	useMemo(()=>{
+		if(activeMainGridFilters.responseStatus?.length){
+			if(statusFilter){
+				let updatedColumndDefList: any = colDef.map((cDef: any) => {
+					if (cDef.field == "responseStatus") {
+						return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :[...activeMainGridFilters.responseStatus]}};
+					}
+					return cDef;
+				});
+				setColDef(updatedColumndDefList);
+			}
+		}
+		else{
+			let updatedColumndDefList2: any = colDef.map((cDef: any) => {
+				if (cDef.field == "status") {
+					return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :undefined}};
+				}
+				return cDef;
+			});
+			setColDef(updatedColumndDefList2);
+		}
+	},[activeMainGridFilters])
+
 	useEffect(() => {
 		if (viewBuilderData.length && viewData?.columnsForLayout?.length) {
 			let updatedColumndDefList: any = [];
@@ -333,7 +359,8 @@ const BidResponseManagerGrid = (props: any) => {
 							let newColumnDef = {
 								...cDef,
 								...viewItem,
-								hide: viewItem?.hide
+								hide: viewItem?.hide,
+								headerComponentParams : cDef.field == "responseStatus" && {...cDef.headerComponentParams , defaultFilters :activeMainGridFilters.responseStatus?.length ? activeMainGridFilters.responseStatus : undefined}
 							};
 							updatedColumndDefList.push(newColumnDef);
 						}
@@ -348,11 +375,19 @@ const BidResponseManagerGrid = (props: any) => {
 
 	useMemo(() => {
 		// set the filters and grouping data
-		if (viewData) {
-			console.log('viewData', viewData)
-			viewData?.groups && dispatch(setActiveMainGridGroupKey(viewData?.groups?.[0]));
-			viewData?.filters && dispatch(setActiveMainGridFilters(JSON.parse(viewData?.filters)));
-			viewData?.filters && dispatch(setActiveMainGridDefaultFilters(JSON.parse(viewData?.filters)));
+		if (viewData?.viewId) {
+			const formatedFilter = viewData?.filters == null ? JSON.parse('{}') : JSON.parse(viewData?.filters);
+			const formatedgrouping = viewData?.groups?.length ==  0 || viewData?.groups == null || viewData?.groups[0] == ''   ? 'undefined': viewData?.groups?.[0];
+			if(!_.isEmpty(activeMainGridFilters) && formatedFilter){
+				const data = clearObjectValues(activeMainGridFilters,formatedFilter);
+				dispatch(setActiveMainGridFilters(data));
+				dispatch(setActiveMainGridDefaultFilters(data));
+			}	
+			else{
+				dispatch(setActiveMainGridFilters(formatedFilter));
+				dispatch(setActiveMainGridDefaultFilters(formatedFilter));
+			}
+		 	dispatch(setActiveMainGridGroupKey(formatedgrouping));
 		}
 	}, [viewData])
 
@@ -362,6 +397,7 @@ const BidResponseManagerGrid = (props: any) => {
 			groupKeyValue.current = activeMainGridGroupKey;
 			columnsCopy.forEach((col: any) => {
 				col.rowGroup = activeMainGridGroupKey ? activeMainGridGroupKey === col.field : false;
+				col.headerComponentParams = col.field == "responseStatus" && {...col.headerComponentParams , defaultFilters :activeMainGridFilters.responseStatus?.length ? activeMainGridFilters.responseStatus : undefined};
 			});
 			setColDef(columnsCopy);
 		} else if (activeMainGridGroupKey ?? true) {
@@ -420,7 +456,6 @@ const BidResponseManagerGrid = (props: any) => {
 					</div>
 				);
 			} else if (colName === "packageStatus") {
-				console.log("daaaa", colName, data);
 				return (
 					<div style={{ display: 'flex' }}>
 						<CustomGroupHeader iconCls={'common-icon-orgconsole-safety-policies'} baseCustomLine={false}
@@ -473,7 +508,7 @@ const BidResponseManagerGrid = (props: any) => {
 					groupIncludeFooter={false}
 					defaultColDef={defaultColDef}
 					onRowDoubleClicked={onBidGridRowDoubleClick}
-					rowSelection='single'
+					rowSelection='multiple'
 					rowSelected={(e: any) => rowSelected(e)}
 					getReference={(value: any) => { setGridRef(value); }}
 					groupDisplayType={'groupRows'}

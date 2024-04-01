@@ -31,10 +31,11 @@ import {setUploadQueue} from './stores/FilesSlice';
 import SUIAlert from 'sui-components/Alert/Alert';
 import {isBidManager} from 'app/common/userLoginUtils';
 import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
-import { fetchGridData } from './stores/gridSlice';
+import { fetchGridData, setBidIframeActive } from './stores/gridSlice';
 
 const BidManagerWindow = () => {
 	const dispatch = useAppDispatch();
+	const {bidIframeActive} = useAppSelector(state=>state.bidManagerGrid)
 
 	const location = useLocation();
 	const [localhost] = useState(isLocalhost);
@@ -134,7 +135,7 @@ const BidManagerWindow = () => {
 								break;
 							case "frame-active":
 								console.log("frame-active", data);
-								data?.data?.name == "bidmanager" && dispatch(fetchGridData(appInfo));
+								data?.data?.name == "bidmanager" && dispatch(setBidIframeActive(true));
 							break;
 						}
 					}
@@ -146,6 +147,14 @@ const BidManagerWindow = () => {
 			}
 		}
 	}, [localhost, appData]);
+
+	useEffect(() => {
+		if(bidIframeActive) {
+			console.log("bidIframeActive", bidIframeActive);			
+			dispatch(fetchGridData(appInfo));
+			setTimeout(()=> {dispatch(setBidIframeActive(false))}, 5000)
+		}
+	}, [bidIframeActive])
 
 	const handleNewTab = () => {
 		postMessage({

@@ -8,13 +8,15 @@ export interface ClientPayAppsGridDataState {
 	gridData: any;
 	gridOriginalData: any;
 	selectedRows:any;
+	cpaIframeActive:boolean;
 }
 
 const initialState: ClientPayAppsGridDataState = {
 	loading: false,
 	gridData: [],
 	gridOriginalData: [],
-	selectedRows: []
+	selectedRows: [],
+	cpaIframeActive: false,
 };
 
 export const getClientPayAppsList = createAsyncThunk<any, any>(
@@ -52,6 +54,9 @@ export const CPAGridSlice = createSlice({
 			}
 
 		},
+		setCPAIframeActive: (state, action: PayloadAction<any>) => {
+			state.cpaIframeActive = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -79,6 +84,6 @@ export const CPAGridSlice = createSlice({
 });
 
 
-export const { setGridData, setSelectedRows } = CPAGridSlice.actions;
+export const { setGridData, setSelectedRows, setCPAIframeActive } = CPAGridSlice.actions;
 
 export default CPAGridSlice.reducer;

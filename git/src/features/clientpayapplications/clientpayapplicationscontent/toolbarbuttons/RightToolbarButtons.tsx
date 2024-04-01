@@ -18,18 +18,50 @@ import SapButton from 'sui-components/SAPButton/SAPButton';
 import SmartDropDown from 'components/smartDropdown';
 import { postClientPayAppsToConnector } from 'features/clientpayapplications/stores/GridAPI';
 import { getConnectorType } from 'utilities/commonutills';
+import {settingsHelper} from 'utilities/commonFunctions';
+import _ from "lodash";
+import { checkGUID } from 'features/common/timelog/utils';
+import { addSettings } from 'features/budgetmanager/operations/settingsAPI';
+import { fetchSettings } from 'features/budgetmanager/operations/settingsSlice';
 
 // Component definition
 const ClientPayAppToolbarRightButtons = () => {
 	const dispatch = useAppDispatch();
 	const tableViewType = useAppSelector(getTableViewType);
 	const { connectors } = useAppSelector((state) => state.gridData);
-	const { defaultData } = useAppSelector(state => state.settings);			
+	const { defaultData, settingsData } = useAppSelector(state => state.settings);			
 
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const {blockchainEnabled} = useAppSelector((state: any) => state.blockchain);
 	const appInfo = useAppSelector(getServer);
+
+	const [workFlowDropDowOptions, setWorkFlowDropDowOptions] = React.useState<any>([]);
+	const [selectedOption, setSelectedOption] = React.useState((settingsData?.invoicesApp?.id && checkGUID(settingsData?.invoicesApp?.id)) ? settingsData?.invoicesApp?.name :'Built In');
+	let defaultSelection = (settingsData?.invoicesApp?.id && checkGUID(settingsData?.invoicesApp?.id)) ? {"Apps": [settingsData?.invoicesApp?.name]} : {"Built In": ['Built In']};
+
+	useEffect(() => {
+		const data = settingsHelper(defaultData);
+		setWorkFlowDropDowOptions(data);
+	},[defaultData]);
+
+	useEffect(() => {
+		setSelectedOption((settingsData?.invoicesApp?.id && checkGUID(settingsData?.invoicesApp?.id)) ? settingsData?.invoicesApp?.name :'Built In');
+		defaultSelection = (settingsData?.invoicesApp?.id && checkGUID(settingsData?.invoicesApp?.id)) ? {"Apps": [settingsData?.invoicesApp?.name]} : {"Built In": ['Built In']};
+		
+	}, [settingsData])
+
+	const handleInputChange = (value:any) => {
+		const Key = Object.keys(value);
+		if(Key?.length && !_.isString(value)) {
+			setSelectedOption(value[Key?.toString()].label);
+		} else {
+			setSelectedOption(value);
+		}
+		addSettings(appInfo, {...settingsData, invoicesApp: {id: value[Key?.toString()]?.id}}, (response: any) => {
+			dispatch(fetchSettings(appInfo));
+		});
+	};
 
 	useEffect(() => {
 		setToggleChecked(blockchainEnabled);
@@ -109,12 +141,13 @@ const ClientPayAppToolbarRightButtons = () => {
 					},
 				}}
 				anchor='right'
+				className='settings-rightpanel-cls'
 				variant='permanent'
 				elevation={8}
 				open={false}
 			>
 				<Box>
-					<Stack direction="row" sx={{justifyContent: "end", height: "5em"}}>
+					<Stack direction="row" sx={{justifyContent: "end", height: "2em"}}>
 						<IconButton className="Close-btn" aria-label="Close Right Pane"
 							onClick={() => dispatch(setShowSettingsPanel(false))}
 						>
@@ -150,19 +183,28 @@ const ClientPayAppToolbarRightButtons = () => {
 							</List>
 							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
 							<SmartDropDown
-								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								options={workFlowDropDowOptions || []}
 								dropDownLabel="Client Pay Invoices"
 								isSearchField
 								required={false}
-								useNestedOptions
-								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								outSideOfGrid={true}
+								selectedValue={selectedOption}
 								isFullWidth
 								ignoreSorting={true}
-								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								handleChange={(value: any) => handleInputChange(value)}
 								variant={'outlined'}
+								sx={{
+									'& .MuiInputBase-input': {
+										padding: '8px 25px 6px 4px !important'
+									}
+								}}
 								optionImage={true}
-								// menuProps={classes3.menuPaper}
-							/>	
+								isSubMenuSearchField={true}
+								isDropdownSubMenu={true}
+								defaultSubMenuSelection={defaultSelection}
+								handleSearchProp={(items: any, key: any) => {}}
+								subMenuModuleName={'client-contracts'}
+							/>		
 						</Stack>
 					</Stack>
 				</Box>

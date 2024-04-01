@@ -9,6 +9,7 @@ export interface VendorPayAppsGridDataState {
 	gridOriginalData: any;
 	selectedRows:any;
 	refreshed:boolean;
+	vpaIframeActive: boolean;
 }
 
 const initialState: VendorPayAppsGridDataState = {
@@ -17,6 +18,7 @@ const initialState: VendorPayAppsGridDataState = {
 	gridOriginalData: [],
 	selectedRows: [],
 	refreshed: false,
+	vpaIframeActive: false,
 };
 
 export const getVendorPayAppsLst = createAsyncThunk<any, any>(
@@ -58,6 +60,9 @@ export const VPAGridSlice = createSlice({
 			}
 
 		},
+		setVPAIframeActive: (state, action: PayloadAction<any>) => {
+			state.vpaIframeActive = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -85,6 +90,6 @@ export const VPAGridSlice = createSlice({
 });
 
 
-export const { setGridData, setSelectedRows, setRefreshed } = VPAGridSlice.actions;
+export const { setGridData, setSelectedRows, setRefreshed, setVPAIframeActive } = VPAGridSlice.actions;
 
 export default VPAGridSlice.reducer;

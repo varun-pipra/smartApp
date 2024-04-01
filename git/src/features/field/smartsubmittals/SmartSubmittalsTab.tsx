@@ -857,7 +857,7 @@ const SmartSubmittalsTab = ({activeTab, ...props}: SmartSubmittalWindowProps) =>
 			const data = searchAndFilter([...modifiedList]);
 			setRowData(data);
 		}
-	}, [gridSearchText, selectedFilters]);
+	}, [gridSearchText, selectedFilters, modifiedList]);
 	// const modifiedData = searchAndFilter(rowData);
 	const componentPropsChanged = useCallback(
 		(params: any) => {

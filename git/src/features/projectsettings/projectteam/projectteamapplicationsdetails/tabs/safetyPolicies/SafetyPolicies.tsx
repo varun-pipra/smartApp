@@ -110,7 +110,7 @@ const SafetyPolicies = (props: any) => {
 					let policyData = iframeEventData.data,
 						payload = {
 							"userId": userdata?.objectId, //appInfo.gblConfig.currentUserId,
-							"verifiedBy": userdata?.objectId, //appInfo.gblConfig.currentUserId,
+							"verifiedBy": appInfo?.gblConfig?.currentUserId, //appInfo.gblConfig.currentUserId,
 							"documentFor": "worker",
 							"currentDateTime": new Date(),
 							"signatureData": {

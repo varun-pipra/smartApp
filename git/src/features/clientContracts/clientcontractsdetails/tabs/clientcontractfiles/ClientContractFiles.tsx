@@ -28,6 +28,11 @@ const ClientContractFiles = ({ readOnly }: ClientContractFilesProps) => {
 	const [alert, setAlert] = React.useState<boolean>(false)
 	const [deletingFiles, setDeletingFiles] = useState<any>();
 
+	const openPreview = (files: Array<any>, index: number) => {
+		setSelectedStandardFile(null);
+		useFilePreview('clientContractsIframe', appInfo, 'ClientContracts', files, index);
+	};
+
 	useEffect(() => {
 		if (isLocalhost) {
 			const { standard = [], additional = [] } = contractDetail?.files || {};
@@ -47,6 +52,7 @@ const ClientContractFiles = ({ readOnly }: ClientContractFilesProps) => {
 
 	useEffect(() => {
 		if (selectedStandardFile) {
+			console.log('selectedStandardFile',selectedStandardFile)
 			const index = standardFiles?.findIndex((file: any) => file.id === selectedStandardFile.id);
 			const formattedFileList = standardFiles?.map((file: any) => {
 				const { id, name, thumbnail } = file;
@@ -54,7 +60,7 @@ const ClientContractFiles = ({ readOnly }: ClientContractFilesProps) => {
 					id, fileName: name, thumbnail
 				}
 			});
-
+			console.log('formattedFileList',formattedFileList)
 			openPreview(formattedFileList, index);
 		}
 	}, [selectedStandardFile]);
@@ -140,9 +146,7 @@ const ClientContractFiles = ({ readOnly }: ClientContractFilesProps) => {
 		useDriveFileBrowser({ iframeId: 'clientContractsIframe', roomId: appInfo && appInfo.presenceRoomId, appType: 'ClientContracts', folderType: folderType });
 	};
 
-	const openPreview = (files: Array<any>, index: number) => {
-		useFilePreview('clientContractsIframe', appInfo, 'ClientContracts', files, index);
-	};
+
 
 	const localFileUpload = (data: any) => {
 		useLocalFileUpload(appInfo, data).then((fileList: any) => {

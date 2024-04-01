@@ -634,9 +634,9 @@ const ProjectTeamApplicationsLID = ({data, iframeEventData, ...props}: IQGridWin
 		if(!isCompMountedOnce?.current) {
 			isCompMountedOnce.current = true;
 			dispatch(fetchRolesData(appInfo));
-			dispatch(fetchTradesData(appInfo));
+			// dispatch(fetchTradesData(appInfo));
 			dispatch(fetchEmailSuggestions(appInfo));
-			dispatch(fetchCompaniesData(appInfo));
+			// dispatch(fetchCompaniesData(appInfo));
 			dispatch(fetchShiftsData(appInfo));
 			dispatch(fetchActiveCalendars(appInfo));
 			dispatch(fetchSkillsData(appInfo));
@@ -781,6 +781,9 @@ const ProjectTeamApplicationsLID = ({data, iframeEventData, ...props}: IQGridWin
 				return;
 			} else {
 				let verificationDataPromiseList = [new Promise((resolve, reject) => {
+					if(payload?.trade === undefined) payload.trade = null;
+					if(payload?.workcategory === undefined) payload.workcategory = null;
+					if(payload?.hourlyRate === undefined || isNaN(payload.hourlyRate)) payload.hourlyRate = null;
 					upsertUserDetails(appInfo, payload, function (res: any) {
 						console.log('executeSave upsertUserDetails callback', payload);
 						resolve(res);
@@ -792,7 +795,7 @@ const ProjectTeamApplicationsLID = ({data, iframeEventData, ...props}: IQGridWin
 					console.log('settings isAcknowledge to verificationData', verificationData, safetyCredentialsAcknowledged, new Date());
 					verificationData.isAcknowledge = safetyCredentialsAcknowledged;
 				}
-				if(verificationData && (verificationData.isAcknowledge || verificationData.isAttestated)) {
+				if(verificationData) {
 					verificationDataPromiseList.push(new Promise(function (resolve, reject) {
 						upsertWorker(appInfo, verificationData, function (res: any) {
 							console.log('executeSave upsertWorker callback', verificationData);
@@ -837,6 +840,9 @@ const ProjectTeamApplicationsLID = ({data, iframeEventData, ...props}: IQGridWin
 			}
 		} else {
 			let promiseList = [new Promise((resolve, reject) => {
+				if(payload?.trade === undefined) payload.trade = null;
+				if(payload?.workcategory === undefined) payload.workcategory = null;
+				if(payload?.hourlyRate === undefined || isNaN(payload.hourlyRate)) payload.hourlyRate = null;
 				upsertUserDetails(appInfo, payload, function (res: any) {
 					console.log('executeSave upsertUserDetails callback', payload);
 					resolve(res);

@@ -29,7 +29,7 @@ import {setAdditionalFiles, setContractFilesCount, getStandardFiles} from './sto
 import VendorContractsContent from './vendorcontractscontent/VendorContractsContent';
 import {addContractFiles} from './stores/tabs/contractfiles/VCContractFilesTabAPI';
 import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
-import { getVendorContractsList } from './stores/gridSlice';
+import { getVendorContractsList, setVCIframeActive } from './stores/gridSlice';
 
 const VendorContractsWindow = () => {
 	const dispatch = useAppDispatch();
@@ -49,6 +49,7 @@ const VendorContractsWindow = () => {
 	const presenceId = 'vendor-contracts-presence';
 	const showToastMessage = useAppSelector(getToastMessage);
 	const currentContract = useAppSelector(getSelectedRecord);
+	const {vcIframeActive} = useAppSelector(state=>state.vendorContractsGrid);
 
 	const tabEnum: any = {
 		sov: 'schedule-of-Values',
@@ -151,7 +152,7 @@ const VendorContractsWindow = () => {
 								break;
 							case "frame-active":
 								console.log("frame-active", data, appInfo);
-								data?.data?.name == "vendorcontracts" && dispatch(getVendorContractsList(appInfo));
+								data?.data?.name == "vendorcontracts" && dispatch(setVCIframeActive(true));
 								break;
 						}
 					}
@@ -167,6 +168,14 @@ const VendorContractsWindow = () => {
 	useEffect(() => {
 		dispatch(checkBlockchainStatus('VendorContracts'));
 	}, [appInfo]);
+
+	useEffect(() => {
+		if(vcIframeActive) { 
+			console.log("vcIframeActive", vcIframeActive)			
+			dispatch(getVendorContractsList(appInfo));
+			setTimeout(()=> {dispatch(setVCIframeActive(false))}, 5000)
+		}
+	}, [vcIframeActive])
 
 	const saveContractAttachments = (contracts: any) => {
 		const uniqueDocumentIds = new Set(standardFiles?.map((file: any) => file?.documentId));

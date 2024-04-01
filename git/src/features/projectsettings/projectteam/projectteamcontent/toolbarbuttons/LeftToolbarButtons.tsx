@@ -56,12 +56,14 @@ const LeftToolbarButtons = (props: any) => {
 	const currentProjectInfo = appInfo?.currentProjectInfo;
 	const restrictAddUser = localhost ? false : (gblConfig?.orgSettings?.projectTeam_Restrict) || false;
 	const isManager = localhost ? true : (gblConfig?.isUserManager || gblConfig?.isSafetyManager || gblConfig?.isCompanyManager || gblConfig?.isProjectTeamManager);
+	const isUserManager = localhost ? true : (gblConfig?.isUserManager);
 	const isProjectAdmin = localhost ? true : (gblConfig?.isProjectAdmin || gblConfig?.isProjectTeamManager);
 	const isCompanyManager = localhost ? true : (gblConfig?.isCompanyManager);
 	const isSafetyManager = localhost ? true : (gblConfig?.isSafetyManager);
 	const isMTA = localhost ? true : (gblConfig?.project?.isProjectCentralZone) || false;
 	const generalPermissions = isMTA ? assignUnassignData : assignUnassignDataNonMTA;
 	let isOrgSubscribed = localhost ? true : (currentProjectInfo?.isOrgSubscribed);
+	const timeLogPermissionMenuData = gblConfig?.enableBetaFeatures ? [...timelogAssignUnassignData] : [];
 	const assignOrUnassignUserPermission = (permissions: any, isDirty: any) => {
 		const checkedVendorPermissions: any = [],
 			isSingle = selectedMembers.length == 1;
@@ -88,7 +90,7 @@ const LeftToolbarButtons = (props: any) => {
 						return true;
 					}
 				}).includes(true),
-				hasTimeLogPermissions  = [...timelogAssignUnassignData].map((o: any) => {
+				hasTimeLogPermissions  = [...timeLogPermissionMenuData].map((o: any) => {
 					!o.disable && checkedVendorPermissions.push({
 						"id": null,
 						"name": o.value,
@@ -237,7 +239,7 @@ const LeftToolbarButtons = (props: any) => {
 				return v;
 			});
 		}
-		timeLogMenuItems = [...timelogAssignUnassignData];
+		timeLogMenuItems = [...timeLogPermissionMenuData];
 		if(timeLogMenuItems?.length > 0) {
 			timeLogMenuItems = timeLogMenuItems.map((v: any) => {
 				let name = v.value, checked = zonePermission.includes(name);
@@ -399,7 +401,7 @@ const LeftToolbarButtons = (props: any) => {
                 )}
 			</IconButton>
 		</IQTooltip> }
-		{isFromOrgStaff ? null : activeTab !== 'member' || (!isManager) ? '' : <IQTooltip title='Assign/Unassign to Security Group' placement='bottom'>
+		{isFromOrgStaff ? null : activeTab !== 'member' || (!isUserManager) ? '' : <IQTooltip title='Assign/Unassign to Security Group' placement='bottom'>
 			{/* <IconButton disabled={disableUserPrivilege}>
 				<span className='common-icon-none icon-size' />
 			</IconButton> */}
@@ -411,7 +413,7 @@ const LeftToolbarButtons = (props: any) => {
 				options3={timeLogMenuItems}
 				userPrivileges={ userPrivileges }
 				Menuheading={ vendorMenuItems.length > 0? 'Finance Permissions': '' }
-				Menuheading1={'Time Log' }
+				Menuheading1={gblConfig?.enableBetaFeatures ? 'Time Log' : '' }
 				MenuOptionsClick={ (data: any, isDirty: any) => { assignOrUnassignUserPermission(data, isDirty); } }
 			/>
 		</IQTooltip> }
@@ -533,7 +535,8 @@ const LeftToolbarButtons = (props: any) => {
 			</IconButton>
 		</IQTooltip> }
 		{!isReadOnly && isFromOrgStaff && 
-			<IconButton aria-label='reservestaff' disabled={ disableReserveStaffBtn } className='iq-border-button iq-reverse-button' data-action='reservestaff' onClick={ clickHandler }>
+			<IconButton aria-label='reservestaff' disabled={ disableReserveStaffBtn } className='iq-border-button iq-reserve-button' data-action='reservestaff' onClick={ clickHandler }>
+			<span className='common-icon-reserve-staff' />
 				Reserve Staff
 			</IconButton>
 		}

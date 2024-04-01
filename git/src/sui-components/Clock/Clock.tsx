@@ -1,7 +1,7 @@
 import {
 	InputAdornment,
 	Popover,
-	TextField,
+	TextField,TextFieldProps
 } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -20,10 +20,12 @@ interface ClockProps {
 	ampmInClock?:boolean;
 	pickerDefaultTime?:any;
 	focus?:any;
+	error?:boolean;
+	errorText?:any;
 }
 
 const SUIClock = (props: ClockProps) => {
-	const { defaultTime, onTimeSelection, disabled, placeholder,focus = false } = props;
+	const { defaultTime, onTimeSelection, disabled, placeholder,focus = false,error=false,errorText } = props;
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const [time, setTime] = React.useState<any>();
 	const [pickerTime, setPickerTime] = React.useState<any>();
@@ -195,6 +197,8 @@ const SUIClock = (props: ClockProps) => {
 						
 					}
 				}}
+				error={error}
+				helperText={errorText}
 			/>
 
 			<Popover

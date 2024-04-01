@@ -12,7 +12,7 @@ import 'utilities/presence/PresenceManager.css';
 import {getServer} from 'app/common/appInfoSlice';
 import {
 	getSelectedRecord, getContractDetailsById, getUserRoleDetails,
-	getBidLookup, fetchCompanyList,
+	getBidLookup, fetchCompanyList, setContractDetailsGetCall,
 } from 'features/vendorcontracts/stores/VendorContractsSlice';
 import {stringToUSDateTime2} from 'utilities/commonFunctions';
 import ContractDetails from './tabs/contractdetails/ContractDetails';
@@ -25,8 +25,8 @@ import {
 import VendorContractFiles from './tabs/vendorcontractfiles/VendorContractFiles';
 import ChangeEvents from './tabs/changeevents/VCChangeEvents';
 import PaymentLedger from './tabs/paymentledger/VCPaymentLedger';
-import {getAmountAlignment, isUserGC} from 'utilities/commonutills';
-import {getBudgetItemsByPackage} from '../stores/gridSlice';
+import {connectorImages, getAmountAlignment, isUserGC} from 'utilities/commonutills';
+import {getBudgetItemsByPackage, setBudgetItemsGetCall} from '../stores/gridSlice';
 import {fetchTransactions, getTransactionCount} from '../stores/tabs/transactions/TransactionTabSlice';
 import {updateContractDetails} from '../stores/gridAPI';
 import {getVendorContractsForecasts, getForecastsCount} from '../stores/ForecastsSlice';
@@ -104,12 +104,14 @@ const VendorContractsLineItem = (props: headerprops) => {
 
 	useEffect(() => {
 		if(contractId) {
+			dispatch(setContractDetailsGetCall(false));
+			dispatch(setBudgetItemsGetCall(false));
 			const payload = {appInfo: appInfo, packageId: contractId},
 				callList: Array<any> = [
 					dispatch(getContractDetailsById({appInfo: appInfo, id: contractId})),
+					dispatch(getBudgetItemsByPackage(payload)),
 					dispatch(getUserRoleDetails(appInfo)),
 					dispatch(getBidLookup({appInfo: appInfo, objectId: contractId})),
-					dispatch(getBudgetItemsByPackage(payload)),
 					dispatch(fetchCompanyList(appInfo)),
 					dispatch(fetchTransactions(payload)),
 					dispatch(getVCPaymentLedgerList({appInfo: appInfo, id: contractId})),
@@ -343,7 +345,7 @@ const VendorContractsLineItem = (props: headerprops) => {
 									<span className='grey-fontt'>{vendorLineItem?.code}</span>
 									{connectors?.length && vendorLineItem?.connectorItemData ? <img
 										className="sapnumber"
-										src={connectors?.[0]?.primaryIconUrl}
+										src={connectorImages?.[vendorLineItem?.connectorItemData?.type]}
 										alt="connector Image"
 									/> : ''}
 									{connectors?.length && vendorLineItem?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{vendorLineItem?.connectorItemData?.url && window.open(vendorLineItem?.connectorItemData?.url)}}>{vendorLineItem?.connectorItemData?.name}</span> : ''}
@@ -367,6 +369,7 @@ const VendorContractsLineItem = (props: headerprops) => {
 									paddingLeft: '10px',
 									paddingRight: '10px',
 									minWidth: '50px',
+									height: '28px',
 									textOverflow: 'ellipsis',
 								}}>{isUserGC(appInfo) ? vendorContractsStatus[vendorLineItem?.status] : vendorContractsResponseStatus[vendorLineItem?.status]}
 							</Button>

@@ -426,7 +426,7 @@ const BudgetManagerToolbar = (props: any) => {
 		console.log('selectedVal', selectedVal);
 		if (selectedVal == undefined || selectedVal == 'undefined') {
 			console.log('if', selectedVal);
-			dispatch(setSelectedGroupKey(" "))
+			dispatch(setSelectedGroupKey("None"))
 		}
 		else {
 			console.log('else', selectedVal);
@@ -544,7 +544,7 @@ const BudgetManagerToolbar = (props: any) => {
 					filters={filters}
 					filterHeader=''
 					placeholder={viewData && viewData?.viewName}
-					defaultGroups={selectedGroupKey}
+					defaultGroups={selectedGroupKey == 'None' ? 'undefined' : selectedGroupKey}
 					defaultFilters={selectedFilters}
 					onGroupChange={(group: any) => onGridGroupingChange(group)}
 					onSearchChange={(text: string) => handleOnSearchChange(text)}

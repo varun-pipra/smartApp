@@ -65,6 +65,7 @@ export const BudgetGrid = (props: any) => {
 		{
 			headerName: 'Billable In Client Contract',
 			field: 'isBillable',
+			width: 250,			
 			valueGetter: (params: any) => billableInCCObj?.[params.data?.isBillable],			
 		},
 		{

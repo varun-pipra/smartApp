@@ -10,6 +10,7 @@ import moment from "moment";
 import { getDuration } from "../utils";
 import { ConfirmationDialog } from "features/budgetmanager/import/ConfirmationDialog/ConfirmationDialog";
 import { getTime } from 'utilities/datetime/DateTimeUtils';
+
 const SplitTimeSegmentDialog = (props: any) => {
   const {defaultRowData, data, handleSubmit, ...rest } = props;
   const [formData, setFormData] = useState<any>({});
@@ -21,8 +22,15 @@ const SplitTimeSegmentDialog = (props: any) => {
       </div>
   });	
   const [overallDuration, setOverallDuration] = useState<any>("0 Hrs 00 Mins");
+
+  React.useEffect(()=>{
+    data?.duration ? setOverallDuration(getDuration(data?.duration)) : '';
+  },[data])
+
   const handelDurationChange = (duration:any) =>{
-    setOverallDuration(duration)
+    if(duration !== '0 Hrs 00 Mins') {
+      setOverallDuration(duration)
+    }
   }
   const handleSplit = () => {
     setShowConfirmation(true)

@@ -16,7 +16,7 @@ import ChangeEventRequestsForm from './content/form/ChangeEventRequestsForm';
 import { CERLeftButtons, CERRightButtons } from './content/toolbar/CERToolbar';
 import ChangeEventRequestsLID from './details/ChangeEventRequestsLID';
 import {
-	getChangeEventList, setSelectedChangeEvents, setToast, setDriveFiles, setCurrentChangeEventId, setTab
+	getChangeEventList, setSelectedChangeEvents, setToast, setDriveFiles, setCurrentChangeEventId, setTab, setChangeEventIframeActive
 } from './stores/ChangeEventSlice';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
@@ -28,8 +28,8 @@ import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
 import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
 import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
-import { fetchdefaultdrodown } from 'features/budgetmanager/operations/settingsSlice';
-
+import { fetchdefaultdrodown, fetchSettings } from 'features/budgetmanager/operations/settingsSlice';
+import {clearObjectValues} from 'sui-components/ViewBuilder/utils';
 let defaultCERStatusFilter: any = [];
 
 const ChangeEventRequestsWindow = (props: any) => {
@@ -40,7 +40,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 	const [appData] = useState(appInfoData);
 	const appInfo = useAppSelector(getServer);
 	const location = useLocation();
-	const { toast, sourceList } = useAppSelector((state) => state.changeEventRequest);
+	const { toast, sourceList, changeEventIframeActive } = useAppSelector((state) => state.changeEventRequest);
 	const { server, currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
@@ -57,10 +57,10 @@ const ChangeEventRequestsWindow = (props: any) => {
 	let gridRef = useRef<AgGridReact>();
 	let contractFilter: any = {};
 	sourceList.map((el: any) => contractFilter[el.clientContract?.id] = el.clientContract?.title);
-	const [viewBuilderData, setViewBuilderData] = useState<any>({ viewName: "", viewId: "" });
-	const [colDef, setColDef] = useState<any>([]);
+//	const [viewBuilderData, setViewBuilderData] = useState<any>({ viewName: "", viewId: "" });
+	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
 
-	if (statusFilter) defaultCERStatusFilter = filters.status;
+	//if (statusFilter) defaultCERStatusFilter = filters.status;
 
 	const gcGroupOptions = [
 		{ text: 'Status', value: 'status' },
@@ -120,7 +120,8 @@ const ChangeEventRequestsWindow = (props: any) => {
 		if (server) {
 			dispatch(getChangeEventList());
 			dispatch(fetchConnectors(server));
-			dispatch(fetchdefaultdrodown(appInfo));				
+			dispatch(fetchdefaultdrodown(appInfo));
+			dispatch(fetchSettings(appInfo));			
 		}
 	}, [server]);
 
@@ -166,7 +167,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 								break;
 							case "frame-active":
 								console.log("frame-active", data);
-								data?.data?.name == "changeevents" && dispatch(getChangeEventList());
+								data?.data?.name == "changeevents" && dispatch(setChangeEventIframeActive(true));
 								break;
 						}
 					}
@@ -180,6 +181,14 @@ const ChangeEventRequestsWindow = (props: any) => {
 		}
 	}, [localhost, appData]);
 
+	useEffect(() => {
+		if(changeEventIframeActive) {
+			console.log("changeEventIframeActive", changeEventIframeActive);			
+			dispatch(getChangeEventList());
+			setTimeout(()=> {dispatch(setChangeEventIframeActive(false))}, 5000)
+		}
+	}, [changeEventIframeActive])
+
 	const onGroupingChange = (groupKey: any) => {
 		const data = groupKey == null || groupKey == 'undefined' ? 'None' : groupKey;
 		if (((data ?? false) && data !== "")) {
@@ -187,7 +196,6 @@ const ChangeEventRequestsWindow = (props: any) => {
 		} else if (data ?? true) {
 			groupKeyValue.current = null;
 		}
-		console.log('groupKey', data)
 		setActiveGroupKey(data);
 	};
 
@@ -195,7 +203,6 @@ const ChangeEventRequestsWindow = (props: any) => {
 		const node = props.node;
 		if (node.group) {
 			const colName = groupKeyValue?.current;
-			console.log("cellerender", colName, node?.group);
 			const data = node?.childrenAfterGroup?.[0]?.data || {};
 			if (colName === "status") {
 				return (
@@ -236,7 +243,6 @@ const ChangeEventRequestsWindow = (props: any) => {
 
 
 	const onFilterChange = (activeFilters: any, type?: string) => {
-		console.log('onFilterChange', activeFilters)
 		setFilters(activeFilters);
 	};
 
@@ -245,7 +251,6 @@ const ChangeEventRequestsWindow = (props: any) => {
 	};
 
 	const searchAndFilter = (list: any) => {
-		console.log('filters', filters)
 		return list.filter((item: any) => {
 			const regex = new RegExp(search, 'gi');
 			return (!search || (search && (item.name?.match(regex) || (fundingSourceMap[item.fundingSource]).match(regex) ||
@@ -430,6 +435,8 @@ const ChangeEventRequestsWindow = (props: any) => {
 		}
 	], [defaultCERStatusFilter, server, activeGroupKey]);
 
+	const [colDef, setColDef] = useState<any>([...columns]);
+
 	const filterOptions = useMemo(() => [
 		{
 			text: 'Status',
@@ -472,7 +479,6 @@ const ChangeEventRequestsWindow = (props: any) => {
 		}
 	], []);
 
-	// console.log("columnsss", columns, activeGroupKey);
 
 	const handleClose = () => {
 		postMessage({
@@ -492,11 +498,11 @@ const ChangeEventRequestsWindow = (props: any) => {
 	const handleDropDown = (value: any, data: any) => {
 		if (value === "save") {
 			saveViewHandler(data);
-			setToastMessage(`${viewBuilderData?.viewName} Saved Successfully`);
+			setToastMessage(`${viewData?.viewName} Saved Successfully`);
 		}
 		else if (value === "delete") {
 			DeleteViewHandler();
-			setToastMessage(`${viewBuilderData?.viewName} Deleted Successfully`);
+			setToastMessage(`${viewData?.viewName} Deleted Successfully`);
 		}
 	}
 
@@ -507,38 +513,62 @@ const ChangeEventRequestsWindow = (props: any) => {
 		addNewView(appInfo, payload, modName, (response: any) => {
 			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'ChangeEvent' }));
 			dispatch(getChangeEventList());
-			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData?.viewId }));
 		});
 	}
 	const saveViewHandler = (value: any) => {
 		const FilterValue = JSON.stringify(filters);
 		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: activeGroupKey ? [activeGroupKey] : ['None'] };
 		console.log('payload', payload);
-		updateViewItem(appInfo, viewBuilderData?.viewId, payload, (response: any) => {
+		updateViewItem(appInfo, viewData?.viewId, payload, (response: any) => {
 			dispatch(getChangeEventList());
-			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData?.viewId }));
 		});
 	}
 	const DeleteViewHandler = () => {
-		deleteView(appInfo, viewBuilderData?.viewId, (response: any) => {
+		deleteView(appInfo, viewData?.viewId, (response: any) => {
 			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'ChangeEvent' }));
 		});
 	}
+
+	useMemo(()=>{
+		if(filters.status?.length){
+			if(statusFilter){
+				let updatedColumndDefList2: any = colDef.map((cDef: any) => {
+					if (cDef.field == "status") {
+						return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :[...filters.status]}};
+					}
+					return cDef;
+				});
+				setColDef(updatedColumndDefList2);
+			}
+		}
+			else{
+				let updatedColumndDefList2: any = colDef.length > 0 && colDef.map((cDef: any) => {
+					if (cDef.field == "status") {
+						return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :undefined}};
+					}
+					return cDef;
+				});
+				setColDef(updatedColumndDefList2);
+			}
+	},[filters])
+	
 	useEffect(() => {
 		//Appending viewbuilder data to grid 
-		if (viewBuilderData?.columnsForLayout?.length) {
+		if (viewBuilderData.length > 0 &&  viewData?.columnsForLayout?.length) {
 			let updatedColumndDefList: any = [];
 			const gridApi = gridRef.current;
 			if (gridApi) {
 				let updatedColumndDefList: any = [];
-				console.log('viewBuilderData?.columnsForLayout', viewBuilderData?.columnsForLayout);
-				viewBuilderData?.columnsForLayout.forEach((viewItem: any) => {
+				viewData?.columnsForLayout.forEach((viewItem: any) => {
 					columns?.forEach((cDef: any) => {
 						if (viewItem.field == cDef.field) {
 							let newColumnDef = {
 								...cDef,
 								...viewItem,
-								hide: viewItem?.hide
+								hide: viewItem?.hide,
+								headerComponentParams : cDef.field == "status" && {...cDef.headerComponentParams , defaultFilters :filters.status?.length ? filters.status : undefined}
 							};
 							updatedColumndDefList.push(newColumnDef);
 						}
@@ -548,16 +578,24 @@ const ChangeEventRequestsWindow = (props: any) => {
 				gridApi?.api?.setColumnDefs(updatedColumndDefList);
 			}
 		}
-	}, [viewBuilderData]);
+	}, [viewData]);
 
 	useMemo(() => {
-		if (viewBuilderData != '') {
-			console.log('viewBuilderData', viewBuilderData)
-			viewBuilderData?.groups && setActiveGroupKey(viewBuilderData?.groups[0] == 'None' ? 'undefined' : viewBuilderData?.groups[0]);
-			viewBuilderData?.filters && setFilters(JSON.parse(viewBuilderData?.filters));
-			viewBuilderData?.filters && setDefaultFilters(JSON.parse(viewBuilderData?.filters));
+		if (viewData?.viewId) {
+			const formatedFilter = viewData?.filters == null ? JSON.parse('{}') : JSON.parse(viewData?.filters);
+			const formatedgrouping = viewData?.groups?.length ==  0 || viewData?.groups == null || viewData?.groups[0] == '' || viewData?.groups[0] == 'None'  ? 'undefined': viewData?.groups?.[0];
+			if(!_.isEmpty(filters) && formatedFilter){
+				const data = clearObjectValues(filters,formatedFilter);
+				setFilters(data);
+				setDefaultFilters(data);
+			}	
+			else{
+				setFilters(formatedFilter);
+				setDefaultFilters(formatedFilter);
+			}
+			setActiveGroupKey(formatedgrouping);
 		}
-	}, [viewBuilderData?.viewId])
+	}, [viewData])
 
 	useMemo(() => {
 		// if grouping value is changed and colDef array as a data.
@@ -565,7 +603,10 @@ const ChangeEventRequestsWindow = (props: any) => {
 		if (activeGroupKey && colDef) {
 			const data = colDef?.length > 0 && colDef?.map((item: any) => {
 				if (item.field === activeGroupKey) {
-					return { ...item, rowGroup: true };
+					return { ...item, 
+						rowGroup: true,
+						headerComponentParams : item.field == "status" && {...item.headerComponentParams , defaultFilters :filters.status?.length ? filters.status : undefined}
+					 };
 				} else if (item.rowGroup) {
 					return { ...item, rowGroup: false };
 				}
@@ -576,10 +617,9 @@ const ChangeEventRequestsWindow = (props: any) => {
 	}, [activeGroupKey])
 
 	const viewListOnChange = (data: any) => {
-		setViewBuilderData(data);
+		//setViewBuilderData(data);
 		dispatch(getChangeEventList());
 	}
-
 
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
 
@@ -659,7 +699,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 							onGroupChange: onGroupingChange,
 							onSearchChange: onGridSearch,
 							onFilterChange: (value: any) => { onFilterChange(value) },
-							placeholder: viewBuilderData?.viewName,
+							placeholder: viewData?.viewName,
 							viewBuilderapplied: true,
 						},
 						viewBuilder: <ViewBuilder
@@ -669,7 +709,7 @@ const ChangeEventRequestsWindow = (props: any) => {
 							saveView={(data: any) => { saveViewHandler(data) }}
 							deleteView={() => { DeleteViewHandler() }}
 							saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
-							dataList={(data: any) => { setViewBuilderData(data) }}
+							//dataList={(data: any) => { setViewBuilderData(data) }}
 							viewListOnChange={(data: any) => { viewListOnChange(data) }}
 							requiredColumns={['name', 'status']}
 						/>

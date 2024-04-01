@@ -32,7 +32,7 @@ import {
 import LeftToolbarButtons from "./projectteamcontent/toolbarbuttons/LeftToolbarButtons";
 import RightToolbarButtons from "./projectteamcontent/toolbarbuttons/RightToolbarButtons";
 import { memberPrivilegeApi, approveWorkersApi, memberInviteApi, deleteMemberApi, fetchPtGridDataList, getUserRTLSData, fetchRegionsData } from "features/projectsettings/projectteam/operations/ptGridAPI";
-import { fetchRoleInfo, upsertUserDetails, checkIsRTLSIdExists } from "./operations/ptDataAPI";
+import { fetchRoleInfo, upsertUserDetails, checkIsRTLSIdExists, UpdateUserOrgProjects } from "./operations/ptDataAPI";
 import {
 	fetchProjectTeamRolesData,
 	fetchHasSupplementalInfo,
@@ -60,7 +60,8 @@ import {
 	getWorkTeams,
 	getCompanyData,
 	getcategoriesData,
-	setTriggerSafetyViolationApis
+	setTriggerSafetyViolationApis,
+	setCompaniesData
 } from "./operations/ptDataSlice";
 import { formatDate, getDate, getTime, fromSecondsToHourMinutes } from "utilities/datetime/DateTimeUtils";
 import {
@@ -96,7 +97,7 @@ import CustomDropDownEditor from './projectteamcontent/customComponents/CellEdit
 import moment from "moment";
 import { Alert } from "@mui/material";
 import { RowHeightParams } from "ag-grid-community";
-import { addCookie, getCookie } from "./utils";
+import { FiltersProjectsData, ProjectsData, addCookie, getCookie } from "./utils";
 import CustomTooltip from "features/budgetmanager/aggrid/customtooltip/CustomToolTip";
 import { amountFormatWithSymbol } from "app/common/userLoginUtils";
 import IQBaseWindow from "components/iqbasewindow/IQBaseWindow";
@@ -202,7 +203,7 @@ const ProjectTeamWindow = (props: any) => {
 	const customSortingObjFields = ['company', 'tradeName', 'shift'];
 	const customSortingArrFields = ['skills', 'roles','regions'];
 	const customSortingFields = ['lastName', 'email', 'phone']; //-->
-	const customFilterFields = ['permissions', 'onlineStatus', 'companyManagerAttestation', 'status', 'currentProjects'];
+	const customFilterFields = ['permissions', 'onlineStatus', 'companyManagerAttestation', 'status'];
 	const hideRtlsColumns = ['company', 'roles', "tradeName", "skills", "workCategoryName", "safetyStatus", "policyStatus", "certificateStatus", 'projectZonePermissions'];
 	const isMTA = localhost ? true : (appInfo?.gblConfig?.project?.isProjectCentralZone) || false;
 	let isOrgSubscribed = localhost ? true : (appInfo?.gblConfig?.currentProjectInfo?.isOrgSubscribed);
@@ -224,7 +225,6 @@ const ProjectTeamWindow = (props: any) => {
 		"sortBy": 'lastName',
 		"sortDirection": 'ASC'
 	};
-	
 	const datesRef = React.useRef<any>({});
 	const localRowDataRef = React.useRef<any>([]);
 	//Grid Management State's
@@ -249,53 +249,6 @@ const ProjectTeamWindow = (props: any) => {
 	const [regionsData, setRegionsData] = React.useState([]);
 	const [regionsOriginalData, setRegionsOriginalData] = React.useState([]);
 	const [reserveFormData, setReserveFormData] = React.useState<any>({});
-	const ProjectsData = [
-		{
-			"uniqueId": "0bc9c7e9-1ee9-4ad8-8b08-9c9efc39a020",
-			"id": 548829,
-			"value": "Captial Common Projects",
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "Captial Common Projects",
-			"name": "Captial Common Projects",
-			"text": "Captial Common Projects"
-		},
-		{
-			"uniqueId": "641ccf57-79eb-4542-b9e2-7d43a07df215",
-			"id": 532018,
-			"value": "Captial Gateway Renovation",
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "Captial Gateway Renovation",
-			"name": "Captial Gateway Renovation",
-			"text": "Captial Gateway Renovation"
-		},
-		{
-			"uniqueId": "9a8d9eea-d8a6-4b16-8023-3cb9c0c5302d",
-			"id": 2866620,
-			"value": "Captial Commercial Solutions",
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "Captial Commercial Solutions",
-			"name": "Captial Commercial Solutions",
-			"text": "Captial Commercial Solutions"
-		},
-		{
-			"uniqueId": "849dd451-c6a1-412c-8000-fdb0e1ffc823",
-			"id": 605844,
-			"value": "Captial City Bussiness Park",
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "Captial City Bussiness Park",
-			"name": "Captial City Bussiness Park",
-			"text": "Captial City Bussiness Park"
-		},
-		{
-			"uniqueId": "1761be78-b2f5-4ede-b774-372fb7565a51",
-			"id": 3346359,
-			"value": "East Side Enterprise Building",
-			"img":'https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg',
-			"label": "East Side Enterprise Building",
-			"name": "East Side Enterprise Building",
-			"text": "East Side Enterprise Building"
-		}
-	];
 	const safetyGroupOptions = [
 		{ text: "Safety Status", value: "safetyStatus", iconCls: 'common-icon-Safety-Onboarding-Flyer' },
 		{ text: "Policy Status", value: "policyStatus", iconCls: 'common-icon-orgconsole-safety-policies' },
@@ -713,7 +666,7 @@ const ProjectTeamWindow = (props: any) => {
 			hidden : !isFromOrgStaff,
 			children: {
 				type: "checkbox",
-				items: ProjectsData,
+				items: FiltersProjectsData,
 			},
 		}],
 			onlineStatusFilter = [{
@@ -1210,7 +1163,7 @@ const ProjectTeamWindow = (props: any) => {
 			dispatch(fetchSkillsData(appInfo));
 			dispatch(fetchTradesData(appInfo));
 			dispatch(fetchWorkTeamsData(appInfo));
-			dispatch(fetchCompaniesData(appInfo));
+			// dispatch(fetchCompaniesData(appInfo));
 			appInfo?.viewConfig?.title ? (isFromOrgStaff ? setPopTitle('Staff') : setPopTitle(appInfo?.viewConfig?.title)) : setPopTitle('Project Team');
 			/* appInfo?.fullScreen &&  */
 			setFullScreen(appInfo?.fullScreen || false);
@@ -2514,13 +2467,13 @@ const ProjectTeamWindow = (props: any) => {
 		{
 			headerName: "Current Project(s)",
 			field: "currentProjects",
-			minWidth: 280,
+			minWidth: 300,
 			pinned: "left",
 			lockPosition: "left",
 			headerComponent: CustomHeader,
 			sortable: true,
 			headerComponentParams: {
-				options: ProjectsData,
+				options: FiltersProjectsData,
 				columnName: 'Current Project(s)',
 				filterUpdated: (values: any) => onCurrentProjectFilterUpdated(values),
 				showSorting: true,
@@ -2529,8 +2482,9 @@ const ProjectTeamWindow = (props: any) => {
 			},
 			cellRenderer: (params:any) => {
 				return (
-				<div style={{display: "flex",alignContent: "center",alignItems: "center"}}>
-            {params?.data?.currentProjects?.[0]?.thumbnailUrl && (
+				<div className={`pt-${params?.column?.colId}`} style={{display: "flex",alignContent: "center",alignItems: "center"}}>
+            {params?.data?.currentProjects?.[0]?.img && (
+				// <span className={`${params?.data?.currentProjects?.[0]?.iconCls}`}></span>
               <img
                 src={params?.data?.currentProjects?.[0]?.img}
                 alt="Avatar"
@@ -2538,13 +2492,13 @@ const ProjectTeamWindow = (props: any) => {
                 className="base-custom-img"
               />
             )}
-            <span>{params?.data?.currentProjects?.[0]?.name}</span>
+			{params?.data?.currentProjects === undefined ? <em>{'Unassigned'}</em> : <span>{params?.data?.currentProjects?.[0]?.label}</span>}
             {params?.data?.currentProjects?.length > 1 && (
               <AutoWidthTooltip
                 className={"pt-RolesTooltip-main"}
                 title={
 					<div style={{display: "grid",alignContent: "center",alignItems: "center", padding : '6px', gap : '10px'}}>
-					{params?.data?.currentProjects.map((item:any, index:any) => {
+					{(params?.data?.currentProjects || [])?.map((item:any, index:any) => {
 						// if(index === 0) return;
 						// else
 						 return (
@@ -2557,7 +2511,7 @@ const ProjectTeamWindow = (props: any) => {
 									className="base-custom-img"
 								  />
 								)}
-								<span>{item?.name}</span>
+								<span>{item?.label}</span>
 							</div>
 
 						)
@@ -2616,7 +2570,7 @@ const ProjectTeamWindow = (props: any) => {
 							disableTouchListener
 						>
 							<div>
-								{canEdit && (
+								{/* {canEdit && (
 									<div className={`pt-${params?.column?.colId}`}>
 										<SUIBaseDropdownSelector
 											value={[
@@ -2669,8 +2623,9 @@ const ProjectTeamWindow = (props: any) => {
 											// showIconInField={true}
 										></SUIBaseDropdownSelector>
 									</div>
-								)}
-								{!canEdit && <span>{params?.data?.company?.name}</span>}
+								)} */}
+								{/* {!canEdit && <span>{params?.data?.company?.name}</span>} */}
+								<span>{params?.data?.company?.name}</span>
 							</div>
 						</CompanyCardTooltip>
 					</>
@@ -2700,7 +2655,13 @@ const ProjectTeamWindow = (props: any) => {
 			minWidth: 100,
 			cellRenderer: (params: any) => {
 				const canEdit = (appInfo?.orgId ?? false);
-					return (
+				if(isFromOrgStaff) {
+					console.log("Is Org State", isFromOrgStaff);
+					return <span className={`pt-${params?.column?.colId}`}>
+							{params?.data?.regions &&
+								params?.data?.regions?.map((obj: any) => obj.name).join(", ")}{" "}
+						</span>
+				} else return (
 						<>
 						{canEdit &&
 							<div className={`pt-${params?.column?.colId}`}>
@@ -3911,7 +3872,7 @@ const ProjectTeamWindow = (props: any) => {
 			};
 			setReAssignState(false);
 		};
-	}, [reAssignState, filteredValues, localRowData, searchText, groupKey]);
+	}, [reAssignState, filteredValues, localRowData, searchText, groupKey, companiesData]);
 	useEffect(() => {
 		if (onlineStatusAssignState && radioRef.current === '') {
 			let filterState = { ...filteredValues };
@@ -4190,8 +4151,33 @@ const ProjectTeamWindow = (props: any) => {
 			}
 
 		});
-	}
-
+	};
+	const PrepareCompanyFiltersData = (array:any) => {
+		let data:any =[];
+		if(array?.length) {
+			for(let i = 0; i < array.length; i++) {
+				const Obj = array[i]?.company;
+				data.push({
+					"id": Obj.objectId,
+					"uniqueId": Obj.id,
+					"thumbnailUrl": Obj.thumbnailId,
+					"name": Obj.name ?? "",
+					"phone": Obj.phone ?? "",
+					"website": Obj.website ?? "",
+					"email": Obj.email ?? "",
+					"colorCode": Obj.color ?? "",
+					"isDiverseSupplier": Obj.isDiverseSupplier ?? false,
+					"trade" : array[i]?.trade ? [array[i]?.trade] : []					
+				});
+			};
+			const RemoveCompanyOptionDuplicates = 
+				 Array.from(new Set(data.map((a:any) => a.uniqueId)))
+					.map((uniqueId:any) => {
+					return data.find((a:any) => a.uniqueId === uniqueId)
+				});
+			dispatch(setCompaniesData(RemoveCompanyOptionDuplicates));
+		};	
+	};
 	useEffect(() => {
 		if (activeToggle === "rtls") {
 			let today = new Date().setHours(0, 0, 0, 0),
@@ -4254,14 +4240,20 @@ const ProjectTeamWindow = (props: any) => {
 					});
 					obj = { ...data, ['regions'] : mapFields};
 				};
+				if(isFromOrgStaff && data?.currentProjects?.length) {
+					const  projId = data?.currentProjects?.map((x:any) => x.value);
+					const assignData = [...ProjectsData].filter((item:any) => projId?.includes(item?.name));
+					obj = { ...data, ['currentProjects'] : assignData};
+				};
 				array.push(obj);
 			});
 			if (!_.isEqual(array, rowData)) {
 				setRowData([...array]);
+				PrepareCompanyFiltersData([...array]);
 			};
 			if (!_.isEqual(array, localRowData)) {
 				setLocalRowData([...array]); //TO be used for filter/search..etc
-			}
+			};
 			setReAssignState(true);
 			localRowDataRef.current = [...array];
 			if (((currentSelection ?? false) && Object.keys(currentSelection)?.length > 0) || selectedMembers?.length > 0) {
@@ -4450,8 +4442,25 @@ const ProjectTeamWindow = (props: any) => {
 	const handleReserveStaffChange = (values:any) => {
 		setReserveFormData(values);
 	};
-	const handleSubmit  = () => {
-
+	const handleSubmit  = (values:any) => {
+		let projectsPayload:any = [];
+		const filterProjects = [...ProjectsData]?.filter((rec:any) => values?.projects?.includes(rec.id))?.map((item) => 
+			projectsPayload.push({
+				"id": item.id,
+				"value": item.name
+			})
+		);
+		const SelectedMemberIds = [...selectedMembers].map((item:any) => item.objectId);
+		const payload = {
+			"userIds": SelectedMemberIds,
+			"projects": projectsPayload
+		};
+		if(payload) {
+			UpdateUserOrgProjects(appInfo, payload, (response: any) => {
+				setReserveStaff(false);
+				refreshGrid();
+			});
+		};
 	};
 	return (
 		<>
@@ -4675,7 +4684,7 @@ const ProjectTeamWindow = (props: any) => {
 					title="Reserve Staff"
 					className="reserve-Staff-dialog"
 					PaperProps={{
-						sx: { minHeight: "15%", minWidth: "20%" },
+						sx: { minHeight: "20%", minWidth: "20%" },
 					}}
 					tools={{
 						closable: true,
@@ -4685,21 +4694,21 @@ const ProjectTeamWindow = (props: any) => {
           					setReserveStaff(false)
         				}
       				}}
-					actions={
-						<div>
-						<IQButton
-							disabled={((reserveFormData?.startDate === "" ?? true) && (reserveFormData?.endDate === "" ?? true))}
-							onClick={() => handleSubmit()}
-						>
-							RESERVE STAFF
-						</IQButton>
-						</div>
-					}
+					// actions={
+					// 	<div>
+					// 	<IQButton
+					// 		disabled={((reserveFormData?.startDate === "" ?? true) && (reserveFormData?.endDate === "" ?? true))}
+					// 		onClick={() => handleSubmit()}
+					// 	>
+					// 		RESERVE STAFF
+					// 	</IQButton>
+					// 	</div>
+					// }
 					withInModule={true}
 					{...props}
 				>
 				<div>		
-					<ReserveStaffContent data={selectedMembers} projectData={ProjectsData} handleChange={(values:any) => handleReserveStaffChange(values)} />
+					<ReserveStaffContent data={selectedMembers} projectData={ProjectsData} handleChange={(values:any) => handleReserveStaffChange(values)} onSubmit={(values:any) => handleSubmit(values)}/>
 				</div>
 				</IQBaseWindow>
 			)}

@@ -190,32 +190,8 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 		}
 	}, [dropdownOptions]);
 	React.useEffect(() => {
-		if (showSuggested && suggestedDropdownOptions.length > 0 && suggestedText && moduleName === 'userDetails') {
-			let removeDuplicates;
-			let dataValues;
-			if (menuOption?.length === dropdownOptions?.length) dataValues = menuOption;
-			else if (menuOption?.length > 0) dataValues = menuOption;
-			else if (dropdownOptions?.length > 0) dataValues = dropdownOptions;
-			if (suggestedText.includes('trade')) {
-				removeDuplicates = dataValues.filter((item: any) => { return !suggestedDropdownOptions.some((value: any) => value.id === item.id) });
-			} else {
-				removeDuplicates = dataValues.filter((item: any) => { return !suggestedDropdownOptions.some((value: any) => value.uniqueId === item.uniqueId) });
-			};
-			if (enforcedRelationship) {
-				setMenuOption(suggestedDropdownOptions);
-			} else {
-				if (removeDuplicates.length > 0) {
-					removeDuplicates.forEach((item: any) => {
-						if ((item?.isSuggested ?? false)) {
-							delete item?.isSuggested
-						}
-					});
-				};
-				let combineData = [...suggestedDropdownOptions, ...removeDuplicates];
-				setMenuOption(combineData);
-			};
-		} else if (showSuggested && (suggestedDropdownOptions?.length > 0 ?? []) && suggestedText) {
-			let removeDuplicates = menuOption.filter((item: any) => { return !suggestedDropdownOptions.some((value: any) => value.id === item.id) });
+		 if (showSuggested && (suggestedDropdownOptions?.length > 0 ?? []) && suggestedText) {
+			let removeDuplicates = menuOption?.filter((item: any) => { return !suggestedDropdownOptions.some((value: any) => value.uniqueId === item.uniqueId) });
 			setMenuOption(getSortedData([...suggestedDropdownOptions, ...removeDuplicates]));
 		};
 	}, [showSuggested, suggestedDropdownOptions, suggestedText])
@@ -564,7 +540,7 @@ const SUIBaseDropdownSelector = (props: SUIBaseDropdownSelectorProps) => {
 														key={x.displayField + index}
 														className="smart-dropdown-chip-cls"
 														onDelete={(e: any) => handleChipDelete(e, x?.displayField)}
-														label={x?.isPrimary ? `${x.displayField} *` : x.displayField}
+														label={x?.displayField}
 														deleteIcon={
 															<span
 																className="smart-dropdown-chip-close-cls"

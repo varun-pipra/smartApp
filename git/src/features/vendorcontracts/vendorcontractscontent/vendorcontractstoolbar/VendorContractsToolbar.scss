@@ -25,11 +25,11 @@
                 .common-icon-refresh:before {
                     font-size: 20px;
                     color: #333;
-				}
-				.common-icon-Print1:before{
-					font-size: 30px;
+                }
+                .common-icon-Print1:before {
+                    font-size: 30px;
                     color: #333;
-				}
+                }
                 .common-icon-delete:before {
                     font-size: 22px;
                     color: #333;
@@ -87,6 +87,26 @@
             &.Mui-selected {
                 color: #fff;
                 background-color: #059cdf;
+            }
+        }
+    }
+}
+
+.settings-rightpanel-cls {
+    .MuiPaper-root {
+        .MuiButtonBase-root {
+            //font-size: larger !important;
+        }
+        .General-settings {
+            padding: 0px 0px;
+            .generalSettings-Sections {
+                >h6 {
+                    font-size: 15px;
+                    margin-top: 5px;
+                }
+                .inputlabel {
+                    margin-top: 10px;
+                }
             }
         }
     }

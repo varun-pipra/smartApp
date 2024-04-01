@@ -46,6 +46,7 @@ import {providerSourceObj} from 'utilities/commonutills';
 import { getPhaseDropDownOptions } from 'features/safety/sbsmanager/operations/sbsManagerSlice';
 // import {setInterval} from 'timers/promises';
 var tinycolor = require('tinycolor2');
+import {clearObjectValues} from 'sui-components/ViewBuilder/utils';
 
 interface TableGridProps {
 	liveData?: any;
@@ -358,8 +359,8 @@ const TableGrid = (props: TableGridProps) => {
 				// 	}}
 				// 	filteringValue={params?.data?.division}
 				// />
-				return (
-					params?.data && (
+				return (					
+					params?.node?.rowPinned !== 'bottom' && params?.data && (
 						isReadOnly ? `${params?.data?.division}-${params?.data?.costCode}`
 							: <>
 								{(
@@ -434,7 +435,7 @@ const TableGrid = (props: TableGridProps) => {
 			keyCreator: (params: any) => params.data.costType || 'None',
 			cellRenderer: (params: any) => {
 				// return params?.node?.level == 1 ? (
-				return params?.data && <SmartDropDown
+				return params?.node?.rowPinned !== 'bottom' && params?.data && <SmartDropDown
 					options={getCostTypeOptions()}
 					dropDownLabel=''
 					isSearchField={false}
@@ -519,7 +520,7 @@ const TableGrid = (props: TableGridProps) => {
 		// },
 		{
 			headerName: 'Mark-up Fee',
-			field: 'markupFee',
+			field: 'markupFeeAmount',
 			valueGetter: (params: any) => {
 				if (params?.data?.allowMarkupFee) {
 					return params?.data?.markupFeeType == 0 ? params?.data?.markupFeeAmount ?? 'N/A'
@@ -537,15 +538,19 @@ const TableGrid = (props: TableGridProps) => {
 			// hide: !settingsData?.allowMarkupFee,
 			suppressMenu: true,
 			cellRenderer: (params: any) => {
-				if (params?.value && params?.node?.footer) {
-					return amountFormatWithSymbol(params?.value);
-				}
-				else if (params?.data && params?.value && params?.data?.markupFeePercentage) {
-					return amountFormatWithSymbol(params?.value) + `(${params?.data?.markupFeePercentage}%)`;
-				}
-				else if (params?.data && params?.value && params?.data?.markupFeePercentage == null) {
-					return params?.value == 'N/A' ? 'N/A' : amountFormatWithSymbol(params?.value);
-				}
+				if(params?.node?.rowPinned == 'bottom'){
+					return amountFormatWithSymbol(params?.data?.markupFeeAmount) ?? '';
+				}else {
+					if (params?.value && params?.node?.footer) {
+						return amountFormatWithSymbol(params?.value);
+					}
+					else if (params?.data && params?.value && params?.data?.markupFeePercentage) {
+						return amountFormatWithSymbol(params?.value) + `(${params?.data?.markupFeePercentage}%)`;
+					}
+					else if (params?.data && params?.value && params?.data?.markupFeePercentage == null) {
+						return params?.value == 'N/A' ? 'N/A' : amountFormatWithSymbol(params?.value);
+					}
+				}				
 			}
 		},
 		{
@@ -724,7 +729,7 @@ const TableGrid = (props: TableGridProps) => {
 			suppressMenu: true,
 			valueGetter: (params: any) => params?.data ? getCurveText(params?.data?.curve) : '',
 			cellRenderer: (params: any) => {
-				return params?.data ? (
+				return params?.node?.rowPinned !== 'bottom' && params?.data ? (
 					<SmartDropDown
 						options={curveList}
 						dropDownLabel=''
@@ -764,7 +769,7 @@ const TableGrid = (props: TableGridProps) => {
 				return params?.value && params?.value.length > 25 ? params?.value : null;
 			},
 			cellRenderer: (params: any) => {
-				return params && params?.data ? (
+				return params && params?.node?.rowPinned !== 'bottom' && params?.data ? (
 					params?.data?.bidPackage?.status == 'Awarded' ?
 						params?.data?.Vendors?.map((data: any, i: any) => {
 							return (
@@ -1217,30 +1222,24 @@ const TableGrid = (props: TableGridProps) => {
 							...cDef,
 							...viewItem,
 							editable: isReadOnly ? false : cDef?.editable ? cDef?.editable : false,
-							hide: viewItem.field == 'markupFee' ? !settingsData?.allowMarkupFee : viewItem?.hide
+							hide: viewItem.field == 'markupFeeAmount' ? !settingsData?.allowMarkupFee : viewItem?.hide
 						};
 						updatedColumndDefList.push(newColumnDef);
 					}
 				});
 			});
+			console.log('updatedColumndDefList',updatedColumndDefList)
 			setViewBuilderColumns(updatedColumndDefList);
 		
 		}
 	}, [viewData, settingsData, isReadOnly]);
 
-		const clearObjectValues = (data:any,newdataa:any) => {
-			const newData = { ...data };
-			for (let key in newData) {
-				newData[key] = [];
-			}
-			return {...newData,...newdataa}
-		};
-
+	
 	useMemo(() => {
 		// set the filters and grouping data
 		if (viewData?.viewId) {
 				const formatedFilter = viewData?.filters== '{}' || viewData?.filters == 'null' ? JSON.parse('{}') : JSON.parse(viewData?.filters);
-				const formatedgrouping = viewData?.groups && viewData?.groups?.[0] == "" ? 'division': viewData?.groups?.[0];
+				const formatedgrouping = viewData?.groups?.length ==  0 || viewData?.groups == null || viewData?.groups[0] == ''   ? 'division': viewData?.groups?.[0];
 					if(!_.isEmpty(selectedFilters) && formatedFilter){
 						const data = clearObjectValues(selectedFilters,formatedFilter);
 						dispatch(setSelectedFilters(data));
@@ -1480,7 +1479,7 @@ const customCellRendererClass = (params: any) => {
 		}
 	</div>
 		<span className='ag-costcodegroup' style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-			{params?.data?.name + ' - ' + params.data.costCode + ' : ' + params.data.costType}
+			{params?.node?.rowPinned == 'bottom' ? "Grand Total" : params?.data?.name + ' - ' + params.data.costCode + ' : ' + params.data.costType}
 			{/* {`${name ? `${name} - ` : ''}${multilevelString ? `${multilevelString} : ` : ''}${costType}`} */}
 		</span>
 	</>;
@@ -1777,43 +1776,85 @@ const searchAndFilter = (list: any) => {
 const modifiedData = searchAndFilter(gridData);
 
 return (
-	<>
-		<div style={containerStyle} className='budget-grid-cls'>
-			<div style={gridStyle} className='ag-theme-alpine'>
-				{
-					<SUIGrid
-						headers={columnDefs}
-						data={modifiedData}
-						grouped={true}
-						animateRows={true}
-						// realTimeDocPrefix='budgetManagerLineItems@'
-						autoGroupColumnDef={autoGroupColumnDef}
-						isGroupOpenByDefault={isGroupOpenByDefault}
-						onRowDoubleClicked={(e: any, tableRef: any) => rowDoubleClicked(e, tableRef)}
-						onRowClicked={(e: any, tableRef: any) => rowClicked(e, tableRef)}
-						onRowGroupOpened={onRowGroupOpened}
-						onCellEditingStopped={onCellEditingStopped}
-						getRowId={(params: any) => params?.data?.id}
-						rowSelected={(e: any) => rowSelected(e)}
-						tableref={(value: any) => tableref(value)}
-						onCellMouseOver={onCellMouseOver}
-						updatedObj={updateObj}
-						nowRowsMsg={'<div>Create new budget line item from above</div>'}
-						onBodyScrollEnd={(e: any) => updatePresenceOnScrollandCollapse()}
-						isMainGrid={true}
-						openLID={rightPannel}
-						selectedRecord={selectedRecord}
-						groupRowRendererParams={groupRowRendererParams}
-						groupDisplayType={'groupRows'}
-						groupSelectsChildren={true}
-						getReference={(value: any) => setGridRef(value)}
-						scrollToNewRowId={scrollToNewRowId}
-					></SUIGrid>
-				}
-			</div>
-		</div >
-		<Divelement />
-	</>
+  <>
+    <div style={containerStyle} className="budget-grid-cls">
+      <div style={gridStyle} className="ag-theme-alpine">
+        {
+          <SUIGrid
+            headers={columnDefs}
+            data={modifiedData}
+            grouped={true}
+            animateRows={true}
+            // realTimeDocPrefix='budgetManagerLineItems@'
+            autoGroupColumnDef={autoGroupColumnDef}
+            isGroupOpenByDefault={isGroupOpenByDefault}
+            onRowDoubleClicked={(e: any, tableRef: any) =>
+              rowDoubleClicked(e, tableRef)
+            }
+            onRowClicked={(e: any, tableRef: any) => rowClicked(e, tableRef)}
+            onRowGroupOpened={onRowGroupOpened}
+            onCellEditingStopped={onCellEditingStopped}
+            getRowId={(params: any) => params?.data?.id}
+            rowSelected={(e: any) => rowSelected(e)}
+            tableref={(value: any) => tableref(value)}
+            onCellMouseOver={onCellMouseOver}
+            updatedObj={updateObj}
+            nowRowsMsg={"<div>Create new budget line item from above</div>"}
+            onBodyScrollEnd={(e: any) => updatePresenceOnScrollandCollapse()}
+            isMainGrid={true}
+            openLID={rightPannel}
+            selectedRecord={selectedRecord}
+            groupRowRendererParams={groupRowRendererParams}
+            groupDisplayType={"groupRows"}
+            groupSelectsChildren={true}
+            getReference={(value: any) => setGridRef(value)}
+            scrollToNewRowId={scrollToNewRowId}
+			groupIncludeTotalFooter={false}
+            pinnedBottomRowConfig={{
+              aggregateFields: [
+                "originalAmount",
+                "markupFeeAmount",
+                "revisedBudget",
+                "balance",
+                "budgetForecast",
+                "balanceForecast",
+                "approvedBudgetChange",
+                "balanceModifications",
+                "pendingChangeOrderAmount",
+                "pendingTransactionAmount",
+                { fieldType: "date", field: "estimatedStart", type: "minDate" },
+                { fieldType: "date", field: "estimatedEnd", type: "maxDate" },
+                {
+                  fieldType: "date",
+                  field: "projectedScheduleEnd",
+                  type: "maxDate",
+                },
+                {
+                  fieldType: "date",
+                  field: "projectedScheduleStart",
+                  type: "minDate",
+                },
+                {
+                  fieldType: "date",
+                  field: "actualScheduleStart",
+                  type: "minDate",
+                },
+                {
+                  fieldType: "date",
+                  field: "actualScheduleEnd",
+                  type: "maxDate",
+                },
+              ],
+              displayFields: {
+                division: "Grand Total",
+              },
+            }}
+          ></SUIGrid>
+        }
+      </div>
+    </div>
+    <Divelement />
+  </>
 );
 };
 

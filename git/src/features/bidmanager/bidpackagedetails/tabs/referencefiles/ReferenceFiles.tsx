@@ -147,7 +147,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
 
   useEffect(() => {
     console.log("selectedRecord", selectedRecord);
-    const value = selectedRecord.budgetItems.map(
+    const value = (selectedRecord?.budgetItems || [])?.map(
       (budget: any) => budget?.division
     );
     setDivisionRecord(value);
@@ -453,6 +453,7 @@ export const ReferenceFiles = ({ iFrameId, appType, readOnly }: any) => {
           openDrive(type);
         }}
         contractsClick={(type: any) => {
+          console.log('contractsClick')
           typeVariable = 1;
           addContractDocs(type);
         }}

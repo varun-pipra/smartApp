@@ -19,6 +19,7 @@ import {amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
 import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 import BlockchainIB from 'features/common/informationBubble/BlockchainIB';
 import { sapLinksObj } from 'utilities/sapLink';
+import { connectorImages } from 'utilities/commonutills';
 var tinycolor = require('tinycolor2');
 
 const HeaderContent = (props: any) => {
@@ -47,7 +48,7 @@ const HeaderContent = (props: any) => {
 								<span className='sap'>
 										{connectors?.length && vendorPayAppLineItem?.connectorItemData ? <img
 												className="sapnumber hot-link"
-												src={connectors?.[0]?.primaryIconUrl}
+												src={connectorImages?.[vendorPayAppLineItem?.connectorItemData?.type]}
 												alt="connector Image"
 											/> : ''}
 											{connectors?.length && vendorPayAppLineItem?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{vendorPayAppLineItem?.connectorItemData?.url && window.open(vendorPayAppLineItem?.connectorItemData?.url)}}>{vendorPayAppLineItem?.connectorItemData?.name}</span> : ''}

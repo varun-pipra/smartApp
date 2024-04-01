@@ -97,7 +97,7 @@ export const fetchCompaniesData = createAsyncThunk<any, any>(
 	'companiesData',
 	async (appInfo) => {
 		const response = await fetchCompaniesDataList(appInfo);
-		// This adding rowId is to handle the item navigation and showing Toast.
+				// This adding rowId is to handle the item navigation and showing Toast.
 		const modifiedRespone = response.map((row: any, index: number) => {
 			return { ...row, rowId: index + 1 }
 		})
@@ -203,7 +203,7 @@ export const projectTeamDataSlice = createSlice({
 			state.emailSuggestions = action.payload;
 		},
 		setCompaniesData: (state, action: PayloadAction<any>) => {
-
+			
 			state.companiesData = action.payload;
 		},
 		setShiftsData: (state, action: PayloadAction<any>) => {
@@ -389,7 +389,7 @@ export const projectTeamDataSlice = createSlice({
 
 
 
-export const { setRolesData, setTradesData,setViolationActionsFired,setTriggerSafetyViolationApis } = projectTeamDataSlice.actions;
+export const { setCompaniesData, setRolesData, setTradesData,setViolationActionsFired,setTriggerSafetyViolationApis } = projectTeamDataSlice.actions;
 
 export const getCompanyData = (state: RootState) => state.projectTeamData.companiesData;
 export const getTradeData = (state: RootState) => state.projectTeamData.tradesData;

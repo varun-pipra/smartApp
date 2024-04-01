@@ -224,6 +224,7 @@ const ScheduleOFValues = (props: ScheduleProps) => {
 				className='btn-post-contract'
 				style={{ width: 'fit-content', marginBottom: '10px' }}
 				onClick={(e: any) => handleManageSov(e)}
+				disabled={selectedRecord?.type == 'DownPayment'}
 				startIcon={<span className=''></span>}
 			>
 				Manage Billing Schedule

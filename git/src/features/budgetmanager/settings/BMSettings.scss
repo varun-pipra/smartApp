@@ -12,16 +12,18 @@
             width: 1em;
             height: 1em;
             color: #fff;
-            background-color: #808080;
+            background-color: #666666;
             border-radius: 50%;
             &:hover {
-                color: #808080;
-                background-color: transparent;
+                color: #ccc; //background-color: transparent;
             }
         }
     }
     .bm-settings-content {
         flex: 30;
         overflow: hidden;
+        .General-settings {
+            padding: 0em 0 !important;
+        }
     }
 }

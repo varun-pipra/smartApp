@@ -25,6 +25,7 @@ export interface ChangeEventRequestState {
 	driveFiles: Array<any>;
 	changeEventsListRefreshed: boolean;
 	tab?: string | undefined;
+	changeEventIframeActive: boolean;
 };
 
 const initialState: ChangeEventRequestState = {
@@ -40,6 +41,7 @@ const initialState: ChangeEventRequestState = {
 	driveFiles: [],
 	selectedChangeEvents: [],
 	changeEventsListRefreshed: false,
+	changeEventIframeActive: false,
 };
 
 export const getAllActiveClientContracts = createAsyncThunk<any>('activeClientContracts',
@@ -162,6 +164,9 @@ export const changeEventRequest = createSlice({
 		},
 		setChangeEventsListRefreshed: (state, action: PayloadAction<boolean>) => {
 			state.changeEventsListRefreshed = action.payload;
+		},
+		setChangeEventIframeActive: (state, action: PayloadAction<boolean>) => {
+			state.changeEventIframeActive = action.payload;
 		}
 	},
 	extraReducers: (builder) => {
@@ -240,6 +245,6 @@ export const getSourceList = (state: RootState) => state.changeEventRequest.sour
 export const getReferenceFiles = (state: RootState) => state.changeEventRequest.referenceFiles;
 
 export const { setToast, setSourceList, setSelectedChangeEvents, setShowLineItemDetails, setCurrentChangeEventId, setDriveFiles,
-	setChangeRequestDetails, setBudgetListItems, setReferenceFiles, setLinks, setConfirmationBudgetList, setConfirmationGCSign, setChangeEventsListRefreshed, setTab } = changeEventRequest.actions;
+	setChangeRequestDetails, setBudgetListItems, setReferenceFiles, setLinks, setConfirmationBudgetList, setConfirmationGCSign, setChangeEventsListRefreshed, setTab, setChangeEventIframeActive } = changeEventRequest.actions;
 
 export default changeEventRequest.reducer;

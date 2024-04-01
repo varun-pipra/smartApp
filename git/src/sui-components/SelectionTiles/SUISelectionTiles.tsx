@@ -22,7 +22,7 @@ const SUISelectionTiles = (props: any) => {
           key={tile.recordId}
           onClick={(event) => !props.readOnly && handleChange(event, tile)}
           className={
-            "sui-selection-tiles_item " + (tile.isActive ? "active" : "")
+            props?.readOnly ? `sui-selection-tiles_item  ${tile.isActive ? "active" : ""} disable` :"sui-selection-tiles_item " + (tile.isActive ? "active" : "")
           }
           >
           <div className="sui-selection-tiles_item-title-wrapper">

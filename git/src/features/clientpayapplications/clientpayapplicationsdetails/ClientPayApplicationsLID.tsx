@@ -17,6 +17,7 @@ import {getClientPayAppsList} from '../stores/GridSlice';
 import {amountFormatWithOutSymbol} from 'app/common/userLoginUtils';
 import {blockchainStates, setShowBlockchainDialog} from 'app/common/blockchain/BlockchainSlice';
 import { sapLinksObj } from 'utilities/sapLink';
+import { connectorImages } from 'utilities/commonutills';
 var tinycolor = require('tinycolor2');
 
 
@@ -44,7 +45,7 @@ const HeaderContent = (props: any) => {
 								<span className='sap'>
 									{connectors?.length && clientPayAppLineItem?.connectorItemData ? <img
 											className="sapnumber"
-											src={connectors?.[0]?.primaryIconUrl}
+											src={connectorImages?.[clientPayAppLineItem?.connectorItemData?.type]}
 											alt="connector Image"
 										/> : ''}
 										{connectors?.length && clientPayAppLineItem?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{clientPayAppLineItem?.connectorItemData?.url && window.open(clientPayAppLineItem?.connectorItemData?.url)}}>{clientPayAppLineItem?.connectorItemData?.name}</span> : ''}

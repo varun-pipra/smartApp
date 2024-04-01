@@ -13,7 +13,7 @@ import { SUIToast2 } from 'sui-components/Toast/Suitoast';
 import { TextField } from '@mui/material';
 
 import { ContractorResponse } from 'features/vendorcontracts/vendorcontractsdetails/ContractorResponse/ContractorResponse';
-import { getAmountAlignment } from 'utilities/commonutills';
+import { connectorImages, getAmountAlignment } from 'utilities/commonutills';
 import { checkAtleastOneBudgetIsAssignedToVendor, checkEstimatedAmount, checkSubmitBy, checkSubmitEnable, stateMap } from '../CERUtils';
 import Confirmation from '../modal/CERConfirmation';
 import { authorizeByClient, rejectByClient, requestQuoteFromVendor, reviseByClient, submitChangeEvent, submitQuoteByVendor } from '../stores/ChangeEventAPI';
@@ -282,7 +282,7 @@ const ChangeEventRequestsLID = memo(({ data, ...props }: any) => {
 			</>,
 			leftNode: <>
 				{
-					<ContractorResponse
+					clientResponse?.show && <ContractorResponse
 						text={responseTextObj?.[clientResponse?.type]}
 						contractorName={changeRequestDetails?.responses?.[changeRequestDetails?.responses?.length - 1]?.by?.displayName}
 						respondedOn={changeRequestDetails?.responses?.[changeRequestDetails?.responses?.length - 1]?.on}
@@ -505,7 +505,7 @@ const HeaderContent = memo((props: any) => {
 						<span className='grey-fontt'>{changeRequestDetails?.code || ''}</span>
 							{connectors?.length && changeRequestDetails?.connectorItemData ? <img
 								className="sapnumber"
-								src={connectors?.[0]?.primaryIconUrl}
+								src={connectorImages?.[changeRequestDetails?.connectorItemData?.type]}
 								alt="connector Image"
 							/> : ''}
 							{connectors?.length && changeRequestDetails?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{changeRequestDetails?.connectorItemData?.url && window.open(changeRequestDetails?.connectorItemData?.url)}}>{changeRequestDetails?.connectorItemData?.name}</span> : ''}

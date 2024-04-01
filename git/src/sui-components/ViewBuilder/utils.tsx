@@ -1,8 +1,4 @@
-//import SaveIcon from "resources/images/common/Save.svg";
-//import SaveAsIcon from "resources/images/common/Saveas.svg";
-//import EditIcon from "resources/images/common/Edit.svg";
-//import DeleteIcon from "resources/images/common/Delete.svg";
-//import NewviewIcon from "resources/images/common/Newgridview.svg";
+
 import { Box } from "@mui/material";
 
 
@@ -109,3 +105,11 @@ export const headerData = [
 		}
 	}
 ];
+
+export const clearObjectValues = (data:any,newdataa:any) => {
+	const newData = { ...data };
+	for (let key in newData) {
+		newData[key] = [];
+	}
+	return {...newData,...newdataa}
+};

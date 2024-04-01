@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'common-webfont';
-  src:  url('fonts/common-webfont.eot?gy3t07');
-  src:  url('fonts/common-webfont.eot?gy3t07#iefix') format('embedded-opentype'),
-    url('fonts/common-webfont.ttf?gy3t07') format('truetype'),
-    url('fonts/common-webfont.woff?gy3t07') format('woff'),
-    url('fonts/common-webfont.svg?gy3t07#common-webfont') format('svg');
+  src:  url('fonts/common-webfont.eot?xen5tz');
+  src:  url('fonts/common-webfont.eot?xen5tz#iefix') format('embedded-opentype'),
+    url('fonts/common-webfont.ttf?xen5tz') format('truetype'),
+    url('fonts/common-webfont.woff?xen5tz') format('woff'),
+    url('fonts/common-webfont.svg?xen5tz#common-webfont') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-column-names:before {
+  content: "\ec93";
+}
+.common-icon-staff-projects:before {
+  content: "\ec92";
+}
+.common-icon-reserve-staff:before {
+  content: "\ec91";
+}
 .common-icon-created-by:before {
   content: "\ec8e";
 }
@@ -940,7 +949,6 @@
 }
 .common-icon-reopen:before {
   content: "\eb7a";
-  color: #666;
 }
 .common-icon-projects:before {
   content: "\eb79";
@@ -1486,7 +1494,6 @@
 }
 .common-icon-visit-log:before {
   content: "\eade";
-  color: #666;
 }
 .common-icon-approval-all-option:before {
   content: "\eadd";

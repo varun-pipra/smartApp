@@ -4,12 +4,12 @@ import { useAppDispatch, useAppSelector } from 'app/hooks';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import { memo, useEffect, useState } from 'react';
 import SUIAlert from 'sui-components/Alert/Alert';
-
+import _ from "lodash";
 import { GridOn, Refresh, TableRows } from '@mui/icons-material';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import { Box, Button, IconButton, List, ListItem, ListItemIcon, ListItemText, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 
-import { deleteChangeEventRequest } from '../../stores/ChangeEventAPI';
+import { deleteChangeEventRequest, postChangeEventsToConnector } from '../../stores/ChangeEventAPI';
 import {
 	getChangeEventList, setChangeEventsListRefreshed, setCurrentChangeEventId, setToast
 } from '../../stores/ChangeEventSlice';
@@ -20,7 +20,13 @@ import IQToggle from 'components/iqtoggle/IQToggle';
 import SmartDropDown from 'components/smartDropdown';
 import SUIDrawer from 'sui-components/Drawer/Drawer';
 import React from 'react';
+import { getConnectorType } from 'utilities/commonutills';
+import { isChangeEventSC } from 'app/common/userLoginUtils';
+import { fetchSettings } from 'features/budgetmanager/operations/settingsSlice';
+import { addSettings } from 'features/budgetmanager/operations/settingsAPI';
+import { checkGUID } from 'features/common/timelog/utils';
 
+import {settingsHelper} from 'utilities/commonFunctions';
 // Component definition
 export const CERLeftButtons = memo(() => {
 	const dispatch = useAppDispatch();
@@ -48,13 +54,15 @@ export const CERLeftButtons = memo(() => {
 		// 	setAlert(true);
 		// 	setWarningMessage(false);
 		// }
-		console.log("selectedChangeEvents", selectedChangeEvents)
-		deleteChangeEventRequest(selectedChangeEvents?.[0]?.id, (response:any) => {
-			if(response) {
-				dispatch(getChangeEventList());
-				setToast('Deleted Change Event Request Successfully.');
-			}
-		});
+		selectedChangeEvents?.map((ce:any) => {
+			console.log("selectedChangeEvents", selectedChangeEvents)
+			deleteChangeEventRequest(ce?.id, (response:any) => {
+				if(response) {
+					dispatch(getChangeEventList());
+					setToast('Deleted Change Event Request Successfully.');
+				}
+			});
+		})
 	};
 	const PrintOnclick = (event: any) => {
 		postMessage({
@@ -105,23 +113,56 @@ export const CERLeftButtons = memo(() => {
 // Component definition
 export const CERRightButtons = memo(() => {
 	const dispatch = useAppDispatch();
-	const { defaultData } = useAppSelector(state => state.settings);				
+	const { defaultData, settingsData } = useAppSelector(state => state.settings);
+	const appInfo = useAppSelector(getServer);					
 
 	const showSettingsPanel = useAppSelector(getShowSettingsPanel);
 	const [toggleChecked, setToggleChecked] = React.useState(false);
 	const {blockchainEnabled} = useAppSelector((state: any) => state.blockchain);
 	const { connectors } = useAppSelector((state) => state.gridData);
-
+	const [workFlowDropDowOptions, setWorkFlowDropDowOptions] = React.useState<any>([]);
+	const [selectedOption, setSelectedOption] = React.useState((settingsData?.changeOrderApp?.id && checkGUID(settingsData?.changeOrderApp?.id)) ? settingsData?.changeOrderApp?.name :'Built In');
+	let defaultSelection = (settingsData?.changeOrderApp?.id && checkGUID(settingsData?.changeOrderApp?.id)) ? {"Apps": [settingsData?.changeOrderApp?.name]} : {"Built In": ['Built In']};
 	const handleView = (event: React.MouseEvent<HTMLElement>, value: string) => {
 		if (value !== null) {
 			// dispatch(setShowTableViewType(value));
 		}
 	};
 
+	useEffect(() => {
+		setSelectedOption((settingsData?.changeOrderApp?.id && checkGUID(settingsData?.changeOrderApp?.id)) ? settingsData?.changeOrderApp?.name :'Built In');
+		defaultSelection = (settingsData?.changeOrderApp?.id && checkGUID(settingsData?.changeOrderApp?.id)) ? {"Apps": [settingsData?.changeOrderApp?.name]} : {"Built In": ['Built In']};
+		
+	}, [settingsData])
+
+	const handlePostTo = () => {
+		const type = getConnectorType(connectors?.[0]?.name)
+		postChangeEventsToConnector(type, (response:any) => {
+			console.log("budget connector resp", response);
+		})
+	}
+	useEffect(() => {
+		const data = settingsHelper(defaultData);
+		setWorkFlowDropDowOptions(data);
+	},[defaultData]);
+
+	const handleInputChange = (value:any) => {
+		console.log("value", value)
+		const Key = Object.keys(value);
+		if(Key?.length && !_.isString(value)) {
+			setSelectedOption(value[Key?.toString()].label);
+		} else {
+			setSelectedOption(value);
+		}
+		addSettings(appInfo, {...settingsData, changeOrderApp: {id: value[Key?.toString()]?.id}}, (response: any) => {
+			dispatch(fetchSettings(appInfo));
+		});
+	};
+
 	return <>
 		<div key='spacer' className='toolbar-item-wrapper toolbar-group-button-wrapper' >
 			{<ReportAndAnalyticsToggle/>}
-			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl}/> : <></>}
+			{!isChangeEventSC() && connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={() => handlePostTo()}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={'List'}
@@ -162,21 +203,22 @@ export const CERRightButtons = memo(() => {
 					},
 				}}
 				anchor='right'
+				className='settings-rightpanel-cls'
 				variant='permanent'
 				elevation={8}
 				open={false}
 			>
 				<Box>
-					<Stack direction="row" sx={{justifyContent: "end", height: "5em"}}>
+					<Stack direction="row" sx={{justifyContent: "end", height: "2em"}}>
 						<IconButton className="Close-btn" aria-label="Close Right Pane"
 							onClick={() => dispatch(setShowSettingsPanel(false))}
 						>
 							<span className="common-icon-Declined"></span>
 						</IconButton>
 					</Stack>
-					<Stack className='General-settings'>
+					{ !isChangeEventSC() && <Stack className='General-settings'>
 						<Stack className='generalSettings-Sections'>
-							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Settings</Typography>
+							{/* <Typography variant="h6" component="h6" className='budgetSetting-heading'>Settings</Typography>
 							<List className='generalSettings-list'
 								sx={{
 									display: 'flex',
@@ -200,24 +242,35 @@ export const CERRightButtons = memo(() => {
 										/>
 									</ListItemIcon>
 								</ListItem>}
-							</List>
+							</List> */}
 							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
 							<SmartDropDown
-								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
-								dropDownLabel="Vendor Pay Invoices"
+								options={workFlowDropDowOptions || []}
+								dropDownLabel="Change Order"
 								isSearchField
 								required={false}
-								useNestedOptions
-								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								// useNestedOptions
+								outSideOfGrid={true}
+								selectedValue={selectedOption}
 								isFullWidth
 								ignoreSorting={true}
-								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								sx={{
+									'& .MuiInputBase-input': {
+										padding: '8px 25px 6px 4px !important'
+									}
+								}}
+								handleChange={(value: any) => handleInputChange(value)}
 								variant={'outlined'}
 								optionImage={true}
+								isSubMenuSearchField={true}
+								isDropdownSubMenu={true}
+								defaultSubMenuSelection={defaultSelection}
+								handleSearchProp={(items: any, key: any) => {}}
+								subMenuModuleName={'change-events'}
 								// menuProps={classes3.menuPaper}
 							/>
 						</Stack>
-					</Stack>
+					</Stack>}
 				</Box>
 			</SUIDrawer>
 			: null}

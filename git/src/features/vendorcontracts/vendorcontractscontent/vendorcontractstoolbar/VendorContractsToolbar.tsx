@@ -37,6 +37,10 @@ import {moduleType, blockchainStates, setShowBlockchainDialog, doBlockchainActio
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 import SapButton from 'sui-components/SAPButton/SAPButton';
 import SmartDropDown from 'components/smartDropdown';
+import {settingsHelper} from 'utilities/commonFunctions';
+import { checkGUID } from 'features/common/timelog/utils';
+import { addSettings } from 'features/budgetmanager/operations/settingsAPI';
+import { fetchSettings } from 'features/budgetmanager/operations/settingsSlice';
 
 const VendorContractsToolbar = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -54,7 +58,7 @@ const VendorContractsToolbar = (props: any) => {
 	const { selectedNode, selectedRecord, selectedTabName, selectedVendorInCreateForm } = useAppSelector((state) => state.vendorContracts);
 
 	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
-	const { defaultData } = useAppSelector(state => state.settings);	
+	const { defaultData, settingsData } = useAppSelector(state => state.settings);	
 
 	const [showAlertForPendingCompliance, setShowAlertForPendingCompliance] = React.useState<any>({ show: false, message: '', type: '' })
 
@@ -68,7 +72,7 @@ const VendorContractsToolbar = (props: any) => {
 	];
 
 	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);	
-
+	const isSingleSelected = selectedRows?.length === 1;
 	const filterOptions = [
 		{
 			text: "Vendors",
@@ -119,6 +123,33 @@ const VendorContractsToolbar = (props: any) => {
 
 	const [filters, setFilters] = useState<any>(filterOptions);
 
+	const [workFlowDropDowOptions, setWorkFlowDropDowOptions] = React.useState<any>([]);
+	const [selectedOption, setSelectedOption] = React.useState((settingsData?.contractsApp?.id && checkGUID(settingsData?.contractsApp?.id)) ? settingsData?.contractsApp?.name :'Built In');
+	let defaultSelection = (settingsData?.contractsApp?.id && checkGUID(settingsData?.contractsApp?.id)) ? {"Apps": [settingsData?.contractsApp?.name]} : {"Built In": ['Built In']};
+
+	useEffect(() => {
+		const data = settingsHelper(defaultData);
+		setWorkFlowDropDowOptions(data);
+	},[defaultData]);
+
+	useEffect(() => {
+		setSelectedOption((settingsData?.contractsApp?.id && checkGUID(settingsData?.contractsApp?.id)) ? settingsData?.contractsApp?.name :'Built In');
+		defaultSelection = (settingsData?.contractsApp?.id && checkGUID(settingsData?.contractsApp?.id)) ? {"Apps": [settingsData?.contractsApp?.name]} : {"Built In": ['Built In']};
+		
+	}, [settingsData])
+
+	const handleInputChange = (value:any) => {
+		const Key = Object.keys(value);
+		if(Key?.length && !_.isString(value)) {
+			setSelectedOption(value[Key?.toString()].label);
+		} else {
+			setSelectedOption(value);
+		};
+		addSettings(appInfo, {...settingsData, contractsApp: {id: value[Key?.toString()]?.id}}, (response: any) => {
+			dispatch(fetchSettings(appInfo));
+		});
+	};
+
 	const handleDelete = () => {
 		setAlert({
 			show: true,
@@ -156,15 +187,18 @@ const VendorContractsToolbar = (props: any) => {
 		if (val == 'yes') {
 			const selectedRowIds = selectedRows.map((row: any) => row.id);
 			if (alert.type == 'Delete') {
-				deleteContract(appInfo, selectedRowIds[0]).then((resp: any) => {
-					if (errorStatus?.includes(resp?.status)) dispatch(setToastMessage({ displayToast: true, message: errorMsg }));
-					else {
-						// dispatch(getVendorContractsList(appInfo));
-						dispatch(setToastMessage({ displayToast: true, message: `Selected Record Deleted Successfully` }));
-						setDisableDelete(true);
-					}
+				selectedRowIds?.map((id:any) => {
 
-				});
+					deleteContract(appInfo, id).then((resp: any) => {
+						if (errorStatus?.includes(resp?.status)) dispatch(setToastMessage({ displayToast: true, message: errorMsg }));
+						else {
+							// dispatch(getVendorContractsList(appInfo));
+							dispatch(setToastMessage({ displayToast: true, message: `Selected Record Deleted Successfully` }));
+							setDisableDelete(true);
+						}
+						
+					});
+				})
 			}
 			else {
 				activateContract(appInfo, selectedRows?.[0]?.id, (response: any) => {
@@ -365,7 +399,7 @@ const VendorContractsToolbar = (props: any) => {
 						color={disablePostContract ? 'inherit' : 'success'}
 						onClick={() => handlePostContract(false)}
 						startIcon={<span className='common-icon-post-contract' />}
-						disabled={disablePostContract || disableBlockchainActionButtons}>
+						disabled={!isSingleSelected && (disablePostContract || disableBlockchainActionButtons)}>
 						Post Contract
 					</Button>}
 				{/* <IQTooltip title='Post Contract' placement='bottom'>
@@ -472,7 +506,7 @@ const VendorContractsToolbar = (props: any) => {
 		</div>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 			{<ReportAndAnalyticsToggle />}
-			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={() =>handlePostTo()}/> : <></>}
+			{isUserGC(appInfo) && connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={() =>handlePostTo()}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}
@@ -524,19 +558,20 @@ const VendorContractsToolbar = (props: any) => {
 					},
 				}}
 				anchor='right'
+				className='settings-rightpanel-cls'
 				variant='permanent'
 				elevation={8}
 				open={false}
 			>
 				<Box>
-					<Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
+					<Stack direction="row" sx={{ justifyContent: "end", height: "2em" }}>
 						<IconButton className="Close-btn" aria-label="Close Right Pane"
 							onClick={() => dispatch(setShowSettingsPanel(false))}
 						>
 							<span className="common-icon-Declined"></span>
 						</IconButton>
 					</Stack>
-					<Stack className='General-settings'>
+					{isUserGC(appInfo) && <Stack className='General-settings'>
 						<Stack className='generalSettings-Sections'>
 							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Settings</Typography>
 							<List className='generalSettings-list'
@@ -565,21 +600,30 @@ const VendorContractsToolbar = (props: any) => {
 							</List>
 							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
 							<SmartDropDown
-								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								options={workFlowDropDowOptions || []}
 								dropDownLabel="Vendor Contract"
 								isSearchField
 								required={false}
-								useNestedOptions
-								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								outSideOfGrid={true}
+								selectedValue={selectedOption}
 								isFullWidth
 								ignoreSorting={true}
-								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								handleChange={(value: any) => handleInputChange(value)}
 								variant={'outlined'}
+								sx={{
+									'& .MuiInputBase-input': {
+										padding: '8px 25px 6px 4px !important'
+									}
+								}}
 								optionImage={true}
-								// menuProps={classes3.menuPaper}
+								isSubMenuSearchField={true}
+								isDropdownSubMenu={true}
+								defaultSubMenuSelection={defaultSelection}
+								handleSearchProp={(items: any, key: any) => {}}
+								subMenuModuleName={'vendor-contracts'}
 							/>						
 						</Stack>
-					</Stack>
+					</Stack>}
 				</Box>
 			</SUIDrawer>
 			: null}

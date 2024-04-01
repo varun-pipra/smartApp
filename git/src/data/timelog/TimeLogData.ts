@@ -17,11 +17,19 @@ export const timelogList = {
 					"stage": "For Record",
 					"smartAppIcon": "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2Fiqthumbnail%2F41cba6bdb70846489b4048993c7561c3%2F1b39047498b04b679400301e6c286161.png?generation=1655379006248906&alt=media"
 			},
-			"location": null,
+			"location": [
+				{
+					"id": 374,
+					"name": "room1 - 1st Floor - Landscape",
+					"levelId": 19,
+					"levelName": "Room 101"
+				}
+		],
 			"sbs": null,
 			sbsPhase: {
 				id: "e2ae03bd-f828-4da2-9d71-edfe9abd520b",
-				name: "Pre Construction"
+				name: "Pre Construction",
+				color: "#81c3dc"
 			},
 			"createdBy": {
 					"ID": "5b7f3eb7-9161-434d-b43d-0524d92842ff",
@@ -118,6 +126,52 @@ export const timelogList = {
 			"status": 'Reported',
 			"hasTimeOverlap": false,
 			"hasLocationConflict": false,
+			links : [
+				{
+						"id": "e6e7d4f2-880b-483c-9293-330fd992dbef",
+						"name": "2062-105900.jpg",
+						"description": "",
+						"stage": "New",
+						"createdBy": "MK, Sudeep",
+						"createdOn": "2024-03-07T12:44:23.41",
+						"smartappIcon": "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2Fiqthumbnail%2Ff594cc128f724abe8905089099cc953d%2F5db984d74eb74c7790aaca3ac3fa2ed3.png?generation=1655470426529908&alt=media",
+						"fileThumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/2023_12/9366e5532c4b01a05cbfa1f2bcc25763/Large_afa9a092e7d1917b49d7654be4676eca.png",
+						"fileType": ".jpg"
+				},
+				{
+						"id": "6e74ea06-ffc5-4361-a5ef-986cd4cae7c3",
+						"name": "Schema Migration 2.png",
+						"description": "",
+						"stage": "New",
+						"createdBy": "MK, Sudeep",
+						"createdOn": "2024-03-07T12:44:23.41",
+						"smartappIcon": "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2Fiqthumbnail%2Ff594cc128f724abe8905089099cc953d%2F5db984d74eb74c7790aaca3ac3fa2ed3.png?generation=1655470426529908&alt=media",
+						"fileThumbnail": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/2024_2/c908d3e6e6d92330f2b3643cd54993d3/Large_b73d054f6b405c2a048eb2cc924d3f13.png",
+						"fileType": ".png"
+				},
+				{
+						"id": "ba9a04db-61bf-4d22-86c7-40d551d44d27",
+						"name": "DOMINION 2023 SURRY DIGITAL MODERNIZATION.gantter",
+						"description": "",
+						"stage": "New",
+						"createdBy": "MK, Sudeep",
+						"createdOn": "2024-03-07T12:43:54.587",
+						"smartappIcon": "https://storage.googleapis.com/download/storage/v1/b/smartapp-appzones/o/5ba09a787d0a4ea1bc0f0c1420152d1c%2Fiqthumbnail%2Ff594cc128f724abe8905089099cc953d%2F5db984d74eb74c7790aaca3ac3fa2ed3.png?generation=1655470426529908&alt=media",
+						"fileThumbnail": "",
+						"fileType": ".gantter"
+				},
+				{
+						"id": "21e9d862-32df-4889-8fd3-ab446c1f5621",
+						"name": "24",
+						"description": null,
+						"stage": "New",
+						"createdBy": "MK, Sudeep",
+						"createdOn": "2024-03-07T06:05:05.76",
+						"smartappIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/eec7e113599545fda374306f7fa9cfe7",
+						"fileThumbnail": "",
+						"fileType": ""
+				}
+		]
 	},
 	{
     "id": "0751ef0c-9f83-4fe1-853d-a2671d59705e",
@@ -510,66 +564,99 @@ location: {
 		notes:'example',
 	},
 	{
-		id: "a2ae08e9-d5c2-4ed8-95e1-7785c0ae4e07",
-		timeSegmentId: 'TS0092',
-		status: 'Accepted',
-		company: {id: "ghjk5678vbn", name: 'No Company'},
-		startDate: "2024-01-10T10:00:00.00Z",
-		endDate: "2024-01-16T12:30:00.00Z",
-		"hasTimeOverlap": false,	
-		"hasLocationConflict": false,	
-		startTime: "2024-01-01T10:00:00.00Z",
-		endTime: "2024-01-10T14:00:00.00Z",
-		duration: 400,
-		createdDate: "2024-02-09T10:41:29.29",		
-		source: 'Manual',
-		conflicting: 'Conflicting Time',
-		project: 'Capital Commercial Solutions2',
-		region: 'Asia-India',
-		orgLocation: 'India-Banglore',
-		orgProfile: 'Commercial Constructions',
-		"createdBy": {
-			"ID": "9715c84f-adff-4bd4-80b5-e5c2d1a62a25",
-			"firstName": "Swathi",
-			"lastName": "Kolli",
-			"email": "swathi@smartapp.com",
-			"globalId": "9715c84f-adff-4bd4-80b5-e5c2d1a62a23"
-	},
-		smartItem: {
-			"id": "381ebe2e-8242-458c-b01e-f565fbdf874d",
-			"name": "F1 - 01125 ",
-			"smartApp": "Work Assignment",
-			"smartAppId": "f12d6f28-a7e8-4b3e-b33d-c6146af9e14e",
-			"stage": "In Progress",
-			"smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f12d6f28a7e84b3eb33dc6146af9e14e"
-	},
-
-	location: {
-		id:1,
-		name : 'Building3 - Floor3'
-	},
-		sbs: {
-			"id": "da2250b4-0095-44a1-83a0-4fbf6b32c56a",
-			"name": "test 29 "
-		},
-		sbsPhase:{
-			id:"fe20f93a-0b8b-40af-8980-d8b74922c407",
-			name: "In Construction"
-		},
-		team: {
-			id : 1,
-			name : 'Carpenter Team'
-		},
-		timeLogId: "TL0009",
-		"user": {
-			"ID": "3822aaa9-09d3-47bf-be27-670a2af868ex",
-			"firstName": "Justin",
-			"lastName": "Robert",
-			"email": "jcarr@smartapp.com",
-			"globalId": "6bef26ad-e7be-422e-b544-95f8fd2e4e55"
-			},
-			notes:'example',
-		},
+    "id": "358457c6-fb35-451f-bfc5-43083a8d835b",
+    "timeSegmentId": "TS00404",
+    "timeLogId": "TL00404",
+    "startTime": "2024-03-28T12:30:00",
+    "endTime": "2024-03-28T22:00:00",
+    "duration": 570,
+    "source": "Manual",
+    "smartItem": {
+        "id": "1ce715a9-5593-4161-8a63-37c7fb892401",
+        "name": "AR - 0186",
+        "smartApp": "Accident Report",
+        "smartAppId": "f6222293-d881-45ac-bc2c-e2de6df8d9b5",
+        "stage": "Report Prepared",
+        "smartAppIcon": "https://storage.googleapis.com/smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqthumbnail/f6222293d88145acbc2ce2de6df8d9b5"
+    },
+    "location": [
+        {
+            "id": "41c6349d-64de-4962-9ee5-a60e15d63ff8",
+            "locationId": 374,
+            "name": "room1 - 1st Floor - Landscape",
+            "levelId":10,
+            "levelName": "Room 101"
+        },
+        {
+            "id": "36bbc63d-4396-4f92-a4a3-48537ea3369d",
+            "locationId": 381,
+            "name": "Room1 - Floor1 - Building1",
+            "levelId": 10,
+            "levelName": "Room 101"
+        }
+    ],
+    "sbs": [
+        {
+            "id": "8bdb2364-fcd1-4126-a8e2-3c9fe0c9d07b",
+            "name": "001 Test"
+        },
+        {
+            "id": "d2f23eb3-fcc5-4109-abfe-73160f142b99",
+            "name": "001 Test 2"
+        }
+    ],
+    "sbsPhase": {
+        "id": "a0336931-5e92-44ee-a6cf-38fcf943e92e",
+        "name": "In Construction",
+        "color": "#d6a827"
+    },
+    "createdBy": {
+        "ID": "fb9fe865-986e-4991-91e5-656aa7b7fe14",
+        "email": "mksudeep@smartapp.com",
+        "globalId": "4cac5fc1-62d5-4676-9f1f-be5323b7a29b",
+        "displayName": null,
+        "icon": null,
+        "phone": null,
+        "firstName": "Sudeep",
+        "lastName": "MK"
+    },
+    "status": "Reported",
+    "hasTimeOverlap": false,
+    "hasLocationConflict": false,
+    "user": {
+        "ID": "fb9fe865-986e-4991-91e5-656aa7b7fe14",
+        "email": "mksudeep@smartapp.com",
+        "globalId": "4cac5fc1-62d5-4676-9f1f-be5323b7a29b",
+        "displayName": "MK, Sudeep",
+        "icon": "https://central.smartappbeta.com/images/37466949-8b40-485c-84e8-a6a69b56a34f",
+        "phone": null,
+        "firstName": "Sudeep",
+        "lastName": "MK"
+    },
+    "adhocUser": {
+        "firstName": null,
+        "lastName": null
+    },
+    "startTimeUtc": "0001-01-01T00:00:00",
+    "endTimeUtc": null,
+    "timeSegmentFor": 0,
+    "notes": "task1",
+    "createdDate": "2024-03-28T07:00:17.983Z",
+    "splitFromSegmentId": null,
+    "team": null,
+    "company": {
+        "id": "babe38cd-a0a3-4f1b-b7e9-5d715bd22066",
+        "name": "Tutions",
+        "icon": "gs://smartapp-appzones/5ba09a787d0a4ea1bc0f0c1420152d1c/iqadmin/dynamic/2311/zehqslg3/abc7.jpg"
+    },
+    "links": null,
+    "sentBackBy": null,
+    "sendBackReason": null,
+    "sentBackOn": null,
+    "sendBackSignature": null,
+    "sentBackByThumbnail": null,
+    "groupBy": null
+	}
 ]};
 
 export const workTeamData = [

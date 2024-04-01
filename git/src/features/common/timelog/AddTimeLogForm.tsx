@@ -14,10 +14,10 @@ import TimeLogPicker from "sui-components/TimeLogPicker/TimeLogPicker";
 import convertDateToDisplayFormat from "utilities/commonFunctions";
 import WorkerDailog from "./workerDailog/WorkerDailog";
 import { makeStyles, createStyles } from "@mui/styles";
-import { setToast ,getTimeLogList,setSmartItemOptionSelected} from './stores/TimeLogSlice';
+import { setToast ,getTimeLogList,setSmartItemOptionSelected, setWorkTeamFromExt} from './stores/TimeLogSlice';
 import { AppList, AppList_PostMessage } from './utils';
 import { addTimeToDate, getTime } from 'utilities/datetime/DateTimeUtils';
-import { addTimeLog } from './stores/TimeLogAPI';
+import { addTimeLog ,fetchAppsPermission} from './stores/TimeLogAPI';
 import { canManageTimeForCompany, canManageTimeForWorkTeam, isWorker, canManageTimeForProject } from 'app/common/userLoginUtils';
 import moment from 'moment';
 import { setScrollToNewRowId } from 'features/budgetmanager/operations/gridSlice';
@@ -47,8 +47,7 @@ const AddTimeLogForm = (props: any) => {
 	const dispatch = useAppDispatch();
 	const appInfo = useAppSelector(getServer);
 	const classes = useStyles();
-	const { appsList } = useAppSelector(state => state.sbsManager);
-	const { access ,smartItemOptionSelected , WorkTeamDataFromExt , gridFilters} = useAppSelector(state => state.timeLogRequest);
+	const { access ,smartItemOptionSelected , WorkTeamDataFromExt , gridFilters,timelogAppsList} = useAppSelector(state => state.timeLogRequest);
 	const defaultValues: TimeLogFormProps = useMemo(() => {
 		return {
 			resource: isWorker() ? "Me" : "",
@@ -86,15 +85,15 @@ const AddTimeLogForm = (props: any) => {
 	const [clearTimeLogPickerData, setClearTimeLogPickerData] = useState<boolean>(false);
 
 	useMemo(() => {
-		const addLinksOptionsCopy = AppList(appsList);
+		const addLinksOptionsCopy = AppList(timelogAppsList);
 		setAddLinksOptions(addLinksOptionsCopy);
-	}, [appsList]);
+	}, [timelogAppsList]);
 
 	useMemo(() => {
 		if(!_.isEmpty(smartItemOptionSelected) ){
 			console.log('smartItemOptionSelected',smartItemOptionSelected)
 			const duplicate = [{...smartItemOptionSelected}]
-			const addLinksOptionsCopy = AppList([...appsList,...duplicate]);
+			const addLinksOptionsCopy = AppList([...timelogAppsList,...duplicate]);
 			setAddLinksOptions(addLinksOptionsCopy);
 			setSelectedSmartItem(smartItemOptionSelected.name)
 			setTimeLogForm((currentState) => {
@@ -103,7 +102,7 @@ const AddTimeLogForm = (props: any) => {
 			});
 		}
 		else{
-			const addLinksOptionsCopy = AppList([...appsList]);
+			const addLinksOptionsCopy = AppList([...timelogAppsList]);
 			setAddLinksOptions(addLinksOptionsCopy);
 			setSelectedSmartItem('')
 		}
@@ -147,7 +146,7 @@ const AddTimeLogForm = (props: any) => {
 			const companyArray = ['Me', 'mycompany'];
 			const workerArray = ['Me', 'workteam'];
 			const projectLevelArray = ['Me', 'mycompany', 'workteam', 'adhocUser']
-
+			console.log("canManageTimeForWorkTeam", canManageTimeForWorkTeam(), canManageTimeForCompany())
 			const updatedarray = resource?.filter((data: any) => {
 				return canManageTimeForProject() ? projectLevelArray?.includes(data?.value)
 					: canManageTimeForWorkTeam() ? workerArray?.includes(data.value)
@@ -202,7 +201,8 @@ const AddTimeLogForm = (props: any) => {
 	}; 
 
 	const handleAdd = () => {
-        const timeEntries = timelogForm?.time?.map((obj:any) => {
+				const filteredData = timelogForm?.time?.filter((item:any) => item.startTime !== "");
+        const timeEntries = filteredData?.map((obj:any) => {
             if(timelogForm?.resource == "workteam" || timelogForm?.resource == "mycompany" ){
                 let modifyStartTime:any = getTime(obj.startTime);
                 let modifyEndTime:any = getTime(obj.endTime);
@@ -211,8 +211,6 @@ const AddTimeLogForm = (props: any) => {
                 return {
                     startTime: obj?.startTime ? moment(startDate).format("MM/DD/yyyy h:mm A") : '',
                     endTime: obj?.endTime ? moment(endDate).format("MM/DD/yyyy h:mm A") : '',
-                    // startTime: obj?.startTime ? addTimeToDate(timelogForm?.date, obj?.startTime) : '',
-                    // endTime: obj?.endTime ? addTimeToDate(timelogForm?.date, obj?.endTime) : '',
                     userId:obj.userId,
                     notes : obj.notes
                 }
@@ -231,24 +229,35 @@ const AddTimeLogForm = (props: any) => {
         const payload = {
             smartItemId : timelogForm?.smartItems,
             source: 0,
-			segments: [...timeEntries],
-			// ...timelogForm?.resource == "workteam" && {team: ''}
+						segments: [...timeEntries],
+			// ...timelogForm?.resource == "workteam" && {team: {id: ''}}
         };
         console.log('payload',payload);
-        // setTimeLogForm(defaultValues);
-        // setSelectedSmartItem('');
-        setAddDisabled(true);
-    	 //setClearTimeLogPickerData(true)
         addTimeLog(payload, (resp:any) => {
-			dispatch(setScrollToNewRowId(resp[0]));
-            //dispatch(setSmartItemOptionSelected({}));
+						console.log('add time log resp',resp);
+						store.dispatch(setScrollToNewRowId(resp[0]));
             dispatch(setToast('Time Logged Successfully.'));
-            dispatch(getTimeLogList(gridFilters));
+			dispatch(getTimeLogList(gridFilters));
+			dispatch(setWorkTeamFromExt(([])));
         }); 
-    };
+  };
 
-	const smartItemOnClick = (e: any) => {
-		AppList_PostMessage(e);
+	const smartItemOnClick = async(e: any) => {
+		// isnew means true call the api 
+			if(e?.isNew == true){
+				const data = await fetchAppsPermission(e?.id);
+				if(data.success == true && data.values == true){
+						AppList_PostMessage(e);
+				}
+				else{
+					console.log('not authorozed');
+					///you are not authorized to create an item
+					dispatch(setToast('You Are Not Authorized to Create an Item.'));
+				}
+			}
+			else{
+				AppList_PostMessage(e);
+			} 
 	};
 
 	const openSelectResource = () => {
@@ -257,7 +266,9 @@ const AddTimeLogForm = (props: any) => {
 		if(timelogForm.resource === 'workteam'){
 			selectedOpt={
 				workteamUser:true,
-				title:"Work Team"
+				title:"Work Team",
+				date: timelogForm?.date,
+				defaultData: WorkTeamDataFromExt
 			}
 		}
 		if(timelogForm.resource === 'mycompany'){
@@ -266,7 +277,9 @@ const AddTimeLogForm = (props: any) => {
 				Contacts:true,
 				FilterByCompany:true,
 				companyUser:true,
-				title:"My Company"
+				title:"My Company",
+				date: timelogForm?.date,	
+				defaultData: WorkTeamDataFromExt			
 			}
 		}
 		// if(timelogForm.resource === 'Ad-hoc-users'){
@@ -345,8 +358,7 @@ const AddTimeLogForm = (props: any) => {
 								name="time"
 								onDurationChange={(value: any) =>handleFieldChange(value, "duration")}
 								TimeonChange={(data: any) => { handleFieldChange(data, 'time') }}
-								resetTimeLog={clearTimeLogPickerData}
-                                resetDone={ (e:any)=> setClearTimeLogPickerData(e)}
+								resetTimeLog={clearTimeLogPickerData} resetDone={ (e:any)=> setClearTimeLogPickerData(e)}
 							></TimeLogPicker>
 							:
 							<TextField

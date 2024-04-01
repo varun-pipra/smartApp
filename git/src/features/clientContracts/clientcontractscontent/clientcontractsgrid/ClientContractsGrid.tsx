@@ -14,6 +14,8 @@ import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmana
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 import {blockchain, blockchainStates} from 'app/common/blockchain/BlockchainSlice';
+import {clearObjectValues} from 'sui-components/ViewBuilder/utils';
+import _ from 'lodash';
 
 var tinycolor = require('tinycolor2');
 let defaultCCStatusFilter: any = [];
@@ -51,11 +53,9 @@ const ClientContractsGrid = (props: any) => {
 	}, [blockchainEnabled])
 	
 
-	if (statusFilter) defaultCCStatusFilter = activeMainGridFilters.status;
 	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
 
-
-	useEffect(() => { setColumns([...columns]); }, [gridOriginalData, statusFilter]);
+	useEffect(() => { setColumns([...columns]); }, [gridOriginalData]);
 
 	useEffect(() => {
 		setRowData(gridData);
@@ -197,7 +197,7 @@ const ClientContractsGrid = (props: any) => {
 			headerName: isUserGCForCC(appInfo) ? 'Status' : 'Response Status',
 			pinned: "left",
 			field: 'status',
-			width: 300,
+			width: 325,
 			headerComponent: CustomFilterHeader,
 			headerComponentParams: {
 				columnName: isUserGCForCC(appInfo) ? 'Status' : 'Response Status',
@@ -294,6 +294,29 @@ const ClientContractsGrid = (props: any) => {
 
 	const [columns, setColumns] = React.useState<any>(headers);
 
+	useMemo(()=>{
+		if(activeMainGridFilters.status?.length){
+			if(statusFilter){
+				let updatedColumndDefList2: any = columns.map((cDef: any) => {
+					if (cDef.field == "status") {
+						return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :[...activeMainGridFilters.status]}};
+					}
+					return cDef;
+				});
+				setColumns(updatedColumndDefList2);
+			}
+		}
+			else{
+				let updatedColumndDefList2: any = columns.map((cDef: any) => {
+					if (cDef.field == "status") {
+						return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :undefined}};
+					}
+					return cDef;
+				});
+				setColumns(updatedColumndDefList2);
+			}
+	},[activeMainGridFilters])
+	
 	useEffect(() => {
 		if (viewBuilderData.length && viewData?.columnsForLayout?.length && viewData?.viewId) {
 			let updatedColumndDefList: any = [];
@@ -304,26 +327,34 @@ const ClientContractsGrid = (props: any) => {
 							...cDef,
 							...viewItem,
 							hide: viewItem?.hide,
-							headerName: viewItem.field == 'Status' ?
-								isUserGCForCC(appInfo) ? 'Status' : 'Response Status'
-								: cDef.headerName,
+							headerName: viewItem.field == 'status' ?isUserGCForCC(appInfo) ? 'Status' : 'Response Status': cDef.headerName,
+							headerComponentParams : cDef.field == "status" && {...cDef.headerComponentParams , defaultFilters :activeMainGridFilters.status?.length ? activeMainGridFilters.status : undefined}
 						};
 
 						updatedColumndDefList.push(newColumnDef);
 					}
 				});
 			});
-			console.log('updatedColumndDefList', updatedColumndDefList);
 			setViewBuilderColumns(updatedColumndDefList);
 		}
 	}, [viewData]);
 
 	useMemo(() => {
 		// set the filters and grouping data
+		
 		if (viewData?.viewId) {
-			viewData?.groups && dispatch(setActiveMainGridGroupKey(viewData?.groups?.[0]));
-			viewData?.filters && dispatch(setActiveMainGridFilters(JSON.parse(viewData?.filters)));
-			viewData?.filters && dispatch(setActiveMainGridDefaultFilters(JSON.parse(viewData?.filters)));
+			const formatedFilter = viewData?.filters == null ? JSON.parse('{}') : JSON.parse(viewData?.filters);
+			const formatedgrouping = viewData?.groups?.length ==  0 || viewData?.groups == null || viewData?.groups[0] == ''   ? 'undefined': viewData?.groups?.[0];
+			if(!_.isEmpty(activeMainGridFilters) && formatedFilter){
+				const data = clearObjectValues(activeMainGridFilters,formatedFilter);
+				dispatch(setActiveMainGridFilters(data));
+				dispatch(setActiveMainGridDefaultFilters(data));
+			}	
+			else{
+				dispatch(setActiveMainGridFilters(formatedFilter));
+				dispatch(setActiveMainGridDefaultFilters(formatedFilter));
+			}
+		 	dispatch(setActiveMainGridGroupKey(formatedgrouping));
 		}
 	}, [viewData])
 
@@ -333,6 +364,7 @@ const ClientContractsGrid = (props: any) => {
 			groupKeyValue.current = activeMainGridGroupKey;
 			columnsCopy.forEach((col: any) => {
 				col.rowGroup = activeMainGridGroupKey ? activeMainGridGroupKey === col.field : false;
+				col.headerComponentParams = col.field == "status" && {...col.headerComponentParams , defaultFilters :activeMainGridFilters.status?.length ? activeMainGridFilters.status : undefined};
 			});
 			setColumns(columnsCopy);
 		} else if (activeMainGridGroupKey ?? true) {
@@ -432,7 +464,7 @@ const ClientContractsGrid = (props: any) => {
 					animateRows={true}
 					getRowId={(params: any) => params.data?.id}
 					grouped={true}
-					rowSelection='single'
+					rowSelection='multiple'
 					groupIncludeTotalFooter={false}
 					onCellEditingStopped={onCellEditingStopped}
 					onRowDoubleClicked={onClientGridRowDoubleClick}

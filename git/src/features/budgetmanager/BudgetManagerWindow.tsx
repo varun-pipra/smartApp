@@ -12,7 +12,7 @@ import {useAppSelector, useAppDispatch, useHomeNavigation} from "app/hooks";
 import {useLocation} from 'react-router-dom';
 import {appInfoData} from 'data/appInfo';
 import {getToastMessage, setImportBudgetsStatus, setOpenNotification} from './operations/tableColumnsSlice';
-import {fetchGridData, setPresenceData} from './operations/gridSlice';
+import {fetchGridData, setBudgetIframeActive, setPresenceData} from './operations/gridSlice';
 import {
 	getServer, setServer, setCostCodeList, setFullView,
 	setCostUnitList, setCurrencySymbol, setCurrencyCode, setAppWindowMaximize
@@ -31,6 +31,7 @@ import React from "react";
 const BudgetManagerWindow = (props: any) => {
 	const dispatch = useAppDispatch();
 	const {showTableColumnsPopup, openNotification, importStatus} = useAppSelector((state: any) => state.tableColumns);
+	const {budgetIframeActive} = useAppSelector(state=> state.gridData)
 	const showToastMessage = useAppSelector(getToastMessage);
 	const [isFullView, setIsFullView] = useState(false);
 	const [localhost] = useState(isLocalhost);
@@ -144,7 +145,7 @@ const BudgetManagerWindow = (props: any) => {
 								break;
 							case "frame-active":
 								console.log("frame-active", data, appInfo);
-								data?.data?.name == "budgetmanager" && dispatch(fetchGridData(appInfo));
+								data?.data?.name == "budgetmanager" && dispatch(setBudgetIframeActive(true));
 							break;
 						}
 					}
@@ -173,6 +174,14 @@ const BudgetManagerWindow = (props: any) => {
 			}
 		}
 	}, [appInfo]);
+
+	useEffect(() => {
+		if(budgetIframeActive) { 
+			console.log("budgetIframeActive", budgetIframeActive)
+			dispatch(fetchGridData(appInfo));;
+			setTimeout(()=> {dispatch(setBudgetIframeActive(false))}, 5000)
+		}
+	}, [budgetIframeActive])
 
 	const addPresenceListener = (presenceManager: any, appInfo: any) => {
 		if(presenceManager && presenceManager.control) {

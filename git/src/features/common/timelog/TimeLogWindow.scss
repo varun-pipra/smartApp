@@ -99,12 +99,20 @@
         .ag-row-group-expanded {
             .ag-cell-wrapper.ag-row-group {
                 background: #fff !important;
-                padding-left: 8px;
+                padding-left: 29px;
                 font-weight: bold;
                 .custom-group-header-label-cls {
                     font-size: 14px;
                 }
             }
+        }
+    }
+    .iqgridwrapper-root {
+        .sui-grid.grid-copy .ag-pinned-left-header .ag-header-row .ag-header-cell {
+            padding-left: 58px;
+        }
+        .sui-grid.grid-copy .ag-pinned-left-cols-container .ag-row .ag-cell {
+            padding-left: 49px;
         }
     }
 }
@@ -113,8 +121,8 @@
     background-image: url(/resources/images/stop-watch_1.gif);
     background-size: 100%;
     background-repeat: no-repeat;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     margin-left: -6px !important;
     margin-top: 8px;
 }

@@ -23,7 +23,7 @@ import { formatDate } from '@fullcalendar/react';
 import { Button } from '@mui/material';
 
 import { CustomGroupHeader } from 'features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid';
-import { getVendorPayAppsLst, setSelectedRows } from './stores/gridSlice';
+import { getVendorPayAppsLst, setSelectedRows, setVPAIframeActive } from './stores/gridSlice';
 import {
 	getPayAppDetails, getToastMessage, setSelectedRecord, setShowLineItemDetails,
 	setToastMessage, setVPayAppId, setTab
@@ -37,12 +37,12 @@ import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 import { AgGridReact } from 'ag-grid-react';
 import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
-import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
+import { ViewBuilderOptions ,clearObjectValues} from "sui-components/ViewBuilder/utils";
 import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
 import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { blockchainStates,checkBlockchainStatus } from 'app/common/blockchain/BlockchainSlice';
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
-import { fetchdefaultdrodown } from 'features/budgetmanager/operations/settingsSlice';
+import { fetchdefaultdrodown, fetchSettings } from 'features/budgetmanager/operations/settingsSlice';
 
 var tinycolor = require('tinycolor2');
 let defaultVPAStatusFilter: any = [];
@@ -55,8 +55,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	const [localhost] = useState(isLocalhost);
 	const [appData] = useState(appInfoData);
 	const appInfo = useAppSelector(getServer);
-	const { gridData, gridOriginalData, refreshed } = useAppSelector((state) => state.VPAGrid);
-	const [columns, setColumns] = useState<any>([]);
+	const { gridData, gridOriginalData, refreshed, vpaIframeActive } = useAppSelector((state) => state.VPAGrid);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	// const [statusFilter, setStatusFilter] = useState<any>({ids: [], names: []});
 	const ToastMessage = useAppSelector(getToastMessage);
@@ -73,11 +72,11 @@ const VendorPayApplicationsWindow = (props: any) => {
 	const [aliasOriginalGridData, setAliasOriginalGridData] = useState(gridOriginalData);
 	const [gridSearchText, setGridSearchText] = useState<any>('');
 	const [selectedGroup, setSelectedGroup] = useState<string>('None');
-	const [viewBuilderData, setViewBuilderData] = useState<any>({ viewName: "", viewId: "" });
-	const [colDef, setColDef] = useState<any>([]);
+	//const [viewBuilderData, setViewBuilderData] = useState<any>({ viewName: "", viewId: "" });
+	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
 
 	let gridRef = useRef<AgGridReact>();
-	if (statusFilter) defaultVPAStatusFilter = mainGridFilters.status;
+	//if (statusFilter) defaultVPAStatusFilter = mainGridFilters.status;
 	const { blockchainEnabled } = useAppSelector((state) => state.blockchain);
 	const vpaBlockchainRef: any = useRef(false);
 	useEffect(()=> {
@@ -112,7 +111,6 @@ const VendorPayApplicationsWindow = (props: any) => {
 
 	useEffect(() => {
 		if (refreshed) {
-			console.log("refesh", refreshed);
 			setActiveMainGridDefaultFilters({});
 			groupKeyValue.current = null;
 		}
@@ -200,6 +198,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 			dispatch(getVendorPayAppsLst(appInfo));
 			dispatch(fetchConnectors(appInfo));
 			dispatch(fetchdefaultdrodown(appInfo));	
+			dispatch(fetchSettings(appInfo));				
 		}
 	}, [appInfo]);
 
@@ -248,7 +247,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 								break;
 							case "frame-active":
 								console.log("frame-active", data, appInfo);
-								data?.data?.name == "vendorpayapp" && dispatch(getVendorPayAppsLst(appInfo));
+								data?.data?.name == "vendorpayapp" && dispatch(setVPAIframeActive(true));
 								break;
 						}
 					}
@@ -297,6 +296,14 @@ const VendorPayApplicationsWindow = (props: any) => {
 
 		setFilters(filtersCopy);
 	}, [gridData]);
+
+	useEffect(() => {
+		if(vpaIframeActive) {
+			console.log("vpaIframeActive", vpaIframeActive);			
+			dispatch(getVendorPayAppsLst(appInfo));
+			setTimeout(()=> {dispatch(setVPAIframeActive(false))}, 5000)
+		}
+	}, [vpaIframeActive])
 
 	const onGridSearch = (gridData: any) => {
 		const filteredIds = gridData?.map((obj: any) => obj?.id);
@@ -358,7 +365,6 @@ const VendorPayApplicationsWindow = (props: any) => {
 		const gridDataCopy = [...gridData];
 		let data: any;
 		if (mainGridFilters && Object.keys(mainGridFilters)?.length > 0) {
-			console.log('mainGridFilters', mainGridFilters);
 			data = FilterBy(gridDataCopy);
 			if (gridSearchText !== "") {
 				let SearchGridData = onGridSearch(data);
@@ -543,6 +549,8 @@ const VendorPayApplicationsWindow = (props: any) => {
 		}
 	] : [], [appInfo, defaultVPAStatusFilter, selectedGroup, blockchainEnabled]);
 
+	const [colDef, setColDef] = useState<any>([...headers]);
+
 	const handleClose = () => {
 		postMessage({
 			event: 'closeiframe',
@@ -616,11 +624,11 @@ const VendorPayApplicationsWindow = (props: any) => {
 	const handleDropDown = (value: any, data: any) => {
 		if (value === "save") {
 			saveViewHandler(data);
-			setShowToastMessage(`${viewBuilderData?.viewName} Saved Successfully`);
+			setShowToastMessage(`${viewData?.viewName} Saved Successfully`);
 		}
 		else if (value === "delete") {
 			DeleteViewHandler();
-			setShowToastMessage(`${viewBuilderData?.viewName} Deleted Successfully`);
+			setShowToastMessage(`${viewData?.viewName} Deleted Successfully`);
 		}
 	}
 
@@ -631,35 +639,62 @@ const VendorPayApplicationsWindow = (props: any) => {
 		addNewView(appInfo, payload, modName, (response: any) => {
 			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'VendorPayApp' }));
 			dispatch(getVendorPayAppsLst(appInfo));
-			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData?.viewId }));
 		});
 	}
 	const saveViewHandler = (value: any) => {
 		const FilterValue = JSON.stringify(mainGridFilters);
 		const payload = { ...value, filters: FilterValue ? FilterValue : '{}', groups: selectedGroup ? [selectedGroup] : ['None'] };
 		console.log('payload', payload);
-		updateViewItem(appInfo, viewBuilderData?.viewId, payload, (response: any) => {
+		updateViewItem(appInfo, viewData?.viewId, payload, (response: any) => {
 			dispatch(getVendorPayAppsLst(appInfo));
-			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewBuilderData?.viewId }));
+			dispatch(fetchViewData({ appInfo: appInfo, viewId: viewData?.viewId }));
 		});
 	}
 	const DeleteViewHandler = () => {
-		deleteView(appInfo, viewBuilderData?.viewId, (response: any) => {
+		deleteView(appInfo, viewData?.viewId, (response: any) => {
 			dispatch(fetchViewBuilderList({ appInfo: appInfo, modulename: 'VendorPayApp' }));
 		});
 	}
+
+	useMemo(()=>{
+		if(mainGridFilters.status?.length){
+			if(statusFilter){
+				let updatedColumndDefList2: any = colDef.map((cDef: any) => {
+					if (cDef.field == "status") {
+						return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :[...mainGridFilters.status]}};
+					}
+					return cDef;
+				});
+				setColDef(updatedColumndDefList2);
+			}
+		}
+		else{
+			let updatedColumndDefList2: any = colDef.length > 0 && colDef.map((cDef: any) => {
+				if (cDef.field == "status") {
+					return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :undefined}};
+				}
+				return cDef;
+			});
+			setColDef(updatedColumndDefList2);
+		}
+	},[mainGridFilters])
+	
 	useEffect(() => {
 		//Appending viewbuilder data to grid 
-		if (viewBuilderData?.columnsForLayout?.length) {
+		if (viewBuilderData.length > 0 && viewData?.columnsForLayout?.length) {
 			let updatedColumndDefList: any = [];
 			const gridApi = gridRef.current;
 			if (gridApi) {
 				let updatedColumndDefList: any = [];
-				console.log('viewBuilderData?.columnsForLayout', viewBuilderData?.columnsForLayout);
-				viewBuilderData?.columnsForLayout.forEach((viewItem: any) => {
+				viewData?.columnsForLayout.forEach((viewItem: any) => {
 					headers.forEach((cDef: any) => {
 						if (viewItem.field == cDef.field) {
-							let newColumnDef = { ...cDef, ...viewItem, hide: viewItem?.hide };
+							let newColumnDef = { ...cDef, 
+																	...viewItem, 
+																	hide: viewItem?.hide,
+																	headerComponentParams : cDef.field == "status" && {...cDef.headerComponentParams , defaultFilters :mainGridFilters.status?.length ? mainGridFilters.status : undefined}
+																};
 							updatedColumndDefList.push(newColumnDef);
 						}
 					});
@@ -669,15 +704,25 @@ const VendorPayApplicationsWindow = (props: any) => {
 				gridApi?.api?.setColumnDefs(updatedColumndDefList);
 			}
 		}
-	}, [viewBuilderData]);
+	}, [viewData]);
 
 	useMemo(() => {
-		if (viewBuilderData?.viewId != '') {
-			viewBuilderData?.groups && setSelectedGroup(viewBuilderData?.groups[0] == 'None' ? 'undefined' : viewBuilderData?.groups[0]);
-			viewBuilderData?.filters && setActiveMainGridDefaultFilters(JSON.parse(viewBuilderData?.filters));
-			viewBuilderData?.filters && setMainGridFilters(JSON.parse(viewBuilderData?.filters));
+	
+		if (viewData?.viewId) {
+			const formatedFilter = viewData?.filters == null ? JSON.parse('{}') : JSON.parse(viewData?.filters);
+			const formatedgrouping = viewData?.groups?.length ==  0 || viewData?.groups == null || viewData?.groups[0] == '' || viewData?.groups[0] == 'None'  ? 'undefined': viewData?.groups?.[0];
+			if(!_.isEmpty(activeMainGridDefaultFilters) && formatedFilter){
+				const data = clearObjectValues(activeMainGridDefaultFilters,formatedFilter);
+				setMainGridFilters(data);
+				setActiveMainGridDefaultFilters(data);
+			}	
+			else{
+				setMainGridFilters(formatedFilter);
+				setActiveMainGridDefaultFilters(formatedFilter);
+			}
+		 	setSelectedGroup(formatedgrouping);
 		}
-	}, [viewBuilderData?.viewId])
+	}, [viewData])
 
 	useMemo(() => {
 		// if grouping value is changed and colDef array as a data.
@@ -685,7 +730,10 @@ const VendorPayApplicationsWindow = (props: any) => {
 		if (selectedGroup && colDef) {
 			const data = colDef?.length > 0 && colDef?.map((item: any) => {
 				if (item.field === selectedGroup) {
-					return { ...item, rowGroup: true };
+					return { ...item, 
+						rowGroup: true,
+						headerComponentParams : item.field == "status" && {...item.headerComponentParams , defaultFilters :mainGridFilters.status?.length ? mainGridFilters.status : undefined}
+					};
 				} else if (item.rowGroup) {
 					return { ...item, rowGroup: false };
 				}
@@ -696,7 +744,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 	}, [selectedGroup])
 
 	const viewListOnChange = (data: any) => {
-		setViewBuilderData(data);
+		//setViewBuilderData(data);
 		dispatch(getVendorPayAppsLst(appInfo));
 	}
 
@@ -775,7 +823,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 							onFilterChange: onFilterChange,
 							defaultFilters: activeMainGridDefaultFilters,
 							defaultGroups: selectedGroup,
-							placeholder: viewBuilderData?.viewName,
+							placeholder: viewData?.viewName,
 							viewBuilderapplied:true,
 						},
 						viewBuilder: <ViewBuilder
@@ -785,7 +833,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 							saveView={(data: any) => { saveViewHandler(data) }}
 							deleteView={() => { DeleteViewHandler() }}
 							saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
-							dataList={(data: any) => { setViewBuilderData(data) }}
+							//dataList={(data: any) => { setViewBuilderData(data) }}
 							viewListOnChange={(data: any) => { viewListOnChange(data) }}
 							requiredColumns={['code', 'status']}
 						/>
@@ -798,7 +846,7 @@ const VendorPayApplicationsWindow = (props: any) => {
 						grouped: true,
 						groupIncludeTotalFooter: false,
 						groupIncludeFooter: false,
-						rowSelection: 'single',
+						rowSelection: 'multiple',
 						onFirstDataRendered: onFirstDataRendered,
 						// onRowDoubleClicked:onRowDoubleClick,
 						rowSelected: (e: any) => rowSelected(e),

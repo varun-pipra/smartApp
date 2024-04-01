@@ -36,7 +36,7 @@ const VendorPayAppToolbarLeftButtons = () => {
 	const [ paymentSentData, setPaymentSentData ] = React.useState<any>({});
 	const [ warningMessage, setWarningMessage ] = React.useState<boolean>(false);
 	const [ alert, setAlert ] = React.useState<boolean>(false);
-
+	const isSingleSelected = selectedRows?.length === 1;
 	React.useEffect(() => {
 		selectedRows.length > 0 ? setDisableDelete(false) : setDisableDelete(true);
 		selectedRows.length > 0 ? setDisablePrint(false) : setDisablePrint(true);		
@@ -166,12 +166,12 @@ const VendorPayAppToolbarLeftButtons = () => {
 			</IconButton>
 		</IQTooltip>
 
-		{isUserGCForVPA(appInfo) && <IconButton className='text-btn-cls' aria-label='Mark Payment Sent' disabled={disablePaymentSent} onClick={() => {setPaymentSentClick(true);}}>
+		{isUserGCForVPA(appInfo) && <IconButton className='text-btn-cls' aria-label='Mark Payment Sent' disabled={!isSingleSelected && disablePaymentSent} onClick={() => {setPaymentSentClick(true);}}>
 			<span className='common-icon-tickmark'></span>
 			Mark Payment Sent
 		</IconButton>}
 
-		{!isUserGCForVPA(appInfo) && <IconButton className='text-btn-cls' disabled={disablePaymentReceive} aria-label='Mark Payment Received' onClick={() => {
+		{!isUserGCForVPA(appInfo) && <IconButton className='text-btn-cls' disabled={!isSingleSelected && disablePaymentReceive} aria-label='Mark Payment Received' onClick={() => {
 			setPaymentReceiveClick(true);
 			dispatch(getPayAppDetails({appInfo: appInfo, id: selectedRows[ 0 ]?.id})).then((resp: any) => {console.log("resp", resp); setPaymentSentData(resp?.payload);});
 		}}>

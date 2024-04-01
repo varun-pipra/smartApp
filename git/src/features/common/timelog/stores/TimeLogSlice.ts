@@ -1,6 +1,6 @@
 import { RootState } from "app/store";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchTimeLog, fetchWorkTeamData, fetchWorkTeamGridData, fetchTimeLogDetails } from "./TimeLogAPI";
+import { fetchTimeLog, fetchWorkTeamData, fetchWorkTeamGridData, fetchTimeLogDetails ,fetchTimelogAppsList} from "./TimeLogAPI";
 import { errorMsg } from "utilities/commonutills";
 
 export interface TimeLogRequestState {
@@ -19,8 +19,9 @@ export interface TimeLogRequestState {
 	WorkTeamDataFromExt:any;
 	driveFile:any;
 	saveButtonEnable:boolean;
-	gridFilters:any;
 	gridRef:any;
+	gridFilters:any;
+	timelogAppsList: any,
 };
 const initialState: TimeLogRequestState = {
 	loading: false,
@@ -39,7 +40,8 @@ const initialState: TimeLogRequestState = {
 	driveFile:'',
 	saveButtonEnable:false,
 	gridRef:'',
-	gridFilters:{}
+	gridFilters:{},
+	timelogAppsList: [],
 }
 
 
@@ -87,6 +89,13 @@ export const getTimeLogDetails = createAsyncThunk<any, string>('TimeLogDetails',
 		}
 	}
 );
+
+export const getTimelogAppsList = createAsyncThunk<any>("gettimelogApps", 
+	async () => {
+	const response = await fetchTimelogAppsList();
+	const filtereddata = response?.filter((item:any)=> item?.isAuthorized )
+  return filtereddata;
+});
 
 export const timeLogRequest = createSlice({
 	name: "timeLogRequest",
@@ -141,12 +150,12 @@ export const timeLogRequest = createSlice({
 		setSaveButtonEnable : (state,action:PayloadAction<boolean>)=>{
 			state.saveButtonEnable = action.payload;
 		},
-		setGridFilters: (state,action:PayloadAction<boolean>)=>{
-			state.gridFilters = action.payload;
-		},
 		setGridRef : (state,action:PayloadAction<any>)=>{
 			state.gridRef = action.payload
-		}
+		},
+		setGridFilters: (state,action:PayloadAction<boolean>)=>{
+            state.gridFilters = action.payload;
+        },
 	},
 	extraReducers: (builder) => {
 		builder
@@ -191,10 +200,24 @@ export const timeLogRequest = createSlice({
 			})
 			.addCase(getTimeLogDetails.rejected, (state) => {
 				state.loading = false;
-			});
+			})
+			.addCase(getTimelogAppsList.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getTimelogAppsList.fulfilled, (state, action) => {
+        state.loading = false;
+        state.timelogAppsList = action.payload?.map((appObj: any) => {
+						return {
+							id: appObj?.id,objectId: appObj?.smartAppUniqueId,thumbnailUrl: appObj?.imgSrc,name: appObj?.text,displayField: appObj?.text,
+						}
+        });
+      })
+      .addCase(getTimelogAppsList.rejected, (state) => {
+        state.loading = false;
+      });
 	},
 });
 
 export const { setSelectedTimeLogDetails,setSelectedRowData,setSourceList, setToast, setAccess, setSplitTimeSegmentBtn,setDetailsPayloadSave,
-							setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile,setSaveButtonEnable,setGridFilters ,setGridRef} = timeLogRequest.actions;
+							setSmartItemOptionSelected , setWorkTeamFromExt,setDriveFile,setSaveButtonEnable,setGridRef, setGridFilters} = timeLogRequest.actions;
 export default timeLogRequest.reducer;

@@ -303,3 +303,38 @@ export const modifyMarkupData = (data: any) => {
   console.log(modifyedData, "getTextOccurences data");
   return modifyedData;
 };
+
+export function minmaxDate(date: any, type: any) {
+	if (type == 'minDate') {
+		return date.reduce((acc: any, date: any) => {
+
+			return acc && new Date(acc) < new Date(date) ? acc : date;
+		}, '');
+
+	}
+	else {
+		return date.reduce((acc: any, date: any) => {
+			return acc && new Date(acc) > new Date(date) ? acc : date;
+		}, '');
+	}
+};
+
+export const settingsHelper = (defaultData:any) =>{		
+	let resultData:any;
+		if(defaultData?.length) {
+			let modifiedData:any = [];
+			([...defaultData] || [])?.map((item: any) => {
+				modifiedData.push({
+					...item,
+					icon: item.img,
+					id: item.value,
+					text: item.label,
+					value: item.label
+				})
+			});
+			resultData = [{label: 'Built In', text: 'Built In', id: 1, value: 'Built In'}, 
+								{label : 'Apps', text: 'Apps', id: 2, value: 'Apps', children: modifiedData}
+							];
+		}
+		return resultData;
+}

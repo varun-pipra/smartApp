@@ -327,7 +327,8 @@ const BidResponse = memo((props: BidResponseProps) => {
 						data={{
 							unitOfMeasure: params?.data?.unitOfMeasure,
 							quantity: params?.data?.unitQuantity,
-							cost: params?.data?.quoteUnitCost ? params?.data?.quoteUnitCost : getunitcost(params?.data?.bidValue, params?.data?.unitQuantity, params?.data?.quoteUnitCost),
+							// cost: params?.data?.quoteUnitCost ? params?.data?.quoteUnitCost : getunitcost(params?.data?.bidValue, params?.data?.unitQuantity, params?.data?.quoteUnitCost),
+							cost: params?.data?.quoteUnitCost ? params?.data?.quoteUnitCost : params?.data?.unitCost,
 						}}
 						textFieldReadonly={{
 							unitofMeasure: params?.data?.unitOfMeasure ? true : false,

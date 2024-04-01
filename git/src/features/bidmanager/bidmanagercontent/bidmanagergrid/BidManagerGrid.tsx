@@ -4,6 +4,7 @@ import { Button } from '@mui/material';
 import { getServer } from 'app/common/appInfoSlice';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
+import _ from 'lodash';
 import {
 	fetchBidPackageDetails, setSelectedNode, setSelectedRecord, setShowLineItemDetails
 } from 'features/bidmanager/stores/BidManagerSlice';
@@ -29,6 +30,7 @@ import { formatDate } from 'utilities/datetime/DateTimeUtils';
 import { amountFormatWithSymbol } from 'app/common/userLoginUtils';
 import CustomFilterHeader from 'features/common/gridHelper/CustomFilterHeader';
 import { blockchainStates } from 'app/common/blockchain/BlockchainSlice';
+import {clearObjectValues} from 'sui-components/ViewBuilder/utils';
 
 var tinycolor = require('tinycolor2');
 let defaultBidStatusFilter: any = [];
@@ -75,7 +77,7 @@ const BidManagerGrid = (props: any) => {
 		bidManagerBlockchain = blockchainEnabled;
 	}, [blockchainEnabled])
 
-	if(statusFilter) defaultBidStatusFilter = activeMainGridFilters.status?.length > 0 ? [...activeMainGridFilters.status] : undefined;
+
 
 	useEffect(() => {
 		const companiesList: any = [];
@@ -138,7 +140,6 @@ const BidManagerGrid = (props: any) => {
 		}
 		if (activeMainGridFilters?.intendToBid?.length > 0) {
 			filteredData = GetDetailsGridData(filteredData, 'intendToBid', activeMainGridFilters?.intendToBid);
-			// console.log("intendToBid", filteredData);
 		}
 		return filteredData;
 	};
@@ -151,6 +152,7 @@ const BidManagerGrid = (props: any) => {
 		return firstResult;
 	};
 
+	
 	useEffect(() => {
 		const gridDataCopy = [...gridData];
 		let data: any;
@@ -349,6 +351,29 @@ const BidManagerGrid = (props: any) => {
 
 	const [colDef, setColDef] = useState<any>([...headers]);
 
+	useMemo(()=>{
+		if(activeMainGridFilters.status?.length){
+			if(statusFilter){
+				let updatedColumndDefList2: any = colDef.map((cDef: any) => {
+					if (cDef.field == "status") {
+						return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :[...activeMainGridFilters.status]}};
+					}
+					return cDef;
+				});
+				setColDef(updatedColumndDefList2);
+			}
+		}
+			else{
+				let updatedColumndDefList2: any = colDef.map((cDef: any) => {
+					if (cDef.field == "status") {
+						return { ...cDef,headerComponentParams : {...cDef.headerComponentParams , defaultFilters :undefined}};
+					}
+					return cDef;
+				});
+				setColDef(updatedColumndDefList2);
+			}
+	},[activeMainGridFilters])
+
 	useEffect(() => {
 		//Appending viewbuilder data to grid 
 		if (viewBuilderData.length && viewData?.columnsForLayout?.length) {
@@ -359,12 +384,18 @@ const BidManagerGrid = (props: any) => {
 				viewData?.columnsForLayout.map((viewItem: any) => {
 					columns.map((cDef: any) => {
 						if (viewItem.field == cDef.field) {
-							let newColumnDef = { ...cDef, ...viewItem, hide: viewItem?.hide };
+							let newColumnDef = { ...cDef, 
+																		...viewItem, 
+																		hide: viewItem?.hide,
+																		headerComponentParams : cDef.field == "status" && {...cDef.headerComponentParams , defaultFilters :activeMainGridFilters.status?.length ? activeMainGridFilters.status : undefined}
+
+							};
 							updatedColumndDefList.push(newColumnDef);
 						}
 					});
 				});
 				setViewBuilderColumns(updatedColumndDefList);
+				// console.log('updatedColumndDefList',updatedColumndDefList)
 				//gridApi?.api?.setColumnDefs(updatedColumndDefList);
 			}
 		}
@@ -372,13 +403,21 @@ const BidManagerGrid = (props: any) => {
 
 	useMemo(() => {
 		// set the filters and grouping data
-		if (viewData) {
-			console.log('viewData', viewData)
-			viewData?.groups && dispatch(setActiveMainGridGroupKey(viewData?.groups?.[0]));
-			viewData?.filters && dispatch(setActiveMainGridFilters(JSON.parse(viewData?.filters)));
-			viewData?.filters && dispatch(setActiveMainGridDefaultFilters(JSON.parse(viewData?.filters)));
+		if (viewData?.viewId) {
+			const formatedFilter = viewData?.filters == null ? JSON.parse('{}') : JSON.parse(viewData?.filters);
+			const formatedgrouping = viewData?.groups?.length ==  0 || viewData?.groups == null || viewData?.groups[0] == ''   ? 'undefined': viewData?.groups?.[0];
+			if(!_.isEmpty(activeMainGridDefaultFilters) && formatedFilter){
+				const data = clearObjectValues(activeMainGridDefaultFilters,formatedFilter);
+				dispatch(setActiveMainGridFilters(data));
+				dispatch(setActiveMainGridDefaultFilters(data));
+			}	
+			else{
+				dispatch(setActiveMainGridFilters(formatedFilter));
+				dispatch(setActiveMainGridDefaultFilters(formatedFilter));
+			}
+		 	dispatch(setActiveMainGridGroupKey(formatedgrouping));
 		}
-	}, [viewData])
+	}, [viewData?.viewId])
 
 	useEffect(() => {
 		const columnsCopy = viewBuilderColumns && viewBuilderColumns.length > 0 ? [...viewBuilderColumns] : [...colDef];
@@ -386,6 +425,7 @@ const BidManagerGrid = (props: any) => {
 			groupKeyValue.current = activeMainGridGroupKey;
 			columnsCopy.forEach((col: any) => {
 				col.rowGroup = activeMainGridGroupKey ? activeMainGridGroupKey === col.field : false;
+				col.headerComponentParams = col.field == "status" && {...col.headerComponentParams , defaultFilters :activeMainGridFilters.status?.length ? activeMainGridFilters.status : undefined};
 			});
 			setColDef(columnsCopy);
 		} else if (activeMainGridGroupKey ?? true) {
@@ -584,6 +624,7 @@ const BidManagerGrid = (props: any) => {
 	return (
 		<div className='bid-manager-grid' style={containerStyle}>
 			<div style={gridStyle} className='ag-theme-alpine'>
+				{colDef &&
 				<SUIGrid
 					headers={colDef}
 					//headers={headers}
@@ -592,7 +633,7 @@ const BidManagerGrid = (props: any) => {
 					tableref={(val: any) => setGridApi(val)}
 					getRowId={(params: any) => params.data?.id}
 					grouped={true}
-					rowSelection='single'
+					rowSelection='multiple'
 					masterDetail={true}
 					groupIncludeTotalFooter={false}
 					groupIncludeFooter={false}
@@ -613,6 +654,7 @@ const BidManagerGrid = (props: any) => {
 					openLID={showLineItemDetails}
 					selectedRecord={selectedRecord}
 				/>
+				}
 			</div>
 		</div>
 	);

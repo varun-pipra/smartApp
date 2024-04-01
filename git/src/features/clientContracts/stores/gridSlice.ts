@@ -12,6 +12,7 @@ export interface ClientContractsGridDataState {
 	clientsList: any;
 	activeMainGridDefaultFilters: any;
 	mainGridSearchText: any;
+	ccIframeActive: boolean;
 }
 
 const initialState: ClientContractsGridDataState = {
@@ -24,6 +25,7 @@ const initialState: ClientContractsGridDataState = {
 	clientsList: [],
 	activeMainGridDefaultFilters: {},
 	mainGridSearchText: '',
+	ccIframeActive: false,
 };
 
 export const getClientContractsList = createAsyncThunk<any, any>(
@@ -78,6 +80,9 @@ export const CCGridSlice = createSlice({
 		setMainGridSearchText: (state, action: PayloadAction<any>) => {
 			state.mainGridSearchText = action.payload;
 		},
+		setCCIframeActive: (state, action: PayloadAction<any>) => {
+			state.ccIframeActive = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -105,6 +110,6 @@ export const CCGridSlice = createSlice({
 });
 
 
-export const { setGridData, setSelectedRows, setActiveMainGridFilters, setActiveMainGridGroupKey, setClientsList, setActiveMainGridDefaultFilters, setMainGridSearchText } = CCGridSlice.actions;
+export const { setGridData, setSelectedRows, setActiveMainGridFilters, setActiveMainGridGroupKey, setClientsList, setActiveMainGridDefaultFilters, setMainGridSearchText, setCCIframeActive } = CCGridSlice.actions;
 
 export default CCGridSlice.reducer;

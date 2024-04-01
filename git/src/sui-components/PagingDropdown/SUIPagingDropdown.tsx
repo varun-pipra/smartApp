@@ -66,6 +66,13 @@ interface SUIServerDropdownProps {
   showIconInField?: boolean;
   handleScrollEvent?: Function;
   totalCount?: any;
+  retainSearch?:any;
+  retainFilters?:any;
+  enableGrouping?:boolean;
+  enableSorting?:boolean;
+  showSuggested?: boolean;
+  moduleName?:any;
+  isReverseGrouping?:any;
 }
 
 const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
@@ -105,6 +112,14 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
     handleListClose = () => { },
     handleListOpen = () => { },
     totalCount,
+    retainSearch = '',
+    retainFilters = {},
+    enableGrouping = true,
+    enableSorting = false,
+    showSuggested = false,
+    enforcedRelationship = false,
+    moduleName = 'userDetails',
+    isReverseGrouping = false
   } = props;
   const filtersRef = React.useRef<any>({});
   const selectRef = React.useRef<HTMLInputElement | null>(null);
@@ -115,6 +130,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
   const [filteredData, setFilteredData] = React.useState<any>(Object.keys(filters)?.length);
   const filterOptions = React.useDeferredValue(props?.filterOptions);
   const [open, setOpen] = React.useState(false);
+  const callFilterMethod = React.useRef<boolean>(false);
   const getSortedData = (array: any) => {
     return array.sort((a: any, b: any) => a?.name?.localeCompare(b?.name));
   };
@@ -124,7 +140,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
     PaperProps: {
       onScroll: (event: any) => {
         const { offsetHeight, scrollTop, scrollHeight } = event.target;
-        if (offsetHeight + scrollTop + 5.2 >= scrollHeight && !(totalCount === (menuOption?.length + 1))) {
+        if (offsetHeight + scrollTop + 5.2 >= scrollHeight && (totalCount >= (menuOption?.length + 1))) {
           event.stopPropagation();
           setTimeout(() => {
             handleScrollEvent && handleScrollEvent(event);
@@ -139,12 +155,26 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
       className: paperpropsclassName,
     },
   };
+
   React.useEffect(() => {
-    if (!!value) setSelectedOptions([value?.[0]?.displayField]);
+    if(Object.keys(retainFilters)?.length) {
+      filtersRef.current = retainFilters;
+      setFilters(retainFilters);
+    };
+    if(retainSearch !== '') {
+      setSearch(retainSearch);
+    }
+  },[retainFilters, retainSearch])
+  React.useEffect(() => {
+    setSelectedOptions([value?.[0]?.displayField]);
   }, [value]);
 
   React.useEffect(() => {
-      setMenuOption(dropdownOptions);
+      if(enableSorting) {
+        setMenuOption(getSortedData(dropdownOptions));
+      } else {
+        setMenuOption(dropdownOptions);
+      };
   }, [dropdownOptions]);
   React.useEffect(() => {
     if ((suggestedDropdownOptions?.length > 0 ?? [])) {
@@ -156,11 +186,9 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
       setMenuOption([...suggestedDropdownOptions, ...removeDuplicates]);
     } else {setMenuOption(dropdownOptions)};
   }, [suggestedDropdownOptions]);
-  const handleChange = (event: SelectChangeEvent<any[]>) => {
+  const handleChange = (event:any) => {
     event.stopPropagation();
-    const {
-      target: { value },
-    } = event;
+    const value = event.target?.value ?? event.target?.textContent;
     let duplicateRemoved: any[] = [];
     if (multiSelect) {
       if (Array.isArray(value)) {
@@ -187,6 +215,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
   const handleSingleSelect = (singleSelect: any) => {
     if (handleValueChange && singleSelect) {
       handleValueChange([singleSelect], params);
+      handleClose();
     }
   };
 
@@ -204,27 +233,24 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
             delete filterObj[item];
             if (Object.keys(filtersRef.current)?.includes(item)) {
               delete filtersRef.current?.[item];
+              callFilterMethod.current = true;
             }
-          } else if (
-            filterObj[item]?.length > 0 &&
-            !_.isEqual(filtersRef.current?.[item], filterObj?.[item])
-          ) {
-            filtersRef.current = {
-              ...filtersRef.current,
-              [item]: filterObj?.[item],
-            };
+          } else if (filterObj[item]?.length > 0 && !_.isEqual(filtersRef.current?.[item], filterObj?.[item])) {
+            filtersRef.current = {...filtersRef.current,[item]: filterObj?.[item]};
           }
         });
         filterObj = { ...filterObj, ...filtersRef.current };
         setFilters(filterObj);
-          filtersRef.current = filterObj;
+        filtersRef.current = filterObj;
+        if(Object.keys(filterObj)?.length === 0 && !callFilterMethod?.current) return;
+        else {onFilterChange(filtersRef.current); callFilterMethod.current = false};
       } else {
         if (Object.keys(filterValues).length === 0) {
           setFilters(filterValues);
           filtersRef.current = filterValues;
+          onFilterChange(filtersRef.current);
         }
       };
-      onFilterChange(filtersRef.current);
     }
   };
   const CompnayCardTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -244,6 +270,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
       <MenuItem
         key={item + idx}
         value={item.displayField}
+        // autoFocus={selectedOptions?.includes(item?.displayField)}
         disabled={
           props?.disableOptionsList &&
           props?.disableOptionsList?.includes(item?.id)
@@ -256,7 +283,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
             ? "#fffad2"
             : "transparent",
         }}
-        onClick={(e: any) => handleSuggestedItemsChange(e)}
+        onClick={(e: any) => handleChange(e)}
       >
         <>
           {multiSelect && (
@@ -330,23 +357,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
       }
     }
   };
-  const handleSuggestedItemsChange = (event: any) => {
-    event.stopPropagation();
-    const {
-      target: { textContent },
-    } = event;
-    let duplicateRemoved: any[] = [];
-    duplicateRemoved.push(textContent);
-
-    setSelectedOptions(duplicateRemoved);
-    const selectedOption = [...menuOption].find((obj: any) => {
-      return obj.displayField === textContent;
-    });
-    if (selectedOption) {
-      handleSingleSelect(selectedOption);
-    }
-  };
-  const handleClose = (e:any) => {
+  const handleClose = () => {
 		setOpen(false);
 		if (handleListClose) {
 			handleListClose(true);
@@ -404,7 +415,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
             onClose={handleClose}
             onOpen={handleOpen}
             renderValue={(selected: any) => {
-              if (selected?.length === 0 && selectedOptions?.length === 0) {
+              if (selected?.filter((x:any) => !!x)?.length === 0) {
                 return <div>{placeHolder}</div>;
               } else if (selectedOptions && selectedOptions?.length > 0) {
                 return (
@@ -421,9 +432,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
                                 handleChipDelete(e, x?.displayField)
                               }
                               label={
-                                x?.isPrimary
-                                  ? `${x.displayField} *`
-                                  : x.displayField
+                                  x.displayField
                               }
                               deleteIcon={
                                 <span
@@ -478,7 +487,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
                   </Box>
                 );
               }
-              return selected?.map((x: any) => x?.displayField).join(", ");
+              else return selected?.map((x: any) => x?.displayField).join(", ");
             }}
             MenuProps={MenuProps}
             IconComponent={undefined}
@@ -645,9 +654,9 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
                 ></TextField>
               </Box>
             </ListSubheader>
-            {menuOption && menuOption?.length > 0 ? (
+            {!isReverseGrouping && menuOption && menuOption?.length > 0 ? (
               <div>
-                {menuOption.some((item: any) => !item.isSuggested) && (
+                {(enableGrouping && menuOption?.some((item: any) => !item.isSuggested)) && (
                     <InputRef label={suggestedDefaultText} />
                   )}
                 {menuOption
@@ -655,7 +664,7 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
                   .map((item: any, idx: number) => {
                     return dropdownMenuItems(item, idx);
                   })}
-                {menuOption.some((item: any) => item.isSuggested) && (
+                {(enableGrouping && menuOption?.some((item: any) => item.isSuggested)) && (
                   <InputRef label={suggestedText} />
                 )}
                 {menuOption
@@ -664,14 +673,35 @@ const SUIPagingDropdown = (props: SUIServerDropdownProps) => {
                     return dropdownMenuItems(item, idx);
                 })}
               </div>
-            ) : (
+            ) : <div>
+              {isReverseGrouping && menuOption && menuOption?.length > 0 ? (
+              <div>
+                {(enableGrouping && menuOption?.some((item: any) => item.isSuggested)) && (
+                    <InputRef label={suggestedDefaultText} />
+                  )}
+                {menuOption
+                  .filter((item: any, idx: any) => item.isSuggested)
+                  .map((item: any, idx: number) => {
+                    return dropdownMenuItems(item, idx);
+                  })}
+                {(enableGrouping && menuOption?.some((item: any) => !item.isSuggested)) && (
+                  <InputRef label={suggestedText} />
+                )}
+                {menuOption
+                  .filter((item: any, idx: number) => !item.isSuggested)
+                  .map((item: any, idx: number) => {
+                    return dropdownMenuItems(item, idx);
+                })}
+              </div>
+            ): (
               <div className="base-no-data">{noDataFoundMsg}</div>
-            )}
-          </Select>
+             )}
+            </div>}
+            </Select>
         </span>
       </FormControl>
     </div>
   );
 };
 
-export default SUIPagingDropdown;
+export default React.memo(SUIPagingDropdown);

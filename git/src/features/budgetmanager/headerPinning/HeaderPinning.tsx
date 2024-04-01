@@ -429,7 +429,8 @@ const HeaderPinning = (props: any) => {
 					sx={{
 						'& .MuiPaper-root': {
 							border: '1px solid rgba(0, 0, 0, 0.12) !important',
-							boxShadow: '-6px 0px 10px -10px'
+							boxShadow: '-6px 0px 10px -10px',
+							borderRadius: '8px'
 						}
 					}}
 				>

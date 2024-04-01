@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import { TextField, InputLabel, Button } from '@mui/material';
 import InputIcon from 'react-multi-date-picker/components/input_icon';
 
@@ -18,6 +18,11 @@ import { errorMsg, errorStatus } from 'utilities/commonutills';
 import { amountFormatWithSymbol, amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AssociatedBidDropdown from 'sui-components/AssociatedBidDropdown/AssociatedBidDropdown';
+import SUIPagingDropdown from 'sui-components/PagingDropdown/SUIPagingDropdown';
+import _ from 'lodash';
+import { fetchBidderCompanyData } from 'features/bidmanager/stores/BidManagerAPI';
+import { getCompanyFilterOptions } from 'utilities/bid/enums';
+import { RemoveCompanyOptionDuplicates, noDataFoundMsg_company } from 'features/bidmanager/bidpackagedetails/tabs/bidders/Bidders';
 
 const defaultFormData = {
 	title: '',
@@ -58,9 +63,78 @@ const VendorContractsForm = (props: any) => {
 	const [isAdhocBid, setIsAdhocBid] = React.useState<boolean>(false);	
 	const [bidNamesList, setBidNamesList] = useState<any>([]);
 	const [clearAdhocBid, setClearAdhocBid] = useState<any>(false);
-	
-	
 
+	const [pageSize, setPageSize] = React.useState(50);
+  	const pageRef = useRef(1);
+	const companySearchRef =  useRef("");
+	const oldPayload = useRef<any>();
+	const isMakeApi = useRef(true);
+	const groupedCompanyRef = useRef<any>([]);
+	const suggestedCompanyRef = useRef<any>([]);
+	const [groupedCompany, setGroupedCompany] = useState<any>([]);
+	const [suggestedCompany, setSuggestedCompany] = useState<any>([]);
+	const defaultPayloadRef = useRef({
+		"projectId": appInfo?.uniqueId,
+		"sortBy":"name",
+		"sortDirection":"ASC",
+		"start": 0,
+		"limit": pageSize,
+		"orgStart" : 0,
+		"orgLimit" : 0,
+		"page" : 1,
+		"searchText": companySearchRef.current
+	});
+	const CompanyDropdownApiCall = (info:any, payload:any, scroll?:boolean) => {
+			fetchBidderCompanyData(info, payload).then((res: any) => {
+				if(!!res) {
+					isMakeApi.current = true;
+					if(scroll) {
+						pageRef.current = (pageRef.current + 1);
+					};
+					oldPayload.current = res;
+					getCompanyOptions(res?.values?.companies);
+				}
+			})
+			.catch((error: any) => {
+				console.log("error", error);
+				return;
+			});
+	};
+	const getCompanyOptions = (array:any) => {
+		let groupedList: any = [];
+		([...array] || [])?.map((data: any) => {
+			groupedList.push({
+				...data,
+				objectId: data.id,
+				id:data.uniqueId,
+				color: data.colorCode,
+				displayField: data.name,
+				thumbnailUrl: data.thumbnailUrl,
+				scope: data.isOrgCompany ? 'Organizational' : 'This Project',
+				isSuggested: data.isOrgCompany
+			});
+		});
+		if (groupedList.length > 0) {
+			let filterOrgCompanies: any = [...groupedList].filter((item: any) => item.isSuggested);
+			let filterThisProjectCompanies: any = [...groupedList]?.filter((item: any) => { return !item.isSuggested });
+			let mergeSuggestCompany = suggestedCompanyRef.current?.length > 0 ? RemoveCompanyOptionDuplicates([...suggestedCompanyRef.current, ...filterOrgCompanies]) : filterOrgCompanies;
+			let mergeGroupedCompany = groupedCompanyRef.current?.length > 0 ? RemoveCompanyOptionDuplicates([...groupedCompanyRef.current,...filterThisProjectCompanies]) : filterThisProjectCompanies; 
+			groupedCompanyRef.current = mergeGroupedCompany;
+			suggestedCompanyRef.current = mergeSuggestCompany;
+			setGroupedCompany(groupedCompanyRef.current);
+			setSuggestedCompany(suggestedCompanyRef.current);
+		} else {
+			groupedCompanyRef.current = [];
+			suggestedCompanyRef.current = [];
+			setGroupedCompany([]);
+			setSuggestedCompany([]);
+		};
+	};
+	useEffect(() => {
+		if(appInfo) {
+			CompanyDropdownApiCall(appInfo, defaultPayloadRef.current);
+		}
+	},[appInfo]);
 	// Effects
 	useEffect(() => {
 		let bidsList: any = [];
@@ -160,23 +234,6 @@ const VendorContractsForm = (props: any) => {
 	}, [formData.bidLookup]);
 
 	React.useEffect(() => {
-		if (CompanyData) {
-			console.log('CompanyData', CompanyData)
-			let groupedList: any = [];
-			CompanyData?.map((data: any) => {
-				groupedList.push({
-					...data,
-					color: data.colorCode,
-					id: data.id,
-					displayField: data.name,
-					thumbnailUrl: data.thumbnailUrl,
-				});
-			});
-			setCompanyOptions(groupedList)
-		}
-	}, [CompanyData])
-
-	React.useEffect(() => {
 		setDisableAddButoon(formData?.title !== '' && formData?.vendor?.length > 0 && formData?.amount !== '' ? false : true);
 	}, [formData.amount]);
 
@@ -217,6 +274,43 @@ const VendorContractsForm = (props: any) => {
 	};
 
 
+	const ResetValues = () => {
+		groupedCompanyRef.current = [];
+		suggestedCompanyRef.current = [];
+		setGroupedCompany([]);
+		setSuggestedCompany([]);
+	};
+	const debounce = useCallback(_.debounce((val, key) => {
+		if(key === 'search'){
+			defaultPayloadRef.current = {...defaultPayloadRef.current, ['searchText'] : val};
+			CompanyDropdownApiCall(appInfo, defaultPayloadRef.current);
+			ResetValues();
+		};
+	}, 1000), []);
+	const handleCompanySearchChange = (searchVal?:any) => {
+		companySearchRef.current = searchVal;
+		debounce(searchVal, 'search');
+	};
+	const handleScrollEvent = useCallback((e:any) => {
+		if(isMakeApi.current) {
+			let payload:any;
+			let page = pageRef.current;
+			let previousPayload = oldPayload?.current?.values;
+			let startPage = page * (pageSize);
+			payload = {
+				"projectId": appInfo?.uniqueId,
+				"sortBy":"name",
+				"sortDirection":"ASC",
+				"start": previousPayload?.orgStart > 0 ? previousPayload?.start : startPage,
+				"limit": previousPayload?.orgStart > 0 ? previousPayload?.limit : pageSize,
+				"orgStart" : previousPayload?.orgStart > 0 ? previousPayload?.orgStart : 0,
+				"orgLimit" : previousPayload?.orgStart > 0 ? previousPayload?.orgLimit : pageSize,
+				"searchText": companySearchRef.current
+			};
+			isMakeApi.current = false;
+			CompanyDropdownApiCall(appInfo, payload, true);
+		}
+	}, [oldPayload, companySearchRef]);
 	return <div className='vendor-contract-lineitem-form'>
 		<div className='title-field'>
 			<InputLabel required className='inputlabel' sx={{
@@ -248,21 +342,26 @@ const VendorContractsForm = (props: any) => {
 					color: 'red'
 				}
 			}}>Vendor</InputLabel>
-			<SUIBaseDropdownSelector
-				value={formData?.vendor ? formData?.vendor : []}
-				width="100%"
-				menuWidth="200px"
-				icon={<span className="common-icon-Companies"> </span>}
-				placeHolder={'Select Vendor'}
-				dropdownOptions={companyOptions}
-				handleValueChange={(value: any, params: any) => handleOnChange(value, 'vendor')}
-				showFilterInSearch={false}
-				multiSelect={false}
-				companyImageWidth={'17px'}
-				companyImageHeight={'17px'}
-				showSearchInSearchbar={true}
-				addCompany={false}
-			></SUIBaseDropdownSelector>
+			<SUIPagingDropdown
+						value={formData?.vendor}
+						width="100%"
+						menuWidth="200px"
+						icon={<span className="common-icon-Companies"> </span>}
+						placeHolder={'Select Vendor'}
+						dropdownOptions={groupedCompany || []}
+						suggestedDropdownOptions={suggestedCompany || []}
+						noDataFoundMsg={noDataFoundMsg_company}
+						handleValueChange={(value: any) => handleOnChange(value, 'vendor')}
+						showFilterInSearch={false}
+						onSearchChange={(values:any) => handleCompanySearchChange(values)}
+						paperpropsclassName={'companyMenu-dropdown-cls'}
+						showSearchInSearchbar={false}
+						addCompany={false}
+						handleScrollEvent= {(e:any) => handleScrollEvent(e)}
+						totalCount = {oldPayload?.current?.totalCount}
+						// retainSearch={companySearchRef.current}
+						enableGrouping={false}
+					/>
 		</div>
 		<div className='bid-lookup-field'>
 			<InputLabel className='inputlabel' required sx={{

@@ -41,7 +41,7 @@ export const VB_BudgetManager: any = {
 				{
 					"headerName": "Mark-up Fee",
 					"hide": false,
-					"field": "markupFee"
+					"field": "markupFeeAmount"
 				},
 				{
 					"headerName": "Budget Transfer Amount",
@@ -204,7 +204,7 @@ export const VB_BudgetManager: any = {
 					"field": "equipmentModel"
 				}
 			],
-			"groups": ["division"],
+			"groups": [""],
 			"filters": "null",
 			"viewFor": "budgetmanager"
 		},

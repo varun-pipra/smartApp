@@ -118,6 +118,9 @@ export const vendorContractsSlice = createSlice({
 		setSelectedVendorInCreateForm: (state, action: PayloadAction<any>) => {
 			state.selectedVendorInCreateForm = action.payload;
 		},
+		setContractDetailsGetCall: (state, action: PayloadAction<any>) => {
+			state.contractDetailsGetCall = action.payload;			
+		},
 
 	},
 	extraReducers: (builder) => {
@@ -130,7 +133,7 @@ export const vendorContractsSlice = createSlice({
 			})
 			.addCase(getUserRoleDetails.rejected, (state) => {
 				state.loading = false;
-				state.contractDetailsGetCall = false;
+				// state.contractDetailsGetCall = false;
 			})
 			.addCase(getContractDetailsById.pending, (state) => {
 				state.loading = true;
@@ -142,6 +145,7 @@ export const vendorContractsSlice = createSlice({
 			})
 			.addCase(getContractDetailsById.rejected, (state) => {
 				state.loading = false;
+				state.contractDetailsGetCall = false;
 			})
 			.addCase(getBidLookup.pending, (state) => {
 				state.loading = true;
@@ -167,7 +171,7 @@ export const vendorContractsSlice = createSlice({
 export const {setShowLineItemDetails, setPresenceData, setSelectedNode, setSelectedTabName,
 	setSelectedRecord, setToastMessage, setLockAndPostContractResponseClick, setMinMaxDrawerStatus,
 	setShowContractAttachments, setEnablePostAndLockBtn, setSelectedVendorInCreateForm,
-	setContractId, setTab} = vendorContractsSlice.actions;
+	setContractId, setTab, setContractDetailsGetCall} = vendorContractsSlice.actions;
 
 export const getShowLineItemDetails = (state: RootState) => state.vendorContracts.showLineItemDetails;
 export const getSelectedRecord = (state: RootState) => state.vendorContracts.selectedRecord;

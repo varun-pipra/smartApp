@@ -27,7 +27,7 @@
             width: 1.1em;
             height: 1.1em;
             box-shadow: unset;
-            margin-top: 1pt;
+            margin-top: 0pt;
             margin-left: -1px;
         }
     }
@@ -49,7 +49,7 @@
         &:before {
             display: none;
             padding-left: 0.8em;
-            line-height: 1;
+            line-height: 0.89;
         }
         &:after {
             display: flex;

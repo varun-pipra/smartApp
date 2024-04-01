@@ -26,7 +26,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 	const dispatch = useAppDispatch();
 	const { server } = useAppSelector(state => state.appInfo);
 	const appInfo = useAppSelector(getServer);
-	const { selectedTimeLogDetails ,DetailspayloadSave, TimeLogGridList,saveButtonEnable,gridFilters ,gridRef} = useAppSelector(state => state.timeLogRequest);
+	const { selectedTimeLogDetails ,DetailspayloadSave, TimeLogGridList,saveButtonEnable,gridRef, gridFilters} = useAppSelector(state => state.timeLogRequest);
 	const stateObject: any = (timelogStatusMap || [])?.find((x: any) => x.value === selectedTimeLogDetails?.status?.toString());
 	const [closeSubtitle, setCloseSubtitle] = React.useState<any>(true)
 	const [openSendBack, setOpenSendBack] = React.useState<any>(false)
@@ -149,14 +149,17 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 					<IQButton className='sendback-buttons' disabled={false} onClick={() => {setOpenSendBack(true)}}>
 						SEND BACK
 					</IQButton>
-					<IQButton className='split-buttons' disabled={false} onClick={() => { setOpenSplit(true)}}>
-						Split
-					</IQButton>
 					<IQButton className='accept-buttons' disabled={false} onClick={() => {handleAccept()}}>
 						ACCEPT
 					</IQButton>
 
 				</>
+			}
+			{
+					getTimeLogStatus(selectedTimeLogDetails?.status) == 'Reported' && 
+					<IQButton className='split-buttons' disabled={false} onClick={() => { setOpenSplit(true)}}>
+						Split
+					</IQButton>
 			}
 			{(getTimeLogStatus(selectedTimeLogDetails?.status) == 'Sent Back') && <IQButton className='resubmit-buttons' disabled={saveButtonEnable} onClick={() => {  onClickSave() }}>
 					Resubmit

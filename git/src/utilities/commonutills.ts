@@ -91,3 +91,9 @@ export const connectorsObj:any = {
 export const getConnectorType:any = (name:any) => {
 	return name?.toLowerCase()?.includes('sap') ? 0 : name?.toLowerCase()?.includes('procore') ? 1 : 2;
 }
+
+export	const connectorImages:any = {
+	0: "https://connectorscdn.smartappbeta.com/641b5203-bfa5-4185-9975-78e157b85bf2/1.0.8/icons/sap-blue-logo-sm.png",
+	1: "https://connectorscdn.smartappbeta.com/19d2f6b2-78bb-4324-8e26-4b53581da07a/1.0.3/icons/procore.png",
+	2: "https://connectorscdn.smartappbeta.com/054dff2a-f744-4951-8e96-ee8d9fa6749b/1.0.2/icons/cmic-logo.png",
+};

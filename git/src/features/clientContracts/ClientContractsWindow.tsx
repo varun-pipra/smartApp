@@ -27,10 +27,11 @@ import {
 import {setAdditionalFiles, setStandardFiles, setContractFilesCount, getStandardFiles} from './stores/tabs/contractfiles/CCContractFilesTabSlice';
 import {isUserGCForCC} from './utils';
 import {checkBlockchainStatus} from 'app/common/blockchain/BlockchainSlice';
-import { getClientContractsList } from './stores/gridSlice';
+import { getClientContractsList, setCCIframeActive } from './stores/gridSlice';
 
 const ClientContractsWindow = () => {
 	const dispatch = useAppDispatch();
+	const {ccIframeActive} = useAppSelector(state=>state.cCGrid)
 
 	const location = useLocation();
 	const [localhost] = useState(isLocalhost);
@@ -137,7 +138,7 @@ const ClientContractsWindow = () => {
 								break;
 							case "frame-active":
 								console.log("frame-active", data);
-								data?.data?.name == "clientcontracts" && dispatch(getClientContractsList(appInfo));
+								data?.data?.name == "clientcontracts" && dispatch(setCCIframeActive(true));
 								break;
 						}
 					}
@@ -153,6 +154,14 @@ const ClientContractsWindow = () => {
 	useEffect(() => {
 		dispatch(checkBlockchainStatus('ClientContracts'));
 	}, [appInfo]);
+
+	useEffect(() => {
+		if(ccIframeActive) {
+			console.log("ccIframeActive", ccIframeActive);			
+			dispatch(getClientContractsList(appInfo));
+			setTimeout(()=> {dispatch(setCCIframeActive(false))}, 5000)
+		}
+	}, [ccIframeActive])
 
 	const saveContractAttachments = (contracts: any) => {
 		// const structuredFiles = contracts.map((file: any) => {

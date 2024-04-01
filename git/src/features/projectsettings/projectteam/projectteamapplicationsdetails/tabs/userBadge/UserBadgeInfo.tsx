@@ -38,10 +38,10 @@ const SUIUserBadgeInfo = (props: any) => {
   };
 
   const handleValueChange = (item: any) => {
-    setUserBadgeValue(item.text);
+    setUserBadgeValue(typeof item === 'string' ? item : item?.[Object.keys(item || '')?.toString()]?.text);
     handleClose();
-    if (item?.type === "custom" ?? false) {
-      handleChildrenMenu(item);
+    if (item?.[Object.keys(item || '')?.toString()]?.type === "custom" ?? false) {
+      handleChildrenMenu(item?.[Object.keys(item || '')?.toString()]);
     } else {
       handleChange(item);
     }

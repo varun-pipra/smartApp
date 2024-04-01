@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { postMessage, isLocalhost, getSafetyCredIFrame } from "app/utils";
 import './UserDetails.scss';
@@ -8,20 +8,23 @@ import Toast from 'components/toast/Toast';
 import SUIBaseDropdownSelector from "sui-components/BaseDropdown/BaseDropdown";
 import SUIEmailSelector from 'sui-components/Email/Email';
 import SmartDropDown from "components/smartDropdown";
-import { fetchCategoriesData, getCompanyData, getTradeData, getRolesData, getSkillsData, getShiftsData, getCalendarData, getEmailData, getcategoriesData, fetchCompaniesData, fetchTradesData, fetchSkillsData } from '../../../operations/ptDataSlice';
+import { fetchCategoriesData, getCompanyData, getTradeData, getRolesData, getSkillsData, getShiftsData, getCalendarData, getEmailData, getcategoriesData, fetchCompaniesData, fetchTradesData, fetchSkillsData, setCompaniesData } from '../../../operations/ptDataSlice';
 import { makeStyles, createStyles } from '@mui/styles';
 import IQButton from 'components/iqbutton/IQButton';
 import Uniqueid from '../../../projectteamcontent/customComponents/uniqueid/Uniqueid';
 import { QRCodeAlertUI } from '../../../projectteamcontent/customComponents/customComponents';
 import SUIAlert from 'sui-components/Alert/Alert';
 import ProjectLocation from '../../../projectteamcontent/projectLocation/ProjectLocation';
-import { getLocationLevels, getLocationTags } from '../../../operations/ptDataAPI';
+import { fetchPaginationCompanies, getLocationLevels, getLocationTags } from '../../../operations/ptDataAPI';
 import CompanyIcon from "resources/images/Comapany.svg";
 import infoicon from "resources/images/common/infoicon.svg";
 import ProjectTeamRolesTooltip from 'features/projectsettings/projectteam/projectteamcontent/RolesTootip/ProjectTeamRolesTooltip';
 import { getRoles } from 'utilities/projectteam/enums';
 import IQTooltip from 'components/iqtooltip/IQTooltip';
 import { amountFormatWithOutSymbol } from 'app/common/userLoginUtils';
+import SUIPagingDropdown from 'sui-components/PagingDropdown/SUIPagingDropdown';
+import _ from 'lodash';
+import { RemoveCompanyOptionDuplicates } from 'features/bidmanager/bidpackagedetails/tabs/bidders/Bidders';
 const useStyles: any = makeStyles((theme: any) =>
 	createStyles({
 		menuPaper: {
@@ -55,7 +58,6 @@ const UserDetails = (props: any) => {
 	const dispatch = useAppDispatch();
 	const containerStyle = useMemo(() => ({ width: "100%", height: "300px" }), []);
 	const [selectedLineItem, setSelectedLineItem] = useState<any>({});
-	const CompanyData: any = useAppSelector(getCompanyData);
 	const TradeData: any = useAppSelector(getTradeData);
 	const RolesData: any = useAppSelector(getRolesData);
 	const SkillsData: any = useAppSelector(getSkillsData);
@@ -76,7 +78,7 @@ const UserDetails = (props: any) => {
 	});
 	const [rtlsTextDisplay, setRtlsTextDisplay] = React.useState<any>();
 	const [rtlsConnector, setRtlsConnector] = React.useState<any>();
-	const isEnForced = appInfo?.gblConfig?.enforceCompanyTradeRelationship
+	const isEnForced = isLocalhost ? true: appInfo?.gblConfig?.enforceCompanyTradeRelationship;
 	const serviceUrl = isLocalhost ? 'https://barcode-ltk5o3tq2a-uk.a.run.app/barcode/generatebarcode?bfrmt=' : appInfo?.gblConfig?.barcodeImageGeneratorService;
 
 	const [companyOptions, setCompanyOptions] = useState([]);
@@ -91,6 +93,27 @@ const UserDetails = (props: any) => {
 	const { selectedMembers } = useAppSelector((state: any) => state.ptGridData);
 	const [rolesTooltipData, setRolesTooltipData] = React.useState({});
 	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const {companiesData} = useAppSelector((state: any) => state.projectTeamData);
+	const isCompanyMounted = useRef<boolean>(true);
+	const [CompanyData, setCompanyData] = useState<any>([]);
+	const SearchRef = useRef<any>('');
+	const isMakeApi = useRef(true);
+	const [pageSize, setPageSize] = React.useState(300);
+	const isSearched = useRef(false);
+  	const pageRef = useRef(1);
+	const totalCountRef = useRef();
+	const PreviousCompanyData = useRef<any>([]);
+	const previousUser = useRef<any>({});
+	const defaultCompanyPayload = {
+		"projectId": isLocalhost ? "190e55b8-5907-42cd-9d94-13024a8ea568" : appInfo?.gblConfig?.currentProjectInfo?.projectUniqueId,
+		"sortBy":"name",
+		"sortDirection":"ASC",
+		"searchText":SearchRef.current,
+		"page":1,
+		"start":0,
+		"limit":pageSize
+	};
+	const defaultPayload = useRef<any>(defaultCompanyPayload);
 	React.useEffect(() => {
 		if (userdata?.trade?.objectId) {
 			dispatch(fetchCategoriesData({ appInfo: appInfo, tradeId: userdata?.trade?.objectId }))
@@ -188,7 +211,9 @@ const UserDetails = (props: any) => {
 			switch (iframeEventData.event || iframeEventData.evt) {
 				case "refreshcompanies":
 					console.log('refreshcompanies', new Date());
-					dispatch(fetchCompaniesData(appInfo));
+					// dispatch(fetchCompaniesData(appInfo));
+					CompanyDropdownApiCall(defaultCompanyPayload);
+					pageRef.current = 1;
 					setUser({
 						...user,
 						company: {
@@ -225,35 +250,41 @@ const UserDetails = (props: any) => {
 	}, [iframeEventData])
 	const CompanyFields = () => {
 		let data = getCompanyOptions();
-		if (user.trade.displayField !== '' && !isEnForced) {
-			let filterCompanies: any = [...CompanyData]?.filter((x: any) => {
-				return x?.trade?.some((item: any) => item?.name === user.trade.displayField)
+		if (user?.trade?.displayField !== '' && !isEnForced) {
+			let filterCompanies: any = [...data]?.filter((x: any) => {
+				return x?.trade?.some((item: any) => item?.name === user?.trade?.displayField)
 			});
 			if (filterCompanies.length > 0) {
 				let mapFields = filterCompanies.map((item: any) => ({
 					...item, displayField: item.name, isSuggested: true, color: item?.colorCode,
 					thumbnailUrl: item?.thumbnailUrl
 				}));
-				let filterData = companyOptions?.filter((item: any) => { return !mapFields?.some((value: any) => value?.id === item?.id) });
+				let filterData:any = [...data]?.filter((item: any) => { return !mapFields?.some((value: any) => value?.id === item?.id) });
 				setCompanyOptions(filterData);
 				setSuggestCompanyValues(mapFields);
 			} else {
+				setCompanyOptions(data);
 				setSuggestCompanyValues([]);
 			};
-		} else {
+		} 
+		// else if(isEnForced && !isCompanyMounted.current) {
+		// 	filterCompanyValues([user?.trade])
+		// }
+		else {
 			setCompanyOptions(data);
 		};
 	}
 	React.useEffect(() => {
-		if (CompanyData?.length > 0) {
-			let data = getCompanyOptions();
-			setCompanyOptions(data);
-			CompanyFields();
-		};
+		if (CompanyData?.length > 0) CompanyFields();
 	}, [CompanyData]);
 	React.useEffect(() => {
-		if (TradeData?.length > 0 && userdata) {
-			let data = getTradesOptions();
+		if(!_.isEqual(previousUser.current, user)) {
+			CompanyFields();
+		};
+	}, [user]);
+	React.useEffect(() => {
+		if (TradeData?.length > 0 && userdata && !!CompanyData) {
+			const data = getTradesOptions();
 			let tradeData: any = [];
 			const enForcedData: any = [...CompanyData]?.filter((x: any) => x?.name === userdata?.company?.name);
 			if (enForcedData.length > 0) {
@@ -264,7 +295,8 @@ const UserDetails = (props: any) => {
 							color: enForcedData[i].trade[j]?.color,
 							id: enForcedData[i].trade[j]?.objectId,
 							displayField: enForcedData[i].trade[j]?.name,
-							isSuggested: true
+							isSuggested: true,
+							uniqueId: enForcedData[i].trade[j]?.uniqueId ?? enForcedData[i].trade[j]?.id
 						})
 					}
 				};
@@ -277,15 +309,17 @@ const UserDetails = (props: any) => {
 						...item, displayField: item.name, isSuggested: true, color: item?.colorCode,
 						thumbnailUrl: item?.thumbnailUrl
 					}));
+					let RemoveExistingTrades:any = [...data]?.filter((item:any) => { return !mapFields.some((value:any) => value.objectId === item.objectId) });
+					setTradeOptions(RemoveExistingTrades);
 					setSuggestTradeValues(mapFields);
 				}
-				setTradeOptions(data);
+				else setTradeOptions(data);
 			};
 		};
-	}, [TradeData]);
-	const getCompanyOptions = () => {
+	}, [TradeData, CompanyData]);
+	const getCompanyOptions = useCallback(() => {
 		let groupedList: any = [];
-		CompanyData.map((data: any) => {
+		[...CompanyData].map((data: any) => {
 			groupedList.push({
 				...data,
 				color: data.colorCode,
@@ -294,7 +328,7 @@ const UserDetails = (props: any) => {
 			});
 		});
 		return groupedList
-	};
+	},[CompanyData]);
 	const getTradesOptions = () => {
 		let groupedList: any = [];
 		TradeData.map((data: any, index: any) => {
@@ -364,8 +398,9 @@ const UserDetails = (props: any) => {
 		return groupedList
 	};
 	const filterCompanyValues = (value: any) => {
-		if (value && value.some((x: any) => x.hasOwnProperty('displayField'))) {
-			let filterCompanies: any = [...CompanyData]?.filter((x: any) => {
+		if (value && value?.some((x: any) => x?.hasOwnProperty('displayField'))) {
+			let data = getCompanyOptions();
+			let filterCompanies: any = [...data]?.filter((x: any) => {
 				return x?.trade?.some((item: any) => item?.name === value?.[0]?.displayField)
 			});
 			if (filterCompanies.length > 0) {
@@ -373,20 +408,16 @@ const UserDetails = (props: any) => {
 					...item, displayField: item.name, isSuggested: true, color: item?.colorCode,
 					thumbnailUrl: item?.thumbnailUrl
 				}));
-				let filterData = companyOptions?.filter((item: any) => { return !mapFields?.some((value: any) => value?.id === item?.id) });
+				let filterData:any = [...data]?.filter((item: any) => { return !mapFields?.some((value: any) => value?.id === item?.id) });
 				setCompanyOptions(filterData);
 				setSuggestCompanyValues(mapFields);
-			} else {
-				setSuggestCompanyValues([]);
 			};
-		} else {
-			CompanyFields();
-			setSuggestCompanyValues([]);
-		};
-
+		}
 	};
 	const filterTradeValues = (value: any) => {
-		let filterTrades: any = [...CompanyData]?.filter((x: any) => x?.name === value?.[0]?.displayField)?.[0].trade;
+		let data = getCompanyOptions();
+		let tradeData = getTradesOptions();
+		let filterTrades: any = [...data]?.filter((x: any) => x?.name === value?.[0]?.displayField)?.[0].trade;
 		if (filterTrades.length > 0) {
 			let mapFields = filterTrades.map((data: any) => ({ ...data, displayField: data.name, isSuggested: true, color: data?.colorCode }));
 			let filterData = tradeOptions?.filter((item: any) => { return !mapFields?.some((value: any) => value?.uniqueId === item?.uniqueId) });
@@ -394,7 +425,7 @@ const UserDetails = (props: any) => {
 			setSuggestTradeValues(mapFields);
 			let mapData: any = [];
 			for (let i = 0; i < mapFields.length; i++) {
-				if (mapFields[i].isPrimary ?? false) {
+				if ((mapFields[i]?.isPrimary ?? false) || (mapFields[i]?.isDefaultSelected ?? false)) {
 					mapData.push({
 						color: mapFields?.[i]?.color,
 						id: mapFields?.[i]?.objectId,
@@ -408,31 +439,33 @@ const UserDetails = (props: any) => {
 			} else {
 				return defaultdata.trade;
 			};
-
-			//}
-
 		} else {
+			setTradeOptions(isEnForced ? []: tradeData);
 			setSuggestTradeValues([]);
+			return defaultdata.trade;
 		};
 	};
 	const handleOnChange = (name: any, value: any) => {
 		let updateddata;
 		if (name == 'trade') {
 			dispatch(fetchCategoriesData({ appInfo: appInfo, tradeId: value[0]?.objectId }))
-			const selectedTrade = { color: value[0]['color'], id: value[0]?.objectId, name: value[0]?.name };
-			updateddata = { ...user, [name]: { color: value[0]['color'], id: value[0]?.objectId, displayField: value[0]?.name } };
+			let selectedTrade = { color: value?.[0]?.['color'], id: value?.[0]?.objectId, name: value?.[0]?.name };
+			if(_.values(selectedTrade).every(_.isEmpty)) {
+				selectedTrade = defaultdata.trade;
+			};
+			updateddata = { ...user, [name]: { color: value?.[0]?.['color'], id: value?.[0]?.objectId, displayField: value?.[0]?.name } };
 			if(value?.length === 0 || value?.[0]?.length === 0) {
 				updateddata = { ...updateddata, ['workCategory']: null};
 			};
 			updateddata = { ...updateddata, ['hourlyRate']: null };
-			filterCompanyValues(value);
+			filterCompanyValues(value?.[0]?.displayField ? value : [selectedTrade]);
 			fetchPendingDocsApiCall(updateddata);
 			let safetyCredFrame = getSafetyCredIFrame();
 			props.setSelectedTrade(selectedTrade);
 			safetyCredFrame?.contentWindow?.postMessage({ event: 'tradechange', trade: selectedTrade }, '*');
 		}
 		else if (name == 'company') {
-			updateddata = { ...user, [name]: { color: value[0]['color'], id: value[0]['id'], displayField: value[0]['displayField'], thumbnailId: value[0]['thumbnailUrl'] } };
+			updateddata = { ...user, [name]: { color: value?.[0]?.['color'], id: value?.[0]?.['id'], displayField: value?.[0]?.['displayField'], thumbnailId: value?.[0]?.['thumbnailUrl'] } };
 			let tradeFieldValue = filterTradeValues(value);
 			updateddata = { ...updateddata, 'trade': tradeFieldValue};
 		} else if (name == 'skills') {
@@ -447,6 +480,7 @@ const UserDetails = (props: any) => {
 		};
 		setUser(updateddata);
 		setDynamicClose(!dynamicClose);
+		previousUser.current = updateddata;
 	};
 	console.log('user deatils', user);
 	const handlePhoneChange = (name: any, value: any) => {
@@ -459,6 +493,31 @@ const UserDetails = (props: any) => {
 			updateddata = { ...user, [name]: value }
 			setUser(updateddata);
 		};
+	};
+	const SelectedCompanyRec = () => {
+		const Obj = selectedMembers?.[0];
+		return {
+			"id": Obj?.company?.objectId,
+			"uniqueId": Obj?.company?.id,
+			"thumbnailUrl": Obj?.company?.thumbnailId,
+			"name": Obj?.company?.name ?? "",
+			"phone": Obj?.company?.phone ?? "",
+			"website": Obj?.company?.website ?? "",
+			"email": Obj?.company?.email ?? "",
+			"colorCode": Obj?.company?.color ?? "",
+			"isDiverseSupplier": Obj?.company?.isDiverseSupplier ?? false,
+			"trade" : Object.keys(Obj?.trade || {})?.length  ? [{
+					"objectId": Obj?.trade?.objectId,
+					"status": Obj?.trade?.status,
+					"uniqueId": Obj?.trade?.id,
+					"name": Obj?.trade?.name,
+					"description": Obj?.trade?.description,
+					"color": Obj?.trade?.color,
+					"isDefaultSelected": true,
+					"isDrawingDiscipline": Obj?.trade?.isDrawingDiscipline,
+					"displayField": Obj?.trade?.name
+			}] : []					
+		}
 	};
 	React.useEffect(() => {
 		props.onChange(user);
@@ -493,6 +552,9 @@ const UserDetails = (props: any) => {
 		getLocationLevels(appInfo, Payload, (response: any) => {
 			setLocationLevelOptions(response)
 		});
+		if(selectedMembers?.length) {
+			setCompanyData([SelectedCompanyRec()]);
+		};
 	}, [appInfo])
 
 	React.useEffect(() => {
@@ -618,6 +680,48 @@ const UserDetails = (props: any) => {
 			maxWidth: "none",
 		}
 	});
+		const CompanyDropdownApiCall = useCallback((payload:any, scroll?:boolean) => {
+		console.log('User Details Company Dropdown APi Call', payload);
+		fetchPaginationCompanies(appInfo, payload, (response: any) => {
+			isMakeApi.current = true;
+			if(scroll) {
+				pageRef.current = (pageRef.current + 1);
+			};
+			totalCountRef.current = response.total;
+			const updatedCompanies = RemoveCompanyOptionDuplicates([...PreviousCompanyData.current, ...response?.values]);
+			const SelectedCompany = _.cloneDeep(updatedCompanies)?.filter((x:any) => x.uniqueId === selectedMembers?.[0]?.company?.id);
+			if(selectedMembers.length > 0 && SelectedCompany.length === 0) {
+				let appendData = [SelectedCompanyRec()];
+				setCompanyData([...updatedCompanies, ...appendData]);
+			} else setCompanyData(updatedCompanies);
+			PreviousCompanyData.current = updatedCompanies;
+		});
+	},[CompanyData, selectedMembers]);
+		const handleScrollEvent = useCallback((e:any) => {
+		if(isMakeApi.current) {
+			let payload = {...defaultPayload.current};
+			payload.page = pageRef.current;
+			payload.start = pageRef.current * (pageSize);
+			defaultPayload.current = payload;
+			isMakeApi.current = false;
+			CompanyDropdownApiCall(payload, true);
+		}
+	}, [pageSize]);
+
+	const handleCompanySearchChange = useCallback(_.debounce((val:string) => {
+			pageRef.current = 1;
+			defaultPayload.current = {...defaultCompanyPayload, ['searchText'] : val};
+			CompanyDropdownApiCall(defaultPayload.current);
+			PreviousCompanyData.current = [];
+	}, 1000), [defaultCompanyPayload]);
+	const handleCompanyListOpen= useCallback((e:any) => {
+			if(isCompanyMounted.current) {
+				isCompanyMounted.current = false;
+				CompanyDropdownApiCall(defaultCompanyPayload);
+				pageRef.current = pageRef.current + 1;
+			} else return;
+	},[defaultCompanyPayload]);
+	console.log("Updated Data 2", companyOptions, suggestCompanyValues);
 	return (<div className='ProjectTeam-userDetails'>
 		<Grid container direction={'row'} spacing={3}>
 			<Grid item sm={11.8}>
@@ -711,7 +815,36 @@ const UserDetails = (props: any) => {
 						color: 'red'
 					}
 				}}>Company</InputLabel>
-				<SUIBaseDropdownSelector
+				<SUIPagingDropdown
+						value={[user?.company]}
+						width="100%"
+						menuWidth="450px"
+						placeHolder={'Select'}
+						showFilterInSearch={false}
+						showSearchInSearchbar={true}
+						icon={<span className='common-icon-company-new userdetails_icons userdetails_icon_Color' />}
+						basecustomline={true}
+						image={true}
+						hideTooltip={true}
+						multiSelect={false}
+						showIconInField={true}
+						dropdownOptions={companyOptions ?? []}
+						noDataFoundMsg={<div className="no-rows-msg"><span className="common-icon-No-Item-Available"></span><div className="empty-rows-mark">No match found</div><div>You can add it by clicking + button</div></div>}
+						handleValueChange={(value: any) => { handleOnChange('company', value) }}
+						onSearchChange={(values:any) => handleCompanySearchChange(values)}
+						paperpropsclassName={'pt-companyMenu-dropdown-cls'}
+						suggestedDropdownOptions={suggestCompanyValues ?? []}
+						suggestedText={'All:'}
+						suggestedDefaultText={'Suggested (based on trade):'}
+						handleAdd={(a: any, b: any) => handleAdd(a, b, 'company')}
+						handleScrollEvent= {(e:any) => handleScrollEvent(e)}
+						handleListOpen={(e:any) => handleCompanyListOpen(e)}
+						totalCount = {totalCountRef.current}
+						enableSorting={true}
+						enableGrouping={true}
+						isReverseGrouping={true}
+					/>
+				{/* <SUIBaseDropdownSelector
 					value={[user?.company]}
 					width="100%"
 					menuWidth="450px"
@@ -734,7 +867,7 @@ const UserDetails = (props: any) => {
 					enforcedRelationship={isEnForced}
 					moduleName={"userDetails"}
 					showIconInField={true}
-				></SUIBaseDropdownSelector>
+				></SUIBaseDropdownSelector> */}
 			</Grid>
 			<Grid item sm={5.7}>
 				<InputLabel className='inputlabel' >Trade</InputLabel>
@@ -743,7 +876,7 @@ const UserDetails = (props: any) => {
 					width="100%"
 					menuWidth="450px"
 					placeHolder={'Select'}
-					dropdownOptions={tradeOptions ?? []}
+					dropdownOptions={isEnForced ? suggestTradeValues : (tradeOptions || [])}
 					noDataFoundMsg={<div className="no-rows-msg"><span className="common-icon-No-Item-Available"></span><div className="empty-rows-mark">No match found</div><div>You can add it by clicking + button</div></div>}
 					handleValueChange={(value: any) => { handleOnChange('trade', value) }}
 					showFilterInSearch={false}

@@ -74,6 +74,12 @@
 }
 
 .budget-grid-cls {
+    .ag-floating-bottom .ag-pinned-left-floating-bottom .ag-cell-wrapper {
+        float: right;
+        .ag-group-value {
+            color: #000 !important;
+        }
+    }
     .ag-pinned-left-cols-container .ag-row {
         background: #fff;
     }

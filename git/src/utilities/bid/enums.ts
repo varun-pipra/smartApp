@@ -225,3 +225,62 @@ export const awardTileSubmissionStatusBGColor: any = {
 // 	2: 'red',
 // 	3: 'green',
 // };
+export const getCompanyFilterOptions = [{
+	text: 'Scope',
+	key: 'scope',
+	value: 'scope',
+	iconCls: 'common-icon-scope',
+	children: {
+		type: 'checkbox',
+		items: [{
+			id : 1,
+			text: 'This Project',
+			key: 'scope',
+			value: 'This Project'
+		}, {
+			id : 2,
+			text: 'Organizational',
+			value: 'Organizational',
+			key: 'scope',
+		},]
+	}
+},
+{
+	text: 'Diverse Supplier',
+	key: 'diverseCategories',
+	value: 'diverseCategories',
+	iconCls: 'common-icon-diverse-supplier',
+	children: {
+		type: 'checkbox',
+		items: []
+	}
+},
+{
+	text: 'Compliance Status',
+	key: 'complianceStatus',
+	value: 'complianceStatus',
+	iconCls: 'common-icon-compliance-Status',
+	children: {
+		type: 'checkbox',
+		items: [{
+			text: 'Compliant',
+			key: 'complianceStatus',
+			value: 'Compliant'
+		}, {
+			text: 'Not Verified',
+			value: 'Not Verified',
+			key: 'complianceStatus',
+		},
+		{
+			text: 'Non Compliant',
+			value: 'N/A',
+			key: 'complianceStatus',
+		},
+		{
+			text: 'Expired',
+			value: 'Expired',
+			key: 'complianceStatus',
+		}
+		]
+	}
+}];

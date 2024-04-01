@@ -4,6 +4,7 @@ import { useRef, useMemo, useState, useCallback } from "react";
 import SUIGrid from "sui-components/Grid/Grid";
 import "./LaborSheet.scss";
 import React from "react";
+import { amountFormatWithSymbol } from "app/common/userLoginUtils";
 export const LaborSheetModel = (props: any) => {
   const { data, handleSubmit, btnText = "Pick", ...rest } = props;
   const [rowData, setRowData] = useState(data);
@@ -14,16 +15,25 @@ export const LaborSheetModel = (props: any) => {
   React.useEffect(() => {
     if (!!selectedRow && Object.keys(selectedRow)?.length > 0) {
       const detailGrid = gridRef?.current?.api?.detailGridInfoMap;
+      console.log('detailGrid',detailGrid)
       let selectedNode = selectedRow;
       Object.entries(detailGrid)?.filter(([key]) => {
         let nodes = detailGrid?.[key]?.api?.getSelectedNodes();
-        if (nodes.length > 0) {
-          nodes.forEach((element: any) => {
-            if (element.data.trade === selectedNode?.trade) {
-              element.setSelected(true);
-              setDisabled(false);
+        if (nodes?.length > 0) {
+          console.log('nodes',nodes)
+          nodes?.forEach((element: any) => {
+            console.log('element',element)
+            if (element?.data?.trade === selectedNode?.trade) {
+                if(element?.data?.defaultHourlyRate !== null){
+                    element?.setSelected(true);
+                    setDisabled(false);
+                }
+                else{
+                  element?.setSelected(false);
+                  setDisabled(true);
+                }
             } else {
-              element.setSelected(false);
+              element?.setSelected(false);
             }
           });
         }
@@ -58,7 +68,8 @@ export const LaborSheetModel = (props: any) => {
         },
         columnDefs: [
           { headerName: "Trade", field: "name", minWidth: 220 },
-          { headerName: "Default Rate", field: "defaultHourlyRate" },
+          { headerName: "Default Rate(per Hour)", field: "defaultHourlyRate",
+           valueGetter:(params:any) => params?.data?.defaultHourlyRate && amountFormatWithSymbol(params?.data?.defaultHourlyRate)},
         ],
         defaultColDef: {
           flex: 1,
@@ -82,6 +93,7 @@ export const LaborSheetModel = (props: any) => {
     return dataItem?.trades?.length > 0;
   };
   const handleSelect = () => {
+    console.log('selectedRow',selectedRow)
     handleSubmit && handleSubmit(selectedRow);
   };
   const onFirstDataRendered = useCallback((params: any) => {

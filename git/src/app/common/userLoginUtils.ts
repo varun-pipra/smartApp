@@ -92,9 +92,14 @@ export const isChangeEventClient = () => {
 
 export const isWorker = () => {
 	const server = getServerInfo(),
-		permissions = server?.gblConfig?.user?.projectZonePermissions;
+		permissions = server?.gblConfig?.user?.projectZonePermissions,
+		workTeams = server?.gblConfig?.currentUserWorkTeam;
+		let workTeamManager=false;
 
-	if(permissions && !Object?.values(permissions)?.includes('Can Manage Time for My Company') && !Object?.values(permissions)?.includes('Can Manage Time for this Project') && !Object?.values(permissions)?.includes('Can Manage Time for Work Team')) return true;
+	workTeams?.map((team:any) => {
+		if(team?.canMangerMangeTimeLog && !workTeamManager) workTeamManager=true
+	});
+	if(permissions && !Object?.values(permissions)?.includes('Can Manage Time for My Company') && !Object?.values(permissions)?.includes('Can Manage Time for this Project') && !workTeamManager) return true;
 	return false;
 };
 
@@ -117,8 +122,12 @@ export const canManageTimeForProject = () => {
 
 export const canManageTimeForWorkTeam = () => {
 	const server = getServerInfo(),
-		permissions = server?.gblConfig?.user?.projectZonePermissions;
+		workTeams = server?.gblConfig?.currentUserWorkTeam;
+	let workTeamManager=false;
 
-	if(permissions && Object?.values(permissions)?.includes('Can Manage Time for Work Team')) return true;
-	return false;
+	workTeams?.map((team:any) => {
+		if(team?.canMangerMangeTimeLog && !workTeamManager) workTeamManager=true
+	});
+	console.log("workteams", workTeams, workTeamManager)
+	return workTeamManager;
 };

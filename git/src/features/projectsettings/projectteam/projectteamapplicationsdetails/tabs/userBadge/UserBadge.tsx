@@ -236,7 +236,7 @@ const UserBadge = (props: any) => {
 					}
 				}
 				if (!layout2) {
-					if (b?.text === (backBadgeValue)) {
+					if (b?.text === (backBadgeValue || badgeData?.side2?.layout?.name)) {
 						layout2 = {...b};
 						layout2.name = b.text;
 						if(layout2?.text ?? false) {
@@ -248,8 +248,8 @@ const UserBadge = (props: any) => {
 					} else if (b?.children) {
 						if (b?.children?.forEach) {
 							b?.children?.forEach((c: any) => {
-								if (c?.text === backBadgeValue) {
-									layout1 = { id: c?.id,name:c?.text, type: c?.type };
+								if (c?.text === (backBadgeValue || badgeData?.side2?.layout?.name)) {
+									layout2 = { id: c?.id,name:c?.text, type: c?.type };
 								}
 							})
 						} else {

@@ -190,12 +190,17 @@ const SupplementalContractsWindow = ({ categories, onAdd, selectedFiles = [], fi
 	const onImagePreview = (event: any) => {
 		if (event?.data) {
 			setSelectedStandardFile(event?.data);
-
 		}
 	};
+	const openPreview = (files: Array<any>, index: number) => {
+		setSelectedStandardFile(null);
+		useFilePreview(Iframe, appInfo, modules, files, index);
+	};
+
 	useEffect(() => {
 		if (selectedStandardFile) {
-			const index = rowdata?.findIndex((file: any) => file.uniqueId === selectedStandardFile.uniqueId);
+			console.log('selectedStandardFile',selectedStandardFile)
+			const index :any = rowdata?.findIndex((file: any) => file.uniqueId === selectedStandardFile.uniqueId);
 			const formattedFileList = rowdata?.map((file: any) => {
 				const { uniqueId, displayName, thumbnail } = file;
 				return {
@@ -203,7 +208,7 @@ const SupplementalContractsWindow = ({ categories, onAdd, selectedFiles = [], fi
 				}
 			});
 			console.log('formattedFileList', formattedFileList)
-			useFilePreview(Iframe, appInfo, modules, formattedFileList, index);
+			openPreview(formattedFileList, index);
 		}
 	}, [selectedStandardFile]);
 
@@ -247,7 +252,7 @@ const SupplementalContractsWindow = ({ categories, onAdd, selectedFiles = [], fi
 			}
 		}], []);
 
-	return <BaseWindow className='contract-attachments-window' {...defaultProps} {...props}>
+	return <BaseWindow className='contract-attachments-window' {...defaultProps} {...props} withInModule={true}>
 		<Box className='body-box'>
 			<Stack className='toolbar' direction='row'>
 				<div className='sub-section'>

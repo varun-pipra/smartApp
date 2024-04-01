@@ -46,13 +46,15 @@ import {moduleType, blockchainStates, setShowBlockchainDialog, doBlockchainActio
 import {blockchainAction} from 'app/common/blockchain/BlockchainAPI';
 import SapButton from 'sui-components/SAPButton/SAPButton';
 
-
 import ViewBuilder from 'sui-components/ViewBuilder/ViewBuilder';
 import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
 import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
 import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import SmartDropDown from 'components/smartDropdown';
-
+import {settingsHelper} from 'utilities/commonFunctions';
+import { checkGUID } from 'features/common/timelog/utils';
+import { addSettings } from 'features/budgetmanager/operations/settingsAPI';
+import { fetchSettings } from 'features/budgetmanager/operations/settingsSlice';
 const ClientContractsToolbar = (props: any) => {
 	const modName = 'clientcontract';
 	const dispatch = useAppDispatch();
@@ -77,10 +79,10 @@ const ClientContractsToolbar = (props: any) => {
 		{ text: "Client Company", value: "client.name" },
 		{ text: appInfo && isUserGCForCC(appInfo) ? "Status" : 'Response Status', value: "status" },
 	];
-	const { defaultData } = useAppSelector(state => state.settings);		
+	const { defaultData, settingsData } = useAppSelector(state => state.settings);		
 
 	const disableBlockchainActionButtons = (blockchainEnabled && blockchainStates.indexOf(selectedRows?.[0]?.blockChainStatus) === -1);	
-	console.log("IsBlockChainEnabled", blockchainEnabled, (window?.parent as any)?.GBL?.config?.currentProjectInfo?.blockchainEnabled)		
+	const isSingleSelected = selectedRows?.length === 1;
 
 	const filterOptions = [
 		{
@@ -118,8 +120,34 @@ const ClientContractsToolbar = (props: any) => {
 			},
 		},
 	];
-
 	const [filters, setFilters] = React.useState<any>(filterOptions);
+
+	
+	const [workFlowDropDowOptions, setWorkFlowDropDowOptions] = React.useState<any>([]);
+	const [selectedOption, setSelectedOption] = React.useState((settingsData?.contractsApp?.id && checkGUID(settingsData?.contractsApp?.id)) ? settingsData?.contractsApp?.name :'Built In');
+	let defaultSelection = (settingsData?.contractsApp?.id && checkGUID(settingsData?.contractsApp?.id)) ? {"Apps": [settingsData?.contractsApp?.name]} : {"Built In": ['Built In']};
+
+	useEffect(() => {
+		const data = settingsHelper(defaultData);
+		setWorkFlowDropDowOptions(data);
+	},[defaultData]);
+	useEffect(() => {
+		setSelectedOption((settingsData?.contractsApp?.id && checkGUID(settingsData?.contractsApp?.id)) ? settingsData?.contractsApp?.name :'Built In');
+		defaultSelection = (settingsData?.contractsApp?.id && checkGUID(settingsData?.contractsApp?.id)) ? {"Apps": [settingsData?.contractsApp?.name]} : {"Built In": ['Built In']};
+		
+	}, [settingsData])
+
+	const handleInputChange = (value:any) => {
+		const Key = Object.keys(value);
+		if(Key?.length && !_.isString(value)) {
+			setSelectedOption(value[Key?.toString()].label);
+		} else {
+			setSelectedOption(value);
+		}
+		addSettings(appInfo, {...settingsData, contractsApp: {id: value[Key?.toString()]?.id}}, (response: any) => {
+			dispatch(fetchSettings(appInfo));
+		});
+	};
 
 	const handleDelete = () => {
 		setAlert({
@@ -332,7 +360,7 @@ const ClientContractsToolbar = (props: any) => {
 						color={disablePostContract ? 'inherit' : 'success'}
 						onClick={() => handlePostContract()}
 						startIcon={<span className='common-icon-post-contract' />}
-						disabled={disablePostContract || disableBlockchainActionButtons}>
+						disabled={!isSingleSelected && (disablePostContract || disableBlockchainActionButtons)}>
 						Post Contract
 					</Button>
 				}
@@ -381,7 +409,7 @@ const ClientContractsToolbar = (props: any) => {
 		</div>
 		<div key="spacer" className="toolbar-item-wrapper toolbar-group-button-wrapper" >
 			{<ReportAndAnalyticsToggle />}
-			{connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={handlePostTo}/> : <></>}
+			{ isUserGCForCC(appInfo) && connectors?.length ? <SapButton imgSrc={connectors?.[0]?.primaryIconUrl} onClick={handlePostTo}/> : <></>}
 			{/* <ToggleButtonGroup
 				exclusive
 				value={tableViewType}
@@ -433,19 +461,20 @@ const ClientContractsToolbar = (props: any) => {
 					},
 				}}
 				anchor='right'
+				className='settings-rightpanel-cls'
 				variant='permanent'
 				elevation={8}
 				open={false}
 			>
 				<Box>
-					<Stack direction="row" sx={{ justifyContent: "end", height: "5em" }}>
+					<Stack direction="row" sx={{ justifyContent: "end", height: "2em" }}>
 						<IconButton className="Close-btn" aria-label="Close Right Pane"
 							onClick={() => dispatch(setShowSettingsPanel(false))}
 						>
 							<span className="common-icon-Declined"></span>
 						</IconButton>
 					</Stack>
-					<Stack className='General-settings'>
+					{isUserGCForCC(appInfo) && <Stack className='General-settings'>
 						<Stack className='generalSettings-Sections'>
 							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Settings</Typography>
 							<List className='generalSettings-list'
@@ -474,21 +503,30 @@ const ClientContractsToolbar = (props: any) => {
 							</List >
 							<Typography variant="h6" component="h6" className='budgetSetting-heading'>Work Flow Settings</Typography>	
 							<SmartDropDown
-								options={defaultData?.length > 0 ? [{label: 'Built In', id: 'built', value: 'builtIn'}, {label: 'Apps', id: 'apps', value: 'apps', options: [...defaultData]}] : []}
+								options={workFlowDropDowOptions || []}
 								dropDownLabel="Client Contract"
 								isSearchField
 								required={false}
-								useNestedOptions
-								// selectedValue={[{label: 'Built In', id: 'built', value: 'builtIn'}]}
+								outSideOfGrid={true}
+								selectedValue={selectedOption}
 								isFullWidth
 								ignoreSorting={true}
-								// handleChange={(value: any) => handleInputChange(value[0], 'contractsApp')}
+								handleChange={(value: any) => handleInputChange(value)}
 								variant={'outlined'}
+								sx={{
+									'& .MuiInputBase-input': {
+										padding: '8px 25px 6px 4px !important'
+									}
+								}}
 								optionImage={true}
-								// menuProps={classes3.menuPaper}
-							/>	
+								isSubMenuSearchField={true}
+								isDropdownSubMenu={true}
+								defaultSubMenuSelection={defaultSelection}
+								handleSearchProp={(items: any, key: any) => {}}
+								subMenuModuleName={'client-contracts'}
+							/>		
 						</Stack >
-					</Stack >
+					</Stack >}
 				</Box >
 			</SUIDrawer >
 			: null}

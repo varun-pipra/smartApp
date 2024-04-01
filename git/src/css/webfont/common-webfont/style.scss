@@ -2,11 +2,11 @@
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?gy3t07');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?gy3t07#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?gy3t07') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?gy3t07') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?gy3t07##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?xen5tz');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?xen5tz#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?xen5tz') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?xen5tz') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?xen5tz##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -27,6 +27,21 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.common-icon-column-names {
+  &:before {
+    content: $common-icon-column-names; 
+  }
+}
+.common-icon-staff-projects {
+  &:before {
+    content: $common-icon-staff-projects; 
+  }
+}
+.common-icon-reserve-staff {
+  &:before {
+    content: $common-icon-reserve-staff; 
+  }
+}
 .common-icon-created-by {
   &:before {
     content: $common-icon-created-by; 
@@ -1512,8 +1527,7 @@
 }
 .common-icon-reopen {
   &:before {
-    content: $common-icon-reopen;     
-    color: #666;
+    content: $common-icon-reopen; 
   }
 }
 .common-icon-projects {
@@ -2370,8 +2384,7 @@
 }
 .common-icon-visit-log {
   &:before {
-    content: $common-icon-visit-log;     
-    color: #666;
+    content: $common-icon-visit-log; 
   }
 }
 .common-icon-approval-all-option {

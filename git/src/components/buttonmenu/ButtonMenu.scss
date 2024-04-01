@@ -8,6 +8,10 @@
     text-transform: none !important;
     padding-top: 0px !important;
     padding-bottom: 0 !important;
+    align-items: center !important;
+    .common-icon-unlock-padlock {
+        line-height: 0.89 !important;
+    }
 }
 
 .MuiPaper-root {
@@ -17,7 +21,7 @@
             font-size: 14px;
             &.Mui-selected {
                 font-weight: 600;
-                background-color: #fffad2;
+                background-color: #fffad2 !important;
             }
             .MuiAvatar-circular {
                 border: 1px solid #ccc;

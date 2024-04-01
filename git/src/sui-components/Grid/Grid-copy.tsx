@@ -81,7 +81,8 @@ export interface TableGridProps extends AgGridReactProps {
 	componentPropsChanged?:any;
 	activeTab?: any;
 	enableSsr?:boolean;
-	maxBlocksInCache?:any;
+	maxBlocksInCache?:any;	
+	scrollToNewRowId?: any;
 }
 
 const SUIGrid = (props: TableGridProps) => {
@@ -92,7 +93,7 @@ const SUIGrid = (props: TableGridProps) => {
 		cacheBlockSize, infiniteInitialRowCount, serverSideInitialRowCount = 50, serverSideInfiniteScroll = true, isServerSideGroupOpenByDefault = () => {}, serverSideStoreType = "partial",
 		tooltipShowDelay = 0, tooltipHideDelay, emptyMsg = "No items are available", suppressDragLeaveHidesColumns = false, groupSelectsChildren = true,
 		animateRows = true, rowGroupPanelSuppressSort = false, suppressScrollOnNewData = false, suppressMultiSort = true, getRowHeight,
-		onSortChanged, openLID = false,isMainGrid=false, selectedRecord={}, componentPropsChanged= () => {}, activeTab = null, ...rest} = props;
+		onSortChanged, openLID = false,isMainGrid=false, selectedRecord={}, componentPropsChanged= () => {}, activeTab = null, scrollToNewRowId = null, ...rest} = props;
 
 	const {gridData, selectedRows, originalGridApiData} = useAppSelector((state) => state.gridData);
 	const {selectedRow} = useAppSelector(state => state.rightPanel);
@@ -274,9 +275,9 @@ const SUIGrid = (props: TableGridProps) => {
 	const defaultGroupProps: GridOptions = {
 		groupHeaderHeight: groupHeaderHeight,
 		suppressAggFuncInHeader: true,
-		groupDefaultExpanded: enableSsr ? undefined : 1,
+		groupDefaultExpanded: enableSsr ? undefined : groupDefaultExpanded,
 		groupIncludeFooter: groupIncludeFooter,
-		groupIncludeTotalFooter: enableSsr ?  false : true,
+		groupIncludeTotalFooter: enableSsr ?  false : groupIncludeTotalFooter,
 		groupDisplayType: groupDisplayType || 'multipleColumns',
 		groupRowRendererParams: groupRowRendererParams
 	};
@@ -678,6 +679,22 @@ const SUIGrid = (props: TableGridProps) => {
 		gridTooltipRef.current.style.display = display ? "block" : "none";
 		}
 	};
+
+	useEffect(()=> {
+		if (scrollToNewRowId) {
+			setTimeout(()=> {
+				const dataArr: any = gridRef.current?.api?.clientSideRowModel?.rowsToDisplay || [];
+				const rowNode: any = dataArr.find((rec: any)=> rec?.data?.id === scrollToNewRowId);
+				if ((window?.parent as any)?.GBL?.config?.currentUserID === (rowNode?.data?.createdBy?.ID || rowNode?.data?.createdBy?.uniqueId)) {
+					//Scroll to the record only when it's a same user.
+					gridRef.current?.api?.ensureIndexVisible(rowNode?.rowIndex, 'bottom');
+				};
+				setTimeout(()=> {
+					gridRef.current?.api?.flashCells({rowNodes: [rowNode]})
+				}, 100)
+			}, 500)
+		}
+	}, [scrollToNewRowId])
 
 	return (
 		<div style={gridStyle} className="ag-theme-alpine sui-grid grid-copy">

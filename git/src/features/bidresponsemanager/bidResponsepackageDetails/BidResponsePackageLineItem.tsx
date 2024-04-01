@@ -28,6 +28,7 @@ import BidResponse from './tabs/bidResponse/BidResponse';
 import BidQueries from './tabs/bidqueries/BidQueries';
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
 import { sapLinksObj } from 'utilities/sapLink';
+import { connectorImages } from 'utilities/commonutills';
 
 var tinycolor = require('tinycolor2');
 
@@ -314,7 +315,7 @@ const BidResponsePackageLineItem = (props: any) => {
 						</span>
 						{connectors?.length && selectedRecord?.connectorItemData ? <img
 										className="sapnumber"
-										src={connectors?.[0]?.primaryIconUrl}
+										src={connectorImages?.[selectedRecord?.connectorItemData?.type]}
 										alt="connector Image"
 									/> : ''}
 						{connectors?.length && selectedRecord?.connectorItemData ? <span className='sapnumber hot-link' onClick={()=>{selectedRecord?.connectorItemData?.url && window.open(selectedRecord?.connectorItemData?.url)}}>{selectedRecord?.connectorItemData?.name}</span> : ''}

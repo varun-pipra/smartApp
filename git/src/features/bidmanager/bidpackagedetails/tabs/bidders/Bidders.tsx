@@ -12,12 +12,12 @@ import {
 } from 'features/bidmanager/stores/BidManagerSlice';
 import { patchBidPackage } from 'features/bidmanager/stores/gridAPI';
 import { fetchGridData } from 'features/bidmanager/stores/gridSlice';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import infoicon from 'resources/images/common/infoicon.svg';
 import SUIAlert from 'sui-components/Alert/Alert';
 import SUIBaseDropdownSelector from 'sui-components/BaseDropdown/BaseDropdown';
 import SUILineItem from 'sui-components/LineItem/LineItem';
-import { getBidProcessType, getBidType } from 'utilities/bid/enums';
+import { getBidProcessType, getBidType, getCompanyFilterOptions } from 'utilities/bid/enums';
 import { formatPhoneNumber } from 'utilities/commonFunctions';
 
 import {
@@ -30,7 +30,7 @@ interface BiddersProps {
 	readOnly?: boolean;
 };
 
-const noDataFoundMsg_company = (
+export const noDataFoundMsg_company = (
 	<div>
 		<span className="common-icon-building icon"></span>
 		<h4>No Company Exist</h4>
@@ -47,75 +47,32 @@ const noDataFoundMsg_Contact = (
 		<div>this contact to the list</div>
 	</div>
 );
-
+export const RemoveCompanyOptionDuplicates = (array:any) => {
+	return Array.from(new Set(array.map((a:any) => a.uniqueId)))
+	.map((uniqueId:any) => {
+	  return array.find((a:any) => a.uniqueId === uniqueId)
+	})
+};
+export const GetScopeFilter = (params:any) => {
+	if(!!params) {
+		let scope:any;
+		let values = ['This Project', 'Organizational'];
+		if(values?.every((x:any) => params?.includes(x))) {
+			scope = 0; // All
+		} else if(params?.includes('This Project')) {
+			scope = 1; // This Project
+		} else if(params?.includes('Organizational')) {
+			scope = 2; // Organization
+		};
+		return scope;
+	};
+};
 const Bidders = (props: BiddersProps) => {
 	const emptyBiddersRow = [{
 		company: { id: '', value: '', color: '' }, contactPerson: { id: '', displayId: '' }, email: '', phoneNo: ''
 	}];
 	const { BiddersGridData } = useAppSelector((state) => state.bidders);
 	const { companyList, contactPersonsList, BudgetLineItems, selectedRecord, companyFiltersList } = useAppSelector((state:any) => state.bidManager);
-	let filterOptions = useMemo(() => {
-		var filterMenu = [{
-			text: 'Scope',
-			key: 'scope',
-			value: 'scope',
-			icon: <span className='common-icon-scope' />,
-			children: {
-				type: 'checkbox',
-				items: [{
-					id : 1,
-					text: 'This Project',
-					key: 'scope',
-					value: 'This Project'
-				}, {
-					id : 2,
-					text: 'Organizational',
-					value: 'Organizational',
-					key: 'scope',
-				},]
-			}
-		},
-		{
-			text: 'Diverse Supplier',
-			key: 'diverseCategories',
-			value: 'diverseCategories',
-			icon: <span className='common-icon-diverse-supplier' />,
-			children: {
-				type: 'checkbox',
-				items: [...companyFiltersList]
-			}
-		},
-		{
-			text: 'Compliance Status',
-			key: 'complianceStatus',
-			value: 'complianceStatus',
-			icon: <span className='common-icon-compliance-Status' />,
-			children: {
-				type: 'checkbox',
-				items: [{
-					text: 'Compliant',
-					key: 'complianceStatus',
-					value: 'Compliant'
-				}, {
-					text: 'Not Verified',
-					value: 'Not Verified',
-					key: 'complianceStatus',
-				},
-				{
-					text: 'Non Compliant',
-					value: 'N/A',
-					key: 'complianceStatus',
-				},
-				{
-					text: 'Expired',
-					value: 'Expired',
-					key: 'complianceStatus',
-				}
-				]
-			}
-		}];
-		return filterMenu;
-	}, []);
 	const CompanyData = useAppSelector(getCompanyData)
 	const appInfo = useAppSelector(getServer);
 	// const { BudgetLineItems, selectedRecord } = useAppSelector((state) => state.bidManager);
@@ -149,17 +106,16 @@ const Bidders = (props: BiddersProps) => {
 	/*Below state's are used for server side pagination for the company Dropdown. */
 	
 	const [pageSize, setPageSize] = React.useState(50);
-  	const [companyFilters, setCompanyFilters] = React.useState({});
-	const [companySearch, setCompanySearch] = React.useState("");
-	const pageRef = useRef(1);
+  	const pageRef = useRef(1);
 	const companySearchRef =  useRef("");
 	const companyFiltersRef = useRef({});
 	const groupedCompanyRef = useRef<any>();
 	const existedCompanyRef = useRef<any>();
 	const suggestedCompanyRef = useRef<any>();
 	const oldPayload = useRef<any>();
-	const filterMenuOptionsRef = useRef<any>(filterOptions);
+	const filterMenuOptionsRef = useRef<any>(getCompanyFilterOptions);
 	const isMakeApi = useRef(true);
+	const selectedBidderRef = useRef<any>(emptyBiddersRow?.[0]);
 	const defaultPayloadRef = useRef({
 		"projectId": appInfo?.uniqueId,
 		"sortBy":"name",
@@ -174,25 +130,35 @@ const Bidders = (props: BiddersProps) => {
 	});
 	useEffect(() => {
 		if(appInfo && companyFiltersList) {
-			filterMenuOptionsRef.current = filterOptions;
+			filterMenuOptionsRef.current = getCompanyFilterOptions.map((item:any) => {
+				if(item.value === 'diverseCategories') {
+					item.children.items = companyFiltersList;
+				};
+				return item;
+			});
 		}
-	},[]);
+	},[companyFiltersList]);
 
 	useEffect(() => {
-		console.log('newCompany', newCompany)
-		setNewlyAddedCompany(newCompany);
-		const company = { company: { id: newCompany?.id, value: newCompany?.name, color: newCompany?.colorCode } };
-		setSelectedBidder({ ...selectedBidder, ...company });
+		if(!_.isEqual(selectedBidder, emptyBiddersRow?.[0]) && !_.isEqual(selectedBidderRef.current, selectedBidder)) {
+			selectedBidderRef.current = selectedBidder;
+		};
+	},[selectedBidder])
+	useEffect(() => {
+		if(!!newCompany) {
+			console.log('newCompany', newCompany)
+			setNewlyAddedCompany(newCompany);
+			const company = { company: { id: newCompany?.id, value: newCompany?.name, color: newCompany?.colorCode } };
+			setSelectedBidder({ ...selectedBidder, ...company });
+		};
 	}, [newCompany]);
 
 	useEffect(() => {
-		ContactPersonFetch(selectedCompany)
-		setSelectedBidder({ ...selectedBidder, ...newBidder });
+		if(!_.isEmpty(newBidder)) {
+			ContactPersonFetch(selectedCompany)
+			setSelectedBidder({ ...selectedBidder, ...newBidder });
+		};
 	}, [newBidder]);
-
-	useEffect(() => {
-		console.log('selectedBidder', selectedBidder)
-	}, [selectedBidder]);
 
 	useEffect(() => {
 		setToggleBtnsData(selectedRecord);
@@ -210,10 +176,12 @@ const Bidders = (props: BiddersProps) => {
 		if (props.readOnly) {
 			setRowData([...BiddersGridData]);
 		} else {
+			console.log("toggleBtnsData?.type == 0 && BiddersGridData?.length", toggleBtnsData?.type, BiddersGridData?.length)
 			if (toggleBtnsData?.type == 0 && BiddersGridData?.length > 0) {
 				setRowData([...BiddersGridData]);
 				setShowAddRow(false);
 			} else {
+				console.log("elseeeeeee12")
 				const companyIds = BiddersGridData?.map((row: any) => { return row?.company?.objectId });
 				existedCompanyRef.current = companyIds;
 				setExistedCompanies(companyIds);
@@ -222,21 +190,7 @@ const Bidders = (props: BiddersProps) => {
 			}
 		}
 	}, [BiddersGridData, props.readOnly, toggleBtnsData]);
-	const GetScopeFilter = (params:any) => {
-		if(!!params) {
-			let scope:any;
-			let values = ['This Project', 'Organizational'];
-			if(values?.every((x:any) => params?.includes(x))) {
-				scope = 0; // All
-			} else if(params?.includes('This Project')) {
-				scope = 1; // This Project
-			} else if(params?.includes('Organizational')) {
-				scope = 2; // Organization
-			};
-			return scope;
-		};
-	};
-	const ApiCall = (info:any, payload:any, scroll?:boolean) => {
+	const ComapanyDropdownApiCall = (info:any, payload:any, scroll?:boolean) => {
 		let params = _.cloneDeep(payload);
 			if(Object.keys(params?.filters)?.length) {
 				Object.keys(params?.filters).map((item:any, index:any) => {
@@ -265,21 +219,17 @@ const Bidders = (props: BiddersProps) => {
 	};
 	useEffect(() => {
 		if (companyData?.length) {
-			ApiCall(appInfo, defaultPayloadRef.current);
+			ComapanyDropdownApiCall(appInfo, defaultPayloadRef.current);
 		}
-	}, [companyData, companySearch]);
-	const RemoveDuplicates = (array:any) => {
-		return Array.from(new Set(array.map((a:any) => a.uniqueId)))
-		.map((uniqueId:any) => {
-		  return array.find((a:any) => a.uniqueId === uniqueId)
-		})
-	};
+	}, [companyData]);
 	const getCompanyOptions = (array:any) => {
 		let groupedList: any = [];
 		([...array] || [])?.map((data: any) => {
 			groupedList.push({
 				...data,
 				color: data.colorCode,
+				// objectId: data.id,
+				// id: data.uniqueId,
 				id: data.id ?? data?.objectId,
 				displayField: data.name,
 				thumbnailUrl: data.thumbnailUrl,
@@ -290,8 +240,8 @@ const Bidders = (props: BiddersProps) => {
 		if (groupedList.length > 0) {
 			let filterOrgCompanies: any = [...groupedList].filter((item: any) => item.isSuggested);
 			let filterThisProjectCompanies: any = [...groupedList]?.filter((item: any) => { return !item.isSuggested });
-			let mergeSuggestCompany = suggestedCompanyRef.current?.length > 0 ? RemoveDuplicates([...suggestedCompanyRef.current, ...filterOrgCompanies]) : filterOrgCompanies;
-			let mergeGroupedCompany = groupedCompanyRef.current?.length > 0 ? RemoveDuplicates([...groupedCompanyRef.current,...filterThisProjectCompanies]) : filterThisProjectCompanies; 
+			let mergeSuggestCompany = suggestedCompanyRef.current?.length > 0 ? RemoveCompanyOptionDuplicates([...suggestedCompanyRef.current, ...filterOrgCompanies]) : filterOrgCompanies;
+			let mergeGroupedCompany = groupedCompanyRef.current?.length > 0 ? RemoveCompanyOptionDuplicates([...groupedCompanyRef.current,...filterThisProjectCompanies]) : filterThisProjectCompanies; 
 			groupedCompanyRef.current = mergeGroupedCompany;
 			suggestedCompanyRef.current = mergeSuggestCompany;
 			setCompanyOptions(filterThisProjectCompanies);
@@ -304,6 +254,10 @@ const Bidders = (props: BiddersProps) => {
 			groupedCompanyRef.current = [];
 			suggestedCompanyRef.current = [];
 		};
+		if(!_.isEqual(selectedBidderRef.current, selectedBidder)) {
+			setSelectedBidder(selectedBidderRef.current);
+			companyHandleValueChange([selectedBidderRef?.current?.company]);
+		}; 
 		gridRef?.current?.setColumnDefs(headers);
 	};
 
@@ -332,6 +286,11 @@ const Bidders = (props: BiddersProps) => {
 			setContactPersonOptions(removeDuplicates);
 		};
 	}, [contactPersonsList]);
+
+	useEffect(() => {
+		console.log("selectedRecord", selectedRecord);
+		if(selectedRecord?.type == 0 && selectedRecord?.bidders?.length == 1) setShowAddRow(false);
+	}, [selectedRecord, toggleBtnsData]);
 	
 	const searchAndFilter = (list: any, selectedFilters?:any, searchVal?:any) => {
 		return (list || []).filter((item: any) => {
@@ -377,28 +336,19 @@ const Bidders = (props: BiddersProps) => {
 	};
 	const debounce = useCallback(_.debounce((val, key) => {
 		if(key === 'search'){
-			companySearchRef.current = val;
 			defaultPayloadRef.current = {...defaultPayloadRef.current, ['searchText'] : val};
-			setCompanySearch(val);
+			ComapanyDropdownApiCall(appInfo, defaultPayloadRef.current);
 			ResetValues();
 		};
 	}, 1000), []);
 	const handleCompanyFilterChange = (filterValues:any) => {
-		if(!_.isEqual(companyFiltersRef.current, filterValues)) {
-			companyFiltersRef.current = filterValues;
-			defaultPayloadRef.current = {...defaultPayloadRef.current, ['filters'] : filterValues};
-			setCompanyFilters(filterValues);
-			ApiCall(appInfo, defaultPayloadRef.current);
-			ResetValues();
-		} else if(_.isEqual(companyFiltersRef.current, filterValues)) {
-			companyFiltersRef.current = filterValues;
-			defaultPayloadRef.current = {...defaultPayloadRef.current, ['filters'] : filterValues};
-			setCompanyFilters(filterValues);
-			ApiCall(appInfo, defaultPayloadRef.current);
-			ResetValues();
-		};
+		companyFiltersRef.current = filterValues;
+		defaultPayloadRef.current = {...defaultPayloadRef.current, ['filters'] : filterValues};
+		ComapanyDropdownApiCall(appInfo, defaultPayloadRef.current);
+		ResetValues();
 	};
 	const handleCompanySearchChange = (searchVal?:any) => {
+		companySearchRef.current = searchVal;
 		debounce(searchVal, 'search');
 	};
 	const handleScrollEvent = useCallback((e:any) => {
@@ -420,7 +370,7 @@ const Bidders = (props: BiddersProps) => {
 				"filters": params,
 			};
 			isMakeApi.current = false;
-			ApiCall(appInfo, payload, true);
+			ComapanyDropdownApiCall(appInfo, payload, true);
 		}
 	}, [oldPayload, companyFiltersRef, companySearchRef]);
 	const headers = useMemo(() => [
@@ -435,27 +385,30 @@ const Bidders = (props: BiddersProps) => {
 				alignItems: 'center',
 			},
 			cellRenderer: (params: any) => {
+				console.log("props.readOnlyprops.readOnly", props.readOnly, showAddRow,params.node?.level,params.node.rowIndex);
 				return !props.readOnly && showAddRow && params.node?.level == 0 && params.node.rowIndex === 0 ? (
 					<SUIPagingDropdown
 						value={[selectedBidder?.company]}
 						width="100%"
 						menuWidth="450px"
-						placeHolder={'Select'}
-						dropdownOptions={groupedCompanyRef.current || []}
+						placeHolder={''}
+						dropdownOptions={groupedCompanyRef?.current || []}
 						noDataFoundMsg={noDataFoundMsg_company}
 						handleValueChange={companyHandleValueChange}
 						disableOptionsList={existedCompanyRef.current}
 						showFilterInSearch={true}
-						filterOptions={filterOptions ?? filterMenuOptionsRef?.current}
+						filterOptions={filterMenuOptionsRef?.current}
 						onFilterChange={(values:any) => handleCompanyFilterChange(values)}
 						onSearchChange={(values:any) => handleCompanySearchChange(values)}
 						paperpropsclassName={'companyMenu-dropdown-cls'}
-						suggestedDropdownOptions={suggestedCompanyRef.current || []}
+						suggestedDropdownOptions={suggestedCompanyRef?.current || []}
 						suggestedText={'Organizational (Org Console)'}
 						suggestedDefaultText={'This Project'}
 						handleAdd={(options: any, searchVal: any) => onCompnayAddButtonClick(options, searchVal)}
 						handleScrollEvent= {(e:any) => handleScrollEvent(e)}
 						totalCount = {oldPayload?.current?.totalCount}
+						retainSearch={defaultPayloadRef?.current?.searchText}
+						retainFilters={companyFiltersRef?.current}
 					/>
 				) : (
 					<>
@@ -537,11 +490,12 @@ const Bidders = (props: BiddersProps) => {
 				);
 			},
 		}
-	], [groupedCompanyRef, contactPersonOptions])
+	], [selectedBidder, groupedCompanyRef, contactPersonOptions, props?.readOnly, showAddRow]);
 	const [columnDefs, setColumnDefs] = useState(headers);
 
 	useEffect(() => {
 		setColumnDefs(headers)
+		console.log("bidders12", selectedBidder)
 		if (selectedBidder?.company?.value != '' && selectedBidder?.contactPerson?.displayId != '') setEnableAddbtn(true)
 	}, [selectedBidder, toggleBtnsData, showAddRow]);
 
@@ -560,7 +514,7 @@ const Bidders = (props: BiddersProps) => {
 				projectZonePermissions: data?.contactPerson?.projectZonePermissions,
 			}
 		}
-
+		selectedBidderRef.current = emptyBiddersRow[0];
 		setSelectedBidder(emptyBiddersRow[0]);
 		setEnableAddbtn(false);
 		CreateBidders(appInfo, selectedRecord?.id, payload).then((data: any) => {
@@ -616,13 +570,15 @@ const Bidders = (props: BiddersProps) => {
 
 	const TogglehandleChange = (e: any, value: string, key: string) => {
 		if (value == "0" && key == 'type' && rowData?.length > 2) setOpenAlert(true);
-		else setToggleBtnsData({ ...toggleBtnsData, [key]: Number(value) });
-
-		patchBidPackage(appInfo, selectedRecord?.id, { [key]: Number(value) })
-			.then((response: any) => {
-				dispatch(fetchGridData(appInfo));
-				dispatch(setSelectedRecord(response));
+		else { 
+			console.log("toggle change")
+			setToggleBtnsData({ ...toggleBtnsData, [key]: Number(value) });
+			patchBidPackage(appInfo, selectedRecord?.id, { [key]: Number(value) })
+				.then((response: any) => {
+					dispatch(fetchGridData(appInfo));
+					dispatch(setSelectedRecord(response));
 			});
+		};
 	};
 
 	return (
@@ -712,6 +668,7 @@ const Bidders = (props: BiddersProps) => {
 						minWidth: 30,
 						maxWidth: 80,
 					}}
+					moduleName={'bidManager'}
 					showAddRow={showAddRow}
 					rowMessageIcon={'common-icon-biddersgray'}
 					//nowRowsMsg={'<div>No Bidders Added</div>'}
