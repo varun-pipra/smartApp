@@ -1,0 +1,23 @@
+.budgetRoom-addForm-cls{
+  .create-form{
+    padding:10px 24px;
+    .form_textfield{
+      margin-bottom: 25px;
+      .inputlabel{
+        display: flex;
+        margin-bottom: 5px;
+        align-items: center;
+      }
+    }
+    .iconSize{
+      font-size: 22px;
+    }
+    .common-icon-contract-amount:before {
+      font-size: 18px;
+      color: #ed7431;
+    }
+    .common-icon-iql-copy:before{
+      color: #ed7431;
+    }
+  }
+}

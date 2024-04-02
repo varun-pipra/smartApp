@@ -61,35 +61,35 @@ const treeData = [
 //   const { nodeId, labelIcon: LabelIcon, labelText, ...other } = props;
 //   console.log("ddsufuidsf", props);
 //   const handleChange= (e:any, id:any) => {};
-//   return (
-//     <TreeItem 
-//       // sx={{background : ['1', '2','6','7'].includes(nodeId) ? '#fff9cc' : '#fff'}}
-//       nodeId={nodeId}
-//       label={
-//         <Box
-//           sx={{
-//             display: "flex",
-//             alignItems: "center",
-//             p: 0.5,
-//             pr: 0,
-//           }}
-//         >
-//           <Checkbox size="small" checked={['1', '2','6','7'].includes(nodeId)} onChange={(e:any) => handleChange(e, nodeId)}/>
-//           <Box 
-//           component={LabelIcon}
+//   // return (
+//   //   <TreeItem 
+//   //     // sx={{background : ['1', '2','6','7'].includes(nodeId) ? '#fff9cc' : '#fff'}}
+//   //     nodeId={nodeId}
+//   //     label={
+//   //       <Box
+//   //         sx={{
+//   //           display: "flex",
+//   //           alignItems: "center",
+//   //           p: 0.5,
+//   //           pr: 0,
+//   //         }}
+//   //       >
+//   //         <Checkbox size="small" checked={['1', '2','6','7'].includes(nodeId)} onChange={(e:any) => handleChange(e, nodeId)}/>
+//   //         <Box 
+//   //         component={LabelIcon}
            
-//            color="inherit" sx={{ mr: 1 }} />
-//           <Typography
-//             variant="body2"
-//             sx={{ fontWeight: "inherit", flexGrow: 1 }}
-//           >
-//             {labelText}
-//           </Typography>
-//         </Box>
-//       }
-//       {...other}
-//     />
-//   );
+//   //          color="inherit" sx={{ mr: 1 }} />
+//   //         <Typography
+//   //           variant="body2"
+//   //           sx={{ fontWeight: "inherit", flexGrow: 1 }}
+//   //         >
+//   //           {labelText}
+//   //         </Typography>
+//   //       </Box>
+//   //     }
+//   //     {...other}
+//   //   />
+//   // );
 // };
 
 const MultiSelectTreeView = () => {

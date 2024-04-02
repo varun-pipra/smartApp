@@ -276,17 +276,17 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
             startAdornment={
               <InputAdornment position="start">{startIcon}</InputAdornment>
             }
-            // endAdornment={
-            // 	<>
-            // 		{showFilter && <SUIFilterInfiniteMenu
-            // 			menusData={filteroptions ? filteroptions : []}
-            // 			onSelectionChange={onFilterChange}
-            // 			identifier={'hierarchy'}
-            // 			selectedFilterVals={selectedFilters}
+            endAdornment={
+            	<>
+            		{/* {showFilter && <SUIFilterInfiniteMenu
+            			menusData={filteroptions ? filteroptions : []}
+            			onSelectionChange={onFilterChange}
+            			identifier={'hierarchy'}
+            			selectedFilterVals={selectedFilters}
 
-            // 		></SUIFilterInfiniteMenu>}
-            // 	</>
-            // }
+            		></SUIFilterInfiniteMenu>} */}
+            	</>
+            }
             sx={{
               ...sx,
               '& .MuiSelect-select': {

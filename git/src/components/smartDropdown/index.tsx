@@ -816,41 +816,41 @@ const SmartDropDown = (props: ISmartDropDown): JSX.Element => {
 	// 		if (handleChange) handleChange([], nodes);
 	//   }
     // };
-    // return (
-    //   <TreeItem
-    //     nodeId={nodeId}
-    //     label={
-    //       <Box
-    //         sx={{
-    //           display: "flex",
-    //           alignItems: "center",
-    //           p: 0.5,
-    //           pr: 0,
-    //         }}
-    //       >
-    //         {isTreeMultiSelect && (
-    //           <Checkbox
-    //             size="small"
-    //             checked={selectedNodes.indexOf(nodeId) !== -1}
-    //             tabIndex={-1}
-    //             disableRipple
-    //             onClick={(event) => isTreeMultiSelect ? handleMultipleTreeView(event, nodeId) : null}
-    //           />
-    //         )}
-    //         {showCustomTreeIcon && (
-	// 			<InputAdornment position="start">{LabelIcon}</InputAdornment>
-    //         )}
-    //         <Typography
-    //           variant="body2"
-    //           sx={{ fontWeight: "inherit", flexGrow: 1 }}
-    //         >
-    //           {labelText}
-    //         </Typography>
-    //       </Box>
-    //     }
-    //     {...other}
-    //   	/>
-    // 	   );
+    // // return (
+    // //   <TreeItem
+    // //     nodeId={nodeId}
+    // //     label={
+    // //       <Box
+    // //         sx={{
+    // //           display: "flex",
+    // //           alignItems: "center",
+    // //           p: 0.5,
+    // //           pr: 0,
+    // //         }}
+    // //       >
+    // //         {isTreeMultiSelect && (
+    // //           <Checkbox
+    // //             size="small"
+    // //             checked={selectedNodes.indexOf(nodeId) !== -1}
+    // //             tabIndex={-1}
+    // //             disableRipple
+    // //             onClick={(event) => isTreeMultiSelect ? handleMultipleTreeView(event, nodeId) : null}
+    // //           />
+    // //         )}
+    // //         {showCustomTreeIcon && (
+	// // 			<InputAdornment position="start">{LabelIcon}</InputAdornment>
+    // //         )}
+    // //         <Typography
+    // //           variant="body2"
+    // //           sx={{ fontWeight: "inherit", flexGrow: 1 }}
+    // //         >
+    // //           {labelText}
+    // //         </Typography>
+    // //       </Box>
+    // //     }
+    // //     {...other}
+    // //   	/>
+    // // 	   );
   	//   };  
 	  const renderTree = (treeItems: any) => {
 		return (treeItems || []).map((treeItemData: any) => {

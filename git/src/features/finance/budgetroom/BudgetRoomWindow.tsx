@@ -9,7 +9,8 @@ import GridWindow from 'components/iqgridwindow/IQGridWindow';
 import LeftSideToolBarButtons from "./content/toolbar/LeftSideToolBarButtons";
 import RightSideToolBarButtons from "./content/toolbar/RightSideToolBarButtons";
 import _ from "lodash";
-
+import { budgetRoomStatusEnums } from "./utils";
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
 
 interface BudgetRoomWindowProps {
     fullScreen?: boolean
@@ -38,7 +39,77 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
     let gridRef = useRef<AgGridReact>();
 	const queryParams: any = new URLSearchParams(location.search);    
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
-    
+    const columns = [
+        {
+        headerName: 'Name',
+        field: 'name',
+        },
+        {
+            headerName: 'Status',
+            field: 'status',
+            cellRenderer: (params: any) => {
+				const stateObject: any = budgetRoomStatusEnums[params?.value];
+				return <div
+					
+					style={{
+						color: stateObject?.color,
+                        backgroundColor: stateObject?.bgColor,
+                        height: "1.75em",
+                        width: "fit-content",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        textOverflow: "ellipsis",
+                        borderRadius:"0.25em",
+                        padding: "0.5em 0.75em 0.5em 0.5em",
+                        display: "flex",
+                        alignItems: "center",
+                    }}
+				>
+					<span className={`status-icon ${stateObject?.icon}`}></span> {stateObject?.text}{' '}
+				</div>
+			}
+        },
+        {
+            headerName: 'Description',
+            field: 'description',
+        },
+        {
+            headerName: 'Created By',
+            field: 'createdBy',
+            valueGetter:(params:any) => `${params?.data?.createdBy?.name}, ${formatDate(params?.data?.createdBy?.date)}`
+        },
+        {
+            headerName: 'Modified By',
+            field: 'modifiedBy',
+            valueGetter:(params:any) => `${params?.data?.modifiedBy?.name}, ${formatDate(params?.data?.modifiedBy?.date)}`
+            
+        },
+    ]
+    const data = [{
+        id: 1,
+        name:'Budget1',
+        status: 'Active',
+        description: 'Budget 1 description',
+        createdBy: {name: 'Justin, Robinson', date: new Date()},
+        modifiedBy: {name: 'Justin, Robinson', date: new Date()},
+        },
+        {
+            id: 2,
+            name:'Budget2',
+            status: 'Draft',
+            description: 'Budget 2 description',
+            createdBy: {name: 'Justin, Parker', date: new Date()},
+            modifiedBy: {name: 'Justin, Kelly', date: new Date()},
+            },
+            {
+                id: 3,
+                name:'Budget For Tools and Materials',
+                status: 'Deactivated',
+                description: 'Budget',
+                createdBy: {name: 'Anne, Peterson', date: new Date()},
+                modifiedBy: {name: 'Anne, Peterson', date: new Date()},
+            },
+    ]
     useEffect(() => {
 		if (localhost) {
 			dispatch(setServer(_.omit(appData, ['DivisionCost'])));
@@ -191,13 +262,13 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 					},
 					grid: {
 						// headers: columns,
-						headers: [],
-						data: [],
+						headers: columns,
+						data: [...data],
 						getRowId: (params: any) => params.data?.id,
 						grouped: true,
 						groupIncludeTotalFooter: false,
 						rowSelection: 'single',
-						groupIncludeFooter: false,
+                        groupIncludeFooter: false,
 						// rowSelected: (e: any) => rowSelected(e),
 						groupDisplayType: 'groupRows',
 						nowRowsMsg: '<div>Create New Change Event Request by Clicking the + Add button above</div>',

@@ -78,7 +78,7 @@ import SmartSubmittalsWindow from 'features/field/smartsubmittals/SmartSubmittal
 import SmartSubmittalTabbedWindow from 'features/field/smartsubmittals/SmartSubmittalTabbedWindow';
 import PhasesColorPickerExample from 'examples/PhasesColorPicker/PhasesColorPickerExample';
 import PhasesGridListExample from 'examples/phasesGrid/PhasesGridExample';
-// import MultiSelectTreeView from 'examples/SelectTreeComponent/Treeview';
+import MultiSelectTreeView from 'examples/SelectTreeComponent/Treeview';
 import TimeLogWindow from 'features/common/timelog/TimeLogWindow';
 import BudgetRoomWindow from 'features/finance/budgetroom/BudgetRoomWindow';
 
@@ -233,7 +233,7 @@ const AppRoutes = () => {
 				<Route path='tabbedWindow' element={<TabbedWindowExample />} />
 				<Route path='phases-color-picker' element={<PhasesColorPickerExample />} />
 				<Route path='phases-grid-list' element={<PhasesGridListExample />} />
-				{/* <Route path='tree-view' element={<MultiSelectTreeView />} /> */}
+				<Route path='tree-view' element={<MultiSelectTreeView />} />
 			</Route>
 			{/* <Route path='budget-room' element={<BudgetRoomWindow />} /> */}
 			<Route path='ViewBuilderExample' element={<ViewBuilderExample />} />
