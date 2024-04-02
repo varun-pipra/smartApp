@@ -81,7 +81,7 @@ import PhasesGridListExample from 'examples/phasesGrid/PhasesGridExample';
 import MultiSelectTreeView from 'examples/SelectTreeComponent/Treeview';
 import TimeLogWindow from 'features/common/timelog/TimeLogWindow';
 import BudgetRoomWindow from 'features/finance/budgetroom/BudgetRoomWindow';
-
+import EstimateRoomWindow from 'features/finance/estimateroom/EstimateRoomWindow';
 const AppRoutes = () => {
 	return <>
 		<Routes>
@@ -119,6 +119,10 @@ const AppRoutes = () => {
 			<Route path='budget-room' element={<BudgetRoomWindow />} >
 				<Route path='fullView' element={<BudgetRoomWindow />} />
 				<Route path='home' element={<BudgetRoomWindow fullScreen={true} />} />
+			</Route>
+			<Route path='estimate-room' element={<EstimateRoomWindow />} >
+				<Route path='fullView' element={<EstimateRoomWindow />} />
+				<Route path='home' element={<EstimateRoomWindow fullScreen={true} />} />
 			</Route>
 			<Route path='field'>
 				<Route path='specManager' element={<SpecificationManagerWindow />} />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IconButton, InputAdornment, InputLabel, TextField } from "@mui/material";
-import './CreateNewForm.scss';
+import './CreateEstimateNewForm.scss';
 import IQButton from "components/iqbutton/IQButton";
 import IQTooltip from "components/iqtooltip/IQTooltip";
 import SmartDialog from "components/smartdialog/SmartDialog";
@@ -17,7 +17,7 @@ const checkAllValuesNotEmpty = (myObject:any) => {
 	 const result  = Object.values(myObject).every(value => value !== '');
 	 return !result
 };
-const PaymentReceivedForm = (props: any) => {
+const CreateEstimateNewForm = (props: any) => {
 	const [formData, setFormData] = React.useState<any>(defaultValue);
 	const [enableAdd, setEnableAdd] = React.useState<boolean>(true);
 
@@ -128,4 +128,4 @@ const PaymentReceivedForm = (props: any) => {
 		</SmartDialog >
 	);
 };
-export default PaymentReceivedForm;
+export default CreateEstimateNewForm;
