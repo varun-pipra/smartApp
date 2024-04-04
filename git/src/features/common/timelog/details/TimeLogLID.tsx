@@ -64,6 +64,16 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 				 dispatch(setSmartItemOptionSelected({}));
 			});
 	}
+	const onClickResubmit = () =>{
+		const payload = {...DetailspayloadSave , status : 0 }
+		updateTimeLogDetails(selectedTimeLogDetails?.id, payload, 
+			(response: any) => {
+			 dispatch(setSelectedTimeLogDetails(response));
+			 afterItemAction(response);
+			 dispatch(setDetailsPayloadSave({}));
+			 dispatch(setSmartItemOptionSelected({}));
+		});
+	}
 	const afterItemAction = (response: any) => {
 		gridcolumnUncheck();
 		dispatch(getTimeLogDetails(selectedTimeLogDetails?.id))
@@ -161,7 +171,7 @@ const TimeLogLID = memo(({ data, ...props }: any) => {
 						Split
 					</IQButton>
 			}
-			{(getTimeLogStatus(selectedTimeLogDetails?.status) == 'Sent Back') && <IQButton className='resubmit-buttons' disabled={saveButtonEnable} onClick={() => {  onClickSave() }}>
+			{(getTimeLogStatus(selectedTimeLogDetails?.status) == 'Sent Back') && <IQButton className='resubmit-buttons' disabled={saveButtonEnable} onClick={() => {  onClickResubmit() }}>
 					Resubmit
 			</IQButton>}
 			{['Reported']?.includes(getTimeLogStatus(selectedTimeLogDetails?.status)) && <IQButton className='save-buttons' disabled={saveButtonEnable} onClick={() => { onClickSave() }}>

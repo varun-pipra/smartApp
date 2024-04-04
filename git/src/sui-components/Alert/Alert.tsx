@@ -17,9 +17,10 @@ export interface SuiAlertProps extends DialogProps {
 	showActions?: boolean;
 	DailogClose?: boolean;
 	modelWidth?: any;
+	negativeAction?:string;
 }
 
-const SUIAlert = ({className, ...props}: SuiAlertProps) => {
+const SUIAlert = ({className, negativeAction = 'Cancel', ...props}: SuiAlertProps) => {
 	const [openDlg, setOpenDlg] = useState(props.open);
 	const [showActions, setShowActions] = useState(props?.showActions != undefined ? props?.showActions : true);
 
@@ -65,7 +66,7 @@ const SUIAlert = ({className, ...props}: SuiAlertProps) => {
 			{showActions &&
 				<DialogActions>
 
-					<Button className="cancel-cls" onClick={(e) => handleAction(e, 'cancel')}>Cancel</Button>
+					<Button className="cancel-cls" onClick={(e) => handleAction(e, 'cancel')}>{negativeAction}</Button>
 					<Button className="yes-cls" variant="contained" autoFocus onClick={(e) => handleAction(e, 'yes')}>
 						Yes
 					</Button>

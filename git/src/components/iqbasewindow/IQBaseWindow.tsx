@@ -60,6 +60,7 @@ const IQBaseWindow = ({ open, appType, appInfo, actions, className, maxByDefault
 
 	useEffect(() => {
 		if (appInfo) {
+			console.log('appInfo',appInfo)
 			if (presenceRef.current) return;
 			presenceRef.current = true;
 			renderPresence(presenceProps, appInfo, iFrameId || '', appType || '', isFromHelpIcon, tabName);

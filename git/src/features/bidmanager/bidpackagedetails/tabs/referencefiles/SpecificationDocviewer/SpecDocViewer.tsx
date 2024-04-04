@@ -28,11 +28,13 @@ const SpecDocViewer = (props: any) => {
     [search]
   );
 
-  const onSpecMaximize = ()=>{
+  const onSpecMaximize = (evnt:any)=>{
     console.log('onSpecMaximize',sketchInstance);
-    setTimeout(()=>{
-      sketchInstance.resizeCanvas();
-    },500)
+    if(evnt){
+      setTimeout(()=>{
+        sketchInstance.resizeCanvas();
+      },500)
+    }    
   }
 
   return (

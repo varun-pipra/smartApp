@@ -82,6 +82,7 @@ import MultiSelectTreeView from 'examples/SelectTreeComponent/Treeview';
 import TimeLogWindow from 'features/common/timelog/TimeLogWindow';
 import BudgetRoomWindow from 'features/finance/budgetroom/BudgetRoomWindow';
 import EstimateRoomWindow from 'features/finance/estimateroom/EstimateRoomWindow';
+import EstimateBudgetManagerWindow from 'features/finance/estimatemanager/EstimateManagerWindow';
 const AppRoutes = () => {
 	return <>
 		<Routes>
@@ -123,6 +124,10 @@ const AppRoutes = () => {
 			<Route path='estimate-room' element={<EstimateRoomWindow />} >
 				<Route path='fullView' element={<EstimateRoomWindow />} />
 				<Route path='home' element={<EstimateRoomWindow fullScreen={true} />} />
+			</Route>
+			<Route path='estimate-budget-manager' element={<EstimateBudgetManagerWindow />} >
+				<Route path='fullView' element={<EstimateBudgetManagerWindow />} />
+				<Route path='home' element={<EstimateBudgetManagerWindow fullScreen={true} />} />
 			</Route>
 			<Route path='field'>
 				<Route path='specManager' element={<SpecificationManagerWindow />} />
@@ -237,7 +242,7 @@ const AppRoutes = () => {
 				<Route path='tabbedWindow' element={<TabbedWindowExample />} />
 				<Route path='phases-color-picker' element={<PhasesColorPickerExample />} />
 				<Route path='phases-grid-list' element={<PhasesGridListExample />} />
-				<Route path='tree-view' element={<MultiSelectTreeView />} />
+				{/* <Route path='tree-view' element={<MultiSelectTreeView />} /> */}
 			</Route>
 			{/* <Route path='budget-room' element={<BudgetRoomWindow />} /> */}
 			<Route path='ViewBuilderExample' element={<ViewBuilderExample />} />

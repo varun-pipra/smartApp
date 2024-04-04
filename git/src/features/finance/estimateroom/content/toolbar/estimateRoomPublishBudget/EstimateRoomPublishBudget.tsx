@@ -2,22 +2,21 @@ import {
   Button,
   FormControlLabel,
   InputAdornment,
+  InputLabel,
   Radio,
   TextField,
 } from "@mui/material";
-import "./PublishBudget.scss";
+import "./EstimateRoomPublishBudget.scss";
 import SMSpecBookDailog from "features/projectsettings/projectteam/projectteamapplicationsdetails/tabs/safetyViolation/SafetyViolationDialog";
 import { useEffect, useState } from "react";
 import SmartDropDown from "components/smartDropdown";
 import { useAppSelector } from "app/hooks";
-
 export const budgetList = [
-  { label: "Budget1", value: 0, id: 0 },
-  { label: "Budget2", value: 1, id: 1 },
-  { label: "Zone 4 Budget ", value: 2, id: 2 }
+  { label: "Budget3", value: "Budget3", id: 0, status: "Active" },
+  { label: "Budget2", value: "Budget1", id: 1, status: "Draft" },
+  { label: "Zone 4 Budget ", value: "Budget2", id: 2, status: "Draft" },
 ];
-
-const PublishBudget = (props: any) => {
+const EstimateRoomPublishBudget = (props: any) => {
   const { setOpen, onPublishBudgetClose, ...res } = props;
   const [checkBoxValue, setCheckBoxValue] = useState("createNewBudget");
   const [budgetName, setBudgetName] = useState("");
@@ -31,9 +30,9 @@ const PublishBudget = (props: any) => {
         <div>
           <p>How do you want to Publish the selected Estimate to the Budget?</p>
         </div>
-        <div className="budget-room-radio-options">
+        <div className="estimate-room-radio-options">
           <div
-            className={`budget-room-radio-option  ${
+            className={`estimate-room-radio-option  ${
               checkBoxValue === "createNewBudget"
                 ? "active-radio-contaner"
                 : "inactive-radio-container"
@@ -66,13 +65,15 @@ const PublishBudget = (props: any) => {
           </div>
           <div
             style={{ marginLeft: "30px" }}
-            className={`budget-room-radio-option ${
+            className={`estimate-room-radio-option ${
               checkBoxValue === "AddToExistingBudget"
                 ? "active-radio-contaner"
                 : "inactive-radio-container"
             }`}
           >
             <FormControlLabel
+              // value={'UpdateExisting'}
+              // control={<Radio />}
               label="Add to Existing Budget"
               labelPlacement="start"
               control={
@@ -99,7 +100,7 @@ const PublishBudget = (props: any) => {
             />
           </div>
         </div>
-        <div className="budget-room-droup-down-field-contaner">
+        <div className="estimate-room-droup-down-field-contaner">
           <div>
             {checkBoxValue === "AddToExistingBudget" ? (
               <>
@@ -198,4 +199,4 @@ const PublishBudget = (props: any) => {
   );
 };
 
-export default PublishBudget;
+export default EstimateRoomPublishBudget;

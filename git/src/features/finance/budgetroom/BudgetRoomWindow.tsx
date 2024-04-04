@@ -3,7 +3,7 @@ import { getServer, setCurrencySymbol, setServer } from "app/common/appInfoSlice
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { currency, isLocalhost } from "app/utils";
 import { appInfoData } from "data/appInfo";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import GridWindow from 'components/iqgridwindow/IQGridWindow';
 import LeftSideToolBarButtons from "./content/toolbar/LeftSideToolBarButtons";
@@ -11,7 +11,14 @@ import RightSideToolBarButtons from "./content/toolbar/RightSideToolBarButtons";
 import _ from "lodash";
 import { budgetRoomStatusEnums } from "./utils";
 import { formatDate } from 'utilities/datetime/DateTimeUtils';
-
+import { BudgetRoomStatusMap } from "./BudgetRoomConstants";
+import CustomFilterHeader from "features/common/gridHelper/CustomFilterHeader";
+import { CustomGroupHeader } from "features/bidmanager/bidmanagercontent/bidmanagergrid/BidManagerGrid";
+import { getBudgetRoomList, setSelectedRows } from "./stores/BudgetRoomSlice";
+import ViewBuilder from "sui-components/ViewBuilder/ViewBuilder";
+import './BudgetRoomWindow.scss';
+import SUIAlert from "sui-components/Alert/Alert";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 interface BudgetRoomWindowProps {
     fullScreen?: boolean
 };
@@ -23,7 +30,7 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 	const [appData] = useState(appInfoData);
 	const appInfo = useAppSelector(getServer);
 	const location = useLocation();
-	const { toast, sourceList, changeEventIframeActive } = useAppSelector((state) => state.changeEventRequest);
+	const { budgetRoomGridList } = useAppSelector((state) => state.budgetRoom);
 	const { server, currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
@@ -39,32 +46,73 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
     let gridRef = useRef<AgGridReact>();
 	const queryParams: any = new URLSearchParams(location.search);    
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
-    const columns = [
+	const [columns, setColumns] = useState([]);
+	const [rowData, setRowData] = useState<Array<any>>([]);
+	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
+	const [selectedFilters, setSelectedFilters] = useState<any>();
+	const groupOptions = [{text: 'Status', value: 'status', iconCls: 'common-icon-accept'}];
+	const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+	const filterOptions = useMemo(() => {
+		var filterMenu = [{
+			text: 'Status',
+			value: 'status',
+			key: 'status',
+			keyValue: 'status',
+			children: {
+				type: 'checkbox',
+				items: BudgetRoomStatusMap
+			}
+		}];
+		return filterMenu;
+	}, []);
+	const handleStatusFilter = (statusFilters: any) => {
+		setSelectedFilters((prevFilters: any) => {
+			const consolidatedFilter = { ...prevFilters, ...{ status: statusFilters } };
+			setDefaultFilters(consolidatedFilter);
+			return consolidatedFilter;
+		});
+	};
+	const handleStatusColumnSort = (direction: any) => {
+		gridRef?.current?.columnApi?.applyColumnState({
+			state: [{ colId: 'status', sort: direction }],
+			defaultState: { sort: null }
+		});
+	};
+	const headers:any = [
         {
-        headerName: 'Name',
-        field: 'name',
+			headerName: 'Name',
+			field: 'name',
+			pinned : 'left',
+			width: 300,
+			checkboxSelection: true,
+			cellClass: 'blue-color',
+			headerCheckboxSelection: true
         },
         {
             headerName: 'Status',
             field: 'status',
+			pinned : 'left',
+			width: 200,
+			cellClass: 'status-column',
+			headerClass: 'custom-filter-header',
+			headerComponent: CustomFilterHeader,
+			headerComponentParams: {
+				columnName: 'Status',
+				options: BudgetRoomStatusMap,
+				onSort: handleStatusColumnSort,
+				onOpen: () => setStatusFilter(false),
+				onClose: () => setStatusFilter(true),
+				onFilter: handleStatusFilter
+			},
             cellRenderer: (params: any) => {
 				const stateObject: any = budgetRoomStatusEnums[params?.value];
 				return <div
-					
-					style={{
-						color: stateObject?.color,
-                        backgroundColor: stateObject?.bgColor,
-                        height: "1.75em",
-                        width: "fit-content",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        borderRadius:"0.25em",
-                        padding: "0.5em 0.75em 0.5em 0.5em",
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-				>
+							className='status'
+							style={{
+								color: stateObject?.color,
+								backgroundColor: stateObject?.bgColor
+							}}
+						>
 					<span className={`status-icon ${stateObject?.icon}`}></span> {stateObject?.text}{' '}
 				</div>
 			}
@@ -84,32 +132,7 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
             valueGetter:(params:any) => `${params?.data?.modifiedBy?.name}, ${formatDate(params?.data?.modifiedBy?.date)}`
             
         },
-    ]
-    const data = [{
-        id: 1,
-        name:'Budget1',
-        status: 'Active',
-        description: 'Budget 1 description',
-        createdBy: {name: 'Justin, Robinson', date: new Date()},
-        modifiedBy: {name: 'Justin, Robinson', date: new Date()},
-        },
-        {
-            id: 2,
-            name:'Budget2',
-            status: 'Draft',
-            description: 'Budget 2 description',
-            createdBy: {name: 'Justin, Parker', date: new Date()},
-            modifiedBy: {name: 'Justin, Kelly', date: new Date()},
-            },
-            {
-                id: 3,
-                name:'Budget For Tools and Materials',
-                status: 'Deactivated',
-                description: 'Budget',
-                createdBy: {name: 'Anne, Peterson', date: new Date()},
-                modifiedBy: {name: 'Anne, Peterson', date: new Date()},
-            },
-    ]
+    ];
     useEffect(() => {
 		if (localhost) {
 			dispatch(setServer(_.omit(appData, ['DivisionCost'])));
@@ -161,16 +184,140 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 			}
 		}
 	}, [localhost, appData]);
-    
+	useEffect(() => {
+		if (appInfo) {
+			dispatch(getBudgetRoomList({}));
+		}
+	}, [appInfo]);
+	useEffect(() => {
+		if (budgetRoomGridList.length > 0) {
+			setModifiedList(budgetRoomGridList);
+			setRowData(budgetRoomGridList);
+		} else if (budgetRoomGridList.length === 0) {
+			setModifiedList([]);
+			setRowData([]);
+		}
+	}, [budgetRoomGridList]);
+    useEffect(() => {
+		if (search || selectedFilters) {
+			const data = searchAndFilter([...modifiedList]);
+			setRowData(data);
+		}
+	}, [search, selectedFilters]);
+	const searchAndFilter = (list: any) => {
+		return list.filter((item: any) => {
+			const regex = new RegExp(search, "gi");
+			const searchVal = Object.keys(item).some((field) => {
+				if (Array.isArray(item[field])) {
+					if (item[field]?.length > 0) {
+						for (let i = 0; i < item[field].length; i++) {
+							return Object.keys(item?.[field]?.[i])?.some((objField) => {
+								return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
+							});
+						}
+					} else return false;
+				} else if ((item[field] ?? false) && typeof item[field] === "object") {
+					return Object.keys(item?.[field])?.some((objField) => {
+						return item?.[field]?.[objField]?.toString()?.match(regex);
+					});
+				} else return item?.[field]?.toString()?.match(regex);
+			});
+			let filterValues = { ...selectedFilters };
+			const filterVal = (_.isEmpty(filterValues) || (!_.isEmpty(filterValues)
+			&& (_.isEmpty(filterValues?.status) || filterValues?.status?.length === 0 || filterValues?.status?.indexOf(item?.status?.toString())) > -1));
+			return searchVal && filterVal;
+		});
+	};
     const handleClose = () => {
 		postMessage({
 			event: 'closeiframe',
 			body: { iframeId: 'budgetRoomIframe', roomId: server && server.presenceRoomId, appType: 'BudgetRoom' }
 		});
 	};
-    
+	const onFirstDataRendered = useCallback((params: any) => {
+		gridRef.current = params;
+		setColumns(headers);
+	}, []);
+	const updateCustomHeaderParams = useCallback((data: any) => {
+		const newDefs: any = gridRef?.current?.api?.getColumnDefs()?.map((def: any) => {
+			if (def?.field === "status") {
+				return {
+					...def,
+					headerComponentParams: {
+						columnName: "Status",
+						options: BudgetRoomStatusMap,
+						defaultFilters: data,
+						onSort: handleStatusColumnSort,
+						onOpen: () => setStatusFilter(false),
+						onClose: () => setStatusFilter(true),
+						onFilter: handleStatusFilter,
+					},
+				};
+			}
+			return def;
+		});
+		gridRef?.current?.api?.setColumnDefs(newDefs);
+	}, []);
+	const GroupRowInnerRenderer = (props: any) => {
+		const node = props?.node;
+		if (node?.group) {
+			const colName = groupKeyValue?.current;
+			const data = node?.childrenAfterGroup?.[0]?.data || {};
+			if(colName === "status") {
+				const stateObject: any = (BudgetRoomStatusMap || [])?.find((x:any) => x.value == data?.[colName]);
+				return (
+					<div style={{display: 'flex'}} className='status-column'>
+						<CustomGroupHeader iconCls={stateObject?.icon} baseCustomLine={false}
+							label={stateObject?.text} showStatus = {true}
+							color = {stateObject?.color} bgColor = {stateObject?.bgColor}
+						/>
+					</div>
+					// <div className="custom-group-header-cls" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
+					// 	<span className="custom-group-header-label-cls">{node?.key || ""}</span>
+					// </div>
+				);
+			}
+		};
+	};
+	const groupRowRendererParams = useMemo(() => {
+		return {
+			checkbox: true,
+			suppressCount: true,
+			suppressGroupRowsSticky: true,
+			innerRenderer: GroupRowInnerRenderer
+		};
+	}, []);
+	const onGroupingChange = useCallback((groupKey:any) => {
+		const columnsCopy: any = [...headers];
+		if (((groupKey ?? false) && groupKey !== "")) {
+			groupKeyValue.current = groupKey;
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = groupKey ? groupKey === col.field : false;
+				setColumns(columnsCopy);
+			});
+		} else if (groupKey ?? true) {
+			groupKeyValue.current = null;
+			columnsCopy.forEach((col: any) => {
+				col.rowGroup = false;
+			});
+			setColumns(columnsCopy);
+		}
+	},[]);
+	const onSearchChange = useCallback((searchValue:any) => {
+		setSearch(searchValue);
+	},[]);
+	const onFilterChange = useCallback((filterValues:any) => {
+			updateCustomHeaderParams(filterValues?.status);
+			setSelectedFilters(filterValues);
+	},[]);
+	const onRowSelectionChange = useCallback((selectedRows:any) => {
+			dispatch(setSelectedRows(selectedRows));
+	},[]);
+	const onClickRefresh = () => {
+		dispatch(getBudgetRoomList({}));
+	};
     return (
-		server && (<GridWindow
+		server && ( <><GridWindow
 			open={true}
 			title='Budget Room'
 			// companyInfo={isChangeEventClient() || isChangeEventSC()}
@@ -233,69 +380,78 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 				// detailView: ChangeEventRequestsLID,
 				gridContainer: {
 					toolbar: {
-						leftItems: < LeftSideToolBarButtons/>,
+						leftItems: < LeftSideToolBarButtons refreshHandler={onClickRefresh}/>,
 						rightItems: <RightSideToolBarButtons />,
 						searchComponent: {
 							show: true,
 							type: 'regular',
-							// defaultFilters: defaultFilters,
-							// defaultGroups: activeGroupKey,
-							// groupOptions: isChangeEventSC() ? scGroupOptions : gcGroupOptions,
-							// filterOptions: filterOptions,
-							// onGroupChange: onGroupingChange,
-							// onSearchChange: onGridSearch,
-							// onFilterChange: (value: any) => { onFilterChange(value) },
+							defaultFilters: defaultFilters,
+							defaultGroups: '',
+							groupOptions: groupOptions,
+							filterOptions: filterOptions,
+							onGroupChange: onGroupingChange,
+							onSearchChange: onSearchChange,
+							onFilterChange: onFilterChange,
 							// placeholder: viewData?.viewName,
 							viewBuilderapplied: true,
 						},
-						// viewBuilder: <ViewBuilder
-						// 	moduleName={modName}
-						// 	appInfo={appInfo}
-						// 	dropDownOnChange={(value: any, data: any) => { handleDropDown(value, data) }}
-						// 	saveView={(data: any) => { saveViewHandler(data) }}
-						// 	deleteView={() => { DeleteViewHandler() }}
-						// 	saveNewViewData={(data: any) => { saveNewViewHandler(data) }}
-						// 	//dataList={(data: any) => { setViewBuilderData(data) }}
-						// 	viewListOnChange={(data: any) => { viewListOnChange(data) }}
-						// 	requiredColumns={['name', 'status']}
-						// />
+						viewBuilder: <ViewBuilder
+							moduleName={modName}
+							appInfo={appInfo}
+							dropDownOnChange={(value: any, data: any) => { }}
+							saveView={(data: any) => {}}
+							deleteView={() => { }}
+							saveNewViewData={(data: any) => {  }}
+							//dataList={(data: any) => { setViewBuilderData(data) }}
+							viewListOnChange={(data: any) => { }}
+							requiredColumns={['name', 'status']}
+						/>
 					},
 					grid: {
-						// headers: columns,
 						headers: columns,
-						data: [...data],
+						data: [...rowData],
 						getRowId: (params: any) => params.data?.id,
 						grouped: true,
 						groupIncludeTotalFooter: false,
-						rowSelection: 'single',
+						rowSelection: 'multiple',
                         groupIncludeFooter: false,
-						// rowSelected: (e: any) => rowSelected(e),
+						rowSelected: (e: any) => onRowSelectionChange(e),
 						groupDisplayType: 'groupRows',
-						nowRowsMsg: '<div>Create New Change Event Request by Clicking the + Add button above</div>',
-						// groupRowRendererParams: groupRowRendererParams,
+						emptyMsg: 'No items available yet',
+						nowRowsMsg: '<div>create your first budget room by clicking + button above</div>',
+						onFirstDataRendered:onFirstDataRendered,
+						groupRowRendererParams: groupRowRendererParams,
 					}
 				}
 			}}
 		/>
-			// : <SUIAlert
-			// 	open={true}
-			// 	DailogClose={true}
-			// 	onClose={() => {
-			// 		postMessage({
-			// 			event: 'closeiframe',
-			// 			body: { iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests' }
-			// 		});
-			// 	}}
-			// 	contentText={'You Are Not Authorized'}
-			// 	title={'Warning'}
-			// 	onAction={(e: any, type: string) => {
-			// 		type == 'close' && postMessage({
-			// 			event: 'closeiframe',
-			// 			body: { iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests' }
-			// 		});
-			// 	}}
-			// 	showActions={false}
-			// />
+		{deleteConfirmation && (
+			<SUIAlert
+				open={true}
+				DailogClose={true}
+				onClose={() => {setDeleteConfirmation(false)}}
+				contentText={
+				<div>
+					<div style={{display: 'flex',gap: '20px',minHeight: '5em'}}>
+						<WarningAmberIcon fontSize={'large'} style={{ color: 'red' }} />
+						<div>Deleting the Budget would impact all Contracts, Bids, Pay App Items, and change Orders associated with it.</div>
+					</div>
+					<div style={{marginLeft: '3.2em'}}>
+						Are you sure you want to proceed with deleting this Budget named <b>Budget for Tools & Materials?</b>
+					</div>
+				</div>
+				}
+				title={'Confirmation'}
+				onAction={(e: any, type: string) => {
+					type == 'yes' ?  null :
+					setDeleteConfirmation(false);
+				}}
+				negativeAction="No"
+				showActions={true}
+				modelWidth={'500px'}
+			/>
+			)}
+		</>
 		)
 	);
 };

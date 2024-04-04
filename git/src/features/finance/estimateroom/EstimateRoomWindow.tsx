@@ -11,7 +11,10 @@ import RightSideToolBarButtons from "./content/toolbar/RightSideToolBarButtons";
 import _ from "lodash";
 import { estimateRoomStatusEnums } from "./utils";
 import { formatDate } from 'utilities/datetime/DateTimeUtils';
-
+import SUIAlert from "sui-components/Alert/Alert";
+import './EstimateRoomWindow.scss';
+import CustomFilterHeader from "features/common/gridHelper/CustomFilterHeader";
+import { EstimateRoomStatusMap } from "./EstimateRoomConstants";
 interface EstimateRoomWindowProps {
     fullScreen?: boolean
 };
@@ -39,34 +42,56 @@ const EstimateRoomWindow = (props:EstimateRoomWindowProps) => {
     let gridRef = useRef<AgGridReact>();
 	const queryParams: any = new URLSearchParams(location.search);    
 	const maxSize = queryParams?.size > 0 && (queryParams?.get('maximizeByDefault') === 'true' || queryParams?.get('inlineModule') === 'true');
-    const columns = [
+    const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+	const [selectedFilters, setSelectedFilters] = useState<any>();
+	const handleStatusFilter = (statusFilters: any) => {
+		setSelectedFilters((prevFilters: any) => {
+			const consolidatedFilter = { ...prevFilters, ...{ status: statusFilters } };
+			setDefaultFilters(consolidatedFilter);
+			return consolidatedFilter;
+		});
+	};
+	const handleStatusColumnSort = (direction: any) => {
+		gridRef?.current?.columnApi?.applyColumnState({
+			state: [{ colId: 'status', sort: direction }],
+			defaultState: { sort: null }
+		});
+	};
+	const columns = [
         {
 				headerName: 'Name',
 				pinned: 'left',
-        field: 'name',
+       			field: 'name',
+				width: 300,
+				checkboxSelection: true,
+				cellClass: 'blue-color',
+				headerCheckboxSelection: true
         },
         {
             headerName: 'Status',
-						field: 'status',
-						pinned: 'left',
+			field: 'status',
+			pinned: 'left',
+			width: 220,
+			cellClass: 'status-column',
+			headerClass: 'custom-filter-header',
+			headerComponent: CustomFilterHeader,
+			headerComponentParams: {
+				columnName: 'Status',
+				options: EstimateRoomStatusMap,
+				onSort: handleStatusColumnSort,
+				onOpen: () => setStatusFilter(false),
+				onClose: () => setStatusFilter(true),
+				onFilter: handleStatusFilter
+			},
             cellRenderer: (params: any) => {
 				const stateObject: any = estimateRoomStatusEnums[params?.value];
 				return <div
-					
-					style={{
-						color: stateObject?.color,
-                        backgroundColor: stateObject?.bgColor,
-                        height: "1.75em",
-                        width: "fit-content",
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        borderRadius:"0.25em",
-                        padding: "0.5em 0.75em 0.5em 0.5em",
-                        display: "flex",
-                        alignItems: "center",
-                    }}
-				>
+							className='status'
+							style={{
+								color: stateObject?.color,
+								backgroundColor: stateObject?.bgColor
+							}}
+						>
 					<span className={`status-icon ${stateObject?.icon}`}></span> {stateObject?.text}{' '}
 				</div>
 			}
@@ -179,7 +204,7 @@ const EstimateRoomWindow = (props:EstimateRoomWindowProps) => {
 	};
     
     return (
-		server && (<GridWindow
+		server && (<><GridWindow
 			open={true}
 			title='Estimate Room'
 			// companyInfo={isChangeEventClient() || isChangeEventSC()}
@@ -285,25 +310,27 @@ const EstimateRoomWindow = (props:EstimateRoomWindowProps) => {
 				}
 			}}
 		/>
-			// : <SUIAlert
-			// 	open={true}
-			// 	DailogClose={true}
-			// 	onClose={() => {
-			// 		postMessage({
-			// 			event: 'closeiframe',
-			// 			body: { iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests' }
-			// 		});
-			// 	}}
-			// 	contentText={'You Are Not Authorized'}
-			// 	title={'Warning'}
-			// 	onAction={(e: any, type: string) => {
-			// 		type == 'close' && postMessage({
-			// 			event: 'closeiframe',
-			// 			body: { iframeId: 'changeEventRequestIframe', roomId: server && server?.presenceRoomId, appType: 'ChangeEventRequests' }
-			// 		});
-			// 	}}
-			// 	showActions={false}
-			// />
+		{deleteConfirmation && (
+			<SUIAlert
+				className={'estimate-room-dialog'}
+				open={true}
+				DailogClose={false}
+				onClose={() => {
+					setDeleteConfirmation(false);
+				}}
+				contentText={'Are you sure you want to delete the selected Estimate(s)'}
+				title={'Confirmation'}
+				onAction={(e: any, type: string) => {
+					type == 'yes' ?  null :
+					setDeleteConfirmation(false);
+				}}
+				negativeAction="No"
+				showActions={true}
+				modelWidth={'610px'}
+			/>
+		)}
+		
+			</>
 		)
 	);
 };

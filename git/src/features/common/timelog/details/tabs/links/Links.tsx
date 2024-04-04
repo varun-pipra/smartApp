@@ -97,19 +97,18 @@ const Links = () => {
 
 	useMemo(() => {
 		if (linksData?.length > 0) {
+			const filteredData :any = linksData?.filter((data:any) => data.fileType !== "")
 			const filtersCopy = [...filters];
 			let FileType = filtersCopy.find((rec: any) => rec?.value === "FileType");
 			let SmartItem = filtersCopy.find((rec: any) => rec?.value === "SmartItem");
 
 			const uniqueTypes = new Set();
-			const linkType_array = linksData?.reduce((acc: any, item: any) => {
-					if(item.type != null){
-						if (!uniqueTypes.has(item.type)) {
-							uniqueTypes.add(item.type);
-							acc.push({ text: item.type, id: item.type, key: item.type, value: item.type, });
-						}	
-					}
-					return acc;
+			const FileType_array = filteredData?.reduce((acc: any, item: any) => {
+				if (!uniqueTypes.has(item.fileType)) {
+					uniqueTypes.add(item.fileType);
+					acc.push({ text: item.fileType, id: item.fileType, key: item.fileType, value: item.fileType, });
+				}	
+				return acc;
 			}, []);
 			const SmartItemTypes = new Set();
 			const smartItem_array = linksData?.reduce((acc: any, item: any) => {
@@ -120,7 +119,7 @@ const Links = () => {
 				}}
 				return acc;
 			}, []);
-			FileType.children.items = linkType_array;
+			FileType.children.items = FileType_array;
 			SmartItem.children.items = smartItem_array;
 			setFilters(filtersCopy);
 		}
@@ -186,7 +185,7 @@ const Links = () => {
 			filteredData = linksData
 		}
 		if (filterValue?.FileType?.length > 0) {
-			const linkTypearray = filteredData?.filter((obj: any) => filterValue?.FileType?.includes(obj.linkType));
+			const linkTypearray = filteredData?.filter((obj: any) => filterValue?.FileType?.includes(obj.fileType));
 			filteredData = linkTypearray;
 		}
 		if (filterValue?.SmartItem?.length > 0) {

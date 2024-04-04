@@ -72,6 +72,7 @@ import SBSManagerSlice from 'features/safety/sbsmanager/operations/sbsManagerSli
 import BlockchainSlice from './common/blockchain/BlockchainSlice';
 
 import TimeLogSlice from 'features/common/timelog/stores/TimeLogSlice';
+import BudgetRoomSlice from 'features/finance/budgetroom/stores/BudgetRoomSlice';
 
 export const store = configureStore({
 	reducer: {
@@ -143,6 +144,7 @@ export const store = configureStore({
 		smartSubmitalsLeftToolbar: SmartSubmitalLeftToolbarSlice,
 		sbsManager: SBSManagerSlice,
 		timeLogRequest: TimeLogSlice,
+		budgetRoom: BudgetRoomSlice
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
