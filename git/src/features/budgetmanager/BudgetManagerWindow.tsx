@@ -15,7 +15,7 @@ import {getToastMessage, setImportBudgetsStatus, setOpenNotification} from './op
 import {fetchGridData, setBudgetIframeActive, setPresenceData} from './operations/gridSlice';
 import {
 	getServer, setServer, setCostCodeList, setFullView,
-	setCostUnitList, setCurrencySymbol, setCurrencyCode, setAppWindowMaximize, setCostCodeDivisionList, setCostTypeList
+	setCostUnitList, setCurrencySymbol, setCurrencyCode, setAppWindowMaximize
 } from 'app/common/appInfoSlice';
 import {setUploadedFilesFromLocal, setUploadedFilesFromDrive} from "./operations/transactionsSlice";
 import {triggerEvent} from 'utilities/commonFunctions';
@@ -27,9 +27,6 @@ import {isBudgetManager} from "app/common/userLoginUtils";
 import {initRTDocument} from 'utilities/realtime/Realtime';
 import {budgetManagerMainGridRTListener} from './BudgetManagerRT';
 import React from "react";
-// import { fetchSettings, fetchSettingsCostCodeAndType, fetchdefaultdrodown, fetchSecurity, fetchCostCodeDropdownList, fetchDivisionCostCodeFilterList, fetchCostTypeDropdownList } from '../operations/settingsSlice';
-import { settingcostcodetypeData } from 'data/SettingsCosttypeData';
-import { fetchCostCodeDropdownList, fetchDivisionCostCodeFilterList, fetchSettings, fetchSettingsCostCodeAndType } from "./operations/settingsSlice";
 
 const BudgetManagerWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -48,47 +45,14 @@ const BudgetManagerWindow = (props: any) => {
 	const gridRT = useRef<boolean>(false);
 	const [open, setOpen] = React.useState(false);
 	const [notifyStatus, setNotifyStatus] = React.useState(false);
-	const { settingsData, CostCodeAndTypeData, openAlert, divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData } = useAppSelector(state => state.settings);
 
 	useEffect(() => {
 		const loader = document.getElementById('smartapp-react-loader');
 		if(loader) {
 			loader.style.display = 'none';
 		}
-		dispatch(fetchSettings(appInfo));
-		dispatch(fetchSettingsCostCodeAndType(appInfo));
 	}, []);
 
-	React.useEffect(() => {
-		// console.log('settings in header pinning', CostCodeAndTypeData)
-		dispatch(fetchDivisionCostCodeFilterList({ appInfo: appInfo, costCodeName: settingsData.divisionCostCode }));
-		dispatch(fetchCostCodeDropdownList({ appInfo: appInfo, name: settingsData.divisionCostCode }));
-		// dispatch(fetchCostTypeDropdownList({appInfo: appInfo, name: settingsData.divisionCostCode}));
-		// console.log("List divisionCostCodeFilterData",divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData)
-
-		const ListData = localhost ? settingcostcodetypeData.values : CostCodeAndTypeData.values;
-		// console.log('ListData', divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData)
-		const divisionCostCodeListValues = getDivisionCostCodeValues(ListData, settingsData.divisionCostCodeId);
-		const costTypeListValues = getDivisionCostCodeValues(ListData, settingsData.costTypeId);
-		// console.log('divisionCostCodeListValues', divisionCostCodeListValues, costTypeListValues)
-		divisionCostCodeListValues?.length > 0 && dispatch(setCostCodeDivisionList(divisionCostCodeListValues[0]));
-		costTypeListValues?.length > 0 && console.log(costTypeListValues[0]); dispatch(setCostTypeList(costTypeListValues[0]));
-
-	}, [settingsData, CostCodeAndTypeData]);
-
-	const getDivisionCostCodeValues = (data: any, id: any) => {
-		if (data.length > 0) {
-			const values = data.map((obj: any) => {
-				if (obj.id === id) {
-					return obj.listValues;
-				}
-			});
-
-			return values.filter((element: any) => {
-				return element !== undefined;
-			});
-		}
-	};
 	useEffect(() => {
 		setTimeout(() => {
 			setToastMessage({displayToast: false, message: ''});

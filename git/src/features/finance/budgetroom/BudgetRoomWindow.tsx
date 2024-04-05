@@ -1,7 +1,7 @@
 import { AgGridReact } from "ag-grid-react";
 import { getServer, setCurrencySymbol, setServer } from "app/common/appInfoSlice";
 import { useAppDispatch, useAppSelector } from "app/hooks";
-import { currency, isLocalhost } from "app/utils";
+import { currency, getGroupedColumns, getSearchBasedOnKeys, isLocalhost } from "app/utils";
 import { appInfoData } from "data/appInfo";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useLocation } from "react-router-dom";
@@ -50,8 +50,8 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 	const [rowData, setRowData] = useState<Array<any>>([]);
 	const [modifiedList, setModifiedList] = useState<Array<any>>([]);
 	const [selectedFilters, setSelectedFilters] = useState<any>();
-	const groupOptions = [{text: 'Status', value: 'status', iconCls: 'common-icon-accept'}];
 	const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+	const groupOptions = [{text: 'Status', value: 'status', iconCls: 'common-icon-accept'}];
 	const filterOptions = useMemo(() => {
 		var filterMenu = [{
 			text: 'Status',
@@ -206,22 +206,7 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 	}, [search, selectedFilters]);
 	const searchAndFilter = (list: any) => {
 		return list.filter((item: any) => {
-			const regex = new RegExp(search, "gi");
-			const searchVal = Object.keys(item).some((field) => {
-				if (Array.isArray(item[field])) {
-					if (item[field]?.length > 0) {
-						for (let i = 0; i < item[field].length; i++) {
-							return Object.keys(item?.[field]?.[i])?.some((objField) => {
-								return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
-							});
-						}
-					} else return false;
-				} else if ((item[field] ?? false) && typeof item[field] === "object") {
-					return Object.keys(item?.[field])?.some((objField) => {
-						return item?.[field]?.[objField]?.toString()?.match(regex);
-					});
-				} else return item?.[field]?.toString()?.match(regex);
-			});
+			const searchVal = getSearchBasedOnKeys(item, search);
 			let filterValues = { ...selectedFilters };
 			const filterVal = (_.isEmpty(filterValues) || (!_.isEmpty(filterValues)
 			&& (_.isEmpty(filterValues?.status) || filterValues?.status?.length === 0 || filterValues?.status?.indexOf(item?.status?.toString())) > -1));
@@ -289,19 +274,8 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 	}, []);
 	const onGroupingChange = useCallback((groupKey:any) => {
 		const columnsCopy: any = [...headers];
-		if (((groupKey ?? false) && groupKey !== "")) {
-			groupKeyValue.current = groupKey;
-			columnsCopy.forEach((col: any) => {
-				col.rowGroup = groupKey ? groupKey === col.field : false;
-				setColumns(columnsCopy);
-			});
-		} else if (groupKey ?? true) {
-			groupKeyValue.current = null;
-			columnsCopy.forEach((col: any) => {
-				col.rowGroup = false;
-			});
-			setColumns(columnsCopy);
-		}
+		groupKeyValue.current = groupKey;
+		setColumns(getGroupedColumns(columnsCopy, groupKey));
 	},[]);
 	const onSearchChange = useCallback((searchValue:any) => {
 		setSearch(searchValue);
@@ -446,7 +420,7 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 					type == 'yes' ?  null :
 					setDeleteConfirmation(false);
 				}}
-				// negativeAction="No"
+				negativeAction="No"
 				showActions={true}
 				modelWidth={'500px'}
 			/>

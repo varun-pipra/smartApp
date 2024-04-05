@@ -1,0 +1,1296 @@
+import './EstimateDetails.scss';
+
+import {
+	getCostCodeDivisionList, getCostTypeList, getServer
+} from 'app/common/appInfoSlice';
+import { useAppDispatch, useAppSelector, useHotLink } from 'app/hooks';
+import CostCodeDropdown from 'components/costcodedropdown/CostCodeDropdown';
+import DatePickerComponent from 'components/datepicker/DatePicker';
+import IQTooltip from 'components/iqtooltip/IQTooltip';
+import SmartDropDown from 'components/smartDropdown';
+import { primaryIconSize } from 'features/budgetmanager/BudgetManagerGlobalStyles';
+import VendorList from 'features/budgetmanager/aggrid/vendor/Vendor';
+import Location from 'features/common/locationfield/LocationField';
+import React, { memo, useState, useEffect, useCallback, useRef } from 'react';
+import InputIcon from 'react-multi-date-picker/components/input_icon';
+import SaveButtonWhite from 'resources/images/common/SaveButtonWhite.svg';
+import {
+	StatusColors, StatusIcons,
+	getBidStatus, getBidStatusIdFromText
+} from 'utilities/bid/enums';
+import convertDateToDisplayFormat from 'utilities/commonFunctions';
+import { formatDate } from 'utilities/datetime/DateTimeUtils';
+import { amountFormatWithOutSymbol, amountFormatWithSymbol } from 'app/common/userLoginUtils';
+import {
+	vendorContractsStatus, vendorContractsStatusColors, vendorContractsStatusIcons
+} from 'utilities/vendorContracts/enums';
+
+import { WarningAmber } from '@mui/icons-material';
+import {
+	Box, Button, Divider, Fab,
+	FormControlLabel,
+	Radio, RadioGroup, IconButton, Select, FormControl, InputAdornment, MenuItem, TextField
+} from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
+
+import { fetchLocationData, getProjetLocationConfig } from 'features/common/locationfield/LocationStore';
+
+import SUIBaseDropdownSelector from 'sui-components/BaseDropdown/BaseDropdown';
+import SUIAlert from 'sui-components/Alert/Alert';
+import IQSelect from 'components/iqselect/IQSelect';
+import DynamicTooltip from "sui-components/DynamicTooltip/DynamicTooltip";
+import building from 'resources/images/building.jpg';
+import { catalogData } from 'data/budgetmanager/catalogData';
+import { isLocalhost } from 'app/utils';
+
+var tinycolor = require('tinycolor2');
+import CostCodeSelect from 'sui-components/CostCodeSelect/costCodeSelect';
+import { measurementSymbols } from 'utilities/commonutills';
+import { LaborSheetModel } from './laborSheet/LaborSheet';
+
+interface EstimateBudgetDetailsProps {
+	onFormSubmit?: (data: any) => void;
+	tabSelectedValue?: any;
+	toast?: any;
+};
+
+const useStyles: any = makeStyles((theme: any) =>
+	createStyles({
+		menuPaper: {
+			//maxWidth: '160px !important',
+			//minWidth: 'fit-content !important',
+		},
+		wbsMenuPaper: {
+			maxHeight: "calc(100% - 400px) !important"
+		}
+	})
+);
+
+const EstimateBudgetDetails = (props: EstimateBudgetDetailsProps) => {
+	const classes = useStyles();
+	const dispatch = useAppDispatch();
+	const { selectedRow } = useAppSelector(state => state.rightPanel);
+	const { isBudgetLocked } = useAppSelector(state => state.tableColumns);
+	const { settingsData, costCodeDropdownData, divisionCostCodeFilterData, CostCodeAndTypeData } = useAppSelector(state => state.settings);
+	const { phaseDropDownOptions, sbsGridData } = useAppSelector((state) => state.sbsManager);
+	const { tabSelectedValue = 'budget-details', toast } = props;
+	const costCodeDivisionOpts = useAppSelector(getCostCodeDivisionList);
+	const costTypeOpts = useAppSelector(getCostTypeList);
+	const [formData, setFormData] = React.useState<any>({
+		...selectedRow,
+	});
+	const appInfo = useAppSelector(getServer);
+	const { currencySymbol } = useAppSelector((state) => state.appInfo);
+	const { rollupTaskData } = useAppSelector((state) => state.rightPanel);
+	const { lineItemDescription } = useAppSelector(state => state.tableColumns);
+	const { lineItem } = useAppSelector(state => state.gridData);
+	const { levels = [], locations = [], locationSegmentsData, locationConfig } = useAppSelector(state => state.location);
+	const [location, setLocation] = useState<any>([]);
+	const [dynamicClose, setDynamicClose] = useState<any>(false);
+	const [rollupDisabelData, setRollupDisabelData] = useState<any>([]);
+	const [wbsOptions, setWbsOptions] = useState<any>([]);
+	const [selectedLevel, setSelectedLevel] = useState<any>();
+	const [alert, setAlert] = useState<any>({ show: false, msg: '', type: 'Warning' });
+	const [levelValue, setLevelValue] = useState<any>('');
+	const [selectedLocationTypeObj,setSelectedLocationTypeObj] = useState<any>({})
+	const [catalogLocalData, setCatalogLocalData] = useState<any>(catalogData);
+	const companyDataRef = useRef<any>([]);
+	const [divisionDefaultFilters, setDivisionDefaultFilters] = React.useState<any>([]);
+	const [sbsOptions, setSbsOptions] = React.useState<any>([]);
+	const [selectedSegment, setSelectedSegment] = React.useState<any>(false);
+	const [showWorkersDialog, setShowWorkersDialog] = React.useState<any>(false);
+	const [laborSheetData, setLaborSheetData] = React.useState<any>([]);	
+	
+	const CompanyData = useAppSelector((state: any) => state.rightPanel.companyList);
+	const [costCodeHiddenOptions, setCostCodeHiddenOptions] = useState<any>([]);
+	const [isCostCodeExistsInOptions, setIsCostCodeExistsInOptions] = useState<any>(false);
+
+	const isReadOnly = isBudgetLocked;
+
+	
+	const isCostCodeExists = (options: any, costCodeVal: any) => {
+		let isExists: any = false;
+		(options || []).forEach((rec: any) => {
+			if (rec.value === costCodeVal) {
+				isExists = true;
+			} else {
+				if (rec.children?.length > 0) {
+					rec.children.forEach((childRec: any) => {
+						if (childRec.value === costCodeVal) {
+							isExists = true;
+						}
+					})
+				}
+			}
+		});
+		return isExists;
+	}
+	
+	useEffect(() => {
+		const options = sbsGridData?.map((item:any) => {
+			return {...item, label: item?.name, value: item?.id}
+		})
+		setSbsOptions([...options]);
+	}, [sbsGridData]);
+
+	React.useEffect(() => {
+		if(appInfo) {
+		
+		}
+	},[appInfo]);
+
+	useEffect(() => {
+		if (formData?.costCode && costCodeDropdownData?.length > 0) {
+			let isCostCodeExistsInOptionsList: any = isCostCodeExists(costCodeDropdownData, formData.costCode);
+			setIsCostCodeExistsInOptions(isCostCodeExistsInOptionsList);
+			//if (!isCostCodeExistsInOptionsList) {
+				let obj: any =
+				{
+					value: formData?.costCode,
+					id: formData?.costCode,
+					children: null,
+					isHidden: true,
+				}
+				setCostCodeHiddenOptions([obj]);
+			//}
+		}
+	}, [formData?.costCode, costCodeDropdownData])
+
+	const formatCompanyData = () => {
+		let list: any = [];
+		(CompanyData || []).filter((rec: any) => rec.companyType === 3)?.forEach((data: any) => {
+			list.push({
+				...data,
+				color: data.colorCode,
+				id: data.id,
+				displayField: data.name,
+				thumbnailUrl: data.thumbnailUrl,
+			});
+		});
+		return list;
+	};
+
+	useEffect(() => {
+		companyDataRef.current = formatCompanyData();
+		if (CompanyData?.length && companyDataRef.current?.length > 0 && selectedRow.equipmentManufacturerId) {
+			const obj = companyDataRef.current.find((rec: any) => selectedRow.equipmentManufacturerId === rec.objectId);
+			setFormData({ ...formData, equipmentManufacturer: [obj], equipmentManufacturerName: obj?.name });
+		}
+
+	}, [CompanyData, selectedRow?.id]);
+
+	React.useEffect(() => {
+		if (selectedRow?.id) {
+			if (selectedRow.equipmentManufacturerId) {
+				const obj = formatCompanyData().find((rec: any) => selectedRow.equipmentManufacturerId === rec.objectId);
+				if (obj?.name) {
+					setFormData({ ...selectedRow, equipmentManufacturer: [obj], equipmentManufacturerName: obj?.name });
+				}
+			} else {
+				setFormData(selectedRow);
+			}
+
+			let rowLocations = selectedRow.locations || [];
+			setLocation(rowLocations?.map((el: any) => {
+				return { id: el.id, text: el.name };
+			}) || []);
+		}
+	}, [selectedRow]);
+
+	useEffect(() => {
+		const levelVal =
+			selectedLevel ??
+			(selectedRow.locations && selectedRow.locations.length > 0
+				? (selectedRow.locations[0].levelId || selectedRow.locations[0].id)
+				: levels.length > 0
+					? levels[levels.length - 1]?.levelId
+					: undefined);
+		setLevelValue(levelVal);
+	}, [selectedRow?.locations, levels, selectedLevel]);
+
+	React.useEffect(() => {
+		if (lineItem?.id) {
+			const obj = formatCompanyData().find((rec: any) => selectedRow.equipmentManufacturerId === rec.objectId);
+			setFormData({
+				...selectedRow,
+				equipmentManufacturer: obj?.name ? [obj] : [],
+				equipmentManufacturerName: obj?.name,
+				equipmentModel: formData?.equipmentModel,
+				rollupTaskIds: lineItem?.rollupTaskIds,
+				addMarkupFee: formData?.addMarkupFee,
+				markupFeeType: formData?.markupFeeType,
+				markupFeeAmount: formData?.markupFeeAmount,
+				markupFeePercentage: formData?.markupFeePercentage,
+			});
+		}
+	}, [lineItem?.id]);
+
+	React.useEffect(() => {
+		if (rollupTaskData.length > 0) {
+			setWbsOptions(rollupTaskData);
+		}
+	}, [rollupTaskData]);
+
+	React.useEffect(() => {
+		if (wbsOptions.length > 0) {
+			// console.log('wbsOptions', wbsOptions);
+			const filteredNames = wbsOptions.filter((item: any) => item.budgetItemId !== null && item.budgetItemId !== selectedRow.id).map((item: any) => item.value);
+			setRollupDisabelData(filteredNames);
+		}
+	}, [wbsOptions]);
+
+	const handleDropdownChange = (value: any, name: string) => {
+		console.log("value, name", value, name)
+		if (name === 'costCode') {
+			const costCodeTuple = value.split('|');
+			setFormData({ ...formData, 'division': costCodeTuple[0], 'costCode': costCodeTuple[1] });
+		}
+		else if (name === 'providerSource') {
+			setAlert({ show: true, key: 'providerSource', type: 'Confirmation', msg: `Are you sure you want to update the Provider Source from ${formData?.providerSource == 1 ? 'Self Perform' : 'Trade Partner'} to ${value == 1 ? 'Self Perform' : 'Trade Partner'}?` });
+
+		} else if (name === 'isBillable') {
+			setAlert({ show: true, key: 'isBillable', type: 'Confirmation', msg: `Are you sure you want to update the Billable in Client Contract from ${formData?.isBillable  ? 'Billable' : 'Non-Billable'} to ${value ? 'Billable' : 'Non-Billable'}?` });
+
+		} else if (name === 'sbsPhaseId') {
+			setFormData({ ...formData, [name]: value?.id, sbsPhaseName: value?.name });
+
+		} else {
+			// if (name == 'markupFeeAmount' && Number(value) > formData?.originalAmount) setAlert({ show: true, msg: 'Amount Should Not be greater then Original Amount.' });
+			// else if (name == 'markupFeePercentage' && Number(value) > 100) setAlert({ show: true, msg: 'Percentage Should be between 1 to 100.' });
+			if (Number(value) < 0) setAlert({ show: true, type: 'Warning', msg: 'Negative Values are not Allowed.' });
+			else setFormData({ ...formData, [name]: value, markupFeeAmount: name == 'markupFeeType' ? null : name == 'markupFeeAmount' ? value : formData?.markupFeeAmount, markupFeePercentage: name == 'markupFeeType' ? null : name == 'markupFeePercentage' ? value : formData?.markupFeePercentage, addMarkupFee: name !== 'addMarkupFee' ? formData?.addMarkupFee : value });
+		}
+	};
+
+	const gridIcon = React.useMemo<React.ReactElement>(() => {
+		return <div className='common-icon-info-icon common-icon-Budgetcalculator'></div>;
+	}, []);
+
+	const handleLocationChange = (newValues: any) => {
+		// console.log(newValues);
+		const locations: any = [];
+		newValues?.map((obj: any) => {
+			!locations?.map((a: any) => a?.id)?.includes(obj?.id) && locations.push(obj);
+		});
+		setLocation(locations);
+	};
+
+	React.useEffect(() => {
+		if (selectedLevel) {
+			dispatch(fetchLocationData(selectedLevel));
+			dispatch(getProjetLocationConfig());
+			const selectedLevelObj:any = levels?.filter((level:any) => level?.levelId == selectedLevel)?.[0]
+			setSelectedLocationTypeObj({...selectedLevelObj})
+
+		}
+	}, [selectedLevel]);
+
+	const submitUpdate = () => {
+		const data = {
+			division: formData?.division,
+			costCode: formData?.costCode,
+			costType: formData?.costType,
+			estimatedStart: new Date(formData?.estimatedStart)?.toISOString(),
+			estimatedEnd: new Date(formData?.estimatedEnd)?.toISOString(),
+			curve: formData.curve,
+			originalAmount: formData?.originalAmount,
+			status: 0,
+			description: lineItemDescription ? lineItemDescription : '',
+			unitCost: formData?.unitCost,
+			unitOfMeasure: formData?.unitOfMeasure,
+			unitQuantity: formData?.unitQuantity,
+			associatedTo: formData?.associatedTo,
+			rollupTaskId: formData?.rollupTaskIds?.[0],
+			locationIds: location?.map((el: any) => el.id) || [],
+			addMarkupFee: formData?.addMarkupFee,
+			markupFeeType: formData?.markupFeeType,
+			markupFeeAmount: !formData?.addMarkupFee ? null : formData?.markupFeeAmount,
+			markupFeePercentage: !formData?.addMarkupFee ? null : formData?.markupFeePercentage,
+			equipmentModel: formData?.equipmentModel,
+			equipmentManufacturer: formData?.equipmentManufacturer?.[0]?.name || '',
+			equipmentManufacturerId: formData?.equipmentManufacturer?.[0]?.objectId || '',
+			equipmentCatalogId: formData?.equipmentCatalogId,
+			providerSource: formData?.providerSource,
+			isBillable: formData?.isBillable,
+			sourceType: formData?.sourceType,			
+			sbsIds: formData?.sbs?.length ? formData?.sbs?.map((item:any) => { return item?.id }) : [],
+			sbsPhaseId: formData?.sbsPhaseId ? formData?.sbsPhaseId : null,
+			workplannerCategoryId: formData?.workplannerCategoryId,
+			tradeId: formData?.tradeId,	
+		};
+
+		console.log('data', data);
+	
+		toast({ displayToast: true, message: 'Budget Details Updated Successfully' });
+	};
+
+	const WbsCustomHeader = (props: any) => {
+		return (
+			<div className="wbs-header-container-cls">
+				<span className="wbs-label-cell-cls" style={{ margin: '0px 0px 14px 6px' }} onClick={() => handleNone()}>None</span>
+				<div className="wbs-auto-create-label-cls" onClick={() => handleAutoCreateWbs()}>
+					<IconButton className='add-button' >
+						<span className={'common-icon-add addIcon-styles-cls'}></span>
+					</IconButton>
+					<span className='wbs-label-cell-cls'>Auto Create Work Break Down Structure (WBS) from the Cost Break Down Structure (CBS)</span>
+				</div>
+				<Divider />
+			</div>
+		);
+	};
+
+	const handleNone = () => {
+		handleDropdownChange('', 'rollupTaskIds');
+		setDynamicClose(!dynamicClose);
+	};
+
+	const handleAutoCreateWbs = () => {
+		const newRollup = `${formData?.name} - ${formData.division} - ${formData.costCode} : ${formData.costType}`;
+
+	};
+
+	// const wbsHandleSearch = (filteredOptions: any, searchText: any) => {
+	// 	if (filteredOptions?.length > 0) {
+	// 		setWbsAddButton(true)
+	// 		setWbsSearchText('')
+	// 	}
+	// 	else {
+	// 		setWbsAddButton(false)
+	// 		setWbsSearchText(searchText)
+	// 	}
+	// }
+	const wbsSelectedData = (value: any) => {
+		// console.log('wbsSelectedData', value);
+		if (value?.length > 0) {
+			if (value?.length > 1) {
+				const lastValue = value[value.length - 1];
+				// console.log('lastValue', lastValue);
+				return [lastValue];
+			}
+			else {
+				return value;
+			}
+		}
+		else {
+			return [];
+		}
+	};
+
+	const getCatalogTooltipTmpl = useCallback(() => {
+		return (
+			<div className="catalog-tooltip-wrapper">
+				<div className="catalog-tooltip-wrapper_img-container">
+					<img src={formData?.equipmentThumbnail} alt="Catalog Img" />
+				</div>
+				<div className="catalog-tooltip-wrapper_body">
+					<div className="catalog-tooltip-wrapper_body-title">
+						{formData?.equipmentName}
+					</div>
+					<div className="catalog-tooltip-wrapper_body-type">
+						{formData.equipmentManufacturerName}
+					</div>
+
+					<div className="catalog-tooltip-wrapper_body-sku">
+						<span className="common-icon-sku"></span>SKU: {formData?.equipmentSKU}</div>
+					<div className="catalog-tooltip-wrapper_body-ref">
+						<span className="common-icon-ref-id"></span> Ref ID: {formData?.referenceId}
+					</div>
+					<div className="catalog-tooltip-wrapper_body-price">
+						<span className="common-icon-price"></span>Price: {currencySymbol}{formData?.equipmentItemPrice?.toLocaleString("en-US")}</div>
+				</div>
+			</div>
+		);
+	}, [formData.equipmentName]);
+
+	const onCatalogBtnClick = () => {
+		if (isLocalhost) {
+			const obj = formatCompanyData().find((rec: any) => catalogLocalData.distributorId === rec.objectId);
+			setFormData({
+				...formData,
+				equipmentCatalogId: catalogLocalData.id,
+				equipmentModel: catalogLocalData.sku,
+				equipmentManufacturer: [obj],
+				equipmentManufacturerName: obj?.name
+			});
+		} else {
+			postMessage({
+				event: 'opencatalog',
+				body: {
+					data: {
+						skuType: "SingleCatalog",
+						singleQuantity: true
+					}
+				}
+			});
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener(
+			"message",
+			(event: any) => {
+				let data = event.data;
+				data = typeof data == "string" ? JSON.parse(data) : data;
+				data =
+					data.hasOwnProperty("args") && data.args[0] ? data.args[0] : data;
+				if (data) {
+					switch (data.event || data.evt) {
+						case "save-catalog":
+							if (data.data) {
+								let catObj = JSON.parse(data.data)?.[0] || {};
+								if (catObj.manufacturer?.id) {
+									const obj = companyDataRef.current.find((rec: any) => catObj.manufacturer?.id === rec.objectId);
+									setFormData({
+										...formData,
+										equipmentCatalogId: catObj.id,
+										equipmentModel: catObj.sku,
+										equipmentManufacturer: [obj],
+										equipmentName: catObj?.name,
+										equipmentThumbnail: catObj.src,
+										equipmentItemPrice: catObj.price,
+										referenceId: catObj.referenceId,
+										equipmentSKU: catObj.sku,
+										equipmentManufacturerName: catObj.manufacturer?.name,
+										unitQuantity: catObj.quantity,
+										unitCost: catObj.price,
+										originalAmount: getOriginalAmount(catObj?.quantity, catObj?.price),
+
+									});
+								} else {
+									const obj = companyDataRef.current.find((rec: any) => catObj?.distributorId === rec.objectId);									
+									setFormData({
+										...formData,
+										equipmentCatalogId: catObj.id,
+										equipmentModel: catObj.sku,
+										equipmentName: catObj?.name,
+										equipmentThumbnail: catObj.src,
+										equipmentItemPrice: catObj.price,
+										referenceId: catObj.referenceId,
+										equipmentSKU: catObj.sku,
+										equipmentManufacturerName: catObj?.distributorName,
+										equipmentManufacturer: [obj],
+										unitQuantity: catObj.quantity,
+										unitCost: catObj?.price,
+										originalAmount: getOriginalAmount(catObj?.quantity, catObj?.price),										
+									});
+								}
+
+							}
+							break;
+					}
+				}
+			},
+			false
+		);
+	}, []);
+
+	const getDefaultFilter = () => {
+		let inlineFilter: any = [];
+		divisionCostCodeFilterData?.map((obj: any) => {
+			if (obj?.value == formData?.division) inlineFilter = [obj?.hierarchy];
+		});
+		return inlineFilter;
+	};
+
+	useEffect(()=> {
+		setDivisionDefaultFilters(getDefaultFilter());
+	}, [divisionCostCodeFilterData])
+
+	const handleProviderSourceChange = (type: string, key:string) => {
+		if (type == 'yes') {
+			console.log("yeeeee", formData)
+			if(key == 'providerSource') setFormData({ ...formData, [key]: formData?.providerSource == 0 ? 1 : 0 });
+			if(key == 'isBillable') setFormData({ ...formData, [key]: !formData?.isBillable })
+			
+			setAlert({ show: false, type: '', msg: '' })
+		}
+		else setAlert({ show: false, type: '', msg: '' })
+	}
+
+	// const handleSearchProp= (items:any, key:any) => {
+	// 	if(items?.length === 0) setShowAddIcon(true);
+	// 	else setShowAddIcon(false);
+	// };
+	const getWbs = (rollUpIds:any) => {
+		let value: any = '';
+		rollupTaskData.map((obj: any, index:number) => {
+			if(rollUpIds?.includes(obj?.value)) value = (`${value} ${obj?.label},`);
+		});
+		return value?.slice(0, -1);
+	}
+
+	const getSbs = (sbs:any) => {
+		let value = '';
+		sbs?.forEach((obj:any, index:number) => {
+			value = `${value} ${obj?.name},`
+		})
+		return value?.slice(0, -1);
+	};
+
+	const getSBSPhaseColor = (phaseId:any) => {
+		let phaseColor = 'red';
+		phaseDropDownOptions?.forEach((option:any) => {
+			if(option?.id == phaseId) phaseColor = option.color
+		})
+		return phaseColor
+	}
+	const getLocationNames = (locations:any) => {
+		let value = '';
+		locations?.forEach((obj:any, index:number) => {
+			value = `${value} ${obj?.name},`
+		})
+		return value?.slice(0, -1);
+	};
+	const handleMap = () => {
+		postMessage({
+			event: "common",
+			body: {
+				evt: "linearviewer",
+				data:{
+					
+				}
+			}
+		})
+	}
+	const getOriginalAmount = (qty:any, cost:any) => {
+		if(qty && cost) return Number(qty)*Number(cost)
+		if(cost) return Number(cost)
+	}
+	const handleLaborSheet = (data:any) => {
+		setShowWorkersDialog(false);
+		console.log("dataaaa", data)	
+		setFormData({...formData, workplannerCategoryId: data?.categoryId, workplannerCategoryName: data?.workplannerCategoryName, tradeName: data?.tradeName, tradeId: data?.id, hourlyRate: data?.hourlyRate, unitCost: data?.hourlyRate, ...formData?.unitQuantity && {originalAmount: getOriginalAmount(formData?.unitQuantity, data?.hourlyRate)}})
+	};
+
+	return (
+		<div className="Estimatebudget-details-box">
+			<div className="budget-details-header">
+				<div className="title-action">
+					<span className="title">Estimate  Details</span>
+				</div>
+			</div>
+			<div className="budget-details-content">
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Original Estimate Amount</div>
+					<div className="budget-info-data-box">
+						{gridIcon}
+						<span className="budget-info-data">{formData.estimateAmount}</span>
+					</div>
+				</span>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Estimate ID/CBS</div>
+					<div className="budget-info-data-box">
+						{gridIcon}
+						<span className="budget-info-data">{formData.name}</span>
+					</div>
+				</span>
+				<span className="budget-info-tile span-2 division-cost-code-field">
+					<div className="budget-info-label">
+						Division/Cost Code <span className="required_color">*</span>
+						{formData.isCostCodeInvalid ? (
+							<IQTooltip
+								title="The Division / Cost Code number does not match any code in the new list. Please update a new code."
+								placement="bottom"
+								arrow={true}
+							>
+								<WarningAmber
+									fontSize={primaryIconSize}
+									style={{ color: "red" }}
+								/>
+							</IQTooltip>
+						) : null}
+					</div>
+					
+					<div className="budget-info-data-box">
+					
+						{isReadOnly ? `${formData?.division}-${formData.costCode}` : <CostCodeSelect
+							label=" "
+							options={costCodeDropdownData?.length > 0 ? costCodeDropdownData : []}
+							hiddenOptions={costCodeHiddenOptions}
+							onChange={(value: any) => handleDropdownChange(value, 'costCode')}
+							// required={true}
+							//startIcon={<div className='budget-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
+							startIcon={<span className="common-icon-Budgetcalculator"></span>}
+							checkedColor={'#0590cd'}
+							showFilter={false}
+							selectedValue={formData?.division && formData?.costCode ?  formData?.costCode : ''}
+							Placeholder={'Select'}
+							outSideOfGrid={true}
+							showFilterInSearch={true}
+							filteroptions={divisionCostCodeFilterData.length > 0 ? divisionCostCodeFilterData : []}
+							onFiltersUpdate={(filters: any) => setDivisionDefaultFilters(filters)}
+							defaultFilters={divisionDefaultFilters}
+						/>}
+					</div>
+				</span>
+				<>
+					<div className="budget-info-subheader">
+						Associate Manufacturer and Model
+					</div>
+					<span className="budget-info-tile">
+						<div className="budget-info-label">Manufacturer</div>
+						<div className="budget-info-data-box">
+							{isReadOnly ? formData?.equipmentManufacturer : <SUIBaseDropdownSelector
+								value={formData?.equipmentManufacturer || []}
+								width="100%"
+								menuWidth="200px"
+								icon={gridIcon}
+								placeHolder={"Select"}
+								dropdownOptions={formatCompanyData()}
+								handleValueChange={(value: any) =>
+									handleDropdownChange(value, "equipmentManufacturer")
+								}
+								showFilterInSearch={false}
+								multiSelect={false}
+								companyImageWidth={"17px"}
+								companyImageHeight={"17px"}
+								showSearchInSearchbar={true}
+								addCompany={false}
+							></SUIBaseDropdownSelector>}
+						</div>
+					</span>
+					<span className="budget-info-tile">
+						<div className="budget-info-label">Model Number</div>
+						<div className="budget-info-data-box">
+							{isReadOnly ? formData?.equipmentModel : <TextField
+								id="equipmentModel"
+								fullWidth
+								placeholder={`Enter`}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment position="start">
+											{gridIcon}
+										</InputAdornment>
+									),
+								}}
+								name="equipmentModel"
+								variant="standard"
+								value={formData?.equipmentModel || ""}
+								onChange={(e: any) =>
+									setFormData({ ...formData, equipmentModel: e.target.value })
+								}
+							/>}
+						</div>
+					</span>
+					<span className="budget-info-tile from-catalog-btn-tile">
+						<div className="budget-info-label"></div>
+						<div>
+							{formData?.equipmentName ? (
+								<DynamicTooltip
+									id="budget-catalog-tooltip"
+									title={getCatalogTooltipTmpl()}
+									placement="top"
+									enterDelay={500}
+									enterNextDelay={500}
+								>
+									<Button
+										variant={"contained"}
+										startIcon={<span className="common-icon-from-catalog"></span>}
+										className="from-catalog-btn"
+										onClick={onCatalogBtnClick}
+										disabled={isReadOnly}
+									>
+										From Catalog
+									</Button>
+								</DynamicTooltip>
+							) : (
+								<Button
+									variant={"outlined"}
+									startIcon={<span className="common-icon-from-catalog"></span>}
+									className="from-catalog-btn"
+									onClick={onCatalogBtnClick}
+									disabled={isReadOnly}
+								>
+									From Catalog
+								</Button>
+							)}
+						</div>
+					</span>
+				</>
+			
+				<span className="budget-info-tile">
+					<div className="budget-info-label">
+						Cost Type <span className="required_color">*</span>
+					</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? formData?.costType : <SmartDropDown
+							options={costTypeOpts?.length > 0 ? costTypeOpts : []}
+							required={true}
+							LeftIcon={gridIcon}
+							isSearchField
+							isFullWidth
+							outSideOfGrid={false}
+							selectedValue={formData.costType}
+							menuProps={classes.menuPaper}
+							sx={{ fontSize: "18px" }}
+							handleChange={(value: string | undefined | string[]) => {
+								handleDropdownChange(value ? value[0] : "", "costType");
+							}}
+						/>}
+					</div>
+				</span>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Curve</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? formData?.curve : <SmartDropDown
+							LeftIcon={<span className="common-icon-Curve"></span>}
+							options={[]}
+							outSideOfGrid={false}
+							isSearchField={false}
+							isFullWidth
+							selectedValue={formData.curve}
+							menuProps={classes.menuPaper}
+							handleChange={(value: any) =>
+								handleDropdownChange(value, "curve")
+							}
+						/>}
+					</div>
+				</span>
+			
+				<div className="budget-billable-cls">
+					<div className="budget-bill-provider-cls budget-info-tile">
+							<div className="budget-info-label">
+									<span>Provider Source</span>
+							</div>
+							<span className="source-checkbox-cls">
+								<RadioGroup
+									row
+									aria-labelledby="demo-row-radio-buttons-group-label"
+									name="row-radio-buttons-group"
+									value={formData?.providerSource == 1 ? 'self' : 'trade'}
+									onChange={(e) => { handleDropdownChange(e.target.value == 'self' ? 1 : 0, "providerSource") }}
+								>
+									<FormControlLabel value="self" control={<Radio />} label="Self Perform" className='radioLabel'
+										disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+									/>
+									<FormControlLabel value="trade" control={<Radio />} label="Trade Partner" className='radioLabel'
+										disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+									/>
+								</RadioGroup>
+							</span>
+					</div>
+					<div className="budget-bill-Client-cls budget-info-tile">
+								<div className="budget-info-label">
+									<span>Billable in Client Contract</span>
+								</div>
+								<span className="source-checkbox-cls">
+									<RadioGroup
+										row
+										aria-labelledby="demo-row-radio-buttons-group-label"
+										name="row-radio-buttons-group"
+										value={formData?.isBillable?.toString()}
+										onChange={(e) => { handleDropdownChange(e.target.value == 'true' ? true : false, "isBillable") }}
+									>
+										<FormControlLabel value={true} control={<Radio />} label="Billable"
+											disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+										/>
+										<FormControlLabel value={false} control={<Radio />} label="Non-Billable"
+											disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+										/>
+									</RadioGroup>
+								</span>
+					</div>
+				</div>
+				
+				<div className="budget-billable-cls Mark-Up-cls">
+					<div className="source-type-cls budget-info-tile">
+						<div className="budget-info-label">
+							<span>Source Type</span>
+						</div>
+						<span className="source-checkbox-cls">
+							<RadioGroup
+								row
+								aria-labelledby="demo-row-radio-buttons-group-label"
+								name="row-radio-buttons-group"
+								value={formData?.sourceType?.toString()}
+								onChange={(e) => { handleDropdownChange(e.target.value == "0" ? 0 : 1, "sourceType") }}
+							>
+								<FormControlLabel value={0} control={<Radio />} label="Purchase"
+									disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+								/>
+								<FormControlLabel value={1} control={<Radio />} label="Rent"
+									disabled={formData?.bidPackage || formData?.vendorContract || formData?.clientContract || isReadOnly}
+								/>
+							</RadioGroup>
+						</span>
+					</div>
+					<span className="budget-info-tile span-3 mark-up-fee">
+						<div className="budget-info-label"><span>Mark-Up Fee</span></div>
+						<div className="budget-info-data-box">
+							<div>Add Mark-up Fee?</div>
+							<RadioGroup
+								row
+								name="markupFee"
+								className="associated-to"
+								value={formData?.addMarkupFee}
+								onChange={(e: any) =>
+									handleDropdownChange(
+										e.target.value == "true" ? true : false,
+										"addMarkupFee"
+									)
+								}
+							>
+								<FormControlLabel value={true} control={<Radio />} label="Yes" disabled={isReadOnly} className='radioLabel'/>
+								<FormControlLabel value={false} control={<Radio />} label="No" disabled={isReadOnly} className='radioLabel'/>
+								{formData?.addMarkupFee && (
+									<>
+										<span className="enter-value-cls">Enter Value</span>
+										<span>
+											<FormControl sx={{ m: 1, minWidth: 100 }} size="small">
+												<Select
+													labelId="demo-select-small"
+													id="demo-select-small"
+													value={
+														formData?.markupFeeType == 0
+															? "Amount"
+															: "Percentage"
+													}
+													disabled={isReadOnly}
+													className="cc-schedule-values_select"
+													// disabled={props?.readOnly}
+													onChange={(event: any) =>
+														handleDropdownChange(
+															event.target.value == "Amount" ? 0 : 1,
+															"markupFeeType"
+														)
+													}
+												>
+													<MenuItem value="Amount">Amount</MenuItem>
+													<MenuItem value="Percentage">Percentage</MenuItem>
+												</Select>
+											</FormControl>
+										</span>
+										<span className="cc-schedule-values_list-item cc-schedule-values_tooltip-section">
+											<TextField
+												id="standard-basic"
+												variant="standard"
+												disabled={isReadOnly}
+												value={
+													formData?.markupFeeType == 0
+														? amountFormatWithOutSymbol(
+															formData?.markupFeeAmount
+														)
+														: amountFormatWithOutSymbol(
+															formData?.markupFeePercentage
+														)
+												}
+												// onBlur={() => handleOnBlur('contingenices', formData?.markupFeeType == 0 ? 'markupFeeAmount' : 'markupFeePercentage')}
+												// disabled={props?.readOnly}
+												onChange={(e: any) =>
+													handleDropdownChange(
+														e.target.value?.replaceAll(",", ""),
+														formData?.markupFeeType == 0
+															? "markupFeeAmount"
+															: "markupFeePercentage"
+													)
+												}
+												InputProps={{
+													startAdornment: formData?.markupFeeType == 0 && (
+														<InputAdornment position="start">
+															<span style={{ color: "#333333" }}>
+																{currencySymbol}
+															</span>
+														</InputAdornment>
+													),
+													endAdornment: formData?.markupFeeType == 1 && (
+														<InputAdornment position="end">
+															<span
+																style={{ color: "#333333", marginTop: "6px" }}
+															>
+																{"%"}
+															</span>
+														</InputAdornment>
+													),
+												}}
+											// error={formData?.markupFeeType == 0 ? formData?.markupFeeAmount > formData?.originalAmount ? true : false : false}
+											// sx={{
+											// 	'.MuiInputBase-root:before': {
+											// 		borderBottom: formData?.markupFeeType == 0 ? formData?.markupFeeAmount > formData?.originalAmount ? '1px solid red	 !important' : '1px solid #ccc !important' : '1px solid #ccc !important'
+											// 	},
+											// 	'.MuiInputBase-root': {
+											// 		width: formData?.markupFeeType == 0 ? formData?.markupFeeAmount > formData?.originalAmount ? '160px' : '100%' : '100%'
+											// 	}
+											// }}
+											/>
+										</span>
+									</>
+								)}
+							</RadioGroup>
+						</div>
+					</span>
+				</div>
+				
+				<span className="budget-info-tile date-field">
+					<div className="budget-info-label">Estimated Start Date</div>
+					<div className="budget-info-data-box">
+						<span className="budget-info-data">
+							{isReadOnly ? <span>{convertDateToDisplayFormat(formData.estimatedStart)}</span> : <DatePickerComponent
+								containerClassName="iq-customdate-cont"
+								defaultValue={convertDateToDisplayFormat(
+									formData.estimatedStart
+								)}
+								onChange={(val: any) =>
+									handleDropdownChange(val, "estimatedStart")
+								}
+								maxDate={
+									formData.estimatedEnd !== ""
+										? new Date(formData.estimatedEnd)
+										: new Date("12/31/9999")
+								}
+								render={
+									<InputIcon
+										placeholder={"MM/DD/YYYY"}
+										className="custom-input rmdp-input"
+									/>
+								}
+							/>}
+						</span>
+					</div>
+				</span>
+				
+				<span className="budget-info-tile date-field">
+					<div className="budget-info-label">Estimated End Date</div>
+					<div className="budget-info-data-box">
+						<span className="budget-info-data">
+							{isReadOnly ? <span>{convertDateToDisplayFormat(formData.estimatedEnd)}</span> : <DatePickerComponent
+								containerClassName="iq-customdate-cont"
+								defaultValue={convertDateToDisplayFormat(formData.estimatedEnd)}
+								onChange={(val: any) =>
+									handleDropdownChange(val, "estimatedEnd")
+								}
+								minDate={new Date(formData.estimatedStart)}
+								render={
+									<InputIcon
+										placeholder={"MM/DD/YYYY"}
+										className="custom-input rmdp-input"
+									/>
+								}
+							/>}
+						</span>
+					</div>
+				</span><br/>
+				
+				
+								
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Unit Of Measure</div>
+					<div className="budget-info-data-box">
+						{gridIcon}
+						<span className="budget-info-data">
+							{formData.unitOfMeasure || "-"}
+						</span>
+					</div>
+				</span>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Unit Quantity</div>
+					<div className="budget-info-data-box">
+						{gridIcon}
+						<span className="budget-info-data">
+							{formData?.unitQuantity?.toLocaleString("en-US") || "-"}
+						</span>
+					</div>
+				</span>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Unit Cost</div>
+					<div className="budget-info-data-box">
+						{gridIcon}
+						<span className="budget-info-data">
+							{formData.unitCost !== null &&
+								formData.unitCost !== undefined &&
+								amountFormatWithSymbol(formData.unitCost)}
+						</span>
+					</div>
+				</span>
+				
+				<div className="budget-info-subheader">Location Breakdown Structure (LBS)</div>
+				<span className="budget-info-tile">
+					<div className="budget-info-label">Location Type</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ?
+							<span
+								className="budget-info-data hot-link"
+								// onClick={() =>
+								// 	window.open(useHotLink(`client-contracts/home?id=${formData?.clientContract?.id}`), "_blank")
+								// }
+							>
+								{formData?.locations?.length ? formData?.locations?.[0]?.levelName : "-"}
+							</span>
+							: <SmartDropDown
+								options={
+									levels?.map((level: any) => {
+										return { label: level.name, value: level.levelId };
+									}) || []
+								}
+								required={false}
+								LeftIcon={
+									<div className="budget-info-icon common-icon-Location-filled"></div>
+								}
+								isSearchField
+								isFullWidth
+								outSideOfGrid={false}
+								selectedValue={levelValue}
+								menuProps={classes.menuPaper}
+								sx={{ fontSize: "18px" }}
+								handleChange={(value: string | undefined | string[]) => {
+									setSelectedLevel(value);
+									// if(value?.label == 'Jobsite') setShowLocationSegments(true);
+									// else setShowLocationSegments(false);
+								}}
+							/>
+						}
+					</div>
+				</span>
+				{ (locationConfig?.spatialType == 'linear' && selectedLocationTypeObj?.name == 'Jobsite') ? 
+				<span className="budget-segment-cls">
+					<span className="segment-block-cls">
+					<div className="budget-info-label">Segment</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? selectedSegment?.label : <SmartDropDown
+								options={
+									locationSegmentsData?.spatialData?.linearData?.map((segment: any) => {
+										return { label: segment.name, value: segment?.uniqueId };
+									}) || []
+								}
+								required={false}
+								// isFullWidth
+								outSideOfGrid={false}
+								// selectedValue={levelValue}
+								menuProps={classes.menuPaper}
+								sx={{ fontSize: "18px" }}
+								handleChange={(value: string | undefined | string[]) => {
+									const segment = locationSegmentsData?.spatialData?.linearData?.filter((segmentItem:any) => segmentItem?.uniqueId == value?.[0])?.[0]
+									console.log("segment", {...segment, startAt: 0, endAt: segment?.distance})
+									setSelectedSegment({...segment, startAt: 0, endAt: segment?.distance});
+								}}
+						/>}
+					</div>
+					</span>
+					<span className="segment-block-cls">
+					<div className="budget-info-label">Start At</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? selectedSegment?.startAt : <TextField
+							id="startAt"
+							type='number'
+							InputProps={{
+								inputProps: {min: 0, step: ".01"}
+							}}
+							onKeyDown={(evt) =>
+								(evt.key === "-" || evt.key === "+") && evt.preventDefault()
+							}
+							name='startAt'
+							variant="standard"
+							value={Math.round(selectedSegment?.startAt*100)/100}
+							// onChange={(e: any) => handleOnChange("intendToBidCountdown", e.target?.value)}
+							// onBlur={(e: any) => handleOnBlur('intendToBidCountdown')}
+						/>}
+					</div>
+				</span>
+				<span className="segment-block-cls">
+					<div className="budget-info-label">End At</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? selectedSegment?.endAt : <TextField
+							id="EndAt"
+							type='number'
+							InputProps={{
+								inputProps: {min: 0, step: ".01"}
+							}}
+							onKeyDown={(evt) =>
+								(evt.key === "-" || evt.key === "+") && evt.preventDefault()
+							}
+							name='EndAt'
+							variant="standard"
+							value={Math.round(selectedSegment?.endAt*100)/100}
+							// onChange={(e: any) => handleOnChange("intendToBidCountdown", e.target?.value)}
+							// onBlur={(e: any) => handleOnBlur('intendToBidCountdown')}
+						/>}
+					</div>
+				</span>
+				
+				<span className="segment-block-cls">
+					<span className="unit">{locationSegmentsData?.unit ? measurementSymbols?.[locationSegmentsData?.unit] : ''}</span>
+						<span className="common-icon-road" onClick={()=> handleMap()}></span>
+					</span>
+				</span>
+				:<span className="budget-info-tile">
+					<div className="budget-info-label">Default Location</div>
+					<div className="budget-info-data-box">
+						{isReadOnly ? getLocationNames(formData?.locations) : <Location
+							fullWidth
+							hideLevel={true}
+							multiple={true}
+							options={locations}
+							value={location}
+							onChange={(e, newValue) => {
+								handleLocationChange(newValue);
+							}}
+							getOptionLabel={(option: any) => option?.text || ""}
+						/>}
+					</div>
+				</span> }
+
+				<div className="budget-info-subheader">
+					System Breakdown Structure (SBS)
+				</div>
+
+				<span className='budget-info-tile span-2'>
+					<div className='budget-info-label'>System BreakDown Structure (SBS)</div>
+					<div className='budget-info-data-box'>
+						{isReadOnly ?
+							<span
+								// className="budget-info-data hot-link"
+								// onClick={() =>
+								// 	window.open(useHotLink(`client-contracts/home?id=${formData?.clientContract?.id}`), "_blank")
+								// }
+							>
+								{formData?.sbs?.length ? getSbs(formData?.sbs) : "-"}
+								
+							</span>
+							:<SmartDropDown
+							options={sbsOptions ? sbsOptions : []}
+							required={true}
+							LeftIcon={<div className='budget-info-icon common-icon-Location-filled'></div>}
+							isSearchField
+							isFullWidth
+							outSideOfGrid={false}
+							selectedValue={formData?.sbs?.map((item:any) => {return item?.id})}
+							isMultiple={true}
+							menuProps={classes.menuPaper}
+							sx={{ fontSize: '18px' }}
+							handleChange={(value: any) => {
+								const selRec = value?.map((id: any) => { return {id: id}});
+								handleDropdownChange(selRec, 'sbs');
+							}}
+						/>
+						}
+					</div>
+				</span>
+				<span className='budget-info-tile'>
+					<div className='budget-info-label'>Phase</div>
+					<div className='budget-info-data-box'>
+						{/* <SmartDropDown
+							options={ []}
+							required={true}
+							LeftIcon={<div className='budget-info-icon common-icon-Location-filled'></div>}
+							isSearchField
+							isFullWidth
+							outSideOfGrid={false}
+							selectedValue={''}
+							menuProps={classes.menuPaper}
+							sx={{ fontSize: '18px' }}
+							handleChange={(value: string | undefined | string[]) => {
+								// handleDropdownChange(value ? value[0] : '', 'costType');
+							}}
+						/> */}
+						{isReadOnly ?
+							<span
+							>
+							{formData?.sbsPhaseName ? <Button style={{
+									backgroundColor: getSBSPhaseColor(formData?.sbsPhaseId),
+									color: "#fff",
+									alignItems: "center",
+								}} className="phase-btn">
+								<span className="common-icon-phase"></span>
+								{formData?.sbsPhaseName}
+							</Button> : '-'}
+								
+							</span>
+							:<SmartDropDown
+								LeftIcon={<div className="common-icon-phase"></div>}
+								options={phaseDropDownOptions || []}
+								outSideOfGrid={true}
+								isSearchField={true}
+								isFullWidth
+								Placeholder={"Select"}
+								selectedValue={formData?.sbsPhaseName}
+								menuProps={classes.menuPaper}
+								handleChange={(value: any) => {
+								const selRec: any = phaseDropDownOptions.find(
+									(rec: any) => rec.value === value[0]
+								);
+								handleDropdownChange(selRec, "sbsPhaseId");
+								}}
+								ignoreSorting={true}
+								showIconInOptionsAtRight={true}
+								// handleAddCategory={(val:any) => handlePhaseAdd('phase', val)}
+								// isCustomSearchField={showAddIcon}
+								dynamicClose={dynamicClose}
+								// handleSearchProp={(items:any, key:any) => handleSearchProp(items, key)}
+							/>
+						}
+					</div>
+				</span>
+
+			</div>
+
+			{tabSelectedValue == "budget-details" && !isReadOnly ? (
+				<Fab
+					sx={{
+						position: "absolute",
+						bottom: "6em",
+						right: "3em",
+						color: "#fff",
+						backgroundColor: "#0a8727",
+						"&:hover": {
+							background: "#0a8727",
+						},
+					}}
+					aria-label="Add"
+				>
+					<Box
+						component="img"
+						alt="Save"
+						src={SaveButtonWhite}
+						className="image"
+						width={25}
+						height={25}
+						onClick={() => {
+							submitUpdate();
+						}}
+					/>
+					{/* <Save  /> */}
+				</Fab>
+			) : null}
+
+			{alert?.show && (
+				<SUIAlert
+					open={alert?.show}
+					onClose={() => {
+						setAlert({ ...alert, show: false, type: '', key: '' });
+					}}
+					contentText={
+						<div>
+							<span>{alert?.msg}</span>
+							<br />
+							{alert?.type == 'Warning' && <div style={{ textAlign: "right", marginTop: "10px" }}>
+								<Button
+									className="cancel-cls"
+									style={{
+										backgroundColor: "#666",
+										color: "#fff",
+										padding: "12px",
+										height: "37px",
+										borderRadius: "2px",
+										marginRight: "0px",
+										boxShadow:
+											"0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)",
+										display: "initial",
+									}}
+									onClick={(e: any) => setAlert({ ...alert, show: false, type: '', key: '' })}
+								>
+									OK
+								</Button>
+							</div>}
+						</div>
+					}
+					DailogClose={true}
+					title={alert?.type}
+					onAction={(e: any, type: string) => handleProviderSourceChange(type, alert?.key)}
+					showActions={alert?.type == 'Warning' ? false : true}
+				/>
+			)}
+			{showWorkersDialog && <LaborSheetModel data={laborSheetData} handleSubmit={(values:any) => handleLaborSheet(values)} onClose={() => setShowWorkersDialog(false)}/>}			
+		</div>
+	);
+};
+
+export default memo(EstimateBudgetDetails);

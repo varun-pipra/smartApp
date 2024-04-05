@@ -73,3 +73,36 @@ export const getSafetyCredIFrame = () => {
 	}
 	return safetyCredFrame;
 }
+
+export const getGroupedColumns = (cols:any, selectedGroup:string) => {
+	if (((selectedGroup ?? false) && selectedGroup !== "")) {
+		cols.forEach((col: any) => {
+			col.rowGroup = selectedGroup === col.field;
+		});
+		return cols;
+	} else if (selectedGroup ?? true) {
+		cols.forEach((col: any) => {
+			col.rowGroup = false;
+		});
+		return cols;
+	}
+};
+
+export const getSearchBasedOnKeys = (item:any, searchText:string) => {
+	const regex = new RegExp(searchText, "gi");
+	return Object.keys(item).some((field) => {
+		if (Array.isArray(item[field])) {
+			if (item[field]?.length > 0) {
+				for (let i = 0; i < item[field].length; i++) {
+					return Object.keys(item?.[field]?.[i])?.some((objField) => {
+						return item?.[field]?.[i]?.[objField]?.toString()?.match(regex);
+					});
+				}
+			} else return false;
+		} else if ((item[field] ?? false) && typeof item[field] === "object") {
+			return Object.keys(item?.[field])?.some((objField) => {
+				return item?.[field]?.[objField]?.toString()?.match(regex);
+			});
+		} else return item?.[field]?.toString()?.match(regex);
+	});
+};

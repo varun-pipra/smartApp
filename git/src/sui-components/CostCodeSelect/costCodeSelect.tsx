@@ -150,7 +150,7 @@ export default function CostCodeSelect({ label, options, onChange, required, sta
 
 
 	const onOpenChange = (e: any) => {
-		console.log("eee", e)
+		// console.log("eee", e)
 		setToggleDropDown(false)
 		setEllipsis(false)
 		const { target } = e;

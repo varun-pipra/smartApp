@@ -244,12 +244,12 @@ const BudgetCreateForm = (props: any) => {
 					dropDownLabel="Cost Type"
 					isSearchField
 					required
-					// outSideOfGrid={true}
-					// selectedValue={headerPageData.costType}
+					outSideOfGrid={true}
+					selectedValue={headerPageData.costType}
 					isFullWidth
 					// handleChange={(value: any) => handleOnChange(value[0], 'costType')}
 					// menuProps={classes.menuPaper}
-					// displayEmpty={true}
+					displayEmpty={true}
 					Placeholder={'Select'}
 					ignoreSorting={true}
 					// disabled={isBudgetLocked}

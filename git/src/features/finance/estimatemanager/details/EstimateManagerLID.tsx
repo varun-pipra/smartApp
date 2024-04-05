@@ -3,6 +3,7 @@ import { getServer } from "app/common/appInfoSlice";
 import { useAppSelector } from "app/hooks";
 import { memo, useEffect, useMemo, useState } from "react";
 import IQGridLID from 'components/iqgridwindowdetail/IQGridWindowDetail';
+import EstimateBudgetDetails from './tabs/estimatedetails/EstimateDetails';
 
 const EstimateManagerLID = ({ data, ...props }: any) => {
     const { currencySymbol } = useAppSelector((state) => state.appInfo);
@@ -11,35 +12,20 @@ const EstimateManagerLID = ({ data, ...props }: any) => {
         const [stateObject, setStateObject] = useState<any>({})
     const HeaderContent = memo((props: any) => {
         return <div className='kpi-section'>
-        <div className='kpi-vertical-container'>
-            <div className='lid-details-container'>
-                {/* <span className='budgetid-label grey-font'>Status:</span>
-                <span className='status-pill' style={{backgroundColor: vendorPayAppsPaymentStatusColors[props?.headerData?.status], color: tinycolor(vendorPayAppsPaymentStatusColors[props?.headerData?.status]).isDark() ? 'white' : 'black', }}>
-                    <span className={vendorPayAppsPaymentStatusIcons[props?.headerData?.status]} />
-                    {vendorPayAppsPaymentStatus[props?.headerData?.status]}
-                </span>
-                <span className='last-modified-label grey-font'>Last Modified:</span>{props?.headerData?.modifiedOn ? stringToUSDateTime2(props?.headerData?.modifiedOn) : ''} by {props?.headerData?.modifiedBy?.displayName}<span className='grey-fontt'> </span> */}
-                <span className='budgetid-label grey-font'>Status:</span>
-                    <span className='bid-content'>
-                        <span className='status-pill'>
-                            <span  />
-                            {"status"}
-                        </span> 
-                        
+            <div className='kpi-vertical-container'>
+                <div className='lid-details-container'>
+                    {/* <span className='budgetid-label grey-font'>Change Order ID:</span>
+                    <span className='grey-fontt'>{changeRequestDetails?.code || ''}</span> */}
+                    <span className='budgetid-label grey-font'>Change Order ID:</span>		
+                        <span className='changevent-content'>
+                         
                     </span>
-                    <div>
-                        <span className='last-modified-label grey-font'>Last Modified:</span>{"modifiedData"}<span className='grey-fontt'> </span>
-                    </div>
-                    <div>
-                        <span className='last-modified-label grey-font'>Original Estimate:</span>{"modifiedData"}<span className='grey-fontt'> </span>
-                    </div>
-                    </div>
-                    <span className='kpi-right-container'>
-                        <span className='kpi-name' >Estimate ID/CBS: <span className='bold'>{"&^&^"}</span></span>
-                        <span className='amount' style={{backgroundColor: '#c9e59f'}}>{}</span>
-                    </span>
-                    </div>
-                </div>;
+                    <span className='budgetid-label grey-font'>Status:</span>
+                    <span className='last-modified-label grey-font'>Last Modified:</span>
+                </div>
+            
+            </div>
+        </div>;
     });
     const HeaderContentUpdate = useMemo(() => {
         return HeaderContent;
@@ -50,8 +36,8 @@ const EstimateManagerLID = ({ data, ...props }: any) => {
             tabId: 'estimate-etails',
             label: 'Estimate Details',
             showCount: false,
-            iconCls: 'common-icon-change-event-details',
-            // content: <ChangeEventsDetails />
+            iconCls: 'common-icon-budget-manager',
+            content: <EstimateBudgetDetails />
         } ,{
             tabId: 'links',
             label: 'Links',
