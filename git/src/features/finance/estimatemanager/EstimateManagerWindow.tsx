@@ -8,7 +8,7 @@ interface EstimateManagerWindowProps {
 
 import './EstimateManagerWindow.scss';
 
-import { setCurrencySymbol, setServer, getServer } from 'app/common/appInfoSlice';
+import { setCurrencySymbol, setServer, getServer, setCostCodeDivisionList, setCostTypeList } from 'app/common/appInfoSlice';
 import { isChangeEventClient, isChangeEventGC, isChangeEventSC } from 'app/common/userLoginUtils';
 import { useAppDispatch, useAppSelector, useHomeNavigation } from 'app/hooks';
 import { currency, isLocalhost, postMessage } from 'app/utils';
@@ -36,12 +36,14 @@ import { ViewBuilderOptions } from "sui-components/ViewBuilder/utils";
 import { deleteView, addNewView, updateViewItem } from "sui-components/ViewBuilder/Operations/viewBuilderAPI";
 import { fetchViewBuilderList, fetchViewData } from "sui-components/ViewBuilder/Operations/viewBuilderSlice";
 import { fetchConnectors } from 'features/budgetmanager/operations/gridSlice';
-import { fetchdefaultdrodown, fetchSettings } from 'features/budgetmanager/operations/settingsSlice';
+import { fetchCostCodeDropdownList, fetchdefaultdrodown, fetchDivisionCostCodeFilterList, fetchSettings, fetchSettingsCostCodeAndType } from 'features/budgetmanager/operations/settingsSlice';
+import { settingcostcodetypeData } from 'data/SettingsCosttypeData';
 import {clearObjectValues} from 'sui-components/ViewBuilder/utils';
 import BudgetCreateForm from './content/createform/BudgetCreateForm';
 import { EMLeftButtons, EMRightButtons } from './content/toolbar/EMToolbar';
 import { Button } from '@mui/material';
-import {gridData} from 'data/Budgetmanger/griddata';
+import { fetchGridData } from './stores/EstimateRoomSlice';
+import EstimateManagerLID from './details/EstimateManagerLID';
 
 const EstimateBudgetManagerWindow = (props: any) => {
 	const dispatch = useAppDispatch();
@@ -52,6 +54,7 @@ const EstimateBudgetManagerWindow = (props: any) => {
 	const appInfo = useAppSelector(getServer);
 	const location = useLocation();
 	const { toast, sourceList, changeEventIframeActive } = useAppSelector((state) => state.changeEventRequest);
+	const {gridData}=  useAppSelector((state) =>state.estimateRoom)
 	const { server, currencySymbol } = useAppSelector((state) => state.appInfo);
 	const [statusFilter, setStatusFilter] = useState<boolean>(true);
 	const [manualLIDOpen, setManualLIDOpen] = useState<boolean>(false);
@@ -70,6 +73,7 @@ const EstimateBudgetManagerWindow = (props: any) => {
 	// sourceList.map((el: any) => contractFilter[el.clientContract?.id] = el.clientContract?.title);
 //	const [viewBuilderData, setViewBuilderData] = useState<any>({ viewName: "", viewId: "" });
 	const { viewData, viewBuilderData } = useAppSelector(state => state.viewBuilder);
+	const { settingsData, CostCodeAndTypeData, openAlert, divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData } = useAppSelector(state => state.settings);
 
 	//if (statusFilter) defaultCERStatusFilter = filters.status;
 
@@ -101,8 +105,7 @@ const EstimateBudgetManagerWindow = (props: any) => {
 			// const params: any = new URLSearchParams(search);
 			setMaxByDefault(queryParams?.get('maximizeByDefault') === 'true');
 			setInline(queryParams?.get('inlineModule') === 'true');
-			setFullView(queryParams?.get('inlineModule') === 'true');
-
+			setFullView(queryParams?.get('inlineModule') === 'true');	
 			// if (queryParams?.get('id')) {
 			// 	dispatch(setCurrentChangeEventId(queryParams?.get('id')));
 			// 	setManualLIDOpen(true);
@@ -112,8 +115,42 @@ const EstimateBudgetManagerWindow = (props: any) => {
 			// 	}
 			// }
 		}
+		dispatch(fetchGridData(appInfo))
+		dispatch(fetchSettings(appInfo));
+		dispatch(fetchSettingsCostCodeAndType(appInfo));
 	}, []);
 
+
+		useEffect(() => {
+		// console.log('settings in header pinning', CostCodeAndTypeData)
+		dispatch(fetchDivisionCostCodeFilterList({ appInfo: appInfo, costCodeName: settingsData.divisionCostCode }));
+		dispatch(fetchCostCodeDropdownList({ appInfo: appInfo, name: settingsData.divisionCostCode }));
+		// dispatch(fetchCostTypeDropdownList({appInfo: appInfo, name: settingsData.divisionCostCode}));
+		// console.log("List divisionCostCodeFilterData",divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData)
+
+		const ListData = localhost ? settingcostcodetypeData.values : CostCodeAndTypeData.values;
+		// console.log('ListData', divisionCostCodeFilterData, costCodeDropdownData, costTypeDropdownData)
+		const divisionCostCodeListValues = getDivisionCostCodeValues(ListData, settingsData.divisionCostCodeId);
+		const costTypeListValues = getDivisionCostCodeValues(ListData, settingsData.costTypeId);
+		// console.log('divisionCostCodeListValues', divisionCostCodeListValues, costTypeListValues)
+		divisionCostCodeListValues?.length > 0 && dispatch(setCostCodeDivisionList(divisionCostCodeListValues[0]));
+		costTypeListValues?.length > 0 && console.log(costTypeListValues[0]); dispatch(setCostTypeList(costTypeListValues[0]));
+
+	}, [settingsData, CostCodeAndTypeData]);
+
+	const getDivisionCostCodeValues = (data: any, id: any) => {
+		if (data.length > 0) {
+			const values = data.map((obj: any) => {
+				if (obj.id === id) {
+					return obj.listValues;
+				}
+			});
+
+			return values.filter((element: any) => {
+				return element !== undefined;
+			});
+		}
+	};
 	// useEffect(() => {
 	// 	setToastMessage(toast);
 	// 	setTimeout(() => {
@@ -1001,7 +1038,7 @@ const EstimateBudgetManagerWindow = (props: any) => {
 			toast={toastMessage}
 			content={{
 				headContent: isChangeEventGC() ? { regularContent: <BudgetCreateForm /> } : {},
-				// detailView: ChangeEventRequestsLID,
+				detailView: EstimateManagerLID,
 				gridContainer: {
 					toolbar: {
 						leftItems: <EMLeftButtons />,
@@ -1034,7 +1071,7 @@ const EstimateBudgetManagerWindow = (props: any) => {
 					grid: {
 						// headers: columns,
 						headers: colDef && colDef.length > 0 ? colDef : columns,
-						data: modifiedList,
+						data: gridData,
 						getRowId: (params: any) => params.data?.id,
 						grouped: true,
 						groupIncludeTotalFooter: false,

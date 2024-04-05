@@ -73,7 +73,7 @@ import BlockchainSlice from './common/blockchain/BlockchainSlice';
 
 import TimeLogSlice from 'features/common/timelog/stores/TimeLogSlice';
 import BudgetRoomSlice from 'features/finance/budgetroom/stores/BudgetRoomSlice';
-
+import EstimateRoomSlice from 'features/finance/estimatemanager/stores/EstimateRoomSlice'
 export const store = configureStore({
 	reducer: {
 		appInfo: appInfoSlice,
@@ -144,7 +144,8 @@ export const store = configureStore({
 		smartSubmitalsLeftToolbar: SmartSubmitalLeftToolbarSlice,
 		sbsManager: SBSManagerSlice,
 		timeLogRequest: TimeLogSlice,
-		budgetRoom: BudgetRoomSlice
+		budgetRoom: BudgetRoomSlice,
+		estimateRoom:EstimateRoomSlice
 	},
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({

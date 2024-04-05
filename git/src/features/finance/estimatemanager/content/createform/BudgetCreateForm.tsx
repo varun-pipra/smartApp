@@ -5,7 +5,7 @@
 
 import './BudgetCreateForm.scss';
 
-import {getServer, getCostTypeList, getCostUnitList} from 'app/common/appInfoSlice';
+import {getServer, getCostTypeList, getCostUnitList, setCostUnitList} from 'app/common/appInfoSlice';
 import {useAppDispatch, useAppSelector} from 'app/hooks';
 import IQButton from 'components/iqbutton/IQButton';
 import SmartDropDown from 'components/smartDropdown';
@@ -25,6 +25,9 @@ import OriginalBudget from 'features/budgetmanager/orginalBudget/OrginalBudget';
 // import {formatBudgetItems} from '../../CERUtils';
 // import {addChangeEvent, fetchBudgetsByContractId} from '../../stores/ChangeEventAPI';
 // import {getAllActiveClientContracts, getChangeEventList, setChangeEventsListRefreshed, setToast} from '../../stores/ChangeEventSlice';
+import { settingcostcodetypeData } from "data/SettingsCosttypeData";
+import { validate } from 'features/budgetmanager/headerpage/Validation';
+import { isLocalhost } from 'app/utils';
 
 interface ChangeEventFormProps {
 	name?: string;
@@ -46,6 +49,20 @@ const BudgetCreateForm = (props: any) => {
 			fundingSource: ''
 		};
 	}, []);
+
+	const defaultData = {
+		costCode: '',
+		costType: '',
+		startDate: '',
+		endDate: '',
+		curve: null,
+		originalBudgetAmount: {
+			unitOfMeasure: '',
+			quantity: '',
+			cost: '',
+			amount: ''
+		}
+	}
 	const fundingSourceOptions = [
 		{id: 1, label: 'Change Order', value: 'ChangeOrder'},
 		{id: 2, label: 'Contingency', value: 'Contingency'},
@@ -63,7 +80,12 @@ const BudgetCreateForm = (props: any) => {
     const costUnitOpts = useAppSelector(getCostUnitList);
     const [originalBudgetCatalogData, setOriginalBudgetCatalogData] = React.useState<any>({unitOfMeasure: '',quantity: '',cost: ''});
     const [originalBudgetCatalogReadOnly, setOriginalBudgetCatalogReadOnly] = React.useState<any>({unitofMeasure: false,quantity: false,cost: false});
-    
+	const [headerPageData, setHeaderPageData] = React.useState<any>(defaultData);
+	const [disableAddButton, setDisableAddButoon] = React.useState<boolean>(true);
+	const [localhost] = React.useState(isLocalhost);
+	const { settingsData, costCodeDropdownData, divisionCostCodeFilterData, CostCodeAndTypeData } = useAppSelector(state => state.settings);
+	const { gridData } = useAppSelector((state) => state.gridData);
+
 	const getActiveClientContracts = () => {
 		const contractsList: any = [];
 		// dispatch(getAllActiveClientContracts())?.then((resp) => {
@@ -74,6 +96,37 @@ const BudgetCreateForm = (props: any) => {
 		// });
 		// dispatch(setChangeEventsListRefreshed(false));					
 	};
+
+	React.useEffect(() => {
+		let costTypeTimeList: any = [];
+		let costTypeQuantityList: any = [];
+		setTimeout(() => {
+			props.onLineItemAdded && props.onLineItemAdded({ displayToast: false, message: '' });
+		}, 3000);
+		setDisableAddButoon(validate(headerPageData));
+		if (settingsData.allowMultipleLineItems === false &&
+			checkCostCodeAndCostTypeCombinationExistedInGridData(headerPageData.division,
+				headerPageData.costCode, headerPageData.costType).includes(true)
+		) setDisableAddButoon(true);
+
+		const listManagerData = localhost ? settingcostcodetypeData?.values : CostCodeAndTypeData?.values;
+
+		if (listManagerData?.length > 0) {
+			listManagerData?.map((type: any) => {
+				if (type?.name == 'Unit of Measure - Quantity') costTypeQuantityList = [...type?.listValues];
+				if (type?.name == 'Unit of Measure - Time') costTypeTimeList = [...type?.listValues];
+			});
+		}
+		['L - Labor', 'SVC - Professional Services'].includes(headerPageData?.costType) ? dispatch(setCostUnitList(costTypeTimeList)) : dispatch(setCostUnitList(costTypeQuantityList))
+
+	}, [headerPageData]);
+
+	const checkCostCodeAndCostTypeCombinationExistedInGridData = (division: string, code: string, type: string) => {
+		return gridData.map((row: any, index: number) => {
+			return row.division === division && row.costCode === code && row.costType === type ? true : false
+		})
+	}
+
 	const getBudgets = (id: any) => {
 		// fetchBudgetsByContractId(id).then((resp: any) => {
 		// 	const workItems = formatBudgetItems(resp);
@@ -168,14 +221,16 @@ const BudgetCreateForm = (props: any) => {
                 required={true}
                 startIcon={<div className='common-icon-Budgetcalculator' style={{ fontSize: '1.25rem' }}></div>}
                 checkedColor={'#0590cd'}
-                showFilter={true}
+                showFilter={false}
                 selectedValue={''}
+				outSideOfGrid={true}
+				showFilterInSearch={true}
                 Placeholder={'Select'}
-                outSideOfGrid={true}
-                showFilterInSearch={true}
+                // onFiltersUpdate={(filters:any) => setDefaultFilters(filters)}
                 filteroptions={CostCodeFilterData.length > 0 ? CostCodeFilterData : []}
                 onFiltersUpdate={(filters:any) => console.log(filters)}
-                defaultFilters={''}
+                defaultFilters={[]}
+				displayEmpty={true}
             />
 
         </div>
@@ -189,31 +244,31 @@ const BudgetCreateForm = (props: any) => {
 					dropDownLabel="Cost Type"
 					isSearchField
 					required
-					outSideOfGrid={true}
+					// outSideOfGrid={true}
 					// selectedValue={headerPageData.costType}
 					isFullWidth
 					// handleChange={(value: any) => handleOnChange(value[0], 'costType')}
 					// menuProps={classes.menuPaper}
-					displayEmpty={true}
+					// displayEmpty={true}
 					Placeholder={'Select'}
 					ignoreSorting={true}
 					// disabled={isBudgetLocked}
 				/>
 		</div>
 		<div className='work-item-field'>
-        <OriginalBudget
+        		<OriginalBudget
                     label={'Original Estimate'}
-					defaultValue={''}
+					defaultValue={headerPageData?.originalBudgetAmount?.amount?.toLocaleString('en-US')}
 					iconColor={globalStyles.primaryColor}
 					clearBudgetFields={false}
 					unitList={costUnitOpts}
-					onSubmit={() => {}}
-					onBlur={() => {}}
 					readOnly={true}
 					disabled={false}
-					// showCatalogBtn={['E - Equipment', 'M - Materials', 'M - Material']?.includes(headerPageData?.costType)}
-					// showLaborBtn={headerPageData?.costType === 'L - Labor'}				
+					showCatalogBtn={['E - Equipment', 'M - Materials', 'M - Material']?.includes(headerPageData?.costType)}
+					showLaborBtn={headerPageData?.costType === 'L - Labor'}				
 					// handleCatalogSubmit={() => handleCatalogSubmit()}
+					onSubmit={(value) => setHeaderPageData({ ...headerPageData, ['originalBudgetAmount']: value })}
+					onBlur={(value) => setHeaderPageData({ ...headerPageData, ['originalBudgetAmount']: value })}
 					data={originalBudgetCatalogData}
 					textFieldReadonly={originalBudgetCatalogReadOnly}
 				/>

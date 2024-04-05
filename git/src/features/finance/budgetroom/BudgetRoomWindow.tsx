@@ -446,7 +446,7 @@ const BudgetRoomWindow = (props:BudgetRoomWindowProps) => {
 					type == 'yes' ?  null :
 					setDeleteConfirmation(false);
 				}}
-				negativeAction="No"
+				// negativeAction="No"
 				showActions={true}
 				modelWidth={'500px'}
 			/>

@@ -4,7 +4,6 @@ import { RootState } from 'app/store';
 import { triggerEvent } from 'utilities/commonFunctions';
 import { fetchSettingsData, fetchSettingsCostCodeAndTypeData, fetchdefaultData, fetchSecurityData } from './settingsAPI';
 import { fetchCostCodeAndTypeDropdownData, fetchDivisionCostCodeFilterData } from './costcodeAPI';
-
 export interface SettingsState {
 	loading: boolean;
 	settingsData: any;

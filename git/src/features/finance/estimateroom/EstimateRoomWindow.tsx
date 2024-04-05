@@ -324,7 +324,7 @@ const EstimateRoomWindow = (props:EstimateRoomWindowProps) => {
 					type == 'yes' ?  null :
 					setDeleteConfirmation(false);
 				}}
-				negativeAction="No"
+				// negativeAction="No"
 				showActions={true}
 				modelWidth={'610px'}
 			/>
